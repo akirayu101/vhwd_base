@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vhwd", "build\vc9\vhwd.vcproj", "{0E618B92-A4A3-4EDF-BB12-BE5AA323E76B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vhwd_test", "build\vc9\vhwd_test.vcproj", "{821A28D9-6BD5-4423-8F9B-3746065D6644}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0E618B92-A4A3-4EDF-BB12-BE5AA323E76B} = {0E618B92-A4A3-4EDF-BB12-BE5AA323E76B}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0E618B92-A4A3-4EDF-BB12-BE5AA323E76B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0E618B92-A4A3-4EDF-BB12-BE5AA323E76B}.Debug|Win32.Build.0 = Debug|Win32
+		{0E618B92-A4A3-4EDF-BB12-BE5AA323E76B}.Release|Win32.ActiveCfg = Release|Win32
+		{0E618B92-A4A3-4EDF-BB12-BE5AA323E76B}.Release|Win32.Build.0 = Release|Win32
+		{821A28D9-6BD5-4423-8F9B-3746065D6644}.Debug|Win32.ActiveCfg = Debug|Win32
+		{821A28D9-6BD5-4423-8F9B-3746065D6644}.Debug|Win32.Build.0 = Debug|Win32
+		{821A28D9-6BD5-4423-8F9B-3746065D6644}.Release|Win32.ActiveCfg = Release|Win32
+		{821A28D9-6BD5-4423-8F9B-3746065D6644}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

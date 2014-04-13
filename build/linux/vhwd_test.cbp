@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="vhwd_test" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../../bin/vhwd_test" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../tmp/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="../../bin/vhwd_test" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../tmp/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-DNDEBUG" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-pthread" />
+			<Add option="-DVHWD_LIB" />
+			<Add directory="../../inc" />
+		</Compiler>
+		<Linker>
+			<Add option="-pthread" />
+			<Add option="-lvhwd" />
+			<Add option="-lrt" />
+			<Add directory="../../lib/Linux" />
+		</Linker>
+		<Unit filename="../../test/appmain.cpp" />
+		<Unit filename="../../test/test_basic.cpp" />
+		<Unit filename="../../test/test_collection.cpp" />
+		<Unit filename="../../test/test_iocp.cpp" />
+		<Unit filename="../../test/test_memory.cpp" />
+		<Unit filename="../../test/test_serializer.cpp" />
+		<Unit filename="../../test/test_shm.cpp" />
+		<Unit filename="../../test/test_thread.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -1,0 +1,61 @@
+﻿body
+{
+	font-family: Segoe UI;
+	text-align: center
+}
+
+table
+{
+	background-color: #000099;
+	width: 800px;
+}
+
+div
+{
+	width: 800px;
+	text-align: left
+}
+
+hr
+{
+	width: 800px;
+}
+
+thead
+{
+	background-color: #FFFF99;
+}
+tbody
+{
+	background-color: #FFFFFF;
+}
+
+#code table
+{
+	color: #000099;
+	border: solid 1px #000099;
+	background-color: #FFFF99;
+	width: 800px;
+}
+
+#code td
+{
+	background-color: #FFFF99;
+}
+
+.method_sign
+{
+	background-color: #D0D0D0;
+	font-weight: bold;
+}
+
+.col_name
+{
+	width: 33%;
+}
+
+.col_desc
+{
+
+}
+

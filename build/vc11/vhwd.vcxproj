@@ -1,0 +1,514 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MemDebug|Win32">
+      <Configuration>MemDebug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MemDebug|x64">
+      <Configuration>MemDebug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0E618B92-A4A3-4EDF-BB12-BE5AA323E76B}</ProjectGuid>
+    <RootNamespace>vhwd</RootNamespace>
+    <Keyword>MFCProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MemDebug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MemDebug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='MemDebug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='MemDebug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>11.0.50727.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\..\lib\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>..\..\tmp\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MemDebug|Win32'">
+    <OutDir>..\..\lib\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>..\..\tmp\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\..\lib\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>..\..\tmp\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MemDebug|x64'">
+    <OutDir>..\..\lib\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>..\..\tmp\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\..\lib\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>..\..\tmp\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\..\lib\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>..\..\tmp\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\Debug/IOCP.tlb</TypeLibraryName>
+      <HeaderFileName />
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>VHWD_BUILDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <PrecompiledHeaderFile />
+      <PrecompiledHeaderOutputFile />
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
+      <BrowseInformation />
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x041d</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+    </Lib>
+    <Bscmake>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MemDebug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\Debug/IOCP.tlb</TypeLibraryName>
+      <HeaderFileName>
+      </HeaderFileName>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>VHWD_BUILDING;%(PreprocessorDefinitions);VHWD_MEMDEBUG</PreprocessorDefinitions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
+      <BrowseInformation>
+      </BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x041d</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+    </Lib>
+    <Bscmake>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TypeLibraryName>.\Debug/IOCP.tlb</TypeLibraryName>
+      <HeaderFileName>
+      </HeaderFileName>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>VHWD_BUILDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
+      <BrowseInformation>
+      </BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x041d</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+    </Lib>
+    <Bscmake>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MemDebug|x64'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TypeLibraryName>.\Debug/IOCP.tlb</TypeLibraryName>
+      <HeaderFileName>
+      </HeaderFileName>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>VHWD_BUILDING;%(PreprocessorDefinitions);VHWD_MEMDEBUG</PreprocessorDefinitions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
+      <BrowseInformation>
+      </BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x041d</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+    </Lib>
+    <Bscmake>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\Release/IOCP.tlb</TypeLibraryName>
+      <HeaderFileName />
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>VHWD_BUILDING;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader />
+      <PrecompiledHeaderFile />
+      <PrecompiledHeaderOutputFile />
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
+      <BrowseInformation />
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x041d</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+    </Lib>
+    <Bscmake>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TypeLibraryName>.\Release/IOCP.tlb</TypeLibraryName>
+      <HeaderFileName>
+      </HeaderFileName>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>VHWD_BUILDING;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
+      <BrowseInformation>
+      </BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x041d</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+    </Lib>
+    <Bscmake>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\vhwd\basic\atomic.cpp" />
+    <ClCompile Include="..\..\src\vhwd\basic\basic.cpp" />
+    <ClCompile Include="..\..\src\vhwd\basic\bitlfags.cpp" />
+    <ClCompile Include="..\..\src\vhwd\basic\clock.cpp" />
+    <ClCompile Include="..\..\src\vhwd\basic\codecvt.cpp" />
+    <ClCompile Include="..\..\src\vhwd\basic\console.cpp" />
+    <ClCompile Include="..\..\src\vhwd\basic\exception.cpp" />
+    <ClCompile Include="..\..\src\vhwd\basic\language.cpp" />
+    <ClCompile Include="..\..\src\vhwd\basic\object.cpp" />
+    <ClCompile Include="..\..\src\vhwd\basic\object_data.cpp" />
+    <ClCompile Include="..\..\src\vhwd\basic\object_info.cpp" />
+    <ClCompile Include="..\..\src\vhwd\basic\string.cpp" />
+    <ClCompile Include="..\..\src\vhwd\basic\string_impl.cpp" />
+    <ClCompile Include="..\..\src\vhwd\basic\stringbuffer.cpp" />
+    <ClCompile Include="..\..\src\vhwd\basic\system.cpp" />
+    <ClCompile Include="..\..\src\vhwd\ipc\pipe.cpp" />
+    <ClCompile Include="..\..\src\vhwd\ipc\shm.cpp" />
+    <ClCompile Include="..\..\src\vhwd\ipc\shm_queue.cpp" />
+    <ClCompile Include="..\..\src\vhwd\net\iocp_pool.cpp" />
+    <ClCompile Include="..\..\src\vhwd\net\iocp_session.cpp" />
+    <ClCompile Include="..\..\src\vhwd\net\ipaddress.cpp" />
+    <ClCompile Include="..\..\src\vhwd\net\session_buffer.cpp" />
+    <ClCompile Include="..\..\src\vhwd\net\session_client.cpp" />
+    <ClCompile Include="..\..\src\vhwd\net\session_dgram.cpp" />
+    <ClCompile Include="..\..\src\vhwd\net\session_server.cpp" />
+    <ClCompile Include="..\..\src\vhwd\net\socket.cpp" />
+    <ClCompile Include="..\..\src\vhwd\memory\allocator.cpp" />
+    <ClCompile Include="..\..\src\vhwd\memory\mempool_cache.cpp" />
+    <ClCompile Include="..\..\src\vhwd\memory\mempool_debug.cpp" />
+    <ClCompile Include="..\..\src\vhwd\memory\mempool_fixedsize.cpp" />
+    <ClCompile Include="..\..\src\vhwd\memory\mempool_link.cpp" />
+    <ClCompile Include="..\..\src\vhwd\memory\mempool_pageinfo.cpp" />
+    <ClCompile Include="..\..\src\vhwd\memory\mempool_paging.cpp" />
+    <ClCompile Include="..\..\src\vhwd\logging\log_console.cpp" />
+    <ClCompile Include="..\..\src\vhwd\logging\log_target.cpp" />
+    <ClCompile Include="..\..\src\vhwd\logging\logger.cpp" />
+    <ClCompile Include="..\..\src\vhwd\serialization\serializer_buffer.cpp" />
+    <ClCompile Include="..\..\src\vhwd\threading\thread.cpp" />
+    <ClCompile Include="..\..\src\vhwd\threading\thread_impl.cpp" />
+    <ClCompile Include="..\..\src\vhwd\threading\thread_mutex.cpp" />
+    <ClCompile Include="..\..\src\vhwd\threading\thread_pool.cpp" />
+    <ClCompile Include="..\..\src\vhwd\threading\thread_routine.cpp" />
+    <ClCompile Include="..\..\src\vhwd\xml\xml_attribute.cpp" />
+    <ClCompile Include="..\..\src\vhwd\xml\xml_document.cpp" />
+    <ClCompile Include="..\..\src\vhwd\xml\xml_node.cpp" />
+    <ClCompile Include="..\..\src\vhwd\xml\xml_parser.cpp" />
+    <ClCompile Include="..\..\src\vhwd\serialization\serializer.cpp" />
+    <ClCompile Include="..\..\src\vhwd\serialization\serializer_socket.cpp" />
+    <ClCompile Include="..\..\src\vhwd\serialization\serializer_stream.cpp" />
+    <ClCompile Include="..\..\src\vhwd\testing\test.cpp" />
+    <ClCompile Include="..\..\src\vhwd\testing\test_mgr.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\inc\vhwd\collection.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\array.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\lockfree_queue.h" />
+    <ClInclude Include="..\..\inc\vhwd\memory\allocator.h" />
+    <ClInclude Include="..\..\inc\vhwd\memory\allocator_malloc.h" />
+    <ClInclude Include="..\..\inc\vhwd\memory\allocator_mempool.h" />
+    <ClInclude Include="..\..\inc\vhwd\serialization\serializer_buffer.h" />
+    <ClInclude Include="..\..\src\vhwd\basic\string_impl.h" />
+    <ClInclude Include="..\..\src\vhwd\net\socket_impl_detail.h" />
+    <ClInclude Include="..\..\src\vhwd\net\socket_impl_linux.h" />
+    <ClInclude Include="..\..\src\vhwd\net\socket_impl_windows.h" />
+    <ClInclude Include="..\..\src\vhwd\memory\mempool_impl.h" />
+    <ClInclude Include="..\..\src\vhwd\threading\thread_impl.h" />
+    <ClInclude Include="..\..\src\vhwd\threading\thread_impl_detail.h" />
+    <ClInclude Include="..\..\src\vhwd\threading\thread_impl_pthread.h" />
+    <ClInclude Include="..\..\src\vhwd\threading\thread_impl_windows.h" />
+    <ClInclude Include="..\..\src\vhwd\xml\xml_parser.h" />
+    <ClInclude Include="..\..\inc\tl.h" />
+    <ClInclude Include="..\..\inc\vhwd.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic.h" />
+    <ClInclude Include="..\..\inc\vhwd\config.h" />
+    <ClInclude Include="..\..\inc\vhwd\ipc.h" />
+    <ClInclude Include="..\..\inc\vhwd\logging.h" />
+    <ClInclude Include="..\..\inc\vhwd\memory.h" />
+    <ClInclude Include="..\..\inc\vhwd\net.h" />
+    <ClInclude Include="..\..\inc\vhwd\serialization.h" />
+    <ClInclude Include="..\..\inc\vhwd\threading.h" />
+    <ClInclude Include="..\..\inc\vhwd\xml.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic\atomic.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic\bitflags.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic\clock.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic\codecvt.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic\console.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic\exception.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic\factor.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic\factor_detail.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic\language.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic\object.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic\platform.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic\pointer.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic\pointer_detail.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic\string.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic\string_detail.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic\stringbuffer.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic\system.h" />
+    <ClInclude Include="..\..\inc\vhwd\xml\xml_attribute.h" />
+    <ClInclude Include="..\..\inc\vhwd\xml\xml_document.h" />
+    <ClInclude Include="..\..\inc\vhwd\xml\xml_node.h" />
+    <ClInclude Include="..\..\inc\vhwd\threading\lockguard.h" />
+    <ClInclude Include="..\..\inc\vhwd\threading\thread.h" />
+    <ClInclude Include="..\..\inc\vhwd\threading\thread_cond.h" />
+    <ClInclude Include="..\..\inc\vhwd\threading\thread_event.h" />
+    <ClInclude Include="..\..\inc\vhwd\threading\thread_mutex.h" />
+    <ClInclude Include="..\..\inc\vhwd\threading\thread_pool.h" />
+    <ClInclude Include="..\..\inc\vhwd\threading\thread_rwlock.h" />
+    <ClInclude Include="..\..\inc\vhwd\threading\thread_sem.h" />
+    <ClInclude Include="..\..\inc\vhwd\threading\thread_spin.h" />
+    <ClInclude Include="..\..\inc\vhwd\logging\logger.h" />
+    <ClInclude Include="..\..\inc\vhwd\logging\logrecord.h" />
+    <ClInclude Include="..\..\inc\vhwd\logging\logtarget.h" />
+    <ClInclude Include="..\..\inc\vhwd\serialization\serializer.h" />
+    <ClInclude Include="..\..\inc\vhwd\serialization\serializer_socket.h" />
+    <ClInclude Include="..\..\inc\vhwd\serialization\serializer_stream.h" />
+    <ClInclude Include="..\..\inc\vhwd\ipc\pipe.h" />
+    <ClInclude Include="..\..\inc\vhwd\ipc\shm.h" />
+    <ClInclude Include="..\..\inc\vhwd\ipc\shm_queue.h" />
+    <ClInclude Include="..\..\inc\vhwd\net\iocp_periodata.h" />
+    <ClInclude Include="..\..\inc\vhwd\net\iocp_pool.h" />
+    <ClInclude Include="..\..\inc\vhwd\net\iocp_session.h" />
+    <ClInclude Include="..\..\inc\vhwd\net\ipaddress.h" />
+    <ClInclude Include="..\..\inc\vhwd\net\socket.h" />
+    <ClInclude Include="..\..\inc\vhwd\memory\mempool.h" />
+    <ClInclude Include="..\..\inc\vhwd\testing\test.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\array_xt.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\collection_base.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\indexer_detail.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\indexer_map.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\indexer_set.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\intrusive_list.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

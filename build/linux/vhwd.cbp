@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="vhwd" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../../lib/Linux/vhwd" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="../../tmp/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="../../lib/Linux/vhwd" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="../../tmp/Release/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-DNDEBUG" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-pthread" />
+			<Add option="-DVHWD_BUILDING" />
+			<Add option="-DVHWD_LIB" />
+			<Add directory="../../inc" />
+		</Compiler>
+		<Linker>
+			<Add option="-pthread" />
+		</Linker>
+		<Unit filename="../../inc/tl.h" />
+		<Unit filename="../../inc/vhwd.h" />
+		<Unit filename="../../inc/vhwd/basic.h" />
+		<Unit filename="../../inc/vhwd/basic/atomic.h" />
+		<Unit filename="../../inc/vhwd/basic/bitflags.h" />
+		<Unit filename="../../inc/vhwd/basic/clock.h" />
+		<Unit filename="../../inc/vhwd/basic/codecvt.h" />
+		<Unit filename="../../inc/vhwd/basic/console.h" />
+		<Unit filename="../../inc/vhwd/basic/exception.h" />
+		<Unit filename="../../inc/vhwd/basic/factor.h" />
+		<Unit filename="../../inc/vhwd/basic/factor_detail.h" />
+		<Unit filename="../../inc/vhwd/basic/language.h" />
+		<Unit filename="../../inc/vhwd/basic/object.h" />
+		<Unit filename="../../inc/vhwd/basic/platform.h" />
+		<Unit filename="../../inc/vhwd/basic/pointer.h" />
+		<Unit filename="../../inc/vhwd/basic/pointer_detail.h" />
+		<Unit filename="../../inc/vhwd/basic/string.h" />
+		<Unit filename="../../inc/vhwd/basic/string_detail.h" />
+		<Unit filename="../../inc/vhwd/basic/stringbuffer.h" />
+		<Unit filename="../../inc/vhwd/basic/system.h" />
+		<Unit filename="../../inc/vhwd/collection.h" />
+		<Unit filename="../../inc/vhwd/collection/array.h" />
+		<Unit filename="../../inc/vhwd/collection/array_xt.h" />
+		<Unit filename="../../inc/vhwd/collection/collection_base.h" />
+		<Unit filename="../../inc/vhwd/collection/indexer_detail.h" />
+		<Unit filename="../../inc/vhwd/collection/indexer_map.h" />
+		<Unit filename="../../inc/vhwd/collection/indexer_set.h" />
+		<Unit filename="../../inc/vhwd/collection/intrusive_list.h" />
+		<Unit filename="../../inc/vhwd/collection/lockfree_queue.h" />
+		<Unit filename="../../inc/vhwd/config.h" />
+		<Unit filename="../../inc/vhwd/ipc.h" />
+		<Unit filename="../../inc/vhwd/ipc/pipe.h" />
+		<Unit filename="../../inc/vhwd/ipc/shm.h" />
+		<Unit filename="../../inc/vhwd/ipc/shm_queue.h" />
+		<Unit filename="../../inc/vhwd/logging.h" />
+		<Unit filename="../../inc/vhwd/logging/logger.h" />
+		<Unit filename="../../inc/vhwd/logging/logrecord.h" />
+		<Unit filename="../../inc/vhwd/logging/logtarget.h" />
+		<Unit filename="../../inc/vhwd/memory.h" />
+		<Unit filename="../../inc/vhwd/memory/allocator.h" />
+		<Unit filename="../../inc/vhwd/memory/allocator_malloc.h" />
+		<Unit filename="../../inc/vhwd/memory/allocator_mempool.h" />
+		<Unit filename="../../inc/vhwd/memory/mempool.h" />
+		<Unit filename="../../inc/vhwd/net.h" />
+		<Unit filename="../../inc/vhwd/net/iocp_periodata.h" />
+		<Unit filename="../../inc/vhwd/net/iocp_pool.h" />
+		<Unit filename="../../inc/vhwd/net/iocp_session.h" />
+		<Unit filename="../../inc/vhwd/net/ipaddress.h" />
+		<Unit filename="../../inc/vhwd/net/socket.h" />
+		<Unit filename="../../inc/vhwd/serialization.h" />
+		<Unit filename="../../inc/vhwd/serialization/serializer.h" />
+		<Unit filename="../../inc/vhwd/serialization/serializer_buffer.h" />
+		<Unit filename="../../inc/vhwd/serialization/serializer_socket.h" />
+		<Unit filename="../../inc/vhwd/serialization/serializer_stream.h" />
+		<Unit filename="../../inc/vhwd/testing/test.h" />
+		<Unit filename="../../inc/vhwd/threading.h" />
+		<Unit filename="../../inc/vhwd/threading/lockguard.h" />
+		<Unit filename="../../inc/vhwd/threading/thread.h" />
+		<Unit filename="../../inc/vhwd/threading/thread_cond.h" />
+		<Unit filename="../../inc/vhwd/threading/thread_event.h" />
+		<Unit filename="../../inc/vhwd/threading/thread_mutex.h" />
+		<Unit filename="../../inc/vhwd/threading/thread_pool.h" />
+		<Unit filename="../../inc/vhwd/threading/thread_rwlock.h" />
+		<Unit filename="../../inc/vhwd/threading/thread_sem.h" />
+		<Unit filename="../../inc/vhwd/threading/thread_spin.h" />
+		<Unit filename="../../inc/vhwd/xml.h" />
+		<Unit filename="../../inc/vhwd/xml/xml_attribute.h" />
+		<Unit filename="../../inc/vhwd/xml/xml_document.h" />
+		<Unit filename="../../inc/vhwd/xml/xml_node.h" />
+		<Unit filename="../../src/vhwd/basic/atomic.cpp" />
+		<Unit filename="../../src/vhwd/basic/basic.cpp" />
+		<Unit filename="../../src/vhwd/basic/bitlfags.cpp" />
+		<Unit filename="../../src/vhwd/basic/clock.cpp" />
+		<Unit filename="../../src/vhwd/basic/codecvt.cpp" />
+		<Unit filename="../../src/vhwd/basic/console.cpp" />
+		<Unit filename="../../src/vhwd/basic/exception.cpp" />
+		<Unit filename="../../src/vhwd/basic/language.cpp" />
+		<Unit filename="../../src/vhwd/basic/object.cpp" />
+		<Unit filename="../../src/vhwd/basic/object_data.cpp" />
+		<Unit filename="../../src/vhwd/basic/object_info.cpp" />
+		<Unit filename="../../src/vhwd/basic/string.cpp" />
+		<Unit filename="../../src/vhwd/basic/string_impl.cpp" />
+		<Unit filename="../../src/vhwd/basic/string_impl.h" />
+		<Unit filename="../../src/vhwd/basic/stringbuffer.cpp" />
+		<Unit filename="../../src/vhwd/basic/system.cpp" />
+		<Unit filename="../../src/vhwd/ipc/pipe.cpp" />
+		<Unit filename="../../src/vhwd/ipc/shm.cpp" />
+		<Unit filename="../../src/vhwd/ipc/shm_queue.cpp" />
+		<Unit filename="../../src/vhwd/logging/log_console.cpp" />
+		<Unit filename="../../src/vhwd/logging/log_target.cpp" />
+		<Unit filename="../../src/vhwd/logging/logger.cpp" />
+		<Unit filename="../../src/vhwd/memory/allocator.cpp" />
+		<Unit filename="../../src/vhwd/memory/mempool_cache.cpp" />
+		<Unit filename="../../src/vhwd/memory/mempool_debug.cpp" />
+		<Unit filename="../../src/vhwd/memory/mempool_fixedsize.cpp" />
+		<Unit filename="../../src/vhwd/memory/mempool_impl.h" />
+		<Unit filename="../../src/vhwd/memory/mempool_link.cpp" />
+		<Unit filename="../../src/vhwd/memory/mempool_pageinfo.cpp" />
+		<Unit filename="../../src/vhwd/memory/mempool_paging.cpp" />
+		<Unit filename="../../src/vhwd/net/iocp_pool.cpp" />
+		<Unit filename="../../src/vhwd/net/iocp_session.cpp" />
+		<Unit filename="../../src/vhwd/net/ipaddress.cpp" />
+		<Unit filename="../../src/vhwd/net/session_buffer.cpp" />
+		<Unit filename="../../src/vhwd/net/session_client.cpp" />
+		<Unit filename="../../src/vhwd/net/session_dgram.cpp" />
+		<Unit filename="../../src/vhwd/net/session_server.cpp" />
+		<Unit filename="../../src/vhwd/net/socket.cpp" />
+		<Unit filename="../../src/vhwd/net/socket_impl_detail.h" />
+		<Unit filename="../../src/vhwd/net/socket_impl_linux.h" />
+		<Unit filename="../../src/vhwd/net/socket_impl_windows.h" />
+		<Unit filename="../../src/vhwd/serialization/serializer.cpp" />
+		<Unit filename="../../src/vhwd/serialization/serializer_buffer.cpp" />
+		<Unit filename="../../src/vhwd/serialization/serializer_socket.cpp" />
+		<Unit filename="../../src/vhwd/serialization/serializer_stream.cpp" />
+		<Unit filename="../../src/vhwd/testing/test.cpp" />
+		<Unit filename="../../src/vhwd/testing/test_mgr.cpp" />
+		<Unit filename="../../src/vhwd/threading/thread.cpp" />
+		<Unit filename="../../src/vhwd/threading/thread_impl.cpp" />
+		<Unit filename="../../src/vhwd/threading/thread_impl.h" />
+		<Unit filename="../../src/vhwd/threading/thread_impl_detail.h" />
+		<Unit filename="../../src/vhwd/threading/thread_impl_pthread.h" />
+		<Unit filename="../../src/vhwd/threading/thread_impl_windows.h" />
+		<Unit filename="../../src/vhwd/threading/thread_mutex.cpp" />
+		<Unit filename="../../src/vhwd/threading/thread_pool.cpp" />
+		<Unit filename="../../src/vhwd/threading/thread_routine.cpp" />
+		<Unit filename="../../src/vhwd/xml/xml_attribute.cpp" />
+		<Unit filename="../../src/vhwd/xml/xml_document.cpp" />
+		<Unit filename="../../src/vhwd/xml/xml_node.cpp" />
+		<Unit filename="../../src/vhwd/xml/xml_parser.cpp" />
+		<Unit filename="../../src/vhwd/xml/xml_parser.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
