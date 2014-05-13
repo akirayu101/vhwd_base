@@ -1,9 +1,16 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_SERIALIZER_BUFFER__
 #define __H_VHWD_SERIALIZER_BUFFER__
 
 #include "vhwd/serialization/serializer.h"
-#include "vhwd/net/ipaddress.h"
-#include "vhwd/net/socket.h"
+#include "vhwd/collection/linear_buffer.h"
+
 
 VHWD_ENTER
 
@@ -19,31 +26,28 @@ public:
 	bool skip(); 
 
 	// assign external buffer
-	void assign(void* pbuf,size_t size);
+	void assign(char* pbuf,size_t size);
 
 	// allocate buffer
 	void alloc(size_t bufsize);
 
+	// get writer
 	SerializerWriter& writer(){return *this;}
+
+	// get reader
 	SerializerReader& reader(){return *this;}
 
-	char* gbeg(){return m_pBuff;} // buffer begin
-	char* gptr(){return m_pBuff+m_nGpos;} // get position begin
-	char* gend(){return m_pBuff+m_nGend;} // get position end or put position begin
+	char* gbeg(){return lbuf.gbeg();} // buffer begin
+	char* gptr(){return lbuf.gptr();} // get position begin
+	char* gend(){return lbuf.gend();} // get position end or put position begin
+	char* last(){return lbuf.last();}
 
 protected:
-
-	bool _grow(size_t _newsize);
 
 	bool send(char* data,size_t size);
 	bool recv(char* data,size_t size);
 
-	char* m_pBuff;
-	size_t m_nLast; // buffer size
-	size_t m_nGpos; // get position begin
-	size_t m_nGend; // get position end or put position begin
-
-	arr_1t<char> m_aBuff;
+	LinearBuffer<char> lbuf;
 
 };
 

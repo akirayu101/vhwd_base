@@ -1,5 +1,20 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_SERIALIZER__
 #define __H_VHWD_SERIALIZER__
+
+
+
+#include "vhwd/basic/object.h"
+#include "vhwd/basic/pointer.h"
+#include "vhwd/basic/exception.h"
+#include "vhwd/collection/indexer_set.h"
+#include "vhwd/collection/array.h"
 
 #pragma push_macro("new")
 #undef new
@@ -7,12 +22,6 @@
 #include <vector>
 #include <map>
 #pragma pop_macro("new")
-
-#include "vhwd/basic/object.h"
-#include "vhwd/basic/pointer.h"
-#include "vhwd/basic/exception.h"
-#include "vhwd/collection/indexer_set.h"
-#include "vhwd/collection/array.h"
 
 namespace tl
 {
@@ -46,7 +55,7 @@ public:
 
 	virtual void errstr(const String&)=0;
 
-	virtual bool good() const {return false;}
+	virtual bool good() const {return true;}
 
 	virtual Serializer& tag(char ch)=0;
 	virtual Serializer& tag(const char* msg)=0;
@@ -55,6 +64,7 @@ public:
 
 	int global_version(){return gver;}
 	void global_version(int v){gver=v;}
+
 
 	virtual void close(){}
 
@@ -95,8 +105,8 @@ public:
 	{
 		PTRTAG_NIL,		//NULL pointer
 		PTRTAG_POD,		//POD pointer
-		PTRTAG_KKK,		//class pointer (but NOT Object)
-		PTRTAG_OBJ,		//Object and its derived pointer
+		PTRTAG_CLS,		//class pointer (but NOT Object)
+		PTRTAG_OBJ,		//Object and its derived class pointer
 		PTRTAG_CACHED,
 	};
 
@@ -262,7 +272,7 @@ public:
 	static void g(A& ar,Object& val)
 	{
 		ar.put(&val);
-		val.serialize(ar);
+		val.Serialize(ar);
 	}
 
 	static void g(SerializerReader& ar,pointer& val)
@@ -390,7 +400,7 @@ public:
 
 	static void g(A& ar,T& val)
 	{
-		val.serialize(ar);
+		val.Serialize(ar);
 	}
 
 	static void g(SerializerReader& ar,pointer& val)
@@ -398,7 +408,7 @@ public:
 		int32_t sval(0);
 		ar >> sval;
 		if(sval==A::PTRTAG_NIL) return;
-		if(sval!=A::PTRTAG_KKK)
+		if(sval!=A::PTRTAG_CLS)
 		{
 			ar.errstr("INVALID_POINTER_TYPE");
 			return;
@@ -411,7 +421,7 @@ public:
 
 	static void g(SerializerWriter& ar,pointer& val)
 	{
-		int32_t sval=val==NULL? A::PTRTAG_NIL : A::PTRTAG_KKK;
+		int32_t sval=val==NULL? A::PTRTAG_NIL : A::PTRTAG_CLS;
 		ar << sval;
 		if(sval==0) return;
 		g(ar,*val);

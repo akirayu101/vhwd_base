@@ -3,8 +3,7 @@
 VHWD_ENTER
 
 
-
-bool Object::serialize(Serializer&)
+bool Object::Serialize(Serializer&)
 {
 	return true;
 }

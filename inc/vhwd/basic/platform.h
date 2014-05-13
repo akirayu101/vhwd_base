@@ -1,8 +1,19 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_BASIC_PLATFORM__
 #define __H_VHWD_BASIC_PLATFORM__
 
 #include "vhwd/config.h"
 #include "vhwd/basic/atomic.h"
+
+#ifdef _WIN32
+#include "windows.h"
+#endif
 
 VHWD_ENTER
 
@@ -133,6 +144,41 @@ protected:
 	mutable RefCounter* m_pCounter;
 };
 
+class FileAccess
+{
+public:
+	enum
+	{
+		FLAG_RD=1<<0,
+		FLAG_WR=1<<1,
+		FLAG_RW=FLAG_RD|FLAG_WR,
+		FLAG_CR=1<<3,
+		FLAG_APPEND=1<<4,
+	};
+
+	static int makeflag(int flag_,int fr,int fw)
+	{
+		int acc=0;
+		if(flag_&FileAccess::FLAG_RD)
+		{
+			acc|=fr;
+		}
+		if(flag_&FileAccess::FLAG_WR)
+		{
+			acc|=fw;
+		}
+		return acc;
+	}
+
+#ifdef _WIN32
+	union LargeInteger
+	{
+		DWORD64 dval;
+		DWORD d[2];
+	};
+#endif
+
+};
 
 VHWD_LEAVE
 #endif

@@ -1,26 +1,22 @@
 
-#include "vhwd/net/iocp_session.h"
-#include "vhwd/net/iocp_pool.h"
+#include "vhwd/net/session.h"
+#include "vhwd/net/iocp1.h"
 #include "vhwd/basic/system.h"
 
 VHWD_ENTER
 
 SessionServer::SessionServer()
 {
-
+	tsTimeout=TimeSpan::Day(120);
 }
 
 bool SessionServer::Listen(const String& ip,int port)
 {
-	if(IsConnected())
+	Logger &logger(this_logger());
+
+	if(state.get()!=STATE_READY)
 	{
 		logger.LogError("Listen failed! Server is already connected!");
-		return false;
-	}
-
-	if(!hiocp)
-	{
-		logger.LogError("Listen failed! IOCPPool is null!");
 		return false;
 	}
 
@@ -67,8 +63,6 @@ bool SessionServer::Listen(const String& ip,int port)
 
 #endif
 
-	hiocp->svc_add(this);
-
 	return true;
 }
 
@@ -93,46 +87,58 @@ void SessionServer::Close()
 }
 
 
-void SessionServer::StartSession(Session* ses,IOCPPool* h)
+void SessionServer::StartSession(Session* pkey,IOCPPool* hpool)
 {
-	if(!h)
+	if(!hpool)
 	{
-		h=hiocp;
+		hpool=hiocp;
 	}
-	ses->SetIOCP(h);
-	h->svc_add(ses);
+	
+	//this_logger().LogMessage("%p connected %d",pkey,hpool->GetAccounter().nSessionCount.get());
+	hpool->Register(pkey);
 }
 
-void SessionServer::WaitForAccept()
-{
-#ifdef _WIN32
-	PerIO_accept* perio_data=(PerIO_accept*)&sk_remote;
+MyOverLapped olap_wait_for_accept(MyOverLapped::ACTION_ACCEPT);
 
-	perio_data->sk_accept.sock.Ensure();
-	perio_data->type=Session::ACTION_WAIT_RECV;
+bool SessionServer::WaitForAccept()
+{
+
+#ifdef _WIN32
+
+	m_nPendingRecv++;
+
+	MyOverLapped& idat(olap_wait_for_accept);
+
+	sk_remote.sock.Ensure(Socket::TCP);
 
 	int bRet = lpfnAcceptEx(
 		sk_local.sock,
-		perio_data->sk_accept.sock,
-		perio_data->dbuf.buf,
+		sk_remote.sock,
+		tmp_buffer,
 		0,
 		sizeof(sockaddr_in) + 16,
 		sizeof(sockaddr_in) + 16,
-		&perio_data->size,
-		&perio_data->olap);
+		&idat.size,
+		&idat.olap);
 
 	if(bRet!=0 && WSAGetLastError()!=WSA_IO_PENDING)
 	{
+		Disconnect();
+		--m_nPendingRecv;
 		int ret=WSAGetLastError();
 		System::LogTrace("AcceptEx failed with error %d",ret);
-		Disconnect();
-		return;
+		return false;
 	}
-	m_nAsyncPending++;
+	else
+	{
+		return true;
+	}
 
 #else
 	WaitForRecv();
+	return true;
 #endif
+
 
 }
 
@@ -142,15 +148,18 @@ void SessionServer::OnRecvReady()
 
 #ifndef _WIN32
 
-	sk_remote.sk_accept.sock.Ensure();
-	if(sk_local.sock.Accept(sk_remote.sk_accept.sock,sk_remote.sk_accept.peer))
+	for(;;)
 	{
-		NewSession(sk_remote.sk_accept);
+		sk_remote.sock.Ensure(Socket::TCP);
+		if(!sk_local.sock.Accept(sk_remote.sock,sk_remote.peer))
+		{
+			break;
+		}
+		NewSession(sk_remote);
+		break;
 	}
 
 #else
-
-	PerIO_buffer* perio_data=&sk_remote;
 
 	sockaddr_in* addr=NULL;
 	sockaddr_in* peer=NULL;
@@ -158,7 +167,7 @@ void SessionServer::OnRecvReady()
 	int len2=0;
 
 	lpfnGetAddrEx(
-		perio_data->dbuf.buf,
+		tmp_buffer,
 		0,
 		sizeof(sockaddr_in) + 16,
 		sizeof(sockaddr_in) + 16,
@@ -167,10 +176,21 @@ void SessionServer::OnRecvReady()
 		(LPSOCKADDR*)&peer,
 		&len2);
 
-	if(addr) memcpy(sk_remote.sk_accept.addr.sk_addr_in(),addr,len1);
-	if(peer) memcpy(sk_remote.sk_accept.peer.sk_addr_in(),peer,len2);
+	if(addr) memcpy(sk_remote.addr.sk_addr_in(),addr,len1);
+	if(peer) memcpy(sk_remote.peer.sk_addr_in(),peer,len2);
 
-	NewSession(sk_remote.sk_accept);
+	NewSession(sk_remote);
+
+	for(;;)
+	{
+		sk_remote.sock.Ensure(Socket::TCP);
+		if(!sk_local.sock.Accept(sk_remote.sock,sk_remote.peer))
+		{
+			break;
+		}
+
+		NewSession(sk_remote);
+	}
 
 #endif
 

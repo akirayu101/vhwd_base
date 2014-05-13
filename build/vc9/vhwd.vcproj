@@ -273,20 +273,12 @@
 						RelativePath="..\..\src\vhwd\ipc\shm.cpp"
 						>
 					</File>
-					<File
-						RelativePath="..\..\src\vhwd\ipc\shm_queue.cpp"
-						>
-					</File>
 				</Filter>
 				<Filter
 					Name="net"
 					>
 					<File
-						RelativePath="..\..\src\vhwd\net\iocp_pool.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\vhwd\net\iocp_session.cpp"
+						RelativePath="..\..\src\vhwd\net\iocp1.cpp"
 						>
 					</File>
 					<File
@@ -294,7 +286,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\vhwd\net\session_buffer.cpp"
+						RelativePath="..\..\src\vhwd\net\overlapped.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\net\session.cpp"
 						>
 					</File>
 					<File
@@ -302,11 +298,15 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\vhwd\net\session_dgram.cpp"
+						RelativePath="..\..\src\vhwd\net\session_server.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\vhwd\net\session_server.cpp"
+						RelativePath="..\..\src\vhwd\net\session_tcp.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\net\session_udp.cpp"
 						>
 					</File>
 					<File
@@ -382,6 +382,10 @@
 					Name="threading"
 					>
 					<File
+						RelativePath="..\..\src\vhwd\threading\coroutine.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\vhwd\threading\thread.cpp"
 						>
 					</File>
@@ -411,10 +415,6 @@
 					</File>
 					<File
 						RelativePath="..\..\src\vhwd\threading\thread_pool.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\vhwd\threading\thread_routine.cpp"
 						>
 					</File>
 				</Filter>
@@ -471,6 +471,14 @@
 					</File>
 					<File
 						RelativePath="..\..\src\vhwd\testing\test_mgr.cpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="collection"
+					>
+					<File
+						RelativePath="..\..\src\vhwd\collection\collection.cpp"
 						>
 					</File>
 				</Filter>
@@ -558,11 +566,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\inc\vhwd\basic\factor.h"
+						RelativePath="..\..\inc\vhwd\basic\functor.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\inc\vhwd\basic\factor_detail.h"
+						RelativePath="..\..\inc\vhwd\basic\functor_detail.h"
 						>
 					</File>
 					<File
@@ -682,6 +690,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\inc\vhwd\serialization\serializer_buffer.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\inc\vhwd\serialization\serializer_socket.h"
 						>
 					</File>
@@ -701,28 +713,24 @@
 						RelativePath="..\..\inc\vhwd\ipc\shm.h"
 						>
 					</File>
-					<File
-						RelativePath="..\..\inc\vhwd\ipc\shm_queue.h"
-						>
-					</File>
 				</Filter>
 				<Filter
 					Name="net"
 					>
 					<File
-						RelativePath="..\..\inc\vhwd\net\iocp_periodata.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\inc\vhwd\net\iocp_pool.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\inc\vhwd\net\iocp_session.h"
+						RelativePath="..\..\inc\vhwd\net\iocp1.h"
 						>
 					</File>
 					<File
 						RelativePath="..\..\inc\vhwd\net\ipaddress.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\inc\vhwd\net\overlapped.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\inc\vhwd\net\session.h"
 						>
 					</File>
 					<File
@@ -782,7 +790,15 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\inc\vhwd\collection\linear_buffer.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\inc\vhwd\collection\lockfree_queue.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\inc\vhwd\collection\ring_buffer.h"
 						>
 					</File>
 				</Filter>

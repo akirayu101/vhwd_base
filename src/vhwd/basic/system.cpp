@@ -1,5 +1,6 @@
 #include "vhwd/basic/system.h"
 #include "vhwd/basic/string.h"
+#include "vhwd/basic/lockguard.h"
 
 #include <ctime>
 #include <cstdlib>
@@ -138,70 +139,93 @@ double System::GetCpuTime()
 #endif
 }
 
-static FILE* fp_logfile=NULL;
-
-bool System::LogFile(const String& fn)
-{
-	if(fp_logfile)
-	{
-		::fclose(fp_logfile);
-		fp_logfile=NULL;
-	}
-	if(fn.empty()) return false;
-	fp_logfile=::fopen(fn.c_str(),"a");
-	return fp_logfile!=NULL;
-}
-
-void System::LogTraceImpl(const char* msg,...)
-{
-
-	time_t tt=time(NULL);
-	char buf1[256];
-	strftime (buf1,256,"%Y-%m-%d %H:%M:%S ",localtime(&tt));
-
-	char buf2[1024];
-	va_list arg;
-	va_start(arg,msg);
-	::vsnprintf(buf2,1024,msg,arg);
-	va_end(arg);
-
-	if(fp_logfile!=NULL)
-	{
-        fprintf(fp_logfile,"%s trace:%s\r\n",buf1,buf2);
-        fflush(fp_logfile);
-	}
-	else
-	{
-        printf("%s trace:%s\r\n",buf1,buf2);
-	}
-}
-
-void System::LogFetalImpl(const char* msg,...)
-{
-
-
-	time_t tt=time(NULL);
-	char buf1[256];
-	strftime (buf1,256,"%Y-%m-%d %H:%M:%S ",localtime(&tt));
-
-	char buf2[1024];
-	va_list arg;
-	va_start(arg,msg);
-	::vsnprintf(buf2,1024,msg,arg);
-	va_end(arg);
-
-	if(fp_logfile!=NULL)
-	{
-        fprintf(fp_logfile,"%s fetal:%s\r\n",buf1,buf2);
-        fflush(fp_logfile);
-	}
-	else
-	{
-        printf("%s fetal:%s\r\n",buf1,buf2);
-	}
-
-	Exit(-1);
-}
+//static FILE* fp_logfile=NULL;
+//
+//bool System::LogFile(const String& fn)
+//{
+//	if(fp_logfile)
+//	{
+//		::fclose(fp_logfile);
+//		fp_logfile=NULL;
+//	}
+//	if(fn.empty()) return false;
+//	fp_logfile=::fopen(fn.c_str(),"a");
+//	return fp_logfile!=NULL;
+//}
+//
+//void System::LogTraceImpl(const char* msg,...)
+//{
+//
+//	time_t tt=time(NULL);
+//	char buf1[256];
+//	strftime (buf1,256,"%Y-%m-%d %H:%M:%S ",localtime(&tt));
+//
+//	char buf2[1024];
+//	va_list arg;
+//	va_start(arg,msg);
+//	::vsnprintf(buf2,1024,msg,arg);
+//	va_end(arg);
+//
+//	if(fp_logfile!=NULL)
+//	{
+//        fprintf(fp_logfile,"%s trace:%s\r\n",buf1,buf2);
+//        fflush(fp_logfile);
+//	}
+//	else
+//	{
+//        printf("%s trace:%s\r\n",buf1,buf2);
+//	}
+//}
+//
+//void System::LogErrorImpl(const char* msg,...)
+//{
+//
+//	time_t tt=time(NULL);
+//	char buf1[256];
+//	strftime (buf1,256,"%Y-%m-%d %H:%M:%S ",localtime(&tt));
+//
+//	char buf2[1024];
+//	va_list arg;
+//	va_start(arg,msg);
+//	::vsnprintf(buf2,1024,msg,arg);
+//	va_end(arg);
+//
+//	if(fp_logfile!=NULL)
+//	{
+//        fprintf(fp_logfile,"%s error:%s\r\n",buf1,buf2);
+//        fflush(fp_logfile);
+//	}
+//	else
+//	{
+//        printf("%s error:%s\r\n",buf1,buf2);
+//	}
+//}
+//
+//void System::LogFetalImpl(const char* msg,...)
+//{
+//
+//	time_t tt=time(NULL);
+//	char buf1[256];
+//	strftime (buf1,256,"%Y-%m-%d %H:%M:%S ",localtime(&tt));
+//
+//	char buf2[1024];
+//	va_list arg;
+//	va_start(arg,msg);
+//	::vsnprintf(buf2,1024,msg,arg);
+//	va_end(arg);
+//
+//	if(fp_logfile!=NULL)
+//	{
+//        fprintf(fp_logfile,"%s fetal:%s\r\n",buf1,buf2);
+//        fflush(fp_logfile);
+//	}
+//	else
+//	{
+//        printf("%s fetal:%s\r\n",buf1,buf2);
+//	}
+//
+//	Exit(-1);
+//}
 
 
 
@@ -216,29 +240,123 @@ void System::DebugBreak()
 
 void System::Exit(int v)
 {
-	LogTrace("System::Exit(%d)",v);
+	System::LogTrace("System::Exit(%d)",v);
 	::exit(v);
 }
 
-void System::CheckError(const String& s)
+#ifdef _WIN32
+
+char* win_strerror(int ret)
+{
+	char* lpTStr(NULL);
+	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_FROM_SYSTEM,
+		NULL,
+		ret,
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(LPTSTR)&lpTStr,
+		0x100,
+		NULL);
+	return lpTStr;
+}
+
+#endif
+
+void System::CheckError(const String& msg)
 {
 #ifdef _WIN32
 
 	int ret=::GetLastError();
 	if(ret!=0)
 	{
-		LogTrace("%s failed with ret=%d",s,ret);
+		System::LogTrace("%s failed, code(%d): %s",msg,ret,win_strerror(ret));
 	}
 
 #else
 
-	int eno=errno;
-	if(eno!=0)
+	int ret=errno;
+	if(ret!=0)
 	{
-		LogTrace("%s failed: %s",s,strerror(eno));
+		System::LogTrace("%s failed, code(%d): %s",msg,ret,strerror(ret));
 	}
 
 #endif
+}
+
+
+extern AtomicInt32 g_tSpinConsole;
+
+class SystemLoggerData
+{
+public:
+
+	static const char* GetMsgLevel(int lv)
+	{
+		switch(lv)
+		{
+		case LOGLEVEL_DEBUG: return "debug";
+		case LOGLEVEL_ERROR: return "error";
+		case LOGLEVEL_TRACE: return "trace";
+		case LOGLEVEL_FETAL: return "fetal";
+		default: return "other";
+		}
+	}
+
+	void LogImplV(int lv,const char* msg,va_list arg)
+	{
+
+		time_t tt=time(NULL);
+		char buf2[1024];
+		char buf1[256];
+		strftime (buf1,256,"%Y-%m-%d %H:%M:%S ",localtime(&tt));
+
+		::vsnprintf(buf2,1024,msg,arg);
+
+		if(fp_logfile!=NULL)
+		{
+			LockGuard<AtomicInt32> lock1(*(AtomicInt32*)&spin);
+			fprintf(fp_logfile,"%s %s:%s\r\n",buf1,GetMsgLevel(lv),buf2);
+			fflush(fp_logfile);
+		}
+		else
+		{
+			LockGuard<AtomicInt32> lock1(g_tSpinConsole);
+			printf("%s %s:%s\r\n",buf1,GetMsgLevel(lv),buf2);
+		}
+
+		if(lv==LOGLEVEL_FETAL)
+		{
+			System::Exit(-1);
+		}
+	}
+
+	bool SetLogFile(const String& fn,bool app)
+	{
+		if(fp_logfile)
+		{
+			::fclose(fp_logfile);
+			fp_logfile=NULL;
+		}
+		fp_logfile=::fopen(fn.c_str(),app?"a":"w");
+		return fp_logfile!=NULL;
+	}
+
+	FILE* fp_logfile;
+	int32_t spin;
+}gSystelLoggerData;
+
+
+bool System::SetLogFile(const String& fn,bool app)
+{
+	return gSystelLoggerData.SetLogFile(fn,app);
+}
+
+
+void System::DoLogImpl(int lv,const char* msg,...)
+{
+	va_list arglist;
+	va_start(arglist,msg);
+	gSystelLoggerData.LogImplV(lv,msg,arglist);
+	va_end(arglist);
 }
 
 VHWD_LEAVE

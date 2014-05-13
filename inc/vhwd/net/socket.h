@@ -55,6 +55,7 @@ public:
 	void Ensure(int t=TCP);
 
 	bool Bind(const IPAddress& addr);
+	bool Bind(const String& ip,int port);
 
 	// server
 	bool Listen();

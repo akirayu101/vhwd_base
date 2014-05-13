@@ -5,7 +5,7 @@
 #include "vhwd/logging/logger.h"
 #include "vhwd/threading/thread.h"
 #include "vhwd/threading/thread_mutex.h"
-#include "vhwd/threading/lockguard.h"
+#include "vhwd/basic/lockguard.h"
 #include "vhwd/logging/logtarget.h"
 
 VHWD_ENTER
@@ -50,10 +50,10 @@ void TestMgr::AddTest(Test* t)
 }
 
 
-void TestMgr::Run(int argc,char** argv)
+void TestMgr::Run(int argc_,char** argv_)
 {
-	(void)&argc;
-	(void)&argv;
+	argc=argc_;
+	argv=argv_;
 
 	System::LogTrace("TestMgr::Run");
 

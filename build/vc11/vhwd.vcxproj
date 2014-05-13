@@ -139,9 +139,9 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>VHWD_BUILDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>VHWD_BUILDING;%(PreprocessorDefinitions);_DEBUG</PreprocessorDefinitions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader />
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
@@ -160,6 +160,9 @@
     </ResourceCompile>
     <Lib>
       <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>false</SuppressStartupBanner>
@@ -203,6 +206,7 @@
     </ResourceCompile>
     <Lib>
       <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>false</SuppressStartupBanner>
@@ -245,6 +249,7 @@
     </ResourceCompile>
     <Lib>
       <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>false</SuppressStartupBanner>
@@ -287,6 +292,7 @@
     </ResourceCompile>
     <Lib>
       <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>false</SuppressStartupBanner>
@@ -326,6 +332,7 @@
     </ResourceCompile>
     <Lib>
       <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>false</SuppressStartupBanner>
@@ -369,6 +376,7 @@
     </ResourceCompile>
     <Lib>
       <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>false</SuppressStartupBanner>
@@ -382,6 +390,7 @@
     <ClCompile Include="..\..\src\vhwd\basic\codecvt.cpp" />
     <ClCompile Include="..\..\src\vhwd\basic\console.cpp" />
     <ClCompile Include="..\..\src\vhwd\basic\exception.cpp" />
+    <ClCompile Include="..\..\src\vhwd\basic\file.cpp" />
     <ClCompile Include="..\..\src\vhwd\basic\language.cpp" />
     <ClCompile Include="..\..\src\vhwd\basic\object.cpp" />
     <ClCompile Include="..\..\src\vhwd\basic\object_data.cpp" />
@@ -390,15 +399,16 @@
     <ClCompile Include="..\..\src\vhwd\basic\string_impl.cpp" />
     <ClCompile Include="..\..\src\vhwd\basic\stringbuffer.cpp" />
     <ClCompile Include="..\..\src\vhwd\basic\system.cpp" />
+    <ClCompile Include="..\..\src\vhwd\collection\collection.cpp" />
     <ClCompile Include="..\..\src\vhwd\ipc\pipe.cpp" />
     <ClCompile Include="..\..\src\vhwd\ipc\shm.cpp" />
-    <ClCompile Include="..\..\src\vhwd\ipc\shm_queue.cpp" />
-    <ClCompile Include="..\..\src\vhwd\net\iocp_pool.cpp" />
-    <ClCompile Include="..\..\src\vhwd\net\iocp_session.cpp" />
+    <ClCompile Include="..\..\src\vhwd\net\overlapped.cpp" />
+    <ClCompile Include="..\..\src\vhwd\net\iocp1.cpp" />
+    <ClCompile Include="..\..\src\vhwd\net\session.cpp" />
+    <ClCompile Include="..\..\src\vhwd\net\session_tcp.cpp" />
     <ClCompile Include="..\..\src\vhwd\net\ipaddress.cpp" />
-    <ClCompile Include="..\..\src\vhwd\net\session_buffer.cpp" />
     <ClCompile Include="..\..\src\vhwd\net\session_client.cpp" />
-    <ClCompile Include="..\..\src\vhwd\net\session_dgram.cpp" />
+    <ClCompile Include="..\..\src\vhwd\net\session_udp.cpp" />
     <ClCompile Include="..\..\src\vhwd\net\session_server.cpp" />
     <ClCompile Include="..\..\src\vhwd\net\socket.cpp" />
     <ClCompile Include="..\..\src\vhwd\memory\allocator.cpp" />
@@ -412,11 +422,12 @@
     <ClCompile Include="..\..\src\vhwd\logging\log_target.cpp" />
     <ClCompile Include="..\..\src\vhwd\logging\logger.cpp" />
     <ClCompile Include="..\..\src\vhwd\serialization\serializer_buffer.cpp" />
+    <ClCompile Include="..\..\src\vhwd\threading\coroutine.cpp" />
     <ClCompile Include="..\..\src\vhwd\threading\thread.cpp" />
     <ClCompile Include="..\..\src\vhwd\threading\thread_impl.cpp" />
+    <ClCompile Include="..\..\src\vhwd\threading\thread_manager.cpp" />
     <ClCompile Include="..\..\src\vhwd\threading\thread_mutex.cpp" />
     <ClCompile Include="..\..\src\vhwd\threading\thread_pool.cpp" />
-    <ClCompile Include="..\..\src\vhwd\threading\thread_routine.cpp" />
     <ClCompile Include="..\..\src\vhwd\xml\xml_attribute.cpp" />
     <ClCompile Include="..\..\src\vhwd\xml\xml_document.cpp" />
     <ClCompile Include="..\..\src\vhwd\xml\xml_node.cpp" />
@@ -428,13 +439,21 @@
     <ClCompile Include="..\..\src\vhwd\testing\test_mgr.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\inc\vhwd\basic\file.h" />
     <ClInclude Include="..\..\inc\vhwd\collection.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\array.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\linear_buffer.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\lockfree_queue.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\ring_buffer.h" />
     <ClInclude Include="..\..\inc\vhwd\memory\allocator.h" />
     <ClInclude Include="..\..\inc\vhwd\memory\allocator_malloc.h" />
     <ClInclude Include="..\..\inc\vhwd\memory\allocator_mempool.h" />
+    <ClInclude Include="..\..\inc\vhwd\net\iocp1.h" />
+    <ClInclude Include="..\..\inc\vhwd\net\overlapped.h" />
     <ClInclude Include="..\..\inc\vhwd\serialization\serializer_buffer.h" />
+    <ClInclude Include="..\..\inc\vhwd\threading\coroutine.h" />
+    <ClInclude Include="..\..\inc\vhwd\threading\thread_manager.h" />
+    <ClInclude Include="..\..\inc\vhwd\xml\xml_base.h" />
     <ClInclude Include="..\..\src\vhwd\basic\string_impl.h" />
     <ClInclude Include="..\..\src\vhwd\net\socket_impl_detail.h" />
     <ClInclude Include="..\..\src\vhwd\net\socket_impl_linux.h" />
@@ -462,8 +481,8 @@
     <ClInclude Include="..\..\inc\vhwd\basic\codecvt.h" />
     <ClInclude Include="..\..\inc\vhwd\basic\console.h" />
     <ClInclude Include="..\..\inc\vhwd\basic\exception.h" />
-    <ClInclude Include="..\..\inc\vhwd\basic\factor.h" />
-    <ClInclude Include="..\..\inc\vhwd\basic\factor_detail.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic\functor.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic\functor_detail.h" />
     <ClInclude Include="..\..\inc\vhwd\basic\language.h" />
     <ClInclude Include="..\..\inc\vhwd\basic\object.h" />
     <ClInclude Include="..\..\inc\vhwd\basic\platform.h" />
@@ -476,7 +495,6 @@
     <ClInclude Include="..\..\inc\vhwd\xml\xml_attribute.h" />
     <ClInclude Include="..\..\inc\vhwd\xml\xml_document.h" />
     <ClInclude Include="..\..\inc\vhwd\xml\xml_node.h" />
-    <ClInclude Include="..\..\inc\vhwd\threading\lockguard.h" />
     <ClInclude Include="..\..\inc\vhwd\threading\thread.h" />
     <ClInclude Include="..\..\inc\vhwd\threading\thread_cond.h" />
     <ClInclude Include="..\..\inc\vhwd\threading\thread_event.h" />
@@ -493,10 +511,7 @@
     <ClInclude Include="..\..\inc\vhwd\serialization\serializer_stream.h" />
     <ClInclude Include="..\..\inc\vhwd\ipc\pipe.h" />
     <ClInclude Include="..\..\inc\vhwd\ipc\shm.h" />
-    <ClInclude Include="..\..\inc\vhwd\ipc\shm_queue.h" />
-    <ClInclude Include="..\..\inc\vhwd\net\iocp_periodata.h" />
-    <ClInclude Include="..\..\inc\vhwd\net\iocp_pool.h" />
-    <ClInclude Include="..\..\inc\vhwd\net\iocp_session.h" />
+    <ClInclude Include="..\..\inc\vhwd\net\session.h" />
     <ClInclude Include="..\..\inc\vhwd\net\ipaddress.h" />
     <ClInclude Include="..\..\inc\vhwd\net\socket.h" />
     <ClInclude Include="..\..\inc\vhwd\memory\mempool.h" />
@@ -507,6 +522,18 @@
     <ClInclude Include="..\..\inc\vhwd\collection\indexer_map.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\indexer_set.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\intrusive_list.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\src\vhwd\threading\coroutine_context_msvc_x64.asm">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ml64 /c /DX64 %(Identity)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MemDebug|x64'">%(Filename).obj;</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).obj;</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).obj;</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MemDebug|x64'">ml64 /c /DX64 %(Identity)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ml64 /c /DX64 %(Identity)</Command>
+    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,8 +2,7 @@
 #include "vhwd/memory/mempool.h"
 #include "vhwd/threading/thread_spin.h"
 #include "vhwd/threading/thread.h"
-#include <vector>
-#include <cstdlib>
+#include "vhwd/basic/lockguard.h"
 
 
 VHWD_ENTER
@@ -90,8 +89,10 @@ public:
 	size_t nElemCount;
 	size_t nElemSize;
 	size_t nPageSize;
-	//size_t nPageSpan;
-	SpinLock tSpin;
+
+	AtomicInt32 tSpin;
+
+	typedef LockGuard<AtomicInt32,LockPolicyYield<AtomicInt32> > LockType;
 
 };
 

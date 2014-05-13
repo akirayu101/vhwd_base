@@ -1,5 +1,5 @@
 #include "vhwd/threading/thread.h"
-#include "vhwd/threading/lockguard.h"
+#include "vhwd/basic/lockguard.h"
 #include "vhwd/threading/thread_pool.h"
 #include "thread_impl.h"
 
@@ -13,20 +13,16 @@ void Thread::_init()
 	m_nFlags=0;
 }
 
-Thread::Thread():pool(ThreadPool::current())
+Thread::Thread()
 {
 	_init();
 }
 
-Thread::Thread(const Thread& o):pool(o.pool)
+Thread::Thread(const Thread& o)
 {
 	_init();
 }
 
-Thread::Thread(ThreadPool& p):pool(p)
-{
-	_init();
-}
 
 Thread::~Thread()
 {
@@ -153,35 +149,31 @@ void Thread::on_exception()
 	}
 }
 
-ThreadMulti::ThreadMulti():Thread(ThreadPool::current())
+ThreadMulti::ThreadMulti()
 {
 
 }
 
-ThreadMulti::ThreadMulti(ThreadPool& p):Thread(p)
-{
-
-}
 
 bool ThreadEx::activate(InvokerGroup& g)
 {
-	return ThreadImpl::activate(pool,*this,g);
+	return ThreadImpl::activate(*this,g);
 }
 
 
 bool Thread::activate()
 {
-	return ThreadImpl::activate(pool,*this,1);
+	return ThreadImpl::activate(*this,1);
 }
 
 bool ThreadMulti::activate(int n)
 {
-	return ThreadImpl::activate(pool,*this,n);
+	return ThreadImpl::activate(*this,n);
 }
 
 bool ThreadMulti::activate()
 {
-	return ThreadImpl::activate(pool,*this,1);
+	return ThreadImpl::activate(*this,1);
 }
 
 bool ThreadCustom::activate()
@@ -263,3 +255,4 @@ void Thread::yield()
 
 
 VHWD_LEAVE
+

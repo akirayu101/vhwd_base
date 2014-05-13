@@ -1,3 +1,10 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_BASIC_CONSOLE__
 #define __H_VHWD_BASIC_CONSOLE__
 
@@ -24,8 +31,8 @@ public:
 	static void Write(const String& s);
 	static void WriteLine(const String& s);
 
-	static void ColoredWrite(int color,const String& s);
-	static void ColoredWriteLine(int color,const String& s);
+	static void Write(const String& s,int color);
+	static void WriteLine(const String& s,int color);
 
 	static String ReadLine();
 

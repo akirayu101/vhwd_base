@@ -1,148 +1,110 @@
 #include "vhwd/xml/xml_node.h"
 #include "vhwd/logging/logger.h"
-#include "vhwd/memory/mempool.h"
+#include "vhwd/serialization/serializer.h"
+
 #include "xml_parser.h"
 
 VHWD_ENTER
 
 
-XmlNode::XmlNode()
-{
-
-}
 
 XmlNode::XmlNode(const XmlNode& o)
-	:m_sName(o.m_sName)
-	,m_sContent(o.m_sContent)
-	,m_aAttribute(o.m_aAttribute)
+	:XmlBase(o)
+	,m_nNodeType(o.m_nNodeType)
 {
 
 }
 
 XmlNode::XmlNode(const String& tag,const String& val)
-	:m_sName(tag)
-	,m_sContent(val)
+	:XmlBase(tag,val)
+	,m_nNodeType(XMLNODE_ELEMENT)
 {
 
-}
-
-void XmlNode::InsertChild(XmlNode* p)
-{
-	if(!p) return;
-	p->m_pNextSibling.reset(m_pFirstChild.get());
-	m_pFirstChild.reset(p);
-}
-
-void XmlNode::AppendChild(XmlNode* p)
-{
-	if(!m_pFirstChild)
-	{
-		m_pFirstChild.reset(p);
-	}
-	else
-	{
-		XmlNode* pLast=m_pFirstChild.get();
-		while(pLast->m_pNextSibling)
-		{
-			pLast=pLast->m_pNextSibling.get();
-		}
-		pLast->m_pNextSibling.reset(p);
-	}
-}
-
-bool XmlNode::RemoveChild(XmlNode* p)
-{
-	if(!p) return false;
-	if(p==m_pFirstChild.get())
-	{
-		m_pFirstChild.reset(m_pFirstChild->GetNext());
-		delete p;
-		return true;
-	}
-
-	XmlNode* prev=m_pFirstChild.get();
-	while(prev && prev->GetNext()!=p)
-	{
-		prev=prev->GetNext();
-	}
-
-	if(prev)
-	{
-		prev->m_pNextSibling.reset(p->GetNext());
-		delete p;
-		return true;
-	}
-
-	return false;
-
-}
-
-void XmlNode::DeleteChildren()
-{
-	while(m_pFirstChild)
-	{
-		XmlNode* g=m_pFirstChild.get();
-		m_pFirstChild.reset(m_pFirstChild->GetNext());
-		delete g;
-	}
-}
-
-XmlAttribute& XmlNode::GetAttribute(const String& n)
-{
-	for(size_t i=0;i<m_aAttribute.size();i++)
-	{
-		if(m_aAttribute[i].GetName()==n)
-		{
-			return m_aAttribute[i];
-		}
-	}
-
-	return AddAttribute(n,"");
-
-}
-
-bool XmlNode::GetAttribute(const String& n,String* v)
-{
-	if(!v) return false;
-	for(size_t i=0;i<m_aAttribute.size();i++)
-	{
-		if(m_aAttribute[i].GetName()==n)
-		{
-			*v=m_aAttribute[i].GetValue();
-			return true;
-		}
-	}
-	return false;
 }
 
 XmlNode::~XmlNode()
 {		
 	DeleteChildren();
+	DeleteAttributes();
 }
 
-XmlAttribute& XmlNode::AddAttribute(const String& v1,const String& v2)
+void XmlNode::EnsureChildrenParent()
 {
-	m_aAttribute.push_back(XmlAttribute(v1,v2));
-	return m_aAttribute.back();
-}
-
-void XmlNode::DeleteAttribute(const String& n)
-{
-	size_t j=m_aAttribute.size();
-
-	for(size_t i=0;i<j;)
+	for(XmlNode* pnode=GetFirstChild();pnode!=NULL;pnode=pnode->GetNext())
 	{
-		if(m_aAttribute[i].GetName()==n)
+		pnode->SetParent(this);
+	}
+}
+
+void XmlNode::swap(XmlNode& o)
+{
+	m_sName.swap(o.m_sName);
+	m_sValue.swap(o.m_sValue);
+	std::swap(m_nNodeType,o.m_nNodeType);
+	listNodes.swap(o.listNodes);
+	listAttrs.swap(o.listAttrs);
+	EnsureChildrenParent();
+	o.EnsureChildrenParent();	
+}
+
+bool XmlNode::Serialize(Serializer& ar)
+{
+	ar & m_sName & m_sValue & m_nNodeType;
+
+	int32_t nChilds=listNodes.size();
+	ar & nChilds;
+	if(ar.is_reader())
+	{
+		DeleteChildren();
+		for(int32_t i=0;i<nChilds;i++)
 		{
-			std::swap(m_aAttribute[i],m_aAttribute[--j]);
+			AutoPtrT<XmlNode> pnode(new XmlNode);
+			if(!pnode->Serialize(ar))
+			{
+				return false;
+			}
+			AppendChild(pnode.release());
 		}
-		else
+
+	}
+	else
+	{
+		for(XmlNode* pnode=GetFirstChild();pnode!=NULL;pnode=pnode->GetNext())
 		{
-			i++;
-		}
+			if(!pnode->Serialize(ar))
+			{
+				return false;
+			}
+		}		
 	}
 
-	m_aAttribute.resize(j);
+	int32_t nAttrs=listAttrs.size();
+	ar & nAttrs;
+	if(ar.is_reader())
+	{
+		DeleteAttributes();
+		for(int32_t i=0;i<nAttrs;i++)
+		{
+			AutoPtrT<XmlAttribute> pattr(new XmlAttribute);
+			if(!pattr->Serialize(ar))
+			{
+				return false;
+			}
+			AppendAttribute(pattr.release());
+		}
+	}
+	else
+	{
+		for(XmlAttribute* pattr=GetFirstAttribute();pattr!=NULL;pattr=pattr->GetNext())
+		{
+			if(!pattr->Serialize(ar))
+			{
+				return false;
+			}
+		}	
+	}
+
+	return ar.good();
 }
 
 

@@ -4,6 +4,8 @@
 #include "vhwd/basic/system.h"
 #include "vhwd/collection/indexer_map.h"
 #include "vhwd/ipc/shm.h"
+#include "vhwd/collection/linear_buffer.h"
+#include "vhwd/basic/pointer.h"
 #include <fstream>
 
 VHWD_ENTER
@@ -31,21 +33,12 @@ public:
 	}
 };
 
-class LanguageImpl
+
+class LangData : public ObjectData
 {
 public:
-
-
-	StringBuffer<char> vContents;
-	indexer_map<const char*,const char*,const_char_pointer_map> mapStrings;
-
-
-	inline const String& Translate(const String& msg) const
-	{
-		int id=mapStrings.find(msg.c_str());
-		if(id<0) return msg;
-		return *(String*)&mapStrings.get(id);
-	}
+	String m_sName;
+	StringBuffer<char> m_aCont;
 
 
 	void SkipWhite(const char* p1,size_t& i)
@@ -82,54 +75,23 @@ public:
 		return true;
 	}
 
-	bool Init(const String& file)
-	{
-
-		if(file.size()>3 && file.substr(file.size()-3,3)!=".po")
-		{
-			return LoadMo(file);
-		}
-		else
-		{
-			return LoadPo(file);
-		}
-	}
 
 	bool LoadPo(const String& file)
 	{
 
-		SharedMem shm;
-		if(!shm.OpenFile(file,0,SharedMem::FLAG_RD))
-		{
-			return false;
-		}
-
-		size_t sz=shm.size();
-		char* pa=shm.addr();
-		if((unsigned char)pa[0]==0xEF&&(unsigned char)pa[1]==0xBB&&(unsigned char)pa[2]==0xBF)
-		{
-			pa+=3;
-			sz-=3;
-		}
+		m_sName=file;
+		m_aCont.clear();
 
 		StringBuffer<char> vt;
-
-		if(!String::utf8_to_ansi(vt,pa,sz))
+		if(!vt.load(file,FILE_TEXT))
 		{
-			System::LogTrace("LoadPo: utf8_to_ansi failed!");
 			return false;
 		}
 
-		shm.Close();
-		mapStrings.clear();
-		vContents.clear();
-
-		sz=vt.size();
+		size_t sz=vt.size();
 		vt.insert(vt.end(),"\n\"\0",3);
 
-		StringBuffer<unsigned> vp;
-
-		const char* p1=&vt[0];
+		const char* p1=vt.data();
 		String tmp1,tmp2;
 
 		for(size_t i=0;i<sz;)
@@ -155,56 +117,70 @@ public:
 				continue;
 			}
 
-			vp.push_back(vContents.size());
-			vContents.append(tmp1.c_str(),tmp1.size()+1);
-			vp.push_back(vContents.size());
-			vContents.append(tmp2.c_str(),tmp2.size()+1);
-		}
-
-		mapStrings.set_capacity(vp.size()/2);
-		for(size_t i=0;i<vp.size();i+=2)
-		{
-			mapStrings[&vContents[vp[i]]]=&vContents[vp[i+1]];
+			m_aCont.append(tmp1.c_str(),tmp1.size()+1);
+			m_aCont.append(tmp2.c_str(),tmp2.size()+1);
 		}
 
 		return true;
 	}
 
-
 	bool LoadMo(const String& file)
 	{
-		std::ifstream fs;
-		fs.open(file.c_str(),std::ios::in|std::ios::binary);
-		if(!fs.good())
+		m_sName=file;
+		return m_aCont.load(file);
+	}
+};
+
+
+class LanguageImpl
+{
+public:
+
+	arr_1t<DataPtrT<LangData> > aDatas;
+
+	indexer_map<const char*,const char*,const_char_pointer_map> mapStrings;
+
+	inline const String& Translate(const String& msg) const
+	{
+		int id=mapStrings.find(msg.c_str());
+		if(id<0) return msg;
+		return *(String*)&mapStrings.get(id).second;
+	}
+
+
+	bool AddCatalog(const String& file)
+	{
+		DataPtrT<LangData> pData(new LangData);
+
+		if(file.size()>3 && file.substr(file.size()-3,3)!=".po")
 		{
-			System::LogTrace("Cannot open file %s for reading",file);
-			return false;
+			if(!pData->LoadMo(file))
+			{
+				return false;
+			}
+		}
+		else
+		{
+			if(!pData->LoadPo(file))
+			{
+				return false;
+			}
 		}
 
-		fs.seekg(0,std::ios::end);
-		size_t len=fs.tellg();
-		fs.seekg(0,std::ios::beg);
+		return AddCatalog(pData);
+	}
 
-		StringBuffer<char> vutf8;
-		vutf8.resize(len);
-		fs.read(&vutf8[0],len);
-		mapStrings.clear();
 
-		StringBuffer<char> vansi;
-		if(!String::utf8_to_ansi(vansi,vutf8.data(),vutf8.size()))
-		{
-			System::LogTrace("LoadMo: utf8_to_ansi failed!");
-			return false;
-		}
 
-		mapStrings.clear();
-		vContents=vansi;
+	bool AddCatalog(DataPtrT<LangData>& pData)
+	{
+		StringBuffer<char>& aCont(pData->m_aCont);
 
 		StringBuffer<unsigned> vp;
 		unsigned j=0;
-		for(unsigned i=0;i<vContents.size();i++)
+		for(unsigned i=0;i<aCont.size();i++)
 		{
-			if(vContents[i]!='\0')
+			if(aCont[i]!='\0')
 			{
 				continue;
 			}
@@ -215,50 +191,44 @@ public:
 		mapStrings.set_capacity(vp.size()/2);
 		for(size_t i=0;i<vp.size();i+=2)
 		{
-			mapStrings[&vContents[vp[i]]]=&vContents[vp[i+1]];
+			mapStrings[&aCont[vp[i]]]=&aCont[vp[i+1]];
 		}
-		return true;
 
+		aDatas.push_back(pData);
+		return true;
 	}
+
+
 
 	bool SaveMo(const String& file)
 	{
-		std::ofstream fs;
-		fs.open(file.c_str(),std::ios::out|std::ios::binary);
-		if(!fs.good())
+		StringBuffer<char> bt;
+		size_t sz=mapStrings.size();
+		for(size_t i=0;i<sz;i++)
 		{
-			System::LogTrace("Cannot open file %s for writing",file);
+			const char* k=mapStrings.get(i).first;
+			const char* v=mapStrings.get(i).second;
+			bt.append(k,::strlen(k)+1);
+			bt.append(v,::strlen(v)+1);
+		}
+
+		if(!String::ansi_to_utf8(bt,bt))
+		{
 			return false;
 		}
 
-		if(vContents.empty())
-		{
-			return false;
-		}
-
-		StringBuffer<char> va;
-
-		if(!String::ansi_to_utf8(va,vContents.data(),vContents.size()))
-		{
-			System::LogTrace("SaveMo: ansi_to_utf8 failed!");
-			return false;
-		}
-
-		fs.write(&va[0],va.size());
-
-		fs.close();
-		return fs.good();
+		return bt.save(file);
 	}
 
 };
 
-bool Language::Init(const String& file)
+bool Language::AddCatalog(const String& file)
 {
 	if(!impl)
 	{
 		impl=new LanguageImpl;
 	}
-	return ((LanguageImpl*)impl)->Init(file);
+	return ((LanguageImpl*)impl)->AddCatalog(file);
 }
 
 bool Language::Save(const String& file)

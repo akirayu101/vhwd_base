@@ -2,6 +2,6 @@
 
 VHWD_ENTER
 
-char* gpEmptyString=(char*)"\0\0\0";
+StringPool::char_type* StringPool::gpEmptyString=(char_type*)"\0\0\0";
 
 VHWD_LEAVE

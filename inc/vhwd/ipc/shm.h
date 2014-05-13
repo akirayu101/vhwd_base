@@ -1,9 +1,17 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_IPC_SHM__
 #define __H_VHWD_IPC_SHM__
 
 #include "vhwd/config.h"
 #include "vhwd/basic/platform.h"
 #include "vhwd/basic/string.h"
+#include "vhwd/basic/file.h"
 
 VHWD_ENTER
 
@@ -25,7 +33,7 @@ public:
 };
 
 
-class VHWD_DLLIMPEXP SharedMem : public NonCopyable
+class VHWD_DLLIMPEXP SharedMem : private NonCopyable
 {
 public:
 
@@ -50,15 +58,15 @@ public:
 	const char* addr() const {return impl.m_pAddr;}
 
 	// Create/Open shared memory with given name and given size.
-	bool Create(const String& name_,size_t size_,int flag_=FLAG_RW);
-	bool Open(const String& name_,size_t size_,int flag_=FLAG_RW);
+	bool Create(const String& name_,size_t size_,int flag_=FileAccess::FLAG_RW);
+	bool Open(const String& name_,size_t size_,int flag_=FileAccess::FLAG_RW);
 
 	// mapping a file to memory, zero size_ means using the real file size, if not zero, the file will be truncated to size_.
 	// if need to create a new file, size_ must be specified and FLAG_CR flag must be provided.
-	bool OpenFile(const String& file_,size_t size_=0,int flag_=FLAG_RW);
+	bool OpenFile(const String& file_,size_t size_=0,int flag_=FileAccess::FLAG_RW);
 
 	// just allocate memory, not mapping to any file.
-	bool Alloc(size_t size,int flag_=FLAG_RW);
+	bool Alloc(size_t size,int flag_=FileAccess::FLAG_RW);
 
 	// Close shared memory.
 	void Close();

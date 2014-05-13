@@ -1,3 +1,10 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_THREAD__
 #define __H_VHWD_THREAD__
 
@@ -5,26 +12,23 @@
 #include "vhwd/threading/thread_mutex.h"
 #include "vhwd/threading/thread_cond.h"
 #include "vhwd/collection/array.h"
+#include "vhwd/threading/thread_manager.h"
 #include "vhwd/collection/lockfree_queue.h"
-#include "vhwd/basic/factor.h"
-
-
+#include "vhwd/basic/functor.h"
 
 VHWD_ENTER
 
-class VHWD_DLLIMPEXP ThreadPool;
+class VHWD_DLLIMPEXP ThreadManager;
 class VHWD_DLLIMPEXP Logger;
-class VHWD_DLLIMPEXP ThreadPool;
 class VHWD_DLLIMPEXP ThreadImpl;
 
 class VHWD_DLLIMPEXP Thread : public Object
 {
 public:
-	friend class ThreadPool;
+	friend class ThreadManager;
 	friend class ThreadImpl;
 
 	Thread();
-	Thread(ThreadPool& p);
 
 	// Copy construct and assign operator, NOTE these methods do NOT really copy any running threads.
 	Thread(const Thread& o);
@@ -125,7 +129,6 @@ protected:
 	Condition m_cond_state_changed;
 	Condition m_cond_thrd_empty;
 
-	ThreadPool& pool;
 	BitFlags m_nFlags;
 
 	arr_1t<int> m_aBindCpu;
@@ -139,7 +142,7 @@ class VHWD_DLLIMPEXP ThreadMulti : public Thread
 public:
 
 	ThreadMulti();
-	ThreadMulti(ThreadPool& p);
+
 
 	// Start one thread calling entry point
 	virtual bool activate();
@@ -153,9 +156,8 @@ class VHWD_DLLIMPEXP ThreadEx : public Thread
 public:
 
 	ThreadEx(){}
-	ThreadEx(ThreadPool& p):Thread(p){}
 
-	typedef Factor<void()> factor_type;	
+	typedef Functor<void()> factor_type;	
 
 	// A group of thread entry point
 	class InvokerGroup
@@ -175,14 +177,14 @@ public:
 		template<typename T>
 		void append(T func)
 		{
-			factor_type fac;fac.reset(func);
+			factor_type fac;fac.bind(func);
 			m_aInvokers.push_back(fac);
 		}
 
 		template<typename T,typename P1>
 		void append(T func,P1 p1)
 		{
-			factor_type fac;fac.reset(func,p1);
+			factor_type fac;fac.bind(func,p1);
 			m_aInvokers.push_back(fac);		
 		}
 	};
@@ -218,7 +220,6 @@ class VHWD_DLLIMPEXP ThreadCustom : public ThreadEx
 public:
 	typedef ThreadEx basetype;
 	ThreadCustom(){}
-	ThreadCustom(ThreadPool& p):basetype(p){}
 
 	// Start a group of threads calling entry points defined in m_aThreads.
 	virtual bool activate();
@@ -228,40 +229,25 @@ protected:
 };
 
 
-class VHWD_DLLIMPEXP ThreadRoutine : public ThreadMulti
+template<typename T>
+class LockPolicyYield
 {
 public:
-	typedef ThreadMulti basetype;
 
-	// bind function to ThreadRoutine, return slot_index if success, otherwise return -1;
-	// Factor return value means: 0 do nothing, -1 call clear(myslot), other call sigq(return_value)
-	int bind(Factor<int()> f);	
+	static inline void lock(T& mtx)
+	{
+		while(mtx.exchange(1)!=0)
+		{
+			Thread::yield();
+		}
+	}
 
-	// unbind from ThreadRoutine, slot must be the return value of bind.
-	void clear(int32_t slot);
-
-	// signal slot to work
-	void sigq(int32_t slot);
-
-	static ThreadRoutine& current();
-	
-	ThreadRoutine();
-
-protected:
-
-	void reset(int qmax);
-	void svc();
-
-
-	typedef LockFreeQueue<int32_t> LFQueue;
-
-	LFQueue m_lfqSignals;
-	arr_1t<Factor<int()> > m_aFunctions;
-
+	static inline void unlock(T& mtx)
+	{
+		wassert(mtx.get()==1);
+		mtx.store(0);
+	}
 };
-
-
-
 
 VHWD_LEAVE
 

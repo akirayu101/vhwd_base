@@ -22,7 +22,7 @@ TEST_DEFINE(TEST_Shm)
 
 	// open the file and read the text
 	TEST_ASSERT(sm2.OpenFile("shm_sample.txt",0,SharedMem::FLAG_RD));
-	if(sm2.addr())
+	if(sm1.addr() && sm2.addr())
 	{
 		TEST_ASSERT(strcmp(sm2.addr(),filetext.c_str())==0);
 	}

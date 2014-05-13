@@ -1,3 +1,10 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_INDEXER_SET__
 #define __H_VHWD_INDEXER_SET__
 
@@ -22,7 +29,7 @@ public:
 
 	index_type find(const key_type& v)
 	{
-		return impl.get_idx_by_key(v);
+		return impl.find(v);
 	}
 
 	void clear()
@@ -37,7 +44,7 @@ public:
 
 	const key_type& get(index_type n)
 	{
-		return impl.get_val_by_idx(n);
+		return impl.get_pair_by_idx(n);
 	}
 
 	size_t size() const {return impl.size();}

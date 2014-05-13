@@ -7,16 +7,19 @@ VHWD_ENTER
 template<typename A>
 void serial_helper_func<A,String>::g(SerializerReader &ar,type &val)
 {
-	arr_1t<char> vect;
-	ar >> vect;		
-	val.assign(vect.data(),vect.size());
+	arr_1t<char> vect;ar >> vect;
+	val=String::utf8_to_ansi(vect.data(),vect.size());
+	//val.assign(vect.data(),vect.size());
 }
 
 template<typename A>
 void serial_helper_func<A,String>::g(SerializerWriter &ar,type &val)
 {
-	const char *s=val.c_str();
-	int64_t _size=(int64_t)val.size();
+	String utf8=String::ansi_to_utf8(val);
+	//String& utf8(val);
+
+	const char *s=utf8.c_str();
+	int64_t _size=(int64_t)utf8.size();
 	ar << _size;
 	if(_size>0)
 	{

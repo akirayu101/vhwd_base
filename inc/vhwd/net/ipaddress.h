@@ -21,10 +21,10 @@ public:
 
 	IPAddress();
 	IPAddress(const IPAddress&);
-	const IPAddress& operator=(const IPAddress& o);
-
 	IPAddress(const String& ip,int port);
-	~IPAddress();
+	~IPAddress();	
+
+	const IPAddress& operator=(const IPAddress& o);
 
 	void service(const String& addr,int port);
 
@@ -47,8 +47,9 @@ public:
 	operator int*(){return sz_ptr();}
 
 private:
-    struct sockaddr_in* pimpl;
-	int nsize;
+	void ensure() const;
+    mutable struct sockaddr_in* pimpl;
+	mutable int nsize;
 };
 
 VHWD_LEAVE

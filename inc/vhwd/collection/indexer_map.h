@@ -1,3 +1,10 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_INDEXER_MAP__
 #define __H_VHWD_INDEXER_MAP__
 
@@ -18,12 +25,12 @@ public:
 
 	value_type& operator[](const key_type& k)
 	{
-		return impl.get_val_by_key(k);
+		return P::value(impl.get_pair_by_key(k));
 	}
 
 	const value_type& operator[](const key_type& k) const
 	{
-		return impl.get_val_by_key(k);
+		return P::value(impl.get_pair_by_key(k));
 	}
 
 	index_type insert(const key_type& k,const value_type& v)
@@ -43,7 +50,7 @@ public:
 
 	index_type find(const key_type& v) const
 	{
-		return impl.get_idx_by_key(v);
+		return impl.find(v);
 	}
 
 	const pair_type& get(index_type n) const

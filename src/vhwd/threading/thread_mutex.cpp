@@ -1,7 +1,7 @@
 
 #include "vhwd/threading/thread_mutex.h"
 #include "vhwd/threading/thread_event.h"
-#include "vhwd/threading/lockguard.h"
+#include "vhwd/basic/lockguard.h"
 #include "thread_impl_detail.h"
 
 VHWD_ENTER

@@ -1,3 +1,10 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_COLLECTION_INTRUSIVE_LIST__
 #define __H_VHWD_COLLECTION_INTRUSIVE_LIST__
 
@@ -10,19 +17,20 @@ template<typename T>
 class policy_list_next
 {
 public:
-	static T* GetNext(T* node)
+
+	static T* GetNext(T* pnode)
 	{
-		return node->next;
+		return pnode->next;
 	}
 
-	static void SetNext(T* node, T* next)
+	static void SetNext(T* pnode, T* next)
 	{
-		node->next=next;
+		pnode->next=next;
 	}
 
-	static void DeleteNode(T* node)
+	static void DeleteNode(T* pnode)
 	{
-		delete node;
+		delete pnode;
 	}
 };
 
@@ -57,39 +65,106 @@ public:
 
 	bool empty() const
 	{
-		return m_nSize==0;
+		return m_pHead==NULL;
 	}
 
-	void append(T *node)
+	bool remove(pointer p)
 	{
-		wassert(node!=NULL);
+		if(!m_pHead) return false;
+		if(m_pHead==p)
+		{
+			m_pHead=P::GetNext(m_pHead);
+			P::SetNext(p,NULL);
+			P::DeleteNode(p);
+			m_nSize--;
+			return true;
+		}
+		pointer prev=m_pHead;
+		while(prev)
+		{
+			pointer temp=P::GetNext(prev);
+			if(temp==p)
+			{
+				P::SetNext(prev,P::GetNext(p));
+				P::DeleteNode(p);
+				m_nSize--;
+				return true;
+			}
+			prev=temp;
+		}
+
+		return false;
+	}
+
+	bool detach(pointer p)
+	{
+		if(!m_pHead) return false;
+		if(m_pHead==p)
+		{
+			m_pHead=P::GetNext(m_pHead);
+			P::SetNext(p,NULL);
+			m_nSize--;
+			return true;
+		}
+		pointer prev=m_pHead;
+		while(prev)
+		{
+			pointer temp=P::GetNext(prev);
+			if(temp==p)
+			{
+				P::SetNext(prev,P::GetNext(p));
+				m_nSize--;
+				return true;
+			}
+			prev=temp;
+		}
+
+		return false;
+	}
+
+	void append(pointer pnode)
+	{
+		wassert(pnode!=NULL);
 		if(m_pTail==NULL)
 		{
-			m_pHead=m_pTail=node;
+			m_pHead=m_pTail=pnode;
 			m_nSize=1;
 		}
 		else
 		{
-			P::SetNext(m_pTail,node);
-			m_pTail=node;
+			P::SetNext(m_pTail,pnode);
+			m_pTail=pnode;
 			m_nSize++;
 		}
 	}
 
-	void insert(T *node)
+	void insert(pointer pnode)
 	{
-		wassert(node!=NULL);
+		wassert(pnode!=NULL);
 		if(m_pHead==NULL)
 		{
-			m_pHead=m_pTail=node;
+			m_pHead=m_pTail=pnode;
 			m_nSize=1;
 		}
 		else
 		{
-			P::SetNext(node,m_pHead);
-			m_pHead=node;
+			P::SetNext(pnode,m_pHead);
+			m_pHead=pnode;
 			m_nSize++;
 		}
+	}
+
+	pointer pop_front()
+	{
+		if(!m_pHead) return NULL;
+		pointer q=m_pHead;
+		m_pHead=P::GetNext(q);
+		if(!m_pHead)
+		{
+			m_pTail=NULL;
+		}
+		m_nSize--;
+		return q;
 	}
 
 	size_t size() const
@@ -202,7 +277,7 @@ public:
 		std::swap(m_nSize,o.m_nSize);
 	}
 
-private:
+protected:
 	pointer m_pHead;
 	pointer m_pTail;
 	size_t m_nSize;

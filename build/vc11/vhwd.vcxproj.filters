@@ -70,6 +70,9 @@
     <Filter Include="inc\vhwd\collection">
       <UniqueIdentifier>{d60ddb0a-34da-4cc4-8e04-9d51b2129afe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\vhwd\collection">
+      <UniqueIdentifier>{6fde97e0-6df7-4652-96d4-e88402da27af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\vhwd\basic\atomic.cpp">
@@ -123,25 +126,10 @@
     <ClCompile Include="..\..\src\vhwd\ipc\shm.cpp">
       <Filter>src\vhwd\ipc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\vhwd\ipc\shm_queue.cpp">
-      <Filter>src\vhwd\ipc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\vhwd\net\iocp_pool.cpp">
-      <Filter>src\vhwd\net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\vhwd\net\iocp_session.cpp">
-      <Filter>src\vhwd\net</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\vhwd\net\ipaddress.cpp">
       <Filter>src\vhwd\net</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\vhwd\net\session_buffer.cpp">
-      <Filter>src\vhwd\net</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\vhwd\net\session_client.cpp">
-      <Filter>src\vhwd\net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\vhwd\net\session_dgram.cpp">
       <Filter>src\vhwd\net</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\vhwd\net\session_server.cpp">
@@ -222,7 +210,31 @@
     <ClCompile Include="..\..\src\vhwd\serialization\serializer_buffer.cpp">
       <Filter>src\vhwd\serialization</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\vhwd\threading\thread_routine.cpp">
+    <ClCompile Include="..\..\src\vhwd\net\session_udp.cpp">
+      <Filter>src\vhwd\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\net\session_tcp.cpp">
+      <Filter>src\vhwd\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\net\iocp1.cpp">
+      <Filter>src\vhwd\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\net\session.cpp">
+      <Filter>src\vhwd\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\net\overlapped.cpp">
+      <Filter>src\vhwd\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\collection\collection.cpp">
+      <Filter>src\vhwd\collection</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\basic\file.cpp">
+      <Filter>src\vhwd\basic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\threading\coroutine.cpp">
+      <Filter>src\vhwd\threading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\threading\thread_manager.cpp">
       <Filter>src\vhwd\threading</Filter>
     </ClCompile>
   </ItemGroup>
@@ -308,12 +320,6 @@
     <ClInclude Include="..\..\inc\vhwd\basic\exception.h">
       <Filter>inc\vhwd\basic</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\inc\vhwd\basic\factor.h">
-      <Filter>inc\vhwd\basic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\inc\vhwd\basic\factor_detail.h">
-      <Filter>inc\vhwd\basic</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\inc\vhwd\basic\language.h">
       <Filter>inc\vhwd\basic</Filter>
     </ClInclude>
@@ -349,9 +355,6 @@
     </ClInclude>
     <ClInclude Include="..\..\inc\vhwd\xml\xml_node.h">
       <Filter>inc\vhwd\xml</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\inc\vhwd\threading\lockguard.h">
-      <Filter>inc\vhwd\threading</Filter>
     </ClInclude>
     <ClInclude Include="..\..\inc\vhwd\threading\thread.h">
       <Filter>inc\vhwd\threading</Filter>
@@ -401,21 +404,6 @@
     <ClInclude Include="..\..\inc\vhwd\ipc\shm.h">
       <Filter>inc\vhwd\ipc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\inc\vhwd\ipc\shm_queue.h">
-      <Filter>inc\vhwd\ipc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\inc\vhwd\net\iocp_periodata.h">
-      <Filter>inc\vhwd\net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\inc\vhwd\net\iocp_pool.h">
-      <Filter>inc\vhwd\net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\inc\vhwd\net\iocp_session.h">
-      <Filter>inc\vhwd\net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\inc\vhwd\net\ipaddress.h">
-      <Filter>inc\vhwd\net</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\inc\vhwd\net\socket.h">
       <Filter>inc\vhwd\net</Filter>
     </ClInclude>
@@ -464,5 +452,46 @@
     <ClInclude Include="..\..\inc\vhwd\collection.h">
       <Filter>inc\vhwd</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\ring_buffer.h">
+      <Filter>inc\vhwd\collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\net\session.h">
+      <Filter>inc\vhwd\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\net\iocp1.h">
+      <Filter>inc\vhwd\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\net\overlapped.h">
+      <Filter>inc\vhwd\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\net\ipaddress.h">
+      <Filter>inc\vhwd\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\linear_buffer.h">
+      <Filter>inc\vhwd\collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\functor.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\functor_detail.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\file.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\xml\xml_base.h">
+      <Filter>inc\vhwd\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\threading\coroutine.h">
+      <Filter>inc\vhwd\threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\threading\thread_manager.h">
+      <Filter>inc\vhwd\threading</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\src\vhwd\threading\coroutine_context_msvc_x64.asm">
+      <Filter>src\vhwd\threading</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

@@ -25,3 +25,9 @@
 *.ncb
 *.user
 *.bak
+*.suo
+
+bin
+tmp
+lib
+

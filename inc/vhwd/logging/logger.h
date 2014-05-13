@@ -1,3 +1,10 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_LOG_LOGGING__
 #define __H_VHWD_LOG_LOGGING__
 
@@ -60,23 +67,37 @@ public:
 	//clear error
 	void Clear();
 
-	#define STRING_FORMAT_LEVEL(X,Y) LogRecord rcd(String::Format(X),Src(),Id(),Y);Handle(rcd)
+	//#define STRING_FORMAT_LEVEL(X,Y) LogRecord rcd(String::Format(X),Src(),Id(),Y);Handle(rcd)
+	#define STRING_FORMAT_LEVEL(X,Y) DoLogImpl(Y,X)
+
+#ifndef NDEBUG
+	STRING_FORMAT_FUNCTIONS(void LogDeubg,STRING_FORMAT_LEVEL,LOGLEVEL_DEBUG)
+#else
+	inline void LogDebug(...){}
+#endif
+
+	STRING_FORMAT_FUNCTIONS(void LogInfo,STRING_FORMAT_LEVEL,LOGLEVEL_INFO)
+	STRING_FORMAT_FUNCTIONS(void LogTrace,STRING_FORMAT_LEVEL,LOGLEVEL_TRACE)
+	STRING_FORMAT_FUNCTIONS(void Printf,STRING_FORMAT_LEVEL,LOGLEVEL_PRINT)
 	STRING_FORMAT_FUNCTIONS(void LogMessage,STRING_FORMAT_LEVEL,LOGLEVEL_MESSAGE)
 	STRING_FORMAT_FUNCTIONS(void LogWarning,STRING_FORMAT_LEVEL,LOGLEVEL_WARNING)
 	STRING_FORMAT_FUNCTIONS(void LogError,STRING_FORMAT_LEVEL,LOGLEVEL_ERROR)
 	STRING_FORMAT_FUNCTIONS(void LogFetal,STRING_FORMAT_LEVEL,LOGLEVEL_FETAL)
-	STRING_FORMAT_FUNCTIONS(void LogInfo,STRING_FORMAT_LEVEL,LOGLEVEL_INFO)
-	STRING_FORMAT_FUNCTIONS(void LogDeubg,STRING_FORMAT_LEVEL,LOGLEVEL_DEBUG)
-	STRING_FORMAT_FUNCTIONS(void Printf,STRING_FORMAT_LEVEL,LOGLEVEL_PRINT)
 	#undef STRING_FORMAT_LEVEL
 
 
 protected:
+
+	void DoLogImpl(int lv,const char* msg,...);
+	void DoLogImplV(int v,const char* msg,va_list vl);
+
 	LoggerImpl* impl;
 };
 
 // get thread private logger;
 VHWD_DLLIMPEXP Logger& this_logger();
+
+
 
 // LoggerSwap, swap logger with this_logger().
 class VHWD_DLLIMPEXP LoggerSwap : public Logger, private NonCopyable

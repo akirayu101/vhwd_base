@@ -3,6 +3,8 @@
 #include "vhwd/net/socket.h"
 #include "vhwd/memory/mempool.h"
 #include "vhwd/basic/system.h"
+
+
 #include "socket_impl_detail.h"
 
 
@@ -107,6 +109,12 @@ bool Socket::Accept(Socket& sock)
 bool Socket::Accept(Socket& sock,IPAddress& addr)
 {
 	return socket_detail::accept(impl,sock.impl,addr);
+}
+
+bool Socket::Bind(const String& ip,int port)
+{
+	IPAddress addr(ip,port);
+	return Bind(addr);
 }
 
 bool Socket::Bind(const IPAddress& addr)

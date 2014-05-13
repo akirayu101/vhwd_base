@@ -1,65 +1,122 @@
 #include "vhwd/xml/xml_attribute.h"
 #include "vhwd/xml/xml_node.h"
 #include "vhwd/xml/xml_document.h"
+#include "vhwd/basic/stringbuffer.h"
+
+#include <fstream>
 
 VHWD_ENTER
-	
-class XmlParser
+
+class ParserBase
 {
 public:
 
-	XmlParser();
+	typedef char mychar;
+	typedef char* mychar_ptr;
 
-	typedef unsigned char uint8_t;
-	typedef const uint8_t* cuint8ptr_t;
-
-	arr_1t<uint8_t> vContents;
-
-	bool LoadXml(const String& f);
-	bool SaveXml(XmlDocument& xmldoc,const String& f);
-
-	bool parse(XmlDocument& xmldoc);
-
-
-	const String& str(const String& p)
+	template<template<unsigned> class P> static inline void skip(mychar_ptr& p)
 	{
-		return p;
+		mychar_ptr tmp=p;
+		while(lookup_table<P>::test(*tmp)) ++tmp;
+		p=tmp;
+	}
+};
+
+
+	
+class XmlParser : public ParserBase
+{
+public:
+
+	XmlParser(XmlDocument& xmldoc_);
+
+	bool load(const char* pstr_,size_t size_);
+	bool load(const String& f);
+	bool save(const String& f);
+
+	inline XmlNode* CreateNode(int t=XmlNode::XMLNODE_ELEMENT)
+	{
+		return new XmlNode(t);
 	}
 
-protected:
-	cuint8ptr_t pcur;
-	cuint8ptr_t pend; //current position
+	inline XmlAttribute* CreateAttr()
+	{
+		return new XmlAttribute();
+	}
+
+protected:	
+
+	XmlDocument& xmldoc;
+	arr_1t<XmlNode*> nodes;
+	StringBuffer<mychar> buffer;
+	StringBuffer<mychar> tempbuf; //string_assign buffer
+
+	class NodeLocker
+	{
+	public:
+		NodeLocker(arr_1t<XmlNode*>& nodes_,XmlNode* pnode):nodes(nodes_)
+		{
+			pnode->m_pParent.reset(nodes.back());
+			nodes.back()->AppendChild(pnode);
+			nodes.push_back(pnode);
+		}
+
+		~NodeLocker()
+		{
+			nodes.pop_back();
+		}
+
+		arr_1t<XmlNode*>& nodes;
+
+	};
+
+	mychar_ptr pbeg; 
+	mychar_ptr pend;
+	mychar_ptr pcur; //current position
 	size_t size;
 
-	static void tabindent(std::ofstream& ofs,int lv)
-	{
-		for(int i=0;i<lv;i++) ofs<<"\t";
-	}
+	void savefile();
+	static void savenode(std::ostream& ofs,XmlNode* pnode,int lv=0);
+	static void tabindent(std::ostream& ofs,int lv){for(int i=0;i<lv;i++) ofs<<"\t";}
+	static void savestring(std::ostream& ofs,const String& v);
 
-	void savefile(XmlDocument& xmldoc);
-	void savenode(std::ofstream& ofs,XmlNode* node,int lv=0);
+	void kerror(mychar_ptr p1,const char* msg);
 
-	void kerror(cuint8ptr_t p1,const char* msg);
+	bool parse_document();
 
-	inline void k_test(cuint8ptr_t p1,const char* msg)
-	{
-		if(pcur>=pend) kerror(p1,msg);
-	}
 
-	XmlNode* parse_node(); // 读取一个 xml节点
-	void skip_header();
-	void skip_comment();
+	XmlNode* parse_element_node();
 
-	bool is_same(const String& p1,const String& p2);
+	//A document node is a specialized kind of element node. 
+	//It has a type p but no attributes. Instead it has an optional URL u. 
+	//The intent of the URL is to specify a specialized data model for this node and its children. 
+	//A document node looks like this:
+	//<!doctype p "u">c1 . . . cm for m>0
+	void parse_doctype_node();
 
-	void read_sub(XmlNode* n);
-	void read_prop(XmlNode* n);
+	//A processing instruction (PI) node is always a leaf node. 
+	//It only has an instruction i associated with it. 
+	//The instruction is a sequence of zero or more characters, without any restrictions, 
+	//except that the sequence may not start with the three characters `xml' (upper, lower or mixed case) followed by a space or newline. 
+	//It looks like this in the XML document:
+	//<?i?>
+	void parse_instruction_node();
 
-	String read_val(); //读取值
-	String read_str(); //读取字符串值
-	void skip_sp();
-	String read_id();
-	String get_id(cuint8ptr_t p1,cuint8ptr_t p2);
+	//A comment node is similar to a processing instruction. It is also a leaf node and has only a comment c:
+	//<!--c-->
+	void parse_comment_node();
+
+	void parse_subnodes();
+	void parse_data();
+	void parse_cdata();
+
+	void parse_attributes();
+
+	void parse_value();
+	void parse_string1();
+	void parse_string2();
+
+	void string_assign(String& s0,mychar_ptr p1,mychar_ptr p2);
 
 };
 

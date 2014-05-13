@@ -1,3 +1,10 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_SMART_PTR__
 #define __H_VHWD_SMART_PTR__
 
@@ -66,6 +73,24 @@ public:
 		return tmp;
 	}
 
+};
+
+template<typename T>
+class TempPtrT : public AutoPtrT<T>
+{
+public:
+
+	TempPtrT(){}
+	TempPtrT(T* p):AutoPtrT<T>(p){}
+	TempPtrT(const TempPtrT& o)
+	{
+		swap(const_cast<TempPtrT&>(o));
+	}
+	const TempPtrT& operator=(const TempPtrT& o)
+	{
+		swap(const_cast<TempPtrT&>(o));
+		return *this;
+	}
 };
 
 

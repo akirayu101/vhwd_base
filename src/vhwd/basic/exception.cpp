@@ -69,15 +69,33 @@ Exception::~Exception() throw()
 	}
 }
 
+void Exception::XError()
+{
+	XError("unknown_exception",false);
+}
+
 void Exception::XError(const char*p, bool del)
 {
 	throw Exception(p,del);
-
 }
+
+class MyBadAlloc : public std::bad_alloc
+{
+public:
+
+#ifdef _WIN32
+	const char* what() const throw()
+#else
+	const char* what() throw()
+#endif
+	{
+		return "Not_enough_memory";
+	}
+};
 
 void Exception::XBadAlloc()
 {
-	throw std::bad_alloc();
+	throw MyBadAlloc();
 }
 
 void Exception::XBadCast()

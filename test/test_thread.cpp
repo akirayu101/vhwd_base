@@ -83,3 +83,133 @@ TEST_DEFINE(TEST_Thread)
 
 
 }
+
+
+
+class Product : public Object
+{
+public:
+	Product(int v=0):value(v){}
+	int value;
+};
+
+class RoutineProducer : public Coroutine
+{
+public:
+	
+	LitePtrT<Coroutine> Consumer;
+
+	void sink(int val)
+	{
+		::printf("produce %d, yielding to consumer\n",val);
+		m_pExtraParam.reset(new Product(val));
+		yield(Consumer);
+	}
+
+	int val;
+
+	RoutineProducer()
+	{
+		val=1;
+	}
+
+	void svc()
+	{
+		TEST_ASSERT(Coroutine::main_coroutine().state()==Coroutine::STATE_PAUSED);
+		TEST_ASSERT(&Coroutine::this_coroutine()==this);
+		TEST_ASSERT(state()==Coroutine::STATE_RUNNING);
+
+		sink(val++);
+		sink(val++);
+		sink(val++);
+		sink(0);
+
+		// return from entry point, yield to main;
+		return;
+	}
+
+};
+
+
+
+class RoutineConsumer : public Coroutine
+{
+public:
+
+	void svc()
+	{
+		for(;;)
+		{
+			Product* p=dynamic_cast<Product*>(m_pExtraParam.get());
+			if(p)
+			{
+				::printf("consume %d\n",p->value);
+			}
+			yield_last();
+		}
+	}
+
+};
+
+
+
+TEST_DEFINE(TEST_Coroutine)
+{
+	RoutineProducer producer;
+	RoutineConsumer consumer;
+
+	TEST_ASSERT(producer.state()==Coroutine::STATE_STOPPED);
+	TEST_ASSERT(consumer.state()==Coroutine::STATE_STOPPED);
+	TEST_ASSERT(Coroutine::main_coroutine().state()==Coroutine::STATE_RUNNING);
+	TEST_ASSERT(&Coroutine::main_coroutine()==&Coroutine::this_coroutine());
+
+	producer.Consumer=&consumer;
+
+	Coroutine::spawn(&producer);
+	Coroutine::spawn(&consumer);
+
+	TEST_ASSERT(producer.state()==Coroutine::STATE_PAUSED);
+	TEST_ASSERT(consumer.state()==Coroutine::STATE_PAUSED);
+
+	Coroutine::yield(&producer);
+
+	TEST_ASSERT(consumer.state()==Coroutine::STATE_PAUSED);
+	TEST_ASSERT(producer.state()==Coroutine::STATE_STOPPED);
+
+	TEST_ASSERT(!Coroutine::yield(&producer));
+
+	Coroutine::spawn(&producer);
+	TEST_ASSERT(Coroutine::yield(&producer));
+
+
+
+}
+
+
+class MyTask : public ITask
+{
+public:
+
+	void svc(void* p)
+	{
+		Thread::sleep_for(12);
+	}
+};
+
+TEST_DEFINE(TEST_ThreadPool)
+{
+	ThreadPool tpool;
+	tpool.activate();
+
+	DataPtrT<MyTask> task(new MyTask);
+	for(int i=0;i<1000;i++)
+	{
+		tpool.putq(task.get(),NULL);
+		Thread::sleep_for(5);
+	}
+
+	Thread::sleep_for(2000);
+	tpool.reqexit();
+	tpool.wait();
+
+}

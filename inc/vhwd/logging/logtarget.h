@@ -1,3 +1,10 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_LOG_TARGET__
 #define __H_VHWD_LOG_TARGET__
 
@@ -70,6 +77,7 @@ public:
 
 protected:
 	FILE* fp;
+	AtomicInt32 spin;
 };
 
 // LogFile, redirect messages to m_refData.

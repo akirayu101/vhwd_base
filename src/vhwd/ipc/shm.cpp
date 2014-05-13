@@ -1,6 +1,6 @@
 #include "vhwd/ipc/shm.h"
-#include "vhwd/logging/logger.h"
 #include "vhwd/basic/system.h"
+#include "vhwd/basic/file.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -23,34 +23,15 @@ class ShareMem_detail : public SharedMem
 public:
 	typedef SharedMem::impl_type impl_type;
 
-	static int makeflag(int flag_,int fr,int fw)
-	{
-		int acc=0;
-		if(flag_&SharedMem::FLAG_RD)
-		{
-			acc|=fr;
-		}
-		if(flag_&SharedMem::FLAG_WR)
-		{
-			acc|=fw;
-		}
-		return acc;
-	}
 
 	static bool shm_create(impl_type& impl,const String& name_,size_t size_,int flag_)
 	{
 
 		HANDLE hMapFile;
 
-		if(flag_&SharedMem::FLAG_CR)
+		if(flag_&FileAccess::FLAG_CR)
 		{
-			union kk
-			{
-				DWORD64 dval;
-				DWORD d[2];
-			};
-
-			kk tmp;
+			FileAccess::LargeInteger tmp;
 			tmp.dval=size_;
 
 			hMapFile = CreateFileMapping(
@@ -67,7 +48,7 @@ public:
 		else
 		{
 			hMapFile = OpenFileMapping(
-				makeflag(flag_,FILE_MAP_READ,FILE_MAP_WRITE),
+				FileAccess::makeflag(flag_,FILE_MAP_READ,FILE_MAP_WRITE),
 				FALSE,                  // Do not inherit the name
 				name_.c_str()			// File mapping name
 				);
@@ -80,7 +61,7 @@ public:
 
 		char* pView = (char*)MapViewOfFile(
 			hMapFile,               // Handle of the map object
-			makeflag(flag_,FILE_MAP_READ,FILE_MAP_WRITE),					// access
+			FileAccess::makeflag(flag_,FILE_MAP_READ,FILE_MAP_WRITE),					// access
 			0,                      // High-order DWORD of the file offset
 			0,					// Low-order DWORD of the file offset
 			size_               // The number of bytes to map to view
@@ -105,17 +86,17 @@ public:
 
 		KO_Handle<KO_Policy_handle> m_pExtraHandle;
 
-		if(size_!=0 && (flag_&SharedMem::FLAG_WR)==0)
+		if(size_!=0 && (flag_&FileAccess::FLAG_WR)==0)
 		{
 			return false;
 		}
 
 		HANDLE hFile=(HANDLE)CreateFile(
 			name_.c_str(),
-			makeflag(flag_,GENERIC_READ,GENERIC_WRITE),
-			makeflag(flag_,FILE_SHARE_READ,FILE_SHARE_WRITE),
+			FileAccess::makeflag(flag_,GENERIC_READ,GENERIC_WRITE),
+			FileAccess::makeflag(flag_,FILE_SHARE_READ,FILE_SHARE_WRITE),
 			NULL,
-			flag_&SharedMem::FLAG_CR?OPEN_ALWAYS:OPEN_EXISTING,
+			(flag_&FileAccess::FLAG_CR)?OPEN_ALWAYS:OPEN_EXISTING,
 			NULL,
 			NULL
 			);
@@ -133,13 +114,8 @@ public:
 
 		m_pExtraHandle.reset(hFile);
 
-		union kk
-		{
-			DWORD64 dval;
-			DWORD d[2];
-		};
+		FileAccess::LargeInteger tmp;
 
-		kk tmp;
 		tmp.d[0]=::GetFileSize(hFile,&tmp.d[1]);
 		if(tmp.dval<=0)
 		{
@@ -150,7 +126,7 @@ public:
 		HANDLE hMapFile = CreateFileMapping(
 			m_pExtraHandle,
 			NULL,                   // Default security attributes
-			flag_&SharedMem::FLAG_WR?PAGE_READWRITE:PAGE_READONLY,
+			flag_&FileAccess::FLAG_WR?PAGE_READWRITE:PAGE_READONLY,
 			tmp.d[1],               // High-order DWORD of file mapping max size
 			tmp.d[0],               // Low-order DWORD of file mapping max size
 			NULL
@@ -163,7 +139,7 @@ public:
 
 		char* pView = (char*)MapViewOfFile(
 			hMapFile,               // Handle of the map object
-			makeflag(flag_,FILE_MAP_READ,FILE_MAP_WRITE),
+			FileAccess::makeflag(flag_,FILE_MAP_READ,FILE_MAP_WRITE),
 			0,                      // High-order DWORD of the file offset
 			0,						// Low-order DWORD of the file offset
 			size_					// The number of bytes to map to view
@@ -211,27 +187,13 @@ class ShareMem_detail : public SharedMem
 public:
 	typedef SharedMem::impl_type impl_type;
 
-	static int shm_makeflag(int flag_)
-	{
-		int acc=0;
-		if(flag_&SharedMem::FLAG_RD)
-		{
-			acc|=PROT_READ;
-		}
-		if(flag_&SharedMem::FLAG_WR)
-		{
-			acc|=PROT_WRITE;
-		}
-		return acc;
-	}
-
 	static int shm_fileflag(int flag_)
 	{
 		int acc=0;
 
-		if(flag_&SharedMem::FLAG_WR)
+		if(flag_&FileAccess::FLAG_WR)
 		{
-            if(flag_&SharedMem::FLAG_RD)
+            if(flag_&FileAccess::FLAG_RD)
             {
                 acc|=O_RDWR;
             }
@@ -255,7 +217,7 @@ public:
 		if(!name_.empty())
 		{
 			int oflag=shm_fileflag(flag_);
-			if(flag_&SharedMem::FLAG_CR)
+			if(flag_&FileAccess::FLAG_CR)
 			{
 				oflag|=O_CREAT;
 			}
@@ -289,7 +251,7 @@ public:
 			map_type=MAP_PRIVATE|MAP_ANONYMOUS;
 		}
 
-		void* _mem=mmap(0,size_,shm_makeflag(flag_),map_type,fd,0);
+		void* _mem=mmap(0,size_,FileAccess::makeflag(flag_,PROT_READ,PROT_WRITE),map_type,fd,0);
 		if(_mem==MAP_FAILED)
 		{
             return false;
@@ -309,7 +271,7 @@ public:
 		int fd=::open(name_.c_str(),shm_fileflag(flag_),0777);
 		if(fd<0)
 		{
-			if((flag_&SharedMem::FLAG_CR)==0||size_==0)
+			if((flag_&FileAccess::FLAG_CR)==0||size_==0)
 			{
 				return false;
 			}
@@ -333,7 +295,7 @@ public:
 
 		size_=statbuf.st_size;
 
-		void* _mem=mmap(0,size_,shm_makeflag(flag_),MAP_SHARED,fd,0);
+		void* _mem=mmap(0,size_,FileAccess::makeflag(flag_,PROT_READ,PROT_WRITE),MAP_SHARED,fd,0);
 		if(_mem==MAP_FAILED)
 		{
             return false;
@@ -372,7 +334,7 @@ SharedMem::SharedMem()
 
 SharedMem::~SharedMem()
 {
-
+	Close();
 }
 
 bool SharedMem::Alloc(size_t size_,int flag_)
@@ -385,7 +347,7 @@ bool SharedMem::Open(const String& name_,size_t size_,int flag_)
 	ShareMem_detail::shm_close(impl);
 	if(!ShareMem_detail::shm_create(impl,name_,size_,flag_))
 	{
-		System::CheckError("shm_create");
+		//System::CheckError("shm_create");
 		return false;
 	}
 	else

@@ -12,7 +12,7 @@ class serializable_data : public ObjectData
 {
 public:
 	float64_t val;
-	bool serialize(Serializer& ar)
+	bool Serialize(Serializer& ar)
 	{
 		ar & val;
 		return ar.good();
@@ -37,7 +37,7 @@ public:
 	int32_t ivals[10];
 	arr_xt<float64_t> arr;
 
-	void serialize(Serializer& ar)
+	void Serialize(Serializer& ar)
 	{
 		ar & aInts & aMaps & s1 & dptr1 & dptr2 & ivals & arr;
 	}

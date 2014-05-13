@@ -1,3 +1,10 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_COLLECTION_ARRAY__
 #define __H_VHWD_COLLECTION_ARRAY__
 
@@ -56,13 +63,13 @@ public:
 	void assign(It first_,It last_){assign(first_,std::distance(first_,last_));}
 
 
-	void insert(const_iterator where_,const T& val_){insert(where_,&val_,1);}
+	iterator insert(const_iterator where_,const T& val_){return insert(where_,&val_,1);}
 
 	template<typename It>
-	void insert(const_iterator where_,It first_,size_type count_);
+	iterator insert(const_iterator where_,It first_,size_type count_);
 
 	template<typename It>
-	void insert(const_iterator where_,It first_,It last_){insert(where_,first_,std::distance(first_,last_));}
+	iterator insert(const_iterator where_,It first_,It last_){insert(where_,first_,std::distance(first_,last_));}
 
 	void append(const T& val_){append(&val_,1);}
 
@@ -72,8 +79,8 @@ public:
 	template<typename It>
 	void append(It first_,It last_){append(first_,std::distance(first_,last_));}
 
-	void erase(iterator position_);
-	void erase(iterator first_,iterator last_);
+	iterator erase(iterator position_);
+	iterator erase(iterator first_,iterator last_);
 
 	void shrink_to_fit();
 
@@ -358,13 +365,13 @@ void arr_1t<T,A>::append(It first_,size_type count_)
 
 template<typename T,typename A>
 template<typename It>
-void arr_1t<T,A>::insert(const_iterator where_,It first_,size_type count_)
+typename arr_1t<T,A>::iterator arr_1t<T,A>::insert(const_iterator where_,It first_,size_type count_)
 {
 	size_type _oldsize=extra().size;
 	size_type _newsize=_oldsize+count_;
 	size_type _tmpsize=where_-begin();
 
-	if(_newsize<=extra().capacity && (size_type)(&(*first_)-m_ptr)>_oldsize)
+	if(_newsize<=extra().capacity && (size_t)(&(*first_)-m_ptr)>_oldsize)
 	{
 		iterator _itbeg((T*)&(*where_));
 		iterator _itend(end());
@@ -375,21 +382,18 @@ void arr_1t<T,A>::insert(const_iterator where_,It first_,size_type count_)
 			iterator _itpos=_itend-count_;
 			xmem<T>::uninitialized_copy_n(_itpos,count_,_itend);
 			extra().size=_newsize;
-
-			while(_itpos>_itbeg)
-			{
-				*--_itend=*--_itpos;
-			}
+			xmem<T>::copy_backward(_itbeg,_itpos,_itend);
 			xmem<T>::copy_n(first_,count_,_itbeg);
 		}
 		else
 		{
 			xmem<T>::uninitialized_copy(_itbeg,_itend,_itend);
 			extra().size=_newsize;
-
 			xmem<T>::copy_n(first_,_datsize,_itbeg);
 			xmem<T>::uninitialized_copy_n(first_+_datsize,count_-_datsize,_itbeg+_datsize);
 		}
+
+		return begin()+_tmpsize+count_;
 
 	}
 	else
@@ -420,6 +424,8 @@ void arr_1t<T,A>::insert(const_iterator where_,It first_,size_type count_)
 
 		tmp.extra().size=_newsize;
 		swap(tmp);
+
+		return begin()+_tmpsize+count_;
 	}
 }
 
@@ -484,30 +490,23 @@ void arr_1t<T,A>::assign(It first_,size_type count_)
 }
 
 template<typename T,typename A>
-void arr_1t<T,A>::erase(iterator first_)
+typename arr_1t<T,A>::iterator  arr_1t<T,A>::erase(iterator position_)
 {
-	erase(first_,++first_);
+	return erase(position_,position_+1);
 }
 
 template<typename T,typename A>
-void arr_1t<T,A>::erase(iterator first_,iterator last_)
+typename arr_1t<T,A>::iterator arr_1t<T,A>::erase(iterator first_,iterator last_)
 {
-	if(first_==last_) return;
+	if(first_==last_) return first_;
+	iterator tmp(first_);
+	iterator it=xmem<T>::copy(last_,end(),first_);
+	xmem<T>::destroy(it,end());
+	extra().size-=last_-first_;
 
-	iterator _itend=end();
-	while(last_<_itend)
-	{
-		*first_++=*last_++;
-	}
-
-	extra().size-=_itend-first_;
-
-	while(first_<_itend)
-	{
-		(*first_++).~T();
-	}
-
+	return first_;
 }
+
 
 VHWD_LEAVE
 #endif

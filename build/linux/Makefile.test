@@ -125,6 +125,7 @@ $(OBJDIR_RELEASE)/__/__/test/test_thread.o: ../../test/test_thread.cpp
 
 clean_release: 
 	rm -f $(OBJ_RELEASE) $(OUT_RELEASE)
+	rm -rf ../../bin
 	rm -rf $(OBJDIR_RELEASE)/__/__/test
 
 .PHONY: before_debug after_debug clean_debug before_release after_release clean_release

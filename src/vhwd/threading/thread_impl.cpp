@@ -1,5 +1,5 @@
 #include "thread_impl.h"
-#include "vhwd/threading/lockguard.h"
+#include "vhwd/basic/lockguard.h"
 #include "vhwd/threading/thread_pool.h"
 VHWD_ENTER
 
@@ -8,7 +8,7 @@ ThreadImpl_detail::key_t threaddata_buffer_key;
 
 void ThreadMain::wait()
 {
-	ThreadPool::current().wait();
+	ThreadManager::current().wait();
 }
 
 bool ThreadMain::m_bReqExit=false;
@@ -18,7 +18,7 @@ ThreadImpl& ThreadImpl::data()
 	ThreadImpl* p=(ThreadImpl*)ThreadImpl_detail::key_get(threaddata_buffer_key);
 	if(!p)
 	{
-		static ThreadImpl d(ThreadPool::current());
+		static ThreadImpl d;
 		d.thrd_rank=0;
 		d.thrd_ptr=&Thread::main_thread();
 		return d;
@@ -54,13 +54,15 @@ void thread_impl_entry_real(ThreadImpl* impl)
 }
 
 
-bool ThreadImpl::activate(ThreadPool& pool,Thread& thrd,ThreadEx::InvokerGroup& g)
+bool ThreadImpl::activate(Thread& thrd,ThreadEx::InvokerGroup& g)
 {
+	ThreadManager& tmgr(ThreadManager::current());
+
 	int n=(int)g.size();
 	if(n<=0) return false;
 
-	LockGuard<Mutex> lock1(pool.m_thrd_mutex);
-	if(pool.m_nFlags.get(ThreadPool::POOL_DISABLED))
+	LockGuard<Mutex> lock1(tmgr.m_thrd_mutex);
+	if(tmgr.m_nFlags.get(ThreadImpl::THREADMANAGER_DISABLED))
 	{
 		return false;
 	}
@@ -76,7 +78,7 @@ bool ThreadImpl::activate(ThreadPool& pool,Thread& thrd,ThreadEx::InvokerGroup& 
 
 	for(int i=0;i<n;i++)
 	{
-		_aThreads[i]=ThreadImpl::get_thread(pool);
+		_aThreads[i]=ThreadImpl::get_thread();
 		if(!_aThreads[i])
 		{
 			for(int j=0;j<i;j++)
@@ -97,17 +99,19 @@ bool ThreadImpl::activate(ThreadPool& pool,Thread& thrd,ThreadEx::InvokerGroup& 
 	}
 
 	thrd.m_nAlive+=n;
-	pool.m_thrd_attached.notify_all();
+	tmgr.m_thrd_attached.notify_all();
 
 	return true;
 }
 
-bool ThreadImpl::activate(ThreadPool& pool,Thread& thrd,int n)
+bool ThreadImpl::activate(Thread& thrd,int n)
 {
+	ThreadManager& tmgr(ThreadManager::current());
+
 	if(n<=0) return false;
 
-	LockGuard<Mutex> lock1(pool.m_thrd_mutex);
-	if(pool.m_nFlags.get(ThreadPool::POOL_DISABLED))
+	LockGuard<Mutex> lock1(tmgr.m_thrd_mutex);
+	if(tmgr.m_nFlags.get(ThreadImpl::THREADMANAGER_DISABLED))
 	{
 		return false;
 	}
@@ -123,7 +127,7 @@ bool ThreadImpl::activate(ThreadPool& pool,Thread& thrd,int n)
 
 	for(int i=0;i<n;i++)
 	{
-		_aThreads[i]=ThreadImpl::get_thread(pool);
+		_aThreads[i]=ThreadImpl::get_thread();
 		if(!_aThreads[i])
 		{
 			for(int j=0;j<i;j++)
@@ -145,28 +149,30 @@ bool ThreadImpl::activate(ThreadPool& pool,Thread& thrd,int n)
 
 	thrd.m_aBindCpu.clear();
 	thrd.m_nAlive+=n;
-	pool.m_thrd_attached.notify_all();
+	tmgr.m_thrd_attached.notify_all();
 
 	return true;
 }
 
-ThreadImpl* ThreadImpl::get_thread(ThreadPool& pool)
+ThreadImpl* ThreadImpl::get_thread()
 {
+	ThreadManager& tmgr(ThreadManager::current());
+
 	ThreadImpl* impl=NULL;
 
-	if(pool.m_pThreads_free)
+	if(tmgr.m_pThreads_free)
 	{
-		impl=pool.m_pThreads_free;
-		pool.m_pThreads_free=impl->pNext;
-		if(pool.m_pThreads_free)
+		impl=tmgr.m_pThreads_free;
+		tmgr.m_pThreads_free=impl->pNext;
+		if(tmgr.m_pThreads_free)
 		{
-			pool.m_pThreads_free->pPrev=NULL;
+			tmgr.m_pThreads_free->pPrev=NULL;
 		}
 
 	}
 	else
 	{
-		impl= new ThreadImpl(pool);
+		impl= new ThreadImpl();
 		if(!impl->create())
 		{
 			delete impl;
@@ -176,17 +182,19 @@ ThreadImpl* ThreadImpl::get_thread(ThreadPool& pool)
 	return impl;
 }
 
-bool ThreadImpl::put_thread(ThreadPool& pool,ThreadImpl* impl)
+bool ThreadImpl::put_thread(ThreadImpl* impl)
 {
-	if( !pool.m_nFlags.get(ThreadPool::POOL_DISABLED) )
+	ThreadManager& tmgr(ThreadManager::current());
+
+	if( !tmgr.m_nFlags.get(ThreadImpl::THREADMANAGER_DISABLED) )
 	{
-		impl->pNext=pool.m_pThreads_free;
+		impl->pNext=tmgr.m_pThreads_free;
 		impl->pPrev=NULL;
-		if(pool.m_pThreads_free)
+		if(tmgr.m_pThreads_free)
 		{
-			pool.m_pThreads_free->pPrev=impl;
+			tmgr.m_pThreads_free->pPrev=impl;
 		}
-		pool.m_pThreads_free=impl;
+		tmgr.m_pThreads_free=impl;
 		return true;
 	}
 	else
@@ -195,7 +203,7 @@ bool ThreadImpl::put_thread(ThreadPool& pool,ThreadImpl* impl)
 	}
 }
 
-ThreadImpl::ThreadImpl(ThreadPool& p):pool(p)
+ThreadImpl::ThreadImpl():tmgr(ThreadManager::current())
 {
 
 	static bool first=true;
@@ -240,10 +248,10 @@ bool ThreadImpl::svc_enter()
 {
 
 	{
-		LockGuard<Mutex> lock(pool.m_thrd_mutex);
-		if(!pool.m_nFlags.get(ThreadPool::POOL_DISABLED))
+		LockGuard<Mutex> lock(tmgr.m_thrd_mutex);
+		if(!tmgr.m_nFlags.get(ThreadImpl::THREADMANAGER_DISABLED))
 		{
-			pool.m_nThreadNum++;
+			tmgr.m_nThreadNum++;
 		}
 		else
 		{
@@ -258,7 +266,7 @@ bool ThreadImpl::svc_enter()
 void ThreadImpl::svc_leave()
 {
 	ThreadImpl_detail::key_set(threaddata_buffer_key,NULL);
-	ThreadPool& mypool(pool);
+	ThreadManager& mypool(tmgr);
 
 	delete this;
 
@@ -278,26 +286,19 @@ void ThreadImpl::svc()
 	for(;;)
 	{
 		{
-			LockGuard<Mutex> lock1(pool.m_thrd_mutex);
+			LockGuard<Mutex> lock1(tmgr.m_thrd_mutex);
 			while(thrd_ptr==NULL)
 			{
-				if(pool.m_nFlags.get(ThreadPool::POOL_NOCACHE|ThreadPool::POOL_DISABLED))
+				if(tmgr.m_nFlags.get(ThreadImpl::THREADMANAGER_NOCAHCING|ThreadImpl::THREADMANAGER_DISABLED))
 				{
 					if(pPrev) pPrev->pNext=pNext;
 					if(pNext) pNext->pPrev=pPrev;
 
-					//for(size_t i=0;i<pool.m_aThreads_free.size();i++)
-					//{
-					//	if(pool.m_aThreads_free[i]!=this) continue;
-					//	std::swap(pool.m_aThreads_free[i],pool.m_aThreads_free.back());
-					//	pool.m_aThreads_free.pop_back();break;
-					//}
-
 					return;
 				}
-				pool.m_thrd_attached.wait(lock1);
+				tmgr.m_thrd_attached.wait(lock1);
 			}
-			pool.m_nThreadJob++;
+			tmgr.m_nThreadJob++;
 		}
 
 
@@ -338,9 +339,9 @@ void ThreadImpl::svc()
 		}
 
 		{
-			LockGuard<Mutex> lock1(pool.m_thrd_mutex);
-			pool.m_nThreadJob--;
-			if(!put_thread(pool,this))
+			LockGuard<Mutex> lock1(tmgr.m_thrd_mutex);
+			tmgr.m_nThreadJob--;
+			if(!put_thread(this))
 			{
 				return;
 			}

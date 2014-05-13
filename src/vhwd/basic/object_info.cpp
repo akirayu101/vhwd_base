@@ -1,13 +1,14 @@
 #include "vhwd/basic/object.h"
 #include "vhwd/collection/indexer_map.h"
 
+
 VHWD_ENTER
 
 
 ObjectInfo::ObjectInfo(const String& s)
 	:m_sClassName(s)
 {
-	if(m_sClassName!="")
+	if(!m_sClassName.empty())
 	{
 		ObjectCreator::current().Register(this);
 	}
@@ -17,6 +18,7 @@ ObjectInfo::ObjectInfo(const String& s)
 class ObjectCreatorImpl : public ObjectData
 {
 public:
+
 	ObjectCreatorImpl(int capacity)
 	{
 		kmap.set_capacity(capacity);
@@ -38,19 +40,7 @@ public:
 
 void ObjectCreator::reset(ObjectData *p)
 {
-	if(p==impl)
-	{
-		return;
-	}
-	if(impl)
-	{
-		impl->DecRef();
-	}
-	impl=(ObjectData*)p;
-	if(impl)
-	{
-		impl->IncRef();
-	}
+	ObjectData::locked_reset(impl,p);
 }
 
 Object *ObjectCreator::Create(const String &name)
@@ -80,13 +70,16 @@ void ObjectCreator::Register(ObjectInfo *info)
 {
 	if(!info)
 	{
+		System::LogTrace("info=NULL in ObjectCreator::Register");
 		return;
 	}
+
 	String name=info->GetObjectName();
-	if(name=="")
+	if(name.empty())
 	{
 		return;
 	}
+
 	((ObjectCreatorImpl *)impl)->kmap[name]=info;
 }
 

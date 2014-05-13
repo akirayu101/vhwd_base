@@ -1,9 +1,8 @@
 #include "mempool_impl.h"
-#include "vhwd/threading/lockguard.h"
+#include "vhwd/basic/lockguard.h"
 #include "vhwd/threading/thread_spin.h"
 #include "vhwd/basic/system.h"
 
-#include <cstdlib>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -103,6 +102,7 @@ MemPoolPaging::~MemPoolPaging()
 
 void* MemPoolPaging::allocate(size_t nSize)
 {
+
 	if(nSize>m_nFixedSizeMax)
 	{
 		void* p=::malloc(nSize);
@@ -115,7 +115,7 @@ void* MemPoolPaging::allocate(size_t nSize)
 	}
 
 	FixedSizeAllocatorUnit& sl(*m_pSlots[nSize]);
-	LockGuard<SpinLock> lock1(sl.tSpin);
+	FixedSizeAllocatorUnit::LockType lock1(sl.tSpin);
 
 	if(!sl.pPageList)
 	{
@@ -142,7 +142,10 @@ void* MemPoolPaging::allocate(size_t nSize)
 
 void MemPoolPaging::deallocate(void* p)
 {
+
+
 	if(!p) return;
+
 
 	static MemPageCache& mpc(MemPageCache::current());
 
@@ -156,7 +159,7 @@ void MemPoolPaging::deallocate(void* p)
 	{
 		FixedSizeAllocatorUnit& sl(*mi->m_pSlot);
 		MemPageNode* pn=(MemPageNode*)p;
-		LockGuard<SpinLock> lock1(sl.tSpin);
+		FixedSizeAllocatorUnit::LockType lock1(sl.tSpin);
 
 		if(!mi->pFreeList)
 		{
@@ -210,12 +213,49 @@ MemPoolPaging& MemPoolPaging::current()
 		{
 
 		}
-		
+
 	}gInstance;
 	return gInstance;
 }
 
 
+void* SmallObject::operator new[](size_t nSize)
+{
+	return vhwd::MemPoolPaging::current().allocate(nSize,NULL,-1);
+}
+
+void* SmallObject::operator new(size_t nSize,const char* sFile,long nLine)
+{
+	return vhwd::MemPoolPaging::current().allocate(nSize,sFile,nLine);
+}
+
+void* SmallObject::operator new[](size_t nSize,const char* sFile,long nLine)
+{
+	return vhwd::MemPoolPaging::current().allocate(nSize,sFile,nLine);
+}
+
+void SmallObject::operator delete(void* p,const char*,long)
+{
+	vhwd::MemPoolPaging::current().deallocate(p);
+}
+void SmallObject::operator delete[](void* p,const char*,long)
+{
+	vhwd::MemPoolPaging::current().deallocate(p);
+}
+void* SmallObject::operator new(size_t nSize)
+{
+	return vhwd::MemPoolPaging::current().allocate(nSize,NULL,-1);
+}
+
+void SmallObject::operator delete(void* p)
+{
+	vhwd::MemPoolPaging::current().deallocate(p);
+}
+
+void SmallObject::operator delete[](void* p)
+{
+	vhwd::MemPoolPaging::current().deallocate(p);
+}
 
 VHWD_LEAVE
 
@@ -240,13 +280,21 @@ void operator delete(void* p,const char*,long)
 {
 	vhwd::MemPool::current().deallocate(p);
 }
-
+void operator delete[](void* p,const char*,long)
+{
+	vhwd::MemPool::current().deallocate(p);
+}
 void* operator new(size_t nSize)
 {
 	return vhwd::MemPool::current().allocate(nSize,NULL,-1);
 }
 
 void operator delete(void* p)
+{
+	vhwd::MemPool::current().deallocate(p);
+}
+
+void operator delete[](void* p)
 {
 	vhwd::MemPool::current().deallocate(p);
 }

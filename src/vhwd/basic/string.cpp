@@ -1,6 +1,3 @@
-#include <cstdarg>
-#include <cstdlib>
-#include <locale>
 
 #include "string_impl.h"
 #include "vhwd/basic/string.h"
@@ -18,105 +15,103 @@
 
 VHWD_ENTER
 
-String::String():m_pStr(gpEmptyString)
-{
 
+String::String()
+{
+	m_pStr=StringPool::current().str_empty();
 }
 
-String::String(const StringBuffer<char>& o):m_pStr(gpEmptyString)
+String::String(const StringBuffer<char>& o)
 {
-	if(o.size()>0)
-	{
-		m_pStr=StringPool::current().str_dup(o.data(),o.size());
-	}
+	m_pStr=StringPool::current().str_dup(o.data(),o.size());
 }
 
-String::String(const StringBuffer<unsigned char>& o):m_pStr(gpEmptyString)
+String::String(const StringBuffer<unsigned char>& o)
 {
-	if(o.size()>0)
-	{
-		m_pStr=StringPool::current().str_dup((char*)o.data(),o.size());
-	}
+	m_pStr=StringPool::current().str_dup((char*)o.data(),o.size());
 }
 
-String::String(const String& o):m_pStr(gpEmptyString)
+String::String(const String& o)
 {
-	if(o.size()>0)
-	{
-		m_pStr=StringPool::current().str_dup(o.c_str());
-	}
+	m_pStr=StringPool::current().str_dup(o.c_str());
 }
 
-String::String(const char* p):m_pStr(gpEmptyString)
+String::String(const char* p)
 {
-	if(p[0]!='\0')
-	{
-		m_pStr=StringPool::current().str_dup(p);
-	}
+	m_pStr=StringPool::current().str_dup(p);
 }
 
-String::String(const char* p1,uint32_t n):m_pStr(gpEmptyString)
+String::String(const char* p1,uint32_t n)
 {
-	if(n>0)
-	{
-		m_pStr=StringPool::current().str_dup(p1,n);
-	}
+	m_pStr=StringPool::current().str_dup(p1,n);
 }
 
-String::String(const char* p1,const char* p2):m_pStr(gpEmptyString)
+String::String(const char* p1,const char* p2)
 {
-	if(p2>p1)
-	{
-		m_pStr=StringPool::current().str_dup(p1,p2-p1);
-	}
-	else if(p2<p1)
-	{
-		System::LogTrace("invalid string position at String::String");
-	}
+	m_pStr=StringPool::current().str_dup(p1,safe_distance(p1,p2));
+}
+
+String::String(const unsigned char* p)
+{
+	m_pStr=StringPool::current().str_dup((char*)p);
+}
+
+String::String(const unsigned char* p1,uint32_t n)
+{
+	m_pStr=StringPool::current().str_dup((char*)p1,n);
+}
+
+String::String(const unsigned char* p1,unsigned const char* p2)
+{
+	m_pStr=StringPool::current().str_dup((char*)p1,safe_distance(p1,p2));
 }
 
 void String::assign(const char* p1,uint32_t n)
 {
-	if(m_pStr!=gpEmptyString)
-	{
-		StringPool::current().str_free(m_pStr);
-		m_pStr=gpEmptyString;
-	}
-	m_pStr=StringPool::current().str_dup(p1,n);
+	char* _pnewstr=StringPool::current().str_dup(p1,n);
+	StringPool::current().str_free(m_pStr);
+	m_pStr=_pnewstr;
 }
 
 void String::assign(const char* p1,const char* p2)
 {
-	if(m_pStr!=gpEmptyString)
-	{
-		StringPool::current().str_free(m_pStr);
-		m_pStr=gpEmptyString;
-	}
-	m_pStr=StringPool::current().str_dup(p1,p2-p1);
+	assign(p1,safe_distance(p1,p2));
 }
 
-String::String(const wchar_t* p):m_pStr(gpEmptyString)
+void String::assign(const unsigned char* p1,uint32_t n)
 {
-	(*this)=CodeCvt<wchar_t>::current().ws2s(p);
+	char* _pnewstr=StringPool::current().str_dup((char*)p1,n);
+	StringPool::current().str_free(m_pStr);
+	m_pStr=_pnewstr;
 }
 
-String::String(const wchar_t* p,uint32_t n):m_pStr(gpEmptyString)
+void String::assign(const unsigned char* p1,const unsigned char* p2)
 {
-	(*this)=CodeCvt<wchar_t>::current().ws2s(p,n);
+	assign((char*)p1,safe_distance(p1,p2));
 }
 
-String::String(const wchar_t* p1,const wchar_t* p2):m_pStr(gpEmptyString)
+
+String::String(const wchar_t* p)
 {
-	(*this)=CodeCvt<wchar_t>::current().ws2s(p1,p2-p1);
+	m_pStr=StringPool::current().str_empty();
+	(*this)=CodeCvt<wchar_t>::ws2s(p);
+}
+
+String::String(const wchar_t* p,uint32_t n)
+{
+	m_pStr=StringPool::current().str_empty();
+	(*this)=CodeCvt<wchar_t>::ws2s(p,n);
+}
+
+String::String(const wchar_t* p1,const wchar_t* p2)
+{
+	m_pStr=StringPool::current().str_empty();
+	(*this)=CodeCvt<wchar_t>::ws2s(p1,p2);
 }
 
 String::~String()
 {
-	if(m_pStr!=gpEmptyString)
-	{
-		StringPool::current().str_free(m_pStr);
-	}
-	m_pStr=NULL;
+	StringPool::current().str_free(m_pStr);
 }
 
 const char* String::c_str() const
@@ -226,69 +221,61 @@ String String::FormatImpl(const char* s,...)
 
 void String::append(const char* p,uint32_t n)
 {
-	char* _newstr=StringPool::current().str_cat(c_str(),size(),p,n);
-	if(m_pStr!=gpEmptyString)
-	{
-		StringPool::current().str_free(m_pStr);
-	}
-	m_pStr=_newstr;
+	char* _pnewstr=StringPool::current().str_cat(c_str(),size(),p,n);
+	StringPool::current().str_free(m_pStr);
+	m_pStr=_pnewstr;
 }
 
 void String::append(const char* p1,const char* p2)
 {
-	char* _newstr=StringPool::current().str_cat(c_str(),size(),p1,p2-p1);
-	if(m_pStr!=gpEmptyString)
-	{
-		StringPool::current().str_free(m_pStr);
-	}
-	m_pStr=_newstr;
+	char* _pnewstr=StringPool::current().str_cat(c_str(),size(),p1,safe_distance(p1,p2));
+	StringPool::current().str_free(m_pStr);
+	m_pStr=_pnewstr;
 }
 
 
 const String& String::operator=(const char* p)
 {
 	char* _pnewstr=StringPool::current().str_dup(p);
-	if(m_pStr!=gpEmptyString)
-	{
-		StringPool::current().str_free(m_pStr);
-	}
+	StringPool::current().str_free(m_pStr);
 	m_pStr=_pnewstr;
 	return *this;
 }
+
 const String& String::operator=(const String& p)
 {
 	char* _pnewstr=StringPool::current().str_dup(p.c_str());
-	if(m_pStr!=gpEmptyString) StringPool::current().str_free(m_pStr);
+	StringPool::current().str_free(m_pStr);
 	m_pStr=_pnewstr;
 	return *this;
 }
 
 const String& String::operator=(const wchar_t* p)
 {
-	(*this)=CodeCvt<wchar_t>::current().ws2s(p);
+	(*this)=CodeCvt<wchar_t>::ws2s(p);
 	return *this;
 }
 
 const String& String::operator+=(const char* p)
 {
-	char* h=StringPool::current().str_cat(m_pStr,p);
-	if(m_pStr!=gpEmptyString) StringPool::current().str_free(m_pStr);
-	m_pStr=h;
+	char* _pnewstr=StringPool::current().str_cat(m_pStr,p);
+	StringPool::current().str_free(m_pStr);
+	m_pStr=_pnewstr;
 	return *this;
 }
 
 const String& String::operator+=(const String& p)
 {
-	char* h=StringPool::current().str_cat(m_pStr,p.c_str());
-	if(m_pStr!=gpEmptyString) StringPool::current().str_free(m_pStr);
-	m_pStr=h;
+	char* _pnewstr=StringPool::current().str_cat(m_pStr,p.c_str());
+	StringPool::current().str_free(m_pStr);
+	m_pStr=_pnewstr;
 	return *this;
 }
 
 
 const String& String::operator+=(const wchar_t* p)
 {
-	(*this)+=CodeCvt<wchar_t>::current().ws2s(p);
+	(*this)+=CodeCvt<wchar_t>::ws2s(p);
 	return *this;
 }
 
@@ -351,19 +338,19 @@ String& String::operator<<(int32_t v)
 
 String& String::operator<<(int64_t v)
 {
-	(*this)+=String::Format("%ld",v);
+	(*this)+=String::Format("%lld",v);
 	return (*this);
 }
 
 String& String::operator<<(uint32_t v)
 {
-	(*this)+=String::Format("%d",v);
+	(*this)+=String::Format("%u",v);
 	return (*this);
 }
 
 String& String::operator<<(uint64_t v)
 {
-	(*this)+=String::Format("%ld",v);
+	(*this)+=String::Format("%llu",v);
 	return (*this);
 }
 
@@ -387,7 +374,7 @@ String& String::operator<<(const char* v)
 
 String& String::operator<<(const wchar_t* v)
 {
-	(*this)+=CodeCvt<wchar_t>::current().ws2s(v);
+	(*this)+=CodeCvt<wchar_t>::ws2s(v);
 	return (*this);
 }
 
@@ -421,6 +408,17 @@ String String::utf8_to_ansi(const String& o)
 	return o;
 }
 
+String String::ansi_to_utf8(const char* o,size_t s)
+{
+	return String(o,s);
+}
+
+String String::utf8_to_ansi(const char* o,size_t s)
+{
+	return String(o,s);
+}
+
+
 bool String::ansi_to_utf8(StringBuffer<char>& o,const char* p1,size_t ln)
 {
 	o.resize(ln);
@@ -435,23 +433,108 @@ bool String::utf8_to_ansi(StringBuffer<char>& o,const char* p1,size_t ln)
 	return true;
 }
 
+bool String::ansi_to_utf8(StringBuffer<char>& o,StringBuffer<char>& s)
+{
+	if(&o==&s) return true;
+	return ansi_to_utf8(o,s.data(),s.size());
+}
+
+bool String::utf8_to_ansi(StringBuffer<char>& o,StringBuffer<char>& s)
+{
+	if(&o==&s) return true;
+	return utf8_to_ansi(o,s.data(),s.size());
+}
+
+bool String::wstr_to_utf8(StringBuffer<char>& va,StringBuffer<wchar_t>& vh)
+{
+	return CodeCvt<wchar_t>::ws2s(va,vh.data(),vh.size());
+}
+
+bool String::utf8_to_wstr(StringBuffer<wchar_t>& vh,StringBuffer<char>& o)
+{
+	return CodeCvt<wchar_t>::s2ws(vh,o.data(),o.size());
+}
+
 #else
+
+bool String::wstr_to_utf8(StringBuffer<char>& va,StringBuffer<wchar_t>& vh)
+{
+	if(vh.empty())
+	{
+		va.resize(0);
+		return true;
+	}
+
+	va.resize(vh.size()*3+1);
+	int wl=::WideCharToMultiByte(CP_UTF8,0,&vh[0],vh.size(),&va[0],va.size(),NULL,NULL);
+	va.resize(wl);
+
+	if(wl<=0)
+	{
+		vh.resize(0);
+		System::CheckError("wstr_to_utf8");
+		return false;
+	}
+	vh.resize(wl);
+	return true;
+}
+
+bool String::utf8_to_wstr(StringBuffer<wchar_t>& vh,StringBuffer<char>& va)
+{
+	if(va.empty())
+	{
+		vh.resize(0);
+		return true;
+	}
+
+	char* p1=va.data();size_t ln=va.size();
+	vh.resize(ln+1);
+	int wl=MultiByteToWideChar(CP_UTF8,0,p1,ln,&vh[0],vh.size());
+
+	if(wl<=0)
+	{
+		vh.resize(0);
+		System::CheckError("utf8_to_wstr");
+		return false;
+	}
+	vh.resize(wl);
+	return true;
+}
+
+bool String::ansi_to_utf8(StringBuffer<char>& o,StringBuffer<char>& s)
+{
+	return ansi_to_utf8(o,s.data(),s.size());
+}
+
+bool String::utf8_to_ansi(StringBuffer<char>& o,StringBuffer<char>& s)
+{
+	return utf8_to_ansi(o,s.data(),s.size());
+}
 
 bool String::ansi_to_utf8(StringBuffer<char>& va,const char* p1,size_t ln)
 {
+	if(ln==0)
+	{
+		va.resize(0);
+		return true;
+	}
+
 	StringBuffer<wchar_t> vh;
-	if(!CodeCvt<wchar_t>::current().s2ws(vh,p1,ln))
+	if(!CodeCvt<wchar_t>::s2ws(vh,p1,ln))
 	{
 		return false;
 	}
+
 	va.resize(vh.size()*3+1);
 	int wl=::WideCharToMultiByte(CP_UTF8,0,&vh[0],vh.size(),&va[0],va.size(),NULL,NULL);
 
-	if(wl<0)
+	if(wl<=0)
 	{
 		va.resize(0);
+		System::CheckError(String::Format("ansi_to_utf8:%s",p1));
 		return false;
 	}
+
 	va[wl]='\0';
 	va.resize(wl);
 	return true;;
@@ -463,46 +546,56 @@ bool String::utf8_to_ansi(StringBuffer<char>& va,const char* p1,size_t ln)
 	StringBuffer<wchar_t> vh;
 	vh.resize(ln+1);
 	int wl=MultiByteToWideChar(CP_UTF8,0,p1,ln,&vh[0],vh.size());
-	if(wl<0)
+	if(wl<=0)
 	{
+		System::CheckError(String::Format("utf8_to_ansi:%s",p1));
 		va.resize(0);
 		return false;
 	}
 
-	return CodeCvt<wchar_t>::current().ws2s(va,&vh[0],wl);
+	return CodeCvt<wchar_t>::ws2s(va,&vh[0],wl);
 }
 
 
-String String::ansi_to_utf8(const String& o)
+String String::ansi_to_utf8(const char* o,size_t s)
 {
 	StringBuffer<char> va;
-	if(ansi_to_utf8(va,o.c_str(),o.size()))
+	if(ansi_to_utf8(va,o,s))
 	{
-		String s(va);
-		return s;
+		return va;
 	}
 	else
 	{
-		System::LogTrace("ansi_to_utf8 failed:%s",o.c_str());
+		System::LogTrace("ansi_to_utf8 failed:%s",o);
 		return "???";
 	}
 
+}
+
+String String::ansi_to_utf8(const String& o)
+{
+	return ansi_to_utf8(o.c_str(),o.size());
+}
+
+String String::utf8_to_ansi(const char* o,size_t s)
+{
+	if(s==0) return "";
+
+	StringBuffer<char> va;
+	if(utf8_to_ansi(va,o,s))
+	{
+		return va;
+	}
+	else
+	{
+		System::LogTrace("utf8_to_ansi failed:%s",o);
+		return "???";
+	}
 }
 
 String String::utf8_to_ansi(const String& o)
 {
-	StringBuffer<char> va;
-	if(utf8_to_ansi(va,o.c_str(),o.size()))
-	{
-		String s(va);
-		return s;
-	}
-	else
-	{
-		System::LogTrace("utf8_to_ansi failed:%s",o.c_str());
-		return "???";
-	}
-
+	return utf8_to_ansi(o.c_str(),o.size());
 }
 
 
@@ -519,6 +612,41 @@ String String::substr(size_t pos,size_t len) const
 }
 
 
+const String& String::replace(char c1,char c2)
+{
+	StringBuffer<char> sb(*this);
+	std::replace(sb.begin(),sb.end(),c1,c2);
+	(*this)=sb;
+	return *this;
+}
+
+const String& String::replace(const String& c1,const String& c2)
+{
+	StringBuffer<char> sb;
+
+	const char* _pOld=c1.c_str();
+	size_t _nOld=c1.size();
+
+	const char* _pNew=c2.c_str();
+	size_t _nNew=c2.size();
+
+	const char* p1=m_pStr;
+	const char* p2=m_pStr+size();
+	for(;;)
+	{
+		const char* pt=::strstr(p1,_pOld);
+		if(pt==NULL)
+		{
+			sb.append(p1,p2);
+			break;
+		}
+		sb.append(p1,pt);
+		sb.append(_pNew,_nNew);
+		p1=pt+_nOld;
+	}
+	(*this)=sb;
+	return *this;
+}
 
 
 VHWD_LEAVE

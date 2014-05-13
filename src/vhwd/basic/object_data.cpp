@@ -4,12 +4,6 @@
 
 VHWD_ENTER
 
-Mutex& object_data_mutex()
-{
-	static StaticObjectWithoutDeletorT<Mutex> spin;
-	return spin;
-}
-
 
 void ObjectData::IncRef()
 {
@@ -32,22 +26,25 @@ void ObjectData::DecRef()
 
 int ObjectData::GetRef() const
 {
-	return m_refcount.load();
+	return m_refcount.get();
 }
 
-ObjectData::ObjectData():m_refcount(0)
+ObjectData::ObjectData()
 {
 
 }
 
-ObjectData::ObjectData(const ObjectData&):m_refcount(0)
+ObjectData::ObjectData(const ObjectData&)
 {
 
 }
 
 ObjectData::~ObjectData()
 {
-
+	if(m_refcount.get()!=0)
+	{
+		System::LogTrace("m_refcount==%d while ObjectData destruct",m_refcount.get());
+	}
 }
 
 IMPLEMENT_OBJECT_INFO(ObjectData,ObjectInfo)

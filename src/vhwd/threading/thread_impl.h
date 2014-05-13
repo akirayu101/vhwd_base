@@ -2,23 +2,36 @@
 #include "vhwd/logging/logger.h"
 #include "thread_impl_detail.h"
 
+
+#ifdef VHWD_USE_COROUTINE
+#include "vhwd/threading/coroutine.h"
+#endif
+
 VHWD_ENTER
 
 
-class ThreadImpl : public NonCopyable
+
+
+class VHWD_DLLIMPEXP ThreadImpl : public NonCopyable
 {
 public:
 
-	static ThreadImpl* get_thread(ThreadPool& pool);
-	static bool put_thread(ThreadPool& pool,ThreadImpl* impl);
+	enum
+	{
+		THREADMANAGER_DISABLED	=1<<0,
+		THREADMANAGER_NOCAHCING	=1<<1,
+	};
+
+	static ThreadImpl* get_thread();
+	static bool put_thread(ThreadImpl* impl);
 
 	static ThreadImpl& data();
 
-	static bool activate(ThreadPool& pool,Thread& thrd,int n);
-	static bool activate(ThreadPool& pool,Thread& thrd,ThreadEx::InvokerGroup& g);
+	static bool activate(Thread& thrd,int n);
+	static bool activate(Thread& thrd,ThreadEx::InvokerGroup& g);
 
 
-	ThreadImpl(ThreadPool& p);
+	ThreadImpl();
 	~ThreadImpl();
 
 	void set_thread(Thread* p,ThreadEx::factor_type v,int i);
@@ -42,7 +55,12 @@ public:
 
 	ThreadImpl_detail::thread_t thrd_id;
 	ThreadEx::factor_type invoker;
-	ThreadPool& pool;
+
+	ThreadManager& tmgr;
+
+#ifdef VHWD_USE_COROUTINE
+	CoroutineMain cort_main;
+#endif
 
 	LitePtrT<ThreadImpl> pNext;
 	LitePtrT<ThreadImpl> pPrev;

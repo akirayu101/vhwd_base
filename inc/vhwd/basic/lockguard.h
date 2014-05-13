@@ -1,9 +1,14 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_THREAD_LOCKGUARD__
 #define __H_VHWD_THREAD_LOCKGUARD__
 
 #include "vhwd/config.h"
-#include "vhwd/threading/thread_rwlock.h"
-#include "vhwd/threading/thread.h"
 #include "vhwd/basic/atomic.h"
 
 
@@ -14,7 +19,7 @@ class LockPolicyDefault
 {
 public:
 
-	static inline void Lock(T& mtx)
+	static inline void lock(T& mtx)
 	{
 		mtx.lock();
 	}
@@ -30,7 +35,7 @@ class LockPolicyDefault<AtomicIntT<T> >
 {
 public:
 
-	static inline void Lock(AtomicIntT<T>& mtx)
+	static inline void lock(AtomicIntT<T>& mtx)
 	{
 		while(mtx.exchange(1)!=0)
 		{
@@ -40,60 +45,14 @@ public:
 
 	static inline void unlock(AtomicIntT<T>& mtx)
 	{
+		wassert(mtx.get()==1);
 		mtx.store(0);
 	}
 };
 
 
-template<typename T>
-class LockPolicyYield
-{
-public:
-
-	static inline void lock(T& mtx)
-	{
-		while(mtx.exchange(1)!=0)
-		{
-			Thread::yield();
-		}
-	}
-
-	static inline void unlock(T& mtx)
-	{
-		mtx.store(0);
-	}
-};
 
 
-class LockPolicyRead
-{
-public:
-
-	static inline void lock(RWLock& mtx)
-	{
-		mtx.lock_r();
-	}
-
-	static inline void unlock(RWLock& mtx)
-	{
-		mtx.unlock_r();
-	}
-};
-
-class LockPolicyWrite
-{
-public:
-
-	static inline void lock(RWLock& mtx)
-	{
-		mtx.lock_w();
-	}
-
-	static inline void unlock(RWLock& mtx)
-	{
-		mtx.unlock_w();
-	}
-};
 
 template<typename T,typename P=LockPolicyDefault<T> >
 class LockGuard : public NonCopyable
@@ -102,7 +61,7 @@ public:
 
 	LockGuard(T& mtx_):mtx(mtx_)
 	{
-		P::Lock(mtx);
+		P::lock(mtx);
 	}
 
 	~LockGuard()

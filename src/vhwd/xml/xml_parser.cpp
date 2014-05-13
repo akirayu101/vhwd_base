@@ -1,407 +1,754 @@
 #include "xml_parser.h"
 #include "vhwd/basic/system.h"
 #include "vhwd/basic/exception.h"
+#include "vhwd/basic/clock.h"
+#include "vhwd/basic/console.h"
+#include "vhwd/logging/logger.h"
 
+#include <fstream>
 
 VHWD_ENTER
 
-
-class tagCharAttribute
+template<unsigned N>
+class lkt2uppercase
 {
 public:
-	bool is_zm; //字母
-	bool is_sz; //数字
-	bool is_id; //字母 数字 : _ .
-	bool is_sp; //空白字符
-	int sp_nt;	//字符串下个字符, '\\'为2，其他为1，暂不考虑中文字符等的处理
+	static const int value=(N>='a' && N<='z')?(N+'A'-'a'):N;
 };
 
-tagCharAttribute aCharAttribute[256];
+template<unsigned N>
+class lkt2lowercase
+{
+public:
+	static const int value=(N>='A'&&N<='Z')?(N-'A'+'a'):N;
+};
+
+template<unsigned N>
+class lkt_whitespace
+{
+public:
+	static const int value=N==' '||N=='\t'||N=='\r'||N=='\n';
+};
+
+template<unsigned N>
+class lkt_name
+{
+public:
+	static const int value=(N!='\0' && N!='=' && N!='!' && N!='>' && N!='<' && N!='?' && N!='/' && N!='\\') && (!lkt_whitespace<N>::value);
+};
+
+template<unsigned N>
+class lkt_not_gt
+{
+public:
+	static const int value=!(N=='\0'||N=='>');
+};
 
 
-void init_char_property()
+XmlParser::XmlParser(XmlDocument& xmldoc_):xmldoc(xmldoc_)
 {
 
-	static bool first=true;
-	if(!first) return;
-	first=false;
-
-	typedef unsigned char uint8_t;
-	memset(aCharAttribute,0,sizeof(tagCharAttribute)*256);
-	for(int i=0;i<256;i++) aCharAttribute[i].sp_nt=1;
-	aCharAttribute['\\'].sp_nt=2;
-
-	for(uint8_t i='a';i<='z';i++)
-	{
-		aCharAttribute[i].is_zm=true;
-		aCharAttribute[i].is_id=true;
-	}
-	for(uint8_t i='A';i<='Z';i++)
-	{
-		aCharAttribute[i].is_zm=true;
-		aCharAttribute[i].is_id=true;
-	}
-	for(uint8_t i='0';i<='9';i++)
-	{
-		aCharAttribute[i].is_sz=true;
-		aCharAttribute[i].is_id=true;
-	}
-	{
-		aCharAttribute['_'].is_id=true;
-		aCharAttribute[':'].is_id=true;
-		aCharAttribute['.'].is_id=true;
-		aCharAttribute['-'].is_id=true;
-	}
-
-	{
-		aCharAttribute[' '].is_sp=true;
-		aCharAttribute['\t'].is_sp=true;
-		aCharAttribute['\r'].is_sp=true;
-		aCharAttribute['\n'].is_sp=true;
-	}		
 }
 
-
-XmlParser::XmlParser()
+bool XmlParser::parse_document()
 {
-	init_char_property();
-}
+	xmldoc.DeleteChildren();
+	xmldoc.DeleteAttributes();
 
-inline String XmlParser::get_id(cuint8ptr_t p1,cuint8ptr_t p2) //取得字符串的id
-{
-	return String((char*)p1,(char*)p2);
-}
-
-bool XmlParser::parse(XmlDocument& xmldoc)
-{
-	if(vContents.empty())
-	{
-		System::LogTrace("XmlParser: contents is empty");
-		return NULL;
-	}
-
-	pcur=&(*vContents.begin());
+	pcur=pbeg;
 	pend=pcur+size;
+	nodes.clear();
+
+	nodes.push_back(&xmldoc);
 
 	try
 	{
-		skip_header();
-		XmlNode* node=parse_node();
-		xmldoc.m_pRoot.reset(node);
-		return true;
+		parse_subnodes();
 	}
-	catch(...)
+	catch(std::exception& e)
 	{
+		this_logger().LogError(e.what());
+		nodes.clear();
 		return false;
 	}
+
+	nodes.clear();
+	return true;
 }
 
 
-void XmlParser::kerror(cuint8ptr_t ,const char* msg)
+void XmlParser::kerror(mychar_ptr p,const char* msg)
 {
+	size_t pos=p-pbeg;
+	(void)&pos;
 	String desc=String::Format("xml_parser: %s",msg);
 	Exception::XError(desc.c_str());
 }
 
-inline void XmlParser::skip_sp() //跳过空白字符
+template<unsigned N>
+class lkt_number16b
 {
-	for(;aCharAttribute[*pcur].is_sp;pcur++);
-}
+public:
+	static const unsigned char value1=(N>='0'&&N<='9')?(N-'0'):0xFF;
+	static const unsigned char value2=(N>='A'&&N<='Z')?(N+10-'A'):value1;
+	static const unsigned char value3=(N>='a'&&N<='z')?(N+10-'a'):value2;
+	static const unsigned char value=value3;
+};
 
-XmlNode* XmlParser::parse_node() // 读取一个 xml节点
+template<unsigned N>
+class lkt_number10b
 {
-	skip_comment();
-	cuint8ptr_t p1=pcur;
+public:
+	static const unsigned char value=(N>='0'&&N<='9')?(N-'0'):0xFF;
+};
 
-	if(pcur[0]!='<')
+inline void  XmlParser::string_assign(String& s0,mychar_ptr p1,mychar_ptr p2)
+{
+	if(p1[0]=='\''||p1[0]=='\"')
 	{
-		kerror(p1," < expected");
+		p1=p1+1;
+		p2=p2-1;
 	}
 
-	++pcur;
-	String id=read_id();
+	tempbuf.reserve(p2-p1);
 
-	AutoPtrT<XmlNode> p(new XmlNode);
-	p->m_sName=id;
 
-	read_prop(p.get());
-
-	if(pcur[0]=='/')
+	// &amp; &apos; &quot; &gt; &lt; &#...; 
+	mychar* dest=tempbuf.data();
+	while(p1!=p2)
 	{
-		if(pcur[1]!='>')
+		if(p1[0]=='&')
 		{
-			kerror(p1," /> expected");
+			switch(p1[1])
+			{
+			case 'a':
+				if(p1[2]=='m'&&p1[3]=='p'&&p1[4]==';')
+				{
+					*dest++='&';
+					p1+=5;
+				}
+				else if(p1[2]=='p'&&p1[3]=='o'&&p1[4]=='s'&&p1[5]==';')
+				{
+					*dest++='\'';
+					p1+=6;
+				}
+				else
+				{
+					kerror(p1,"&amp; or &apos; expected");
+					return;
+				}
+				break;
+			case 'g':
+				if(p1[2]=='t'&&p1[3]==';')
+				{
+					*dest++='>';
+					p1+=4;
+				}
+				else
+				{
+					kerror(p1,"&gt; expected");
+					return;
+				}
+				break;
+			case 'l':
+				if(p1[2]=='t'&&p1[3]==';')
+				{
+					*dest++='<';
+					p1+=4;
+				}
+				else
+				{
+					kerror(p1,"&lt; expected");
+					return;
+				}
+				break;
+			case 'q':
+				if(p1[2]=='u'&&p1[3]=='o'&&p1[4]=='t'&&p1[5]==';')
+				{
+					*dest++='\"';
+					p1+=6;
+				}
+				else
+				{
+					kerror(p1,"&quot; expected");
+					return;
+				}
+				break;
+			case '#':
+				{
+					uint32_t code = 0;
+					if(p1[2]=='x')
+					{
+						p1+=3;
+						for(;;)
+						{
+							unsigned char digit =lookup_table<lkt_number16b>::test(p1[0]);
+							if (digit == 0xFF) break;
+							code=(code<<4)+digit;p1+=1;
+						}
+					}
+					else
+					{
+						p1+=2;
+						for(;;)
+						{
+							unsigned char digit =lookup_table<lkt_number10b>::test(p1[0]);
+							if (digit == 0xFF) break;
+							code=(code*10)+digit;p1+=1;
+						}
+					}
+					if(p1[0]!=';')
+					{
+						kerror(p1,"; expected");
+						return;
+					}
+					p1+=1;
+
+					if (code < 0x80)
+					{
+						dest[0]=code;
+						dest+=1;
+					}
+					else if (code < 0x800)
+					{
+						dest[1] = ((code | 0x80) & 0xBF); code >>= 6;
+						dest[0] = (code | 0xC0);
+						dest+=2;
+					}
+					else if (code < 0x10000)
+					{
+						dest[2] = ((code | 0x80) & 0xBF); code >>= 6;
+						dest[1] = ((code | 0x80) & 0xBF); code >>= 6;
+						dest[0] = (code | 0xE0);
+						dest+=3;
+					}
+					else if (code < 0x110000)
+					{
+						dest[3] = ((code | 0x80) & 0xBF); code >>= 6;
+						dest[2] = ((code | 0x80) & 0xBF); code >>= 6;
+						dest[1] = ((code | 0x80) & 0xBF); code >>= 6;
+						dest[0] = (code | 0xF0);
+						dest+=4;
+					}
+					else
+					{
+						kerror(p1,"invalid unicode number");
+						return;
+					}
+				}
+				break;
+			default:
+				*dest++='&';
+				break;
+			}
 		}
-		pcur+=2;
-		return p.release();
-	}
-	else if(pcur[0]!='>')
-	{
-		kerror(p1," > expected");
+		else
+		{
+			*dest++=*p1++;
+		}
 	}
 
-	++pcur;
-	read_sub(p.get());
-
-	if(pcur[0]!='<'||pcur[1]!='/')
-	{
-		kerror(p1," </ expected");
-	}
-	pcur+=2;
-
-	p1=pcur;
-
-	for(;*++pcur!='>';);
-
-	k_test(p1,"> expected");
-
-	cuint8ptr_t p2=pcur++;
-
-	if(!is_same(p->m_sName,get_id(p1,p2)))
-	{
-		kerror(p1,"tags not match");
-	}
-
-	return p.release();
+	s0.assign(tempbuf.data(),dest);
 }
 
-void XmlParser::skip_header()
+
+template<unsigned N>
+class lkt_string_key1
 {
-	skip_sp();
-
-	cuint8ptr_t p1=pcur;
-
-	if(pcur[0]!='<' || pcur[1]!='?')
-	{
-		return;
-	}
-
-	pcur+=2;
-	for(;pcur[0]!='?'||pcur[1]!='>';pcur++);
-
-	k_test(p1,"?> expected");
-	pcur+=2;
-
-}
-
-void XmlParser::skip_comment()
+public:
+	static const int value=!(N=='\0'||N=='\''||N=='\\');
+};
+inline void XmlParser::parse_string1()
 {
+	pcur+=1;
 	for(;;)
 	{
-		skip_sp();
-		cuint8ptr_t p1=pcur;
-		if(pcur[0]!='<'||pcur[1]!='!')
+		skip<lkt_string_key1>(pcur);
+		if(pcur[0]=='\'')
 		{
+			pcur+=1;
 			return;
 		}
-
-		pcur+=2;
-		if(pcur[0]=='-'&&pcur[1]=='-')
+		else if(pcur[0]=='\\')
 		{
+			if(pcur[1]=='\0')
+			{
+				kerror(pcur,"unexpected data end");
+				return;
+			}
 			pcur+=2;
-			for(;pcur[0]!='-'||pcur[1]!='-'||pcur[2]!='>';pcur++);
-			k_test(p1,"--> expected");
-			pcur+=3;
+			continue;
 		}
 		else
 		{
-			for(;pcur[0]!='>';pcur++);
-			k_test(p1,"> expected");
-			pcur++;
+			kerror(pcur,"\' expected");
+			return;
 		}
 	}
 }
 
-bool XmlParser::is_same(const String& p1,const String& p2)
+template<unsigned N>
+class lkt_string_key2
 {
-	return p1==p2;
-}
-
-
-void XmlParser::read_sub(XmlNode* n) //读取子节点
+public:
+	static const int value=!(N=='\0'||N=='\"'||N=='\\');
+};
+inline void XmlParser::parse_string2()
 {
-
-	class xml_node_list
-	{
-	public:
-		LitePtrT<XmlNode> pHead,pTail;
-
-		void append(XmlNode* p)
-		{
-			if(!pHead)
-			{
-				pHead.reset(p);
-				pTail.reset(p);
-			}
-			else
-			{
-				pTail->m_pNextSibling.reset(p);
-				pTail.reset(p);
-			}
-		}
-	};
-
-	cuint8ptr_t p1=pcur;
-
-	xml_node_list listChilds;
-
+	pcur+=1;
 	for(;;)
 	{
-		skip_sp();
-		if(*pcur=='<')
+		skip<lkt_string_key2>(pcur);
+		if(pcur[0]=='\"')
 		{
-			if(pcur[1]=='/')
+			pcur+=1;
+			return;
+		}
+		else if(pcur[0]=='\\')
+		{
+			if(pcur[1]=='\0')
 			{
-				//dummy node
-				n->m_sContent=get_id(p1,pcur);
-				break;
-			}
-			else if(pcur[1]=='!')
-			{
-				skip_comment();
-				continue;
+				kerror(pcur,"unexpected data end");
+				return;
 			}
 
-			listChilds.append(parse_node());
-			p1=pcur;
+			pcur+=2;
+			continue;
 		}
 		else
 		{
-			for(;*++pcur!='<';);
-			k_test(p1,"< expected");
+			kerror(pcur,"\" expected");
+			return;
+		}
+	}
+}
 
-			n->m_sContent=get_id(p1,pcur);
-			//n->addchild(dummy_node(p1,pcur));
-			if(pcur[1]=='/')
-			{
-				break;
-			}
-			listChilds.append(parse_node());
-			p1=pcur;
+
+inline void XmlParser::parse_value()
+{
+	switch(pcur[0])
+	{
+	case '\'':
+		parse_string1();
+		break;
+	case '\"':
+		parse_string2();
+		break;
+	default:
+		skip<lkt_name>(pcur);
+	}
+}
+
+
+inline void XmlParser::parse_comment_node()
+{
+	if(pcur[2]!='-')
+	{
+		kerror(pcur,"<!-- expected");
+	}
+	pcur+=3;
+
+	skip<lkt_not_gt>(pcur);
+	if(pcur[0]!='>')
+	{
+		kerror(pcur,"> expected");
+	}
+
+	if(pcur[-1]!='-'||pcur[-2]!='-')
+	{
+		kerror(pcur-2,"--> expected");
+	}
+
+	pcur+=1;
+}
+
+inline void XmlParser::parse_doctype_node()
+{
+	pcur+=1;
+
+	lookup_table<lkt2uppercase> lku;
+	const char* tag="DOCTYPE";
+
+	for(int i=0;i<7;i++)
+	{
+		if(lku(pcur[i])!=(mychar)tag[i])
+		{
+			kerror(pcur,"<!DOCTYPE expected");
+			return;
 		}
 	}
 
-	n->m_pFirstChild.reset(listChilds.pHead.get());
-	listChilds.pHead.reset(NULL);
-	listChilds.pTail.reset(NULL);
+	pcur+=7;
+	skip<lkt_not_gt>(pcur);
+	if(pcur[0]!='>')
+	{
+		kerror(pcur,"> expected");
+	}
+	pcur+=1;
 }
 
-void XmlParser::read_prop(XmlNode* n) //读取属性
+
+inline void XmlParser::parse_cdata()
 {
+	pcur+=1;
+
+	lookup_table<lkt2uppercase> lku;
+	const char* tag="[CDATA[[";
+
+	for(int i=0;i<8;i++)
+	{
+		if(lku(pcur[i])!=(mychar)tag[i])
+		{
+			kerror(pcur,"<![CDATA[[ expected");
+			return;
+		}
+	}
+	pcur+=8;
+
+	mychar_ptr tagvalue1=pcur;
 	for(;;)
 	{
-		skip_sp();
-		if(!aCharAttribute[*pcur].is_id)
+		skip<lkt_not_gt>(pcur);
+		if(pcur[0]=='\0')
+		{
+			kerror(pcur,"]]> expected");
+			return;
+		}
+		if(pcur[-1]==']'&&pcur[-2]==']')
 		{
 			break;
 		}
-		String id=read_id();
-		skip_sp();
-		if(*pcur!='=')
+		pcur+=1;
+	}
+	mychar_ptr tagvalue2=pcur-2;
+	XmlNode* pnode=CreateNode(XmlNode::XMLNODE_CDATA);
+	pnode->m_sValue.assign(tagvalue1,tagvalue2);
+	nodes.back()->AppendChild(pnode);
+	pcur+=1;
+}
+
+
+
+inline void XmlParser::parse_instruction_node()
+{
+	pcur+=2;
+	//mychar_ptr tagname1=pcur;
+	skip<lkt_name>(pcur);
+	//mychar_ptr tagname2=pcur;
+
+	for(;;)
+	{
+
+		skip<lkt_whitespace>(pcur);
+		if(!lookup_table<lkt_name>::test(pcur[0]))
 		{
-			n->AddAttribute(id,String());
-			continue;
-			//kerror(p1," = expected");
+			break;
 		}
-		++pcur;
-		skip_sp();
-		String pp=read_val();
-		n->AddAttribute(id,pp);		
-	}
-}
 
-String XmlParser::read_val() //读取值
-{
-	if(*pcur=='"')
-	{
-		return read_str();
-	}
-	else
-	{
-		return read_id();
-	}
-}
+		//mychar_ptr attrname1=pcur;
+		skip<lkt_name>(pcur);
+		//mychar_ptr attrname2=pcur;
 
-String XmlParser::read_str() //读取字符串值
-{
-	cuint8ptr_t p1=pcur++;
-	for(;*pcur!='"';pcur+=aCharAttribute[*pcur].sp_nt);
-	cuint8ptr_t p2=++pcur;
-	return get_id(p1,p2);
-
-}
-
-String XmlParser::read_id() //读取id
-{
-	cuint8ptr_t p1=pcur;
-	for(;aCharAttribute[*pcur].is_id;pcur++);
-	cuint8ptr_t p2=pcur;
-	if(p1==p2) kerror(p1," id expected");
-	return get_id(p1,p2);
-}
-
-
-
-bool XmlParser::LoadXml(const String& f)
-{
-	std::ifstream ifs;
-	ifs.open(f.c_str(),std::ios::in|std::ios::binary);
-	if(!ifs.good()) return false;
-	ifs.seekg(0,std::ios_base::end);
-	size=(size_t)ifs.tellg();		
-	vContents.resize(size+100);
-	ifs.seekg(0,std::ios_base::beg);
-	ifs.read((char*)&vContents[0],size);
-	ifs.close();
-
-	const char* h="< -->\"/>?<> ";
-	strcpy((char*)&vContents[size+1],h);
-	return true;
-}
-
-bool XmlParser::SaveXml(XmlDocument& xmldoc,const String& s)
-{
-	std::ofstream ofs(s.c_str());
-	if(!ofs.good()) return false;
-	savenode(ofs,xmldoc.m_pRoot.get());
-	return true;
-}
-
-void XmlParser::savenode(std::ofstream& ofs,XmlNode* node,int lv)
-{
-
-	tabindent(ofs,lv);
-	ofs<< "<" << str(node->m_sName);
-	for(size_t i=0;i<node->m_aAttribute.size();i++)
-	{
-		ofs<<" "<<str(node->m_aAttribute[i].m_sName)<<"="<<str(node->m_aAttribute[i].m_sValue);
-	}
-
-	if(node->m_pFirstChild==NULL)
-	{
-		if(!node->m_sContent.empty())
+		skip<lkt_whitespace>(pcur);
+		if(pcur[0]!='=')
 		{
-			ofs<<" >"<<str(node->m_sContent)<<"</"<<str(node->m_sName)<<">"<<std::endl;
+			kerror(pcur,"= expected");
+		}
+
+		pcur+=1;
+		skip<lkt_whitespace>(pcur);
+
+		//mychar_ptr attrvalue1=pcur;
+		parse_value();
+		//mychar_ptr attrvalue2=pcur;
+
+	}
+
+	if(pcur[0]!='?'||pcur[1]!='>')
+	{
+		kerror(pcur,"?> expected");
+	}
+	pcur+=2;
+
+}
+
+template<unsigned N>
+class parse_data_key
+{
+public:
+	static const int value=!(N=='\0'||N=='<');
+};
+inline void XmlParser::parse_subnodes()
+{
+	mychar_ptr tagvalue1,tagvalue2;
+	for(;;)
+	{
+		tagvalue1=pcur;
+		skip<lkt_whitespace>(pcur);
+		if(pcur[0]=='<')
+		{
+			switch(pcur[1])
+			{
+			case '/':
+				pcur+=2;
+				tagvalue1=pcur;
+				skip<lkt_name>(pcur);
+				tagvalue2=pcur;
+				skip<lkt_whitespace>(pcur);
+				if(pcur[0]!='>')
+				{
+					kerror(pcur,"> expected");
+					return;
+				}
+				pcur+=1;
+				return;
+
+			case '!':
+				switch(pcur[2])
+				{
+				case '-':
+					parse_comment_node();
+					break;
+				case 'd':
+				case 'D':
+					parse_doctype_node();
+					break;
+				case 'C':
+				case 'c':
+					parse_cdata();
+					break;
+				default:
+					kerror(pcur,"unexpected character");
+					return;
+				}
+				break;
+			case '?':
+				parse_instruction_node();
+				break;
+			default:
+				parse_element_node();
+				break;
+			}
 		}
 		else
 		{
-			ofs<<" />"<<std::endl;
+			skip<parse_data_key>(pcur);
+			if(pcur[0]!='<')
+			{
+				if(pcur[0]=='\0')
+				{
+					return;
+				}
+
+				kerror(pcur,"< expected");
+				return;
+			}
+
+			tagvalue2=pcur;
+			if(nodes.back()->m_sValue.empty())
+			{
+				nodes.back()->m_sValue.assign(tagvalue1,tagvalue2);
+			}
+
+			XmlNode* pnode=CreateNode(XmlNode::XMLNODE_DATA);
+			pnode->m_sValue.assign(tagvalue1,tagvalue2);
+			nodes.back()->AppendChild(pnode);
 		}
-
-	}
-	else
-	{
-		ofs<<" >"<<std::endl;
-
-		for(XmlNode* p=node->m_pFirstChild;p!=NULL;p=p->m_pNextSibling)
-		{	
-			savenode(ofs,p,lv+1);
-		}
-
-		tabindent(ofs,lv);
-		ofs<<"</"<<str(node->m_sName)<<">"<<std::endl;
 	}
 }
 
+
+
+inline void XmlParser::parse_attributes()
+{
+	for(;;)
+	{
+
+		skip<lkt_whitespace>(pcur);
+		if(!lookup_table<lkt_name>::test(pcur[0])) return;
+
+		mychar_ptr attrname1=pcur;
+		skip<lkt_name>(pcur);
+		mychar_ptr attrname2=pcur;
+
+		skip<lkt_whitespace>(pcur);
+		if(pcur[0]!='=')
+		{
+			kerror(pcur,"= expected");
+		}
+
+		pcur+=1;
+		skip<lkt_whitespace>(pcur);
+
+		mychar_ptr attrvalue1=pcur;
+		parse_value();
+		mychar_ptr attrvalue2=pcur;
+
+		XmlAttribute* attr=CreateAttr();
+		attr->m_sName.assign(attrname1,attrname2);
+		string_assign(attr->m_sValue,attrvalue1,attrvalue2);
+		nodes.back()->AppendAttribute(attr);
+
+	}
+}
+
+inline XmlNode* XmlParser::parse_element_node()
+{
+	pcur+=1;
+
+	mychar_ptr tagname1=pcur;
+	skip<lkt_name>(pcur);
+	mychar_ptr tagname2=pcur;
+
+	XmlNode* pnode=CreateNode();
+	pnode->m_sName.assign(tagname1,tagname2);
+
+	NodeLocker lock1(nodes,pnode);
+
+	parse_attributes();
+
+	switch(pcur[0])
+	{
+	case '/':
+		if(pcur[1]!='>')
+		{
+			kerror(pcur,"> expected");
+		}
+		pcur+=2;
+		return NULL;
+	case '>':
+		pcur+=1;
+		parse_subnodes();
+		break;
+	default:
+		kerror(pcur,"> expected");
+	}
+
+	return NULL;
+}
+
+
+bool XmlParser::load(const char* pstr_,size_t size_)
+{
+	if(pstr_[size_]=='\0'&&size_>0&&pstr_[size-1]!='\0')
+	{
+		pbeg=(mychar_ptr)pstr_;
+		size=size_;
+	}
+	else
+	{
+		buffer.resize(size_+1);
+		memcpy(buffer.data(),pstr_,size_);
+		buffer[size_]='\0';
+		pbeg=(mychar_ptr)buffer.data();
+		size=buffer.size();
+	}
+
+	return parse_document();
+}
+
+bool XmlParser::load(const String& f)
+{
+	if(!buffer.load(f,FILE_BINARY))
+	{
+		return false;
+	}
+
+	size=buffer.size();
+	buffer.push_back(0);
+	pbeg=(mychar_ptr)buffer.data();
+
+	return parse_document();
+}
+
+bool XmlParser::save(const String& s)
+{
+	std::ofstream ofs(s.c_str());
+	if(!ofs.good()) return false;
+
+	for(XmlNode* pnode=xmldoc.GetFirstChild();pnode;pnode=pnode->GetNext())
+	{
+		savenode(ofs,pnode,0);
+	}
+
+	return true;
+}
+
+void XmlParser::savestring(std::ostream& ofs,const String& v)
+{
+	//size_t ln=v.size();
+	const char* p1=v.c_str();
+	const char px[]="&quot;";
+	for(;;)
+	{
+		const char* p2=::strstr(p1,"\"");
+		if(p2==NULL)
+		{
+			ofs<<p1;
+			return;
+		}
+		ofs.write(p1,p2-p1);
+		ofs.write(px,6);
+		p1=p2+1;
+	}
+}
+
+void XmlParser::savenode(std::ostream& ofs,XmlNode* pnode,int lv)
+{
+
+	if(pnode->GetType()==XmlNode::XMLNODE_DATA)
+	{
+		ofs<<pnode->GetValue();
+		return;
+	}
+
+	if(pnode->GetType()==XmlNode::XMLNODE_CDATA)
+	{
+		ofs<<"<![CDATA[[";
+		ofs<<pnode->GetValue();
+		ofs<<"]]>";
+		return;
+	}
+
+	tabindent(ofs,lv);
+	ofs<< "<" << pnode->GetName();
+
+	for(XmlAttribute* pattr=pnode->GetFirstAttribute();pattr;pattr=pattr->GetNext())
+	{
+		ofs<<" "<<pattr->GetName()<<"=\"";
+		savestring(ofs,pattr->GetValue());
+		ofs<<"\"";
+	}
+
+	XmlNode* fnode=pnode->GetFirstChild();
+
+	if(fnode==NULL)
+	{
+		ofs<<"/>"<<std::endl;
+		return;
+	}
+
+	ofs<<">";
+
+	if(fnode->GetNext()==NULL && fnode->GetType()==XmlNode::XMLNODE_DATA)
+	{
+		savenode(ofs,fnode);
+	}
+	else
+	{
+		if(fnode->GetType()==XmlNode::XMLNODE_ELEMENT)
+		{
+			ofs<<std::endl;
+		}
+		for(XmlNode* tnode=fnode;tnode;tnode=tnode->GetNext())
+		{
+			savenode(ofs,tnode,lv+1);
+		}
+
+		tabindent(ofs,lv);
+	}
+	ofs<< "</" << pnode->GetName()<<">"<<std::endl;
+
+}
 
 VHWD_LEAVE

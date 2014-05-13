@@ -1,3 +1,10 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_LOG_RECORD__
 #define __H_VHWD_LOG_RECORD__
 
@@ -6,25 +13,13 @@
 
 VHWD_ENTER
 
-enum
-{
-	LOGLEVEL_DEBUG,
-	LOGLEVEL_PRINT,
-	LOGLEVEL_INFO,
-	LOGLEVEL_MESSAGE,
-	LOGLEVEL_USER,
-	LOGLEVEL_WARNING=20,
-	LOGLEVEL_ERROR,
-	LOGLEVEL_FETAL,
-	LOGLEVEL_MAX,
-};
-
 
 class VHWD_DLLIMPEXP LogRecord
 {
 public:
 	LogRecord();
 	LogRecord(const String& s,int src,int id,int lv);
+	LogRecord(int src,int id,int lv);
 
 	// timepoint when record generated.
 	TimePoint m_tStamp;

@@ -8,9 +8,6 @@ FixedSizeAllocatorUnit::FixedSizeAllocatorUnit(size_t n)
 {
 	nElemSize=n>0?(n+7)&~7:8;
 	pPageList=NULL;
-	if(nElemSize==0) return;
-
-	//nPageSpan=1;
 
 	nPageSize=MemPageCache::nPageSize;
 

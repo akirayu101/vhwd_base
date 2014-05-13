@@ -1,17 +1,19 @@
 #include "vhwd/memory/mempool.h"
 #include "vhwd/collection/indexer_map.h"
-
+#include <cstring>
 
 VHWD_ENTER
-
-extern char* gpEmptyString;
 
 class StringPool : public NonCopyable
 {
 public:
 	typedef MemPoolPaging MyPool;
+	typedef char char_type;
+
+	static char_type* gpEmptyString;
 
 	StringPool():pool(MyPool::current()){}
+	MyPool& pool;
 
 	static StringPool& current()
 	{
@@ -19,56 +21,62 @@ public:
 		return p;
 	}
 
-	MyPool& pool;
-
-	template<typename T>
-	inline T* str_alloc(size_t s)
+	static inline char_type* str_empty()
 	{
-		T* p=(T*)pool.allocate(sizeof(T)*(s+1));
+		return gpEmptyString;
+	}
+
+	inline char_type* str_alloc(size_t s)
+	{
+		char_type* p=(char_type*)pool.allocate(sizeof(char_type)*(s+1));
+		if(p==NULL)
+		{
+			Exception::XBadAlloc();
+		}
 		p[s]=0;
 		return p;
 	}
 
-	template<typename T>
-	inline T* str_dup(const T* s)
+	inline char_type* str_dup(const char_type* s)
 	{
-		size_t n=std::char_traits<T>::length(s);
-		T* dst=str_alloc<T>(n);
-		memcpy(dst,s,sizeof(T)*n);
+		size_t n=std::char_traits<char_type>::length(s);
+		return str_dup(s,n);
+	}
+
+
+	inline char_type* str_dup(const char_type* s,size_t n)
+	{
+		if(n==0)
+		{
+			return str_empty();
+		}
+		char_type* dst=str_alloc(n);
+		memcpy(dst,s,sizeof(char_type)*n);
 		return dst;
 	}
 
-	template<typename T>
-	inline T* str_dup(const T* s,size_t n)
+	inline void str_free(char_type* p)
 	{
-		T* dst=str_alloc<T>(n);
-		memcpy(dst,s,sizeof(T)*n);
-		return dst;
+		if(p!=gpEmptyString)
+		{
+			pool.deallocate((void*)p);
+		}
+
 	}
 
-	template<typename T>
-	inline void str_free(T* p)
+	inline char_type* str_cat(const char_type* p1,const char_type* p2)
 	{
-		pool.deallocate((void*)p);
+		size_t n1=std::char_traits<char_type>::length(p1);
+		size_t n2=std::char_traits<char_type>::length(p2);
+		return str_cat(p1,n1,p2,n2);
 	}
 
-	template<typename T>
-	inline T* str_cat(const T* p1,const T* p2)
+	inline char_type* str_cat(const char_type* p1,size_t n1,const char_type* p2,size_t n2)
 	{
-		size_t n1=std::char_traits<T>::length(p1);
-		size_t n2=std::char_traits<T>::length(p2);
-		T* dst=str_alloc<T>(n1+n2);
-		memcpy(dst,p1,sizeof(T)*n1);
-		memcpy(dst+n1,p2,sizeof(T)*n2);
-		return dst;
-	}
-
-	template<typename T>
-	inline T* str_cat(const T* p1,size_t n1,const T* p2,size_t n2)
-	{
-		T* dst=str_alloc<T>(n1+n2);
-		memcpy(dst,p1,sizeof(T)*n1);
-		memcpy(dst+n1,p2,sizeof(T)*n2);
+		size_t n=n1+n2;
+		char_type* dst=str_alloc(n);
+		memcpy(dst,p1,sizeof(char_type)*n1);
+		memcpy(dst+n1,p2,sizeof(char_type)*n2);
 		return dst;
 	}
 

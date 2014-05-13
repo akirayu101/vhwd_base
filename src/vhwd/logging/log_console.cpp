@@ -48,7 +48,7 @@ void LogConsole::Handle(const LogRecord& o)
 	String omsg=Format(o);
 	if(flags.get(FLAG_COLORED))
 	{
-		Console::ColoredWriteLine(aColors[o.m_nLevel],omsg);
+		Console::WriteLine(omsg,aColors[o.m_nLevel]);
 	}
 	else
 	{

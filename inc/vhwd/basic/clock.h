@@ -1,3 +1,10 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_BASIC_CLOCK__
 #define __H_VHWD_BASIC_CLOCK__
 
@@ -57,8 +64,10 @@ public:
 
 	String Format(const String& f="") const;
 
-	// Format yy-mm-dd[ hh:mm:dd]
+	// Parse from string yy-mm-dd[ hh:mm:dd]
 	bool Parse(const String& ts_);
+
+
 	bool Parse(const TimePoint& tp_,int t=LOCAL);
 
 	TimePoint GetTimePoint() const;
@@ -80,12 +89,12 @@ public:
 	int64_t GetMilliSeconds() const {return val/1000;}
 	int64_t GetMicroSeconds() const {return val;}
 
-	static TimeSpan Day(int v){return Seconds(60*60*24*v);}
-	static TimeSpan Hours(int v){return Seconds(60*60*v);}
-	static TimeSpan Minutes(int v){return Seconds(60*v);}
-	static TimeSpan Seconds(int v){return TimeSpan(1000*1000*v);}
-	static TimeSpan MilliSeconds(int v){return TimeSpan(1000*v);}
-	static TimeSpan MicroSeconds(int v){return TimeSpan(v);}
+	static TimeSpan Day(int64_t v){return Seconds(60*60*24*v);}
+	static TimeSpan Hours(int64_t v){return Seconds(60*60*v);}
+	static TimeSpan Minutes(int64_t v){return Seconds(60*v);}
+	static TimeSpan Seconds(int64_t v){return TimeSpan(1000*1000*v);}
+	static TimeSpan MilliSeconds(int64_t v){return TimeSpan(1000*v);}
+	static TimeSpan MicroSeconds(int64_t v){return TimeSpan(v);}
 
 	int64_t val;
 };

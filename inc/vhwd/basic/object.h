@@ -1,3 +1,10 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_BASIC_OBJECT__
 #define __H_VHWD_BASIC_OBJECT__
 
@@ -90,7 +97,7 @@ class VHWD_DLLIMPEXP Object
 public:
 
 	virtual ~Object(){}
-	virtual bool serialize(Serializer& ar);
+	virtual bool Serialize(Serializer& ar);
 
 	DECLARE_OBJECT_INFO(Object,ObjectInfo)
 };

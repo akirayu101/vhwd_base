@@ -1,6 +1,5 @@
 #include "vhwd/logging/logger.h"
 #include "vhwd/logging/logtarget.h"
-
 #include "vhwd/basic/pointer.h"
 #include "vhwd/threading/thread.h"
 
@@ -29,6 +28,13 @@ LogRecord::LogRecord(const String& s,int src,int id,int lv)
 	m_tStamp=Clock::now();
 }
 
+LogRecord::LogRecord(int src,int id,int lv)
+	:m_nSrc(src)
+	,m_nId(id)
+	,m_nLevel(lv)
+{
+	m_tStamp=Clock::now();
+}
 
 
 class LoggerImpl : public ObjectData
@@ -98,6 +104,7 @@ public:
 		{
 			m_nErrCount++;
 		}
+
 		if(flags.get(FLAG_CACHED))
 		{
 			m_aMsg.push_back(o);
@@ -120,9 +127,60 @@ public:
 
 };
 
+void Logger::DoLogImplV(int lv,const char* msg,va_list vl)
+{
+	if(!impl) return;
+
+	LogRecord rcd(impl->m_nSrc,impl->m_nId,lv);
+	
+	for(;;)
+	{
+		try
+		{
+			rcd.m_sMessage.PrintfV(msg,vl);
+			break;
+		}
+		catch(...)
+		{
+
+		}
+
+		try
+		{
+			rcd.m_sMessage="String::PrintfV error";
+			break;
+		}
+		catch(...)
+		{
+
+		}
+
+		break;
+	}
+
+	Handle(rcd);
+}
+
+void Logger::DoLogImpl(int lv,const char* msg,...)
+{
+	va_list arglist;
+	va_start(arglist,msg);
+	DoLogImplV(lv,msg,arglist);
+	va_end(arglist);
+}
+
 void Logger::Handle(LogRecord& o)
 {
-	impl->Handle(o);
+	if(!impl) return;
+
+	try
+	{
+		impl->Handle(o);
+	}
+	catch(...)
+	{
+		System::LogError("Unhandle exception caught in Logger::Handle");
+	}
 }
 
 Logger::Logger(int src,int id)

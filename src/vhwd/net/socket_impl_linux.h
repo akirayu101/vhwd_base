@@ -12,21 +12,6 @@ class SocketImpl_linux
 {
 public:
 
-	//class IPAddressFake
-	//{
-	//public:
-	//	IPAddressFake(IPAddress& a){addr=&a;}
-	//	void* addr;
-	//	operator struct sockaddr*() {return (struct sockaddr*)addr;}
-	//	operator struct sockaddr_in*(){return (struct sockaddr_in*)addr;}
-	//};
-
-	//static IPAddressFake g(IPAddress& addr)
-	//{
-	//	return IPAddressFake(addr);
-	//}
-
-
 	typedef Socket::impl_type impl_type;
 	typedef int sock_type;
 

@@ -1,3 +1,10 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_MEMORY_MEMPOOL__
 #define __H_VHWD_MEMORY_MEMPOOL__
 
@@ -9,10 +16,8 @@ VHWD_ENTER
 class VHWD_DLLIMPEXP MemPoolBase : public NonCopyable
 {
 public:
-
 	static void set_break_alloc(unsigned n);
 };
-
 
 
 // Forward declaration
@@ -22,7 +27,6 @@ class VHWD_DLLIMPEXP FixedSizeAllocatorUnit;
 // MemPoolPaging is a thread-safe and hight-efficient MemPool, it uses several fixed-size-allocator units internally.
 // Memory allocated by MemPoolPaging can be deallocated by another MemPoolPaging.
 // Memory allocated by malloc can be deallocated by MemPoolPaging.
-
 class VHWD_DLLIMPEXP MemPoolPaging : public MemPoolBase
 {
 public:

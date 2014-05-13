@@ -1,3 +1,10 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_COLLECTION_BASE__
 #define __H_VHWD_COLLECTION_BASE__
 
@@ -7,6 +14,33 @@
 
 
 VHWD_ENTER
+
+
+class sz_helper
+{
+public:
+
+	// adjunst alignment
+	static int adj(int sz,int al)
+	{
+		return (sz+al-1)&~(al-1);
+	}
+
+	// adjunst alignment
+	static void* adj(void* sz,int al)
+	{
+		return (void*)(((ptrdiff_t)sz+al-1)&~(al-1));
+	}
+
+	// adjust size to 2^n
+	static int n2p(int sz)
+	{
+		int k=2;
+		while(k<sz) k=k<<1;
+		return k;
+	}
+};
+
 
 template<typename T,typename A=std::allocator<T> >
 class arr_xt;
@@ -256,31 +290,37 @@ public:
 	}
 
 	template<typename It,typename Ot>
-	static void uninitialized_copy(It first_,It last_,Ot dest_)
+	static Ot uninitialized_copy(It first_,It last_,Ot dest_)
 	{
-		std::uninitialized_copy(first_,last_,dest_);
+		return std::uninitialized_copy(first_,last_,dest_);
 	}
 
 	template<typename It,typename Ot>
-	static void uninitialized_copy_n(It first_,size_t count_,Ot dest_)
+	static Ot uninitialized_copy_n(It first_,size_t count_,Ot dest_)
 	{
 		//std::uninitialized_copy_n(first_,count_,dest_);		//C++11
-		std::uninitialized_copy(first_,first_+count_,dest_);
+		return std::uninitialized_copy(first_,first_+count_,dest_);
 	}
 
 	template<typename It,typename Ot>
-	static void copy(It first_,It last_,Ot dest_)
+	static Ot copy(It first_,It last_,Ot dest_)
 	{
-		std::copy(first_,last_,dest_);
+		return std::copy(first_,last_,dest_);
 	}
 
+
 	template<typename It,typename Ot>
-	static void copy_n(It first_,size_t count_,Ot dest_)
+	static Ot copy_n(It first_,size_t count_,Ot dest_)
 	{
 		//std::copy_n(first_,count_,dest_);
-		std::copy(first_,first_+count_,dest_);
+		return std::copy(first_,first_+count_,dest_);
 	}
 
+	template<typename It,typename Ot>
+	static Ot copy_backward(It first_,It last_,Ot dest_)
+	{
+		return std::copy_backward(first_,last_,dest_);
+	}
 };
 
 

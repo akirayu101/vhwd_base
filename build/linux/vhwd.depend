@@ -5,82 +5,82 @@
 	<windows.h>
 	"intrin.h"
 
-1397270245 /mnt/GitHub/vhwd_base/inc/vhwd/basic/atomic.h
+1399344933 /mnt/GitHub/vhwd_base/inc/vhwd/basic/atomic.h
 	"vhwd/config.h"
 
-1397376106 /mnt/GitHub/vhwd_base/inc/vhwd/config.h
+1399961281 /mnt/GitHub/vhwd_base/inc/vhwd/config.h
 	<sys/types.h>
 	<stdint.h>
 	"tl.h"
 	<cstdarg>
 	<cstdlib>
+	<clocale>
 	<memory>
-	<locale>
 
-1397133928 /mnt/GitHub/vhwd_base/inc/tl.h
+1399370737 /mnt/GitHub/vhwd_base/inc/tl.h
 
-1397382973 /mnt/GitHub/vhwd_base/inc/vhwd/threading/thread.h
+1399952048 /mnt/GitHub/vhwd_base/inc/vhwd/threading/thread.h
 	"vhwd/basic/bitflags.h"
 	"vhwd/threading/thread_mutex.h"
 	"vhwd/threading/thread_cond.h"
 	"vhwd/collection/array.h"
+	"vhwd/threading/thread_manager.h"
 	"vhwd/collection/lockfree_queue.h"
-	"vhwd/basic/factor.h"
+	"vhwd/basic/functor.h"
 
-1397043828 /mnt/GitHub/vhwd_base/inc/vhwd/basic/bitflags.h
+1398161926 /mnt/GitHub/vhwd_base/inc/vhwd/basic/bitflags.h
 	"vhwd/config.h"
 
-1397182871 /mnt/GitHub/vhwd_base/inc/vhwd/threading/thread_mutex.h
+1398162015 /mnt/GitHub/vhwd_base/inc/vhwd/threading/thread_mutex.h
 	"vhwd/config.h"
 	"vhwd/basic/clock.h"
 	<pthread.h>
 	<windows.h>
 
-1397373033 /mnt/GitHub/vhwd_base/inc/vhwd/basic/clock.h
+1399171232 /mnt/GitHub/vhwd_base/inc/vhwd/basic/clock.h
 	"vhwd/config.h"
 	"vhwd/basic/string.h"
 
-1397357105 /mnt/GitHub/vhwd_base/inc/vhwd/basic/string.h
+1399434631 /mnt/GitHub/vhwd_base/inc/vhwd/basic/string.h
+	<cstring>
 	"vhwd/config.h"
 	"vhwd/basic/language.h"
+	"vhwd/basic/system.h"
 	"vhwd/basic/string_detail.h"
-	<cstring>
-	<clocale>
-	<cstdarg>
 
-1397044326 /mnt/GitHub/vhwd_base/inc/vhwd/basic/language.h
+1398860247 /mnt/GitHub/vhwd_base/inc/vhwd/basic/language.h
 	"vhwd/config.h"
 
-1397363207 /mnt/GitHub/vhwd_base/inc/vhwd/basic/string_detail.h
+1398583801 /mnt/GitHub/vhwd_base/inc/vhwd/basic/string_detail.h
 	<string>
 
-1397182876 /mnt/GitHub/vhwd_base/inc/vhwd/threading/thread_cond.h
+1398162015 /mnt/GitHub/vhwd_base/inc/vhwd/threading/thread_cond.h
 	"vhwd/config.h"
 	<pthread.h>
 	<windows.h>
 
-1397377518 /mnt/GitHub/vhwd_base/inc/vhwd/collection/array.h
+1398925059 /mnt/GitHub/vhwd_base/inc/vhwd/collection/array.h
 	"vhwd/collection/collection_base.h"
 
-1397369675 /mnt/GitHub/vhwd_base/inc/vhwd/collection/collection_base.h
+1399630369 /mnt/GitHub/vhwd_base/inc/vhwd/collection/collection_base.h
 	"vhwd/config.h"
 	"vhwd/memory/allocator.h"
 
-1397362334 /mnt/GitHub/vhwd_base/inc/vhwd/memory/allocator.h
+1398161982 /mnt/GitHub/vhwd_base/inc/vhwd/memory/allocator.h
 	"vhwd/memory/allocator_malloc.h"
 	"vhwd/memory/allocator_mempool.h"
 
-1397311627 /mnt/GitHub/vhwd_base/inc/vhwd/memory/allocator_malloc.h
+1398161982 /mnt/GitHub/vhwd_base/inc/vhwd/memory/allocator_malloc.h
 	"vhwd/config.h"
 	"vhwd/basic/exception.h"
 	<cstdlib>
 	<malloc.h>
 
-1397363220 /mnt/GitHub/vhwd_base/inc/vhwd/basic/exception.h
+1398669235 /mnt/GitHub/vhwd_base/inc/vhwd/basic/exception.h
 	"vhwd/config.h"
 	<stdexcept>
 
-1397278458 /mnt/GitHub/vhwd_base/inc/vhwd/memory/allocator_mempool.h
+1398161982 /mnt/GitHub/vhwd_base/inc/vhwd/memory/allocator_mempool.h
 	"vhwd/config.h"
 	<cstdlib>
 	<malloc.h>
@@ -90,141 +90,147 @@
 	"vhwd/basic/pointer.h"
 	"vhwd/basic/factor_detail.h"
 
-1396699519 /mnt/GitHub/vhwd_base/inc/vhwd/basic/pointer.h
+1398828700 /mnt/GitHub/vhwd_base/inc/vhwd/basic/pointer.h
 	"vhwd/basic/object.h"
 	"vhwd/basic/pointer_detail.h"
 
-1397206405 /mnt/GitHub/vhwd_base/inc/vhwd/basic/object.h
+1398584994 /mnt/GitHub/vhwd_base/inc/vhwd/basic/object.h
 	"vhwd/basic/atomic.h"
 	"vhwd/basic/string.h"
 
-1396699527 /mnt/GitHub/vhwd_base/inc/vhwd/basic/pointer_detail.h
+1398161944 /mnt/GitHub/vhwd_base/inc/vhwd/basic/pointer_detail.h
 	"vhwd/basic/object.h"
 
 1396701820 /mnt/GitHub/vhwd_base/inc/vhwd/basic/factor_detail.h
 	"vhwd/config.h"
 
-1397376106 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/basic.cpp
+1399353908 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/basic.cpp
 	"vhwd/basic/system.h"
 	"vhwd/basic/platform.h"
 	"vhwd/basic/atomic.h"
+	"vhwd/basic/functor.h"
 	<windows.h>
 
-1397205399 /mnt/GitHub/vhwd_base/inc/vhwd/basic/system.h
+1399958744 /mnt/GitHub/vhwd_base/inc/vhwd/basic/system.h
 	"vhwd/config.h"
-	"vhwd/basic/string.h"
 	"vhwd/basic/string_detail.h"
 
-1396700470 /mnt/GitHub/vhwd_base/inc/vhwd/basic/platform.h
+1398921849 /mnt/GitHub/vhwd_base/inc/vhwd/basic/platform.h
 	"vhwd/config.h"
 	"vhwd/basic/atomic.h"
+	"windows.h"
 
 1396695383 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/bitlfags.cpp
 	"vhwd/basic/bitflags.h"
 
-1397182503 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/clock.cpp
+1399345533 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/clock.cpp
 	"vhwd/threading/thread_mutex.h"
-	"vhwd/threading/lockguard.h"
+	"vhwd/basic/lockguard.h"
 	"vhwd/basic/clock.h"
 	<ctime>
 	<windows.h>
 	"sys/time.h"
 
-1397188382 /mnt/GitHub/vhwd_base/inc/vhwd/threading/lockguard.h
+1398162015 /mnt/GitHub/vhwd_base/inc/vhwd/threading/lockguard.h
 	"vhwd/config.h"
 	"vhwd/threading/thread_rwlock.h"
 	"vhwd/threading/thread.h"
 	"vhwd/basic/atomic.h"
 
-1397182871 /mnt/GitHub/vhwd_base/inc/vhwd/threading/thread_rwlock.h
+1399344743 /mnt/GitHub/vhwd_base/inc/vhwd/threading/thread_rwlock.h
 	"vhwd/config.h"
 	<pthread.h>
 	<windows.h>
 
-1397132781 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/codecvt.cpp
+1399971360 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/codecvt.cpp
 	"vhwd/basic/codecvt.h"
 	"vhwd/basic/system.h"
 	"vhwd/basic/stringbuffer.h"
 
-1397353818 /mnt/GitHub/vhwd_base/inc/vhwd/basic/codecvt.h
+1399970580 /mnt/GitHub/vhwd_base/inc/vhwd/basic/codecvt.h
 	"vhwd/config.h"
 	"vhwd/basic/string.h"
 	"vhwd/basic/stringbuffer.h"
 	<locale>
+	"windows.h"
+	<iconv.h>
+	<errno.h>
 
-1397356766 /mnt/GitHub/vhwd_base/inc/vhwd/basic/stringbuffer.h
+1398856612 /mnt/GitHub/vhwd_base/inc/vhwd/basic/stringbuffer.h
 	"vhwd/config.h"
 	"vhwd/collection/array.h"
+	"vhwd/collection/array_xt.h"
 	"vhwd/memory.h"
 
-1396845722 /mnt/GitHub/vhwd_base/inc/vhwd/memory.h
+1398161905 /mnt/GitHub/vhwd_base/inc/vhwd/memory.h
 	"vhwd/memory/allocator.h"
 	"vhwd/memory/mempool.h"
 
-1397368601 /mnt/GitHub/vhwd_base/inc/vhwd/memory/mempool.h
+1399445106 /mnt/GitHub/vhwd_base/inc/vhwd/memory/mempool.h
 	"vhwd/basic/exception.h"
 	"vhwd/memory/allocator.h"
 
-1396947156 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/console.cpp
+1399354753 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/console.cpp
 	"vhwd/basic/console.h"
 	"vhwd/basic/string.h"
 	"vhwd/threading/thread_spin.h"
 	"vhwd/threading/thread_mutex.h"
-	"vhwd/threading/lockguard.h"
+	"vhwd/basic/lockguard.h"
 	<cstdio>
 	<iostream>
 
-1396694954 /mnt/GitHub/vhwd_base/inc/vhwd/basic/console.h
+1398580807 /mnt/GitHub/vhwd_base/inc/vhwd/basic/console.h
 	"vhwd/config.h"
 
-1397182871 /mnt/GitHub/vhwd_base/inc/vhwd/threading/thread_spin.h
+1398162015 /mnt/GitHub/vhwd_base/inc/vhwd/threading/thread_spin.h
 	"vhwd/config.h"
 	<pthread.h>
 	<windows.h>
 
-1396947181 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/exception.cpp
+1398669235 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/exception.cpp
 	"vhwd/basic/exception.h"
 	"vhwd/basic/string.h"
 	<cstdlib>
 
-1397376106 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/language.cpp
+1399895052 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/language.cpp
 	"vhwd/basic/language.h"
 	"vhwd/basic/string.h"
 	"vhwd/basic/stringbuffer.h"
 	"vhwd/basic/system.h"
 	"vhwd/collection/indexer_map.h"
 	"vhwd/ipc/shm.h"
+	"vhwd/collection/linear_buffer.h"
+	"vhwd/basic/pointer.h"
 	<fstream>
 
-1397210079 /mnt/GitHub/vhwd_base/inc/vhwd/collection/indexer_map.h
+1398866591 /mnt/GitHub/vhwd_base/inc/vhwd/collection/indexer_map.h
 	"vhwd/config.h"
 	"vhwd/collection/indexer_detail.h"
 
-1397364752 /mnt/GitHub/vhwd_base/inc/vhwd/collection/indexer_detail.h
+1399895602 /mnt/GitHub/vhwd_base/inc/vhwd/collection/indexer_detail.h
 	"vhwd/collection/collection_base.h"
 	"vhwd/collection/array.h"
 	"vhwd/basic/exception.h"
+	<algorithm>
 
-1397045005 /mnt/GitHub/vhwd_base/inc/vhwd/ipc/shm.h
+1398921418 /mnt/GitHub/vhwd_base/inc/vhwd/ipc/shm.h
 	"vhwd/config.h"
 	"vhwd/basic/platform.h"
 	"vhwd/basic/string.h"
+	"vhwd/basic/file.h"
 
-1397183905 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/object.cpp
+1398584703 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/object.cpp
 	"vhwd/basic/object.h"
 
-1397370214 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/object_data.cpp
+1399353850 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/object_data.cpp
 	"vhwd/basic/object.h"
 	"vhwd/threading/thread.h"
 
-1396699581 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/object_info.cpp
+1399353850 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/object_info.cpp
 	"vhwd/basic/object.h"
 	"vhwd/collection/indexer_map.h"
 
-1397357139 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/string.cpp
-	<cstdarg>
-	<cstdlib>
-	<locale>
+1399968111 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/string.cpp
 	"string_impl.h"
 	"vhwd/basic/string.h"
 	"vhwd/basic/stringbuffer.h"
@@ -234,23 +240,25 @@
 	<iconv.h>
 	<windows.h>
 
-1397195961 /mnt/GitHub/vhwd_base/src/vhwd/basic/string_impl.h
+1398776644 /mnt/GitHub/vhwd_base/src/vhwd/basic/string_impl.h
 	"vhwd/memory/mempool.h"
 	"vhwd/collection/indexer_map.h"
+	<cstring>
 
-1397110704 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/string_impl.cpp
+1398581837 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/string_impl.cpp
 	"string_impl.h"
 
-1397312079 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/stringbuffer.cpp
-	"string_impl.h"
+1399968091 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/stringbuffer.cpp
 	"vhwd/basic/stringbuffer.h"
 	"vhwd/basic/codecvt.h"
 	<cstring>
 	<clocale>
+	<fstream>
 
-1397356076 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/system.cpp
+1399958829 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/system.cpp
 	"vhwd/basic/system.h"
 	"vhwd/basic/string.h"
+	"vhwd/basic/lockguard.h"
 	<ctime>
 	<cstdlib>
 	<cstdio>
@@ -270,15 +278,15 @@
 	<fcntl.h>
 	<sys/ioctl.h>
 
-1397044881 /mnt/GitHub/vhwd_base/inc/vhwd/ipc/pipe.h
+1398161982 /mnt/GitHub/vhwd_base/inc/vhwd/ipc/pipe.h
 	"vhwd/config.h"
 	"vhwd/basic/platform.h"
 	"vhwd/basic/string.h"
 
-1397314406 source:/mnt/GitHub/vhwd_base/src/vhwd/ipc/shm.cpp
+1399353908 source:/mnt/GitHub/vhwd_base/src/vhwd/ipc/shm.cpp
 	"vhwd/ipc/shm.h"
-	"vhwd/logging/logger.h"
 	"vhwd/basic/system.h"
+	"vhwd/basic/file.h"
 	<windows.h>
 	<sys/mman.h>
 	<sys/types.h>
@@ -288,11 +296,11 @@
 	<cerrno>
 	<unistd.h>
 
-1397045555 /mnt/GitHub/vhwd_base/inc/vhwd/logging/logger.h
+1399958846 /mnt/GitHub/vhwd_base/inc/vhwd/logging/logger.h
 	"vhwd/logging/logrecord.h"
 	"vhwd/basic/object.h"
 
-1397045733 /mnt/GitHub/vhwd_base/inc/vhwd/logging/logrecord.h
+1399353097 /mnt/GitHub/vhwd_base/inc/vhwd/logging/logrecord.h
 	"vhwd/basic/clock.h"
 	"vhwd/basic/string.h"
 
@@ -311,7 +319,7 @@
 	"vhwd/collection/lockfree_queue.h"
 	"vhwd/threading/thread.h"
 
-1397268997 /mnt/GitHub/vhwd_base/inc/vhwd/collection/lockfree_queue.h
+1399356946 /mnt/GitHub/vhwd_base/inc/vhwd/collection/lockfree_queue.h
 	"vhwd/collection/collection_base.h"
 	"vhwd/basic/atomic.h"
 	"vhwd/basic/bitflags.h"
@@ -319,7 +327,7 @@
 	"vhwd/basic/system.h"
 	<cstdlib>
 
-1397182503 source:/mnt/GitHub/vhwd_base/src/vhwd/logging/log_console.cpp
+1398581053 source:/mnt/GitHub/vhwd_base/src/vhwd/logging/log_console.cpp
 	"vhwd/threading/thread_mutex.h"
 	"vhwd/basic/console.h"
 	"vhwd/logging/logrecord.h"
@@ -327,19 +335,20 @@
 	<iostream>
 	<windows.h>
 
-1397228634 /mnt/GitHub/vhwd_base/inc/vhwd/logging/logtarget.h
+1399344743 /mnt/GitHub/vhwd_base/inc/vhwd/logging/logtarget.h
 	"vhwd/basic/pointer.h"
 	"vhwd/basic/object.h"
 	"vhwd/basic/bitflags.h"
 	"vhwd/collection/array.h"
 
-1396947413 source:/mnt/GitHub/vhwd_base/src/vhwd/logging/log_target.cpp
+1399345479 source:/mnt/GitHub/vhwd_base/src/vhwd/logging/log_target.cpp
 	"vhwd/logging/logtarget.h"
 	"vhwd/logging/logrecord.h"
+	"vhwd/basic/lockguard.h"
 	<cstdlib>
 	<cstdio>
 
-1397370453 source:/mnt/GitHub/vhwd_base/src/vhwd/logging/logger.cpp
+1399959017 source:/mnt/GitHub/vhwd_base/src/vhwd/logging/logger.cpp
 	"vhwd/logging/logger.h"
 	"vhwd/logging/logtarget.h"
 	"vhwd/basic/pointer.h"
@@ -349,30 +358,29 @@
 1395729395 source:/mnt/GitHub/vhwd_base/src/vhwd/memory/allocator.cpp
 	"vhwd/memory/allocator.h"
 
-1397193146 source:/mnt/GitHub/vhwd_base/src/vhwd/memory/mempool_cache.cpp
+1399353850 source:/mnt/GitHub/vhwd_base/src/vhwd/memory/mempool_cache.cpp
 	"mempool_impl.h"
 	"vhwd/basic/system.h"
 
-1397368496 /mnt/GitHub/vhwd_base/src/vhwd/memory/mempool_impl.h
+1399641094 /mnt/GitHub/vhwd_base/src/vhwd/memory/mempool_impl.h
 	"vhwd/config.h"
 	"vhwd/memory/mempool.h"
 	"vhwd/threading/thread_spin.h"
 	"vhwd/threading/thread.h"
-	<vector>
-	<cstdlib>
+	"vhwd/basic/lockguard.h"
 
-1397366953 source:/mnt/GitHub/vhwd_base/src/vhwd/memory/mempool_debug.cpp
+1399345529 source:/mnt/GitHub/vhwd_base/src/vhwd/memory/mempool_debug.cpp
 	"mempool_impl.h"
-	"vhwd/threading/lockguard.h"
+	"vhwd/basic/lockguard.h"
 	"vhwd/threading/thread_spin.h"
 	"vhwd/basic/system.h"
 
-1396838765 source:/mnt/GitHub/vhwd_base/src/vhwd/memory/mempool_fixedsize.cpp
+1398585682 source:/mnt/GitHub/vhwd_base/src/vhwd/memory/mempool_fixedsize.cpp
 	"mempool_impl.h"
 
-1397368601 source:/mnt/GitHub/vhwd_base/src/vhwd/memory/mempool_link.cpp
+1399353850 source:/mnt/GitHub/vhwd_base/src/vhwd/memory/mempool_link.cpp
 	"mempool_impl.h"
-	"vhwd/threading/lockguard.h"
+	"vhwd/basic/lockguard.h"
 	"vhwd/threading/thread_spin.h"
 	"vhwd/basic/console.h"
 	"vhwd/basic/system.h"
@@ -383,12 +391,11 @@
 1396854837 source:/mnt/GitHub/vhwd_base/src/vhwd/memory/mempool_pageinfo.cpp
 	"mempool_impl.h"
 
-1397363010 source:/mnt/GitHub/vhwd_base/src/vhwd/memory/mempool_paging.cpp
+1399961069 source:/mnt/GitHub/vhwd_base/src/vhwd/memory/mempool_paging.cpp
 	"mempool_impl.h"
-	"vhwd/threading/lockguard.h"
+	"vhwd/basic/lockguard.h"
 	"vhwd/threading/thread_spin.h"
 	"vhwd/basic/system.h"
-	<cstdlib>
 	<windows.h>
 	<sys/mman.h>
 	<cerrno>
@@ -410,7 +417,7 @@
 	<mswsock.h>
 	<sys/epoll.h>
 
-1397046987 /mnt/GitHub/vhwd_base/inc/vhwd/net/socket.h
+1398923930 /mnt/GitHub/vhwd_base/inc/vhwd/net/socket.h
 	"vhwd/basic/platform.h"
 	<WinSock2.h>
 	<sys/socket.h>
@@ -425,7 +432,7 @@
 	"vhwd/collection/array.h"
 	"vhwd/basic/pointer.h"
 
-1397363347 /mnt/GitHub/vhwd_base/inc/vhwd/net/ipaddress.h
+1398499006 /mnt/GitHub/vhwd_base/inc/vhwd/net/ipaddress.h
 	"vhwd/config.h"
 	<WinSock2.h>
 	<sys/socket.h>
@@ -438,16 +445,17 @@
 	"vhwd/logging/logger.h"
 	"vhwd/net/iocp_session.h"
 
-1397182876 /mnt/GitHub/vhwd_base/inc/vhwd/threading/thread_event.h
+1398162015 /mnt/GitHub/vhwd_base/inc/vhwd/threading/thread_event.h
 	"vhwd/threading/thread_cond.h"
 	"vhwd/threading/thread_mutex.h"
 	<pthread.h>
 	<windows.h>
 
-1397363340 source:/mnt/GitHub/vhwd_base/src/vhwd/net/ipaddress.cpp
+1399353850 source:/mnt/GitHub/vhwd_base/src/vhwd/net/ipaddress.cpp
 	"vhwd/net/ipaddress.h"
 	"vhwd/memory/mempool.h"
 	"vhwd/basic/string.h"
+	"vhwd/basic/system.h"
 	<sys/socket.h>
 	<netinet/in.h>
 	<arpa/inet.h>
@@ -457,20 +465,20 @@
 	"vhwd/net/iocp_session.h"
 	"vhwd/logging/logger.h"
 
-1397375601 source:/mnt/GitHub/vhwd_base/src/vhwd/net/session_client.cpp
-	"vhwd/net/iocp_session.h"
-	"vhwd/net/iocp_pool.h"
+1399169494 source:/mnt/GitHub/vhwd_base/src/vhwd/net/session_client.cpp
+	"vhwd/net/session.h"
+	"vhwd/net/iocp1.h"
 
 1396840065 source:/mnt/GitHub/vhwd_base/src/vhwd/net/session_dgram.cpp
 	"vhwd/net/iocp_session.h"
 	"vhwd/net/iocp_pool.h"
 
-1397375097 source:/mnt/GitHub/vhwd_base/src/vhwd/net/session_server.cpp
-	"vhwd/net/iocp_session.h"
-	"vhwd/net/iocp_pool.h"
+1399887091 source:/mnt/GitHub/vhwd_base/src/vhwd/net/session_server.cpp
+	"vhwd/net/session.h"
+	"vhwd/net/iocp1.h"
 	"vhwd/basic/system.h"
 
-1396702692 source:/mnt/GitHub/vhwd_base/src/vhwd/net/socket.cpp
+1399353850 source:/mnt/GitHub/vhwd_base/src/vhwd/net/socket.cpp
 	"vhwd/net/ipaddress.h"
 	"vhwd/net/socket.h"
 	"vhwd/memory/mempool.h"
@@ -485,43 +493,44 @@
 	"vhwd/config.h"
 	<WinSock2.h>
 
-1397182480 /mnt/GitHub/vhwd_base/src/vhwd/net/socket_impl_linux.h
+1398161813 /mnt/GitHub/vhwd_base/src/vhwd/net/socket_impl_linux.h
 	<sys/socket.h>
 	<netinet/in.h>
 	<arpa/inet.h>
 	<sys/fcntl.h>
 	<cerrno>
 
-1397306402 source:/mnt/GitHub/vhwd_base/src/vhwd/serialization/serializer.cpp
+1399474534 source:/mnt/GitHub/vhwd_base/src/vhwd/serialization/serializer.cpp
 	"vhwd/serialization/serializer.h"
 
-1397312401 /mnt/GitHub/vhwd_base/inc/vhwd/serialization/serializer.h
-	<complex>
-	<vector>
-	<map>
+1399861695 /mnt/GitHub/vhwd_base/inc/vhwd/serialization/serializer.h
 	"vhwd/basic/object.h"
 	"vhwd/basic/pointer.h"
 	"vhwd/basic/exception.h"
 	"vhwd/collection/indexer_set.h"
 	"vhwd/collection/array.h"
+	<complex>
+	<vector>
+	<map>
 
-1397224589 /mnt/GitHub/vhwd_base/inc/vhwd/collection/indexer_set.h
+1398865317 /mnt/GitHub/vhwd_base/inc/vhwd/collection/indexer_set.h
 	"vhwd/config.h"
 	"vhwd/collection/indexer_detail.h"
 	"vhwd/collection/array.h"
 
-1396762805 source:/mnt/GitHub/vhwd_base/src/vhwd/serialization/serializer_socket.cpp
+1398922890 source:/mnt/GitHub/vhwd_base/src/vhwd/serialization/serializer_socket.cpp
 	"vhwd/serialization/serializer_socket.h"
 
-1397361003 /mnt/GitHub/vhwd_base/inc/vhwd/serialization/serializer_socket.h
+1398923780 /mnt/GitHub/vhwd_base/inc/vhwd/serialization/serializer_socket.h
 	"vhwd/serialization/serializer.h"
 	"vhwd/net/ipaddress.h"
 	"vhwd/net/socket.h"
+	"vhwd/collection/linear_buffer.h"
 
 1396961945 source:/mnt/GitHub/vhwd_base/src/vhwd/serialization/serializer_stream.cpp
 	"vhwd/serialization/serializer_stream.h"
 
-1397047579 /mnt/GitHub/vhwd_base/inc/vhwd/serialization/serializer_stream.h
+1398162015 /mnt/GitHub/vhwd_base/inc/vhwd/serialization/serializer_stream.h
 	"vhwd/serialization/serializer.h"
 	<fstream>
 
@@ -532,11 +541,11 @@
 	"vhwd/logging/logger.h"
 	"vhwd/threading/thread.h"
 
-1397228634 /mnt/GitHub/vhwd_base/inc/vhwd/testing/test.h
+1398938045 /mnt/GitHub/vhwd_base/inc/vhwd/testing/test.h
 	"vhwd/logging/logger.h"
 	"vhwd/collection/array.h"
 
-1397368873 source:/mnt/GitHub/vhwd_base/src/vhwd/testing/test_mgr.cpp
+1399353584 source:/mnt/GitHub/vhwd_base/src/vhwd/testing/test_mgr.cpp
 	"vhwd/testing/test.h"
 	"vhwd/basic/string.h"
 	"vhwd/basic/system.h"
@@ -544,25 +553,24 @@
 	"vhwd/logging/logger.h"
 	"vhwd/threading/thread.h"
 	"vhwd/threading/thread_mutex.h"
-	"vhwd/threading/lockguard.h"
+	"vhwd/basic/lockguard.h"
 	"vhwd/logging/logtarget.h"
 
-1397205399 source:/mnt/GitHub/vhwd_base/src/vhwd/threading/thread.cpp
+1399946274 source:/mnt/GitHub/vhwd_base/src/vhwd/threading/thread.cpp
 	"vhwd/threading/thread.h"
-	"vhwd/threading/lockguard.h"
+	"vhwd/basic/lockguard.h"
 	"vhwd/threading/thread_pool.h"
 	"thread_impl.h"
 
-1397047868 /mnt/GitHub/vhwd_base/inc/vhwd/threading/thread_pool.h
-	"vhwd/threading/thread_cond.h"
-	"vhwd/threading/thread_mutex.h"
+1399958345 /mnt/GitHub/vhwd_base/inc/vhwd/threading/thread_pool.h
+	"vhwd/collection/intrusive_list.h"
 	"vhwd/threading/thread.h"
-	"vhwd/basic/bitflags.h"
 
-1396967085 /mnt/GitHub/vhwd_base/src/vhwd/threading/thread_impl.h
+1399946495 /mnt/GitHub/vhwd_base/src/vhwd/threading/thread_impl.h
 	"vhwd/threading/thread.h"
 	"vhwd/logging/logger.h"
 	"thread_impl_detail.h"
+	"vhwd/threading/coroutine.h"
 
 1396666885 /mnt/GitHub/vhwd_base/src/vhwd/threading/thread_impl_detail.h
 	"thread_impl_windows.h"
@@ -580,7 +588,7 @@
 	<process.h>
 	<windows.h>
 
-1397182871 /mnt/GitHub/vhwd_base/inc/vhwd/threading/thread_sem.h
+1398162015 /mnt/GitHub/vhwd_base/inc/vhwd/threading/thread_sem.h
 	"vhwd/config.h"
 	<pthread.h>
 	"semaphore.h"
@@ -597,63 +605,65 @@
 	"semaphore.h"
 	"time.h"
 
-1397228634 source:/mnt/GitHub/vhwd_base/src/vhwd/threading/thread_impl.cpp
+1399946527 source:/mnt/GitHub/vhwd_base/src/vhwd/threading/thread_impl.cpp
 	"thread_impl.h"
-	"vhwd/threading/lockguard.h"
+	"vhwd/basic/lockguard.h"
 	"vhwd/threading/thread_pool.h"
 
-1396961182 source:/mnt/GitHub/vhwd_base/src/vhwd/threading/thread_mutex.cpp
+1399345530 source:/mnt/GitHub/vhwd_base/src/vhwd/threading/thread_mutex.cpp
 	"vhwd/threading/thread_mutex.h"
 	"vhwd/threading/thread_event.h"
-	"vhwd/threading/lockguard.h"
+	"vhwd/basic/lockguard.h"
 	"thread_impl_detail.h"
 
-1396967119 source:/mnt/GitHub/vhwd_base/src/vhwd/threading/thread_pool.cpp
+1399958408 source:/mnt/GitHub/vhwd_base/src/vhwd/threading/thread_pool.cpp
 	"vhwd/threading/thread.h"
 	"vhwd/threading/thread_pool.h"
+	"vhwd/basic/lockguard.h"
 	"thread_impl.h"
-	"vhwd/threading/lockguard.h"
 
-1397047914 source:/mnt/GitHub/vhwd_base/src/vhwd/xml/xml_attribute.cpp
+1399470398 source:/mnt/GitHub/vhwd_base/src/vhwd/xml/xml_attribute.cpp
 	"vhwd/xml/xml_attribute.h"
+	"vhwd/serialization/serializer.h"
 
-1397047919 /mnt/GitHub/vhwd_base/inc/vhwd/xml/xml_attribute.h
-	"vhwd/basic/object.h"
-	"vhwd/basic/pointer.h"
-	"vhwd/collection/indexer_set.h"
-	<fstream>
+1399471190 /mnt/GitHub/vhwd_base/inc/vhwd/xml/xml_attribute.h
+	"vhwd/xml/xml_base.h"
 
-1397140588 source:/mnt/GitHub/vhwd_base/src/vhwd/xml/xml_document.cpp
+1399471323 source:/mnt/GitHub/vhwd_base/src/vhwd/xml/xml_document.cpp
 	"vhwd/xml/xml_document.h"
 	"vhwd/logging/logger.h"
-	"vhwd/memory/mempool.h"
+	"vhwd/serialization/serializer_buffer.h"
 	"xml_parser.h"
 
-1397228634 /mnt/GitHub/vhwd_base/inc/vhwd/xml/xml_document.h
+1399893389 /mnt/GitHub/vhwd_base/inc/vhwd/xml/xml_document.h
 	"vhwd/xml/xml_node.h"
+	"vhwd/collection/array.h"
 
-1397228634 /mnt/GitHub/vhwd_base/inc/vhwd/xml/xml_node.h
+1399471190 /mnt/GitHub/vhwd_base/inc/vhwd/xml/xml_node.h
 	"vhwd/xml/xml_attribute.h"
-	"vhwd/basic/object.h"
-	"vhwd/basic/pointer.h"
-	"vhwd/collection/indexer_set.h"
-	<fstream>
+	"vhwd/collection/intrusive_list.h"
 
-1397228634 /mnt/GitHub/vhwd_base/src/vhwd/xml/xml_parser.h
+1399469680 /mnt/GitHub/vhwd_base/src/vhwd/xml/xml_parser.h
 	"vhwd/xml/xml_attribute.h"
 	"vhwd/xml/xml_node.h"
 	"vhwd/xml/xml_document.h"
+	"vhwd/basic/stringbuffer.h"
+	<fstream>
 
-1397141597 source:/mnt/GitHub/vhwd_base/src/vhwd/xml/xml_node.cpp
+1399471190 source:/mnt/GitHub/vhwd_base/src/vhwd/xml/xml_node.cpp
 	"vhwd/xml/xml_node.h"
 	"vhwd/logging/logger.h"
-	"vhwd/memory/mempool.h"
+	"vhwd/serialization/serializer.h"
 	"xml_parser.h"
 
-1397047914 source:/mnt/GitHub/vhwd_base/src/vhwd/xml/xml_parser.cpp
+1399894749 source:/mnt/GitHub/vhwd_base/src/vhwd/xml/xml_parser.cpp
 	"xml_parser.h"
 	"vhwd/basic/system.h"
 	"vhwd/basic/exception.h"
+	"vhwd/basic/clock.h"
+	"vhwd/basic/console.h"
+	"vhwd/logging/logger.h"
+	<fstream>
 
 1397374008 source:/mnt/GitHub/vhwd_base/src/vhwd/net/iocp_pool.cpp
 	"vhwd/net/iocp_session.h"
@@ -662,17 +672,180 @@
 	<sys/epoll.h>
 	<cerrno>
 
-1397377421 source:/mnt/GitHub/vhwd_base/src/vhwd/serialization/serializer_buffer.cpp
+1398655475 source:/mnt/GitHub/vhwd_base/src/vhwd/serialization/serializer_buffer.cpp
 	"vhwd/serialization/serializer_buffer.h"
 
-1397360861 /mnt/GitHub/vhwd_base/inc/vhwd/serialization/serializer_buffer.h
+1399470982 /mnt/GitHub/vhwd_base/inc/vhwd/serialization/serializer_buffer.h
 	"vhwd/serialization/serializer.h"
-	"vhwd/net/ipaddress.h"
-	"vhwd/net/socket.h"
+	"vhwd/collection/linear_buffer.h"
 
-1397382973 source:/mnt/GitHub/vhwd_base/src/vhwd/threading/thread_routine.cpp
+1398679374 source:/mnt/GitHub/vhwd_base/src/vhwd/threading/thread_routine.cpp
 	"vhwd/threading/thread.h"
 	"vhwd/threading/lockguard.h"
 	"vhwd/threading/thread_pool.h"
 	"thread_impl.h"
+
+1398765482 /mnt/GitHub/vhwd_base/inc/vhwd/basic/functor.h
+	"vhwd/basic/exception.h"
+	"vhwd/basic/pointer.h"
+	"vhwd/basic/functor_detail.h"
+
+1398776553 /mnt/GitHub/vhwd_base/inc/vhwd/basic/functor_detail.h
+	"vhwd/config.h"
+
+1398596509 /mnt/GitHub/vhwd_base/inc/vhwd/collection/array_xt.h
+	"vhwd/collection/collection_base.h"
+
+1399810665 /mnt/GitHub/vhwd_base/inc/vhwd/collection/linear_buffer.h
+	<complex>
+	"vhwd/collection/array.h"
+	"vhwd/collection/array_xt.h"
+	"vhwd/basic/atomic.h"
+	"vhwd/basic/system.h"
+	"vhwd/basic/stringbuffer.h"
+	"vhwd/logging/logger.h"
+
+1399963726 source:/mnt/GitHub/vhwd_base/src/vhwd/collection/collection.cpp
+	"vhwd/collection.h"
+	"vhwd/basic/string.h"
+	"vhwd/basic/stringbuffer.h"
+	"vhwd/basic/codecvt.h"
+	"vhwd/basic/system.h"
+
+1398656419 /mnt/GitHub/vhwd_base/inc/vhwd/collection.h
+	"vhwd/collection/array.h"
+	"vhwd/collection/array_xt.h"
+	"vhwd/collection/indexer_set.h"
+	"vhwd/collection/indexer_map.h"
+	"vhwd/collection/lockfree_queue.h"
+	"vhwd/collection/ring_buffer.h"
+	"vhwd/collection/linear_buffer.h"
+
+1399353850 /mnt/GitHub/vhwd_base/inc/vhwd/collection/ring_buffer.h
+	"vhwd/collection/collection_base.h"
+	"vhwd/basic/atomic.h"
+	"vhwd/basic/system.h"
+	<cstring>
+
+1399883441 source:/mnt/GitHub/vhwd_base/src/vhwd/net/iocp1.cpp
+	"vhwd/net/session.h"
+	"vhwd/net/iocp1.h"
+	"vhwd/basic/system.h"
+	"vhwd/basic/lockguard.h"
+	"vhwd/threading/thread_mutex.h"
+	"vhwd/basic/pointer.h"
+	<sys/epoll.h>
+	<cerrno>
+
+1399960191 /mnt/GitHub/vhwd_base/inc/vhwd/net/session.h
+	"vhwd/net/overlapped.h"
+	"vhwd/threading/thread.h"
+	<WinSock2.h>
+	<ws2tcpip.h>
+	<mswsock.h>
+	<sys/epoll.h>
+
+1399960191 /mnt/GitHub/vhwd_base/inc/vhwd/net/overlapped.h
+	"vhwd/net/socket.h"
+	"vhwd/net/ipaddress.h"
+	"vhwd/basic/clock.h"
+	"vhwd/basic/bitflags.h"
+	"vhwd/basic/pointer.h"
+	"vhwd/collection/ring_buffer.h"
+	"vhwd/collection/lockfree_queue.h"
+
+1399960258 /mnt/GitHub/vhwd_base/inc/vhwd/net/iocp1.h
+	"vhwd/basic/platform.h"
+	"vhwd/net/session.h"
+	"vhwd/threading/thread.h"
+	"vhwd/threading/thread_event.h"
+	"vhwd/threading/thread_spin.h"
+	"vhwd/logging/logger.h"
+	"vhwd/basic/lockguard.h"
+
+1399353584 source:/mnt/GitHub/vhwd_base/src/vhwd/net/overlapped.cpp
+	"vhwd/net/overlapped.h"
+	"vhwd/memory/mempool.h"
+
+1399961510 source:/mnt/GitHub/vhwd_base/src/vhwd/net/session.cpp
+	"vhwd/basic/system.h"
+	"vhwd/basic/console.h"
+	"vhwd/net/session.h"
+	"vhwd/net/iocp1.h"
+	"vhwd/threading/thread_mutex.h"
+	"vhwd/memory/mempool.h"
+	<cerrno>
+
+1399357580 source:/mnt/GitHub/vhwd_base/src/vhwd/net/session_tcp.cpp
+	"vhwd/basic/system.h"
+	"vhwd/basic/console.h"
+	"vhwd/net/session.h"
+	"vhwd/net/iocp1.h"
+	"vhwd/threading/thread_mutex.h"
+	<cerrno>
+
+1399877762 source:/mnt/GitHub/vhwd_base/src/vhwd/net/session_udp.cpp
+	"vhwd/net/session.h"
+	"vhwd/net/iocp1.h"
+
+1398936267 source:/mnt/GitHub/vhwd_base/src/vhwd/basic/file.cpp
+	"vhwd/basic/file.h"
+	<cstdio>
+	<windows.h>
+	<sys/mman.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<sys/shm.h>
+	<fcntl.h>
+	<cerrno>
+	<unistd.h>
+
+1399958515 /mnt/GitHub/vhwd_base/inc/vhwd/basic/file.h
+	"vhwd/basic/string.h"
+	"vhwd/basic/platform.h"
+
+1399946683 /mnt/GitHub/vhwd_base/inc/vhwd/basic/lockguard.h
+	"vhwd/config.h"
+	"vhwd/basic/atomic.h"
+
+1399888333 source:/mnt/GitHub/vhwd_base/src/vhwd/threading/coroutine.cpp
+	"vhwd/threading/coroutine.h"
+	"thread_impl.h"
+
+1399899308 /mnt/GitHub/vhwd_base/inc/vhwd/threading/coroutine.h
+	"vhwd/basic/bitflags.h"
+	"vhwd/basic/functor.h"
+	"vhwd/basic/stringbuffer.h"
+
+1399961224 /mnt/GitHub/vhwd_base/inc/vhwd/xml/xml_base.h
+	"vhwd/basic/object.h"
+	"vhwd/basic/pointer.h"
+	"vhwd/memory/mempool.h"
+
+1399947849 /mnt/GitHub/vhwd_base/inc/vhwd/collection/intrusive_list.h
+	"vhwd/config.h"
+
+1399861127 source:/mnt/GitHub/vhwd_base/src/vhwd/threading/coroutine_context_gcc_x64.asm
+
+1399952417 /mnt/GitHub/vhwd_base/inc/vhwd/threading/thread_manager.h
+	"vhwd/threading/thread_cond.h"
+	"vhwd/threading/thread_mutex.h"
+	"vhwd/basic/pointer.h"
+	"vhwd/basic/bitflags.h"
+
+1399946559 source:/mnt/GitHub/vhwd_base/src/vhwd/threading/thread_manager.cpp
+	"vhwd/threading.h"
+	"thread_impl.h"
+
+1399552922 /mnt/GitHub/vhwd_base/inc/vhwd/threading.h
+	"vhwd/basic/lockguard.h"
+	"vhwd/threading/thread_spin.h"
+	"vhwd/threading/thread_mutex.h"
+	"vhwd/threading/thread_rwlock.h"
+	"vhwd/threading/thread_sem.h"
+	"vhwd/threading/thread_cond.h"
+	"vhwd/threading/thread_event.h"
+	"vhwd/threading/thread.h"
+	"vhwd/threading/thread_pool.h"
+	"vhwd/threading/coroutine.h"
 

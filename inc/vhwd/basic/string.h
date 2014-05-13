@@ -1,18 +1,36 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_STRING__
 #define __H_VHWD_STRING__
 
+#include <cstring>
+
 #include "vhwd/config.h"
 #include "vhwd/basic/language.h"
+#include "vhwd/basic/system.h"
 #include "vhwd/basic/string_detail.h"
-
-#include <cstring>
-#include <clocale>
-#include <cstdarg>
 
 VHWD_ENTER
 
 template<typename T>
 class VHWD_DLLIMPEXP StringBuffer;
+
+template<typename T>
+inline ptrdiff_t safe_distance(const T* p1,const T* p2)
+{
+	ptrdiff_t n=p2-p1;
+	if(n<0)
+	{
+		return 0;
+	}
+	return n;
+}
+
 
 class VHWD_DLLIMPEXP String
 {
@@ -27,12 +45,19 @@ public:
 	String(const char* p,uint32_t n);
 	String(const char* p1,const char* p2);
 
+	String(const unsigned char* p);
+	String(const unsigned char* p,uint32_t n);
+	String(const unsigned char* p1,unsigned const char* p2);
+
 	String(const wchar_t* p);
 	String(const wchar_t* p,uint32_t n);
 	String(const wchar_t* p1,const wchar_t* p2);
 
 	void assign(const char* p,uint32_t n);
 	void assign(const char* p1,const char* p2);
+
+	void assign(const unsigned char* p,uint32_t n);
+	void assign(const unsigned char* p1,const unsigned char* p2);
 
 	void append(const char* p,uint32_t n);
 	void append(const char* p1,const char* p2);
@@ -107,13 +132,24 @@ public:
 
 	static String ansi_to_utf8(const String& o);
 	static String utf8_to_ansi(const String& o);
+	static String ansi_to_utf8(const char* o,size_t s);
+	static String utf8_to_ansi(const char* o,size_t s);
 
 	static bool ansi_to_utf8(StringBuffer<char>& o,const char* p1,size_t ln);
 	static bool utf8_to_ansi(StringBuffer<char>& o,const char* p1,size_t ln);
 
+	static bool ansi_to_utf8(StringBuffer<char>& o,StringBuffer<char>& s);
+	static bool utf8_to_ansi(StringBuffer<char>& o,StringBuffer<char>& s);
+
+	static bool wstr_to_utf8(StringBuffer<char>& o,StringBuffer<wchar_t>& s);
+	static bool utf8_to_wstr(StringBuffer<wchar_t>& s,StringBuffer<char>& o);
+
 	static const size_t npos=(size_t)(-1);
 
 	String substr(size_t pos,size_t len=npos) const;
+
+	const String& replace(char c1,char c2);
+	const String& replace(const String& s1,const String& c2);
 
 private:
 	static String FormatImpl(const char* s,...);

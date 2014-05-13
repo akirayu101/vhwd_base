@@ -120,7 +120,7 @@ namespace tl
 
 
 	class emptytype{};
-	class nulltype;
+	class nulltype{};
 
 	namespace detail
 	{
@@ -148,6 +148,12 @@ namespace tl
 
 		template <typename TList, unsigned int index> struct typelist_at;
 
+		template <int N>
+		struct typelist_at< nulltype, N>
+		{
+		   typedef nulltype type;
+		};
+
 		template <typename Head, typename Tail>
 		struct typelist_at< typelist_pair<Head, Tail>, 0>
 		{
@@ -157,7 +163,7 @@ namespace tl
 		template <typename Head, typename Tail, unsigned int i>
 		struct typelist_at<typelist_pair<Head, Tail>, i>
 		{
-		   typedef typename typelist_at<Tail, i - 1>::type type;
+		   typedef typename typelist_at<Tail, i-1>::type type;
 		};
 
 
@@ -501,8 +507,8 @@ namespace tl
         This is a template to compute the absolute value a number at compile time.
 
         For example,
-            abs<-4>::value == 4
-            abs<4>::value == 4
+            tabs<-4>::value == 4
+            tabs<4>::value == 4
     !*/
 
         template <long x, typename enabled=void>
@@ -517,7 +523,7 @@ namespace tl
         This is a template to compute the max of two values at compile time
 
         For example,
-            abs<4,7>::value == 7
+            tmax<4,7>::value == 7
     !*/
 
         template <long x, long y, typename enabled=void>
@@ -532,7 +538,7 @@ namespace tl
         This is a template to compute the min of two values at compile time
 
         For example,
-            abs<4,7>::value == 4
+            tmin<4,7>::value == 4
     !*/
 
         template <long x, long y, typename enabled=void>

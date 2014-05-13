@@ -1,5 +1,5 @@
 #include "mempool_impl.h"
-#include "vhwd/threading/lockguard.h"
+#include "vhwd/basic/lockguard.h"
 #include "vhwd/threading/thread_spin.h"
 #include "vhwd/basic/system.h"
 

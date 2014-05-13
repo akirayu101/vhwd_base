@@ -1,52 +1,72 @@
 #ifndef __H_VHWD_THREAD_POOL__
 #define __H_VHWD_THREAD_POOL__
 
-#include "vhwd/threading/thread_cond.h"
-#include "vhwd/threading/thread_mutex.h"
+#include "vhwd/collection/intrusive_list.h"
 #include "vhwd/threading/thread.h"
-#include "vhwd/basic/bitflags.h"
 
 
 VHWD_ENTER
 
-class ThreadImpl;
 
-class VHWD_DLLIMPEXP ThreadPool : private NonCopyable
+
+class VHWD_DLLIMPEXP ITask : public ObjectData
 {
 public:
-	friend class ThreadImpl;
+	virtual void svc(void* pdat)=0;
+};
+
+
+class VHWD_DLLIMPEXP ThreadPool : public Thread
+{
+public:
+	typedef Thread basetype;
 
 	ThreadPool();
-	~ThreadPool();
 
-	static ThreadPool& current();
+	void putq(ITask* hjob,void* pdat);
 
-	void wait();
-	void close();
-	int count();
 
-	bool ok();
+	bool activate();
 
-	enum
-	{
-		POOL_DISABLED	=1<<0,
-		POOL_NOCACHE	=1<<1,
-	};
+	void reqexit();
 
-	Mutex m_thrd_mutex;
+	void set_worker_min(int n);
+	void set_worker_max(int n);
+
+	int get_worker_min();
+	int get_worker_max();
+	int get_worker_num();
 
 protected:
 
-	BitFlags m_nFlags;
-	int m_nThreadNum;
-	int m_nThreadJob;
-	int m_nThreadMax;
+	class TaskItem
+	{
+	public:
+		TaskItem():next(NULL){}
+		TaskItem(ITask* hjob_,void* pdat_):hjob(hjob_),pdat(pdat_),next(NULL){}
 
-	LitePtrT<ThreadImpl> m_pThreads_free;
-	Condition m_cond_thrd_empty;
-	Condition m_thrd_attached;
+		DataPtrT<ITask> hjob;
+		void* pdat;
+		TaskItem* next;
+	};
 
+	Mutex m_tMutex;
+	Condition m_tCond;
+	intrusive_list<TaskItem> m_tTaskQueue;
+
+	int m_nWorkerWait;
+	int m_nWorkerNum;
+	int m_nWorkerMin;
+	int m_nWorkerMax;
+	int m_nTaskHint;
+
+	TaskItem* getq();
+
+	void svc();
+
+	
 };
+
 
 VHWD_LEAVE
 #endif

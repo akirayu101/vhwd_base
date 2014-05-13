@@ -1,11 +1,32 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_STRINGBUFFER__
 #define __H_VHWD_STRINGBUFFER__
 
 #include "vhwd/config.h"
 #include "vhwd/collection/array.h"
+#include "vhwd/collection/array_xt.h"
 #include "vhwd/memory.h"
 
 VHWD_ENTER
+
+enum
+{
+	FILE_BINARY,
+	FILE_TEXT,
+	FILE_TEXT_ANSI,
+	FILE_TEXT_UTF8,
+	FILE_TEXT_UTF16_BE,
+	FILE_TEXT_UTF16_LE,
+
+	FILE_MASK=(1<<10)-1,
+	FILE_TEXT_BOM=1<<10
+};
 
 
 template<typename T>
@@ -13,7 +34,12 @@ class VHWD_DLLIMPEXP StringBuffer : public arr_1t<T,AllocatorUsePool<T,MemPoolPa
 {
 public:
 	typedef arr_1t<T,AllocatorUsePool<T,MemPoolPaging> > basetype;
+	typedef typename basetype::size_type size_type;
+
 	using basetype::assign;
+	using basetype::resize;
+	using basetype::data;
+	using basetype::size;
 
 	StringBuffer(){}
 
@@ -34,6 +60,10 @@ public:
 	const StringBuffer& operator+=(const String& o);
 
 	StringBuffer& operator<<(const String& v){(*this)+=v;return *this;}
+
+	bool load(const String& file,int t=FILE_TEXT);
+	bool save(const String& file,int t=FILE_TEXT);
+
 };
 
 

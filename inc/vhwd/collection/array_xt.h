@@ -1,3 +1,10 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_COLLECTION_ARRAY_XT__
 #define __H_VHWD_COLLECTION_ARRAY_XT__
 
@@ -19,11 +26,9 @@ private:
 
 public:
 
-
 	typedef extra_arr_xt::size_type size_type;
 	typedef typename basetype::iterator iterator;
 	typedef typename basetype::const_iterator const_iterator;
-
 
 	using basetype::swap;
 

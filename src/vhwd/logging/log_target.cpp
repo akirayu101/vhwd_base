@@ -1,7 +1,10 @@
 #include "vhwd/logging/logtarget.h"
 #include "vhwd/logging/logrecord.h"
+#include "vhwd/basic/lockguard.h"
+
 #include <cstdlib>
 #include <cstdio>
+
 VHWD_ENTER
 
 LogTarget::LogTarget()
@@ -75,11 +78,37 @@ LogFile::~LogFile()
 void LogFile::Handle(const LogRecord& o)
 {
 	if(fp==NULL) return;
-	String s=Format(o);
-	::fprintf(fp,"%s\r\n",s.c_str());
-	::fflush(fp);
+	LockGuard<AtomicInt32> lock1(spin);
+	
+	String s;
+	for(;;)
+	{
+		try
+		{
+			s=Format(o);
+			break;
+		}
+		catch(...)
+		{
 
-	//ofs<<Format(o)<<std::endl;
+		}
+
+		try
+		{
+			s="String::PrintfV error";
+			break;
+		}
+		catch(...)
+		{
+
+		}
+
+		break;
+	}
+
+	::fwrite(s.c_str(),1,s.size(),fp);
+	::fwrite("\r\n",1,2,fp),
+	::fflush(fp);
 }
 
 void LogPtr::Handle(const LogRecord& o)

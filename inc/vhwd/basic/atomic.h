@@ -1,3 +1,10 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_BASIC_ATOMIC__
 #define __H_VHWD_BASIC_ATOMIC__
 
@@ -112,9 +119,12 @@ public:
 
 	void unlock()
 	{
-		val.store(0);
+		int32_t old=val.exchange(0);
+		wassert(old==1);
+		(void)&old;
 	}
 
+protected:
 	AtomicInt32 val;
 };
 

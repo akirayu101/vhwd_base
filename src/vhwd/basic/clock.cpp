@@ -1,5 +1,5 @@
 #include "vhwd/threading/thread_mutex.h"
-#include "vhwd/threading/lockguard.h"
+#include "vhwd/basic/lockguard.h"
 
 #include "vhwd/basic/clock.h"
 
@@ -17,34 +17,21 @@ VHWD_ENTER
 
 #ifdef _WIN32
 
-static LARGE_INTEGER freq;
-static LARGE_INTEGER tbeg;
-
-static int64_t get_h0()
-{
-	QueryPerformanceFrequency(&freq);
-	SYSTEMTIME t0,t1;
-	time_t tt;
-	GetLocalTime(&t0);
-	for(;;)
-	{
-		time(&tt);
-		GetLocalTime(&t1);
-		QueryPerformanceCounter(&tbeg);
-		if(t1.wMilliseconds!=t0.wMilliseconds) break;
-	}
-
-	return tt*1000000;
-}
+#define _W32_FT_OFFSET (116444736000000000)
 
 TimePoint Clock::now()
 {
-	static int64_t h0=get_h0();
-	LARGE_INTEGER tnow;
-	QueryPerformanceCounter(&tnow);
+	union
+	{
+		int64_t  ns100; /*time since 1 Jan 1601 in 100ns units */
+		FILETIME ft;
+	}_tnow;
 
-	return TimePoint(h0+(tnow.QuadPart-tbeg.QuadPart)*1000000/freq.QuadPart);
+	GetSystemTimeAsFileTime(&_tnow.ft);
+	return TimePoint((int64_t)((_tnow.ns100 - _W32_FT_OFFSET)/10));
 }
+
+
 #else
 
 TimePoint Clock::now()

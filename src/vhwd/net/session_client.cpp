@@ -1,5 +1,5 @@
-#include "vhwd/net/iocp_session.h"
-#include "vhwd/net/iocp_pool.h"
+#include "vhwd/net/session.h"
+#include "vhwd/net/iocp1.h"
 
 VHWD_ENTER
 
@@ -31,23 +31,16 @@ bool SessionClient::Connect(const String& ip,int port)
 	{
 		return false;
 	}
-
-	if(!hiocp)
-	{
-		return false;
-	}
-
 	sk_local.peer.service(ip,port);
 
 	if(!sk_local.sock.Connect(sk_local.peer))
 	{
-		logger.LogError("connect error");
+		this_logger().LogError("connect error");
 		return false;
 	}
 
 	sk_local.sock.GetSockAddr(sk_local.addr);
 
-    hiocp->svc_add(this);
 	return true;
 
 }
@@ -105,16 +98,14 @@ void SessionEcho::OnRecvReady()
 	}
 	else
 	{
-		WaitForSend();			
+		WaitForSend();
 	}
 
 }
 
 void SessionEcho::OnConnected()
 {
-	mybuf.resize(1024);
-	WaitForRecv();
-	//AsyncRecv(GetBuffer(1024));
+	AsyncRecv();
 }
 
 void SessionEcho::OnDisconnected()
@@ -122,15 +113,14 @@ void SessionEcho::OnDisconnected()
 	
 }
 
-void SessionEcho::OnSendComplted(PerIO_buffer* perio_data)
+void SessionEcho::OnSendCompleted(MyOlapPtr& q)
 {
-	AsyncRecv(perio_data);
+	AsyncRecv(q);
 }
 
-void SessionEcho::OnRecvComplted(PerIO_buffer* perio_data)
+void SessionEcho::OnRecvCompleted(MyOlapPtr& q)
 {
-	perio_data->dbuf.len=perio_data->size;
-	AsyncSend(perio_data);
+	AsyncSend(q);	
 }
 
 

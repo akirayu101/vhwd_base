@@ -1,62 +1,149 @@
 #include "vhwd/threading/thread.h"
 #include "vhwd/threading/thread_pool.h"
+#include "vhwd/basic/lockguard.h"
 #include "thread_impl.h"
-#include "vhwd/threading/lockguard.h"
+
 
 VHWD_ENTER
 
-
-ThreadPool& ThreadPool::current()
-{
-	static class StaticThreadPool : public StaticObjectWithoutDeletorT<ThreadPool>
-	{
-	public:
-
-		StaticThreadPool(){}
-
-		~StaticThreadPool()
-		{
-
-		}
-		
-	}_g_thread_pool;
-	return _g_thread_pool;
-}
-
 ThreadPool::ThreadPool()
 {
-	m_nThreadMax=10;
-	m_nThreadNum=0;
-	m_nThreadJob=0;
+	flags().add(Thread::FLAG_DYNAMIC);
+	m_nWorkerMin=1;
+	m_nWorkerMax=4;
+	m_nWorkerNum=0;
+	m_nWorkerWait=0;
+	m_nTaskHint=20;
 }
 
-ThreadPool::~ThreadPool()
+void ThreadPool::set_worker_min(int n)
 {
-	close();
-	wait();
+	if(n<1) return;
+	m_nWorkerMin=n;
 }
 
-int ThreadPool::count()
+void ThreadPool::set_worker_max(int n)
 {
-	return m_nThreadNum;
+	if(n<m_nWorkerMin) return;
+	m_nWorkerMax=n;
 }
 
-void ThreadPool::close()
+int ThreadPool::get_worker_min()
 {
-	LockGuard<Mutex> lock1(m_thrd_mutex);
-	m_nFlags.add(POOL_DISABLED);
-	m_thrd_attached.notify_all();
+	return m_nWorkerMin;
 }
 
-void ThreadPool::wait()
+int ThreadPool::get_worker_max()
 {
-	LockGuard<Mutex> lock1(m_thrd_mutex);
-	while(m_nThreadNum!=0)
+	return m_nWorkerMax;
+}
+
+int ThreadPool::get_worker_num()
+{
+	return m_nWorkerNum;
+}
+
+void ThreadPool::putq(ITask* hjob,void* pdat)
+{
+	size_t qs;
+
+	LockGuard<Mutex> lock1(m_tMutex);
+	m_tTaskQueue.append(new TaskItem(hjob,pdat));
+	qs=m_tTaskQueue.size();
+
+	if(m_nWorkerWait>0)
 	{
-		m_cond_thrd_empty.wait(lock1);
+		m_tCond.notify_one();
+	}
+
+	if(qs%m_nTaskHint==0)
+	{	
+		if(m_nWorkerNum<m_nWorkerMax)
+		{
+			this_logger().LogMessage("Too many tasks, creating new worker");
+			if(basetype::activate())
+			{
+				m_nWorkerNum++;
+			}
+		}	
 	}
 }
 
+void ThreadPool::reqexit()
+{
+	basetype::reqexit();
+	LockGuard<Mutex> lock1(m_tMutex);
+	m_tCond.notify_all();
+}
+
+bool ThreadPool::activate()
+{
+	LockGuard<Mutex> lock1(m_tMutex);
+	if(m_nWorkerNum!=0)
+	{
+		return false;
+	}
+
+	if(!ThreadImpl::activate(*this,m_nWorkerMin))
+	{
+		return false;
+	}
+
+	m_nWorkerNum=m_nWorkerMin;
+	return true;
+
+}
 
 
-};//namespace
+ThreadPool::TaskItem* ThreadPool::getq()
+{
+	LockGuard<Mutex> lock1(m_tMutex);
+	for(;;)
+	{
+		if(test_destroy())
+		{
+			m_nWorkerNum--;
+			return NULL;
+		}
+
+		TaskItem* q=m_tTaskQueue.pop_front();
+		if(q!=NULL)
+		{
+			return q;
+		}
+
+		if(m_nWorkerWait>0 && m_nWorkerNum>m_nWorkerMin)
+		{
+			this_logger().LogMessage("too many workers, leaving");
+
+			m_nWorkerNum--;
+			return NULL;
+		}
+
+		m_nWorkerWait++;
+		m_tCond.wait(m_tMutex);
+		m_nWorkerWait--;
+	}
+}
+
+void ThreadPool::svc()
+{
+	this_logger().LogMessage("WorkerThread enter");
+
+	TaskItem* q=NULL;
+	for(;;)
+	{
+		q=getq();
+		if(!q)
+		{
+			break;
+		}
+		q->hjob->svc(q->pdat);
+		delete q;
+	}
+
+	this_logger().LogMessage("WorkerThread leave");
+}
+
+VHWD_LEAVE
+

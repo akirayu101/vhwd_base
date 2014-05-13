@@ -1,3 +1,10 @@
+// Copyright 2014, Wenda han.  All rights reserved.
+// https://github.com/vhwd/vhwd_base
+//
+/// Use of this source code is governed by Apache License
+// that can be found in the License file.
+// Author: Wenda Han.
+
 #ifndef __H_VHWD_TESTING_TEST__
 #define __H_VHWD_TESTING_TEST__
 
@@ -101,6 +108,9 @@ public:
 	void Tested(bool v,const char* msg,const char* file,int line);
 
 	vhwd::Logger logger;
+
+	int argc;
+	char** argv;
 
 protected:
 	int m_nUnitPassed;

@@ -3,87 +3,63 @@
 
 VHWD_ENTER
 
-SerializerReaderSocket::SerializerReaderSocket()
+SerializerSocket::SerializerSocket()
 {
 
 }
 
-bool SerializerReaderSocket::sync()
+bool SerializerSocket::rd_sync()
 {
 
-	int n=abuf.last-abuf.gend;
-
-	if(n>0)
+	int32_t sz(0);
+	if(sock.Recv((char*)&sz,4)!=4)
 	{
-		memcpy(&abuf.buff[0],&abuf.buff[abuf.gend],n);
-		abuf.gend=n;
-	}
-	else
-	{
-		abuf.last=abuf.gend=0;
-		abuf.buff.resize(1024);
+		return false;
 	}
 
-
-	while(abuf.gend<4)
+	if(sz<0)
 	{
-		int k=sock.Recv((char*)&abuf.buff[abuf.gend],1024-abuf.gend);
-		if(k<=0) return false;
-		abuf.gend+=k;
+		return false;
 	}
 
-	size_t s=(size_t) *(int32_t*)&abuf.buff[0];
-
-	if(abuf.gend>s)
+	lbuf_rd.rewind(sz);
+	if(sock.RecvMsg(lbuf_rd.gbeg(),sz)!=sz)
 	{
-		abuf.last=abuf.gend;
-		abuf.gpos=4;
-		abuf.gend=s;
-		return true;
+		return false;
 	}
 
-	if(s>abuf.buff.size())
-	{
-		abuf.buff.resize(s);
-	}
-
-	while(abuf.gend<s)
-	{
-		int k=sock.Recv((char*)&abuf.buff[n],s-abuf.gend);
-		if(k<=0) return false;
-		abuf.gend+=k;
-	}
-
-	abuf.gpos=4;
-	abuf.gend=s;
-	abuf.last=s;
-
+	lbuf_rd.wr_flip(sz);
 	return true;
 }
 
-bool SerializerReaderSocket::test()
+bool SerializerSocket::rd_test()
 {
 	int32_t s;
 	return sock.Peek((char*)&s,sizeof(s))>0;
 }
 
-bool SerializerWriterSocket::sync()
+bool SerializerSocket::wr_sync()
 {
-	*(int32_t*)&abuf.buff[0]=abuf.buff.size();
-	bool flag=sock.SendMsg((char*)&abuf.buff[0],abuf.buff.size())>0;
-	abuf.buff.resize(4);
-	clear();
-	return flag;
+	int32_t sz=lbuf_wr.rd_free();
+
+	if(sock.Send((char*)&sz,4)!=4)
+	{
+		return false;
+	}
+
+	if(sock.SendMsg((char*)lbuf_wr.gbeg(),sz)!=sz)
+	{
+		return false;
+	}
+
+	wr_skip();
+	return true;
 }
 
-SerializerWriterSocket::SerializerWriterSocket()
-{
-	skip();
-}
 
-void SerializerWriterSocket::skip()
+void SerializerSocket::wr_skip()
 {
-	abuf.buff.resize(4);
+	lbuf_wr.rewind();
 }
 
 VHWD_LEAVE

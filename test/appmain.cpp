@@ -1,16 +1,26 @@
 #include "vhwd.h"
+#include <iostream>
+
+using namespace vhwd;
+
+#ifdef _MSC_VER
+#pragma comment(lib,"vhwd.lib")
+#endif
 
 
 int main(int argc,char** argv)
 {
 
-	vhwd::System::LogFile("vhwd.log");
+	vhwd::System::SetLogFile("vhwd.log");
+
+	vhwd::Logger logger;
+
 	vhwd::System::LogTrace("----  process enter   -------");
 
 	vhwd::TestMgr::current().Run(argc,argv);
 
-	vhwd::ThreadPool::current().close();
-	vhwd::ThreadPool::current().wait();
+	vhwd::ThreadManager::current().close();
+	vhwd::ThreadManager::current().wait();
 
 	vhwd::System::LogTrace("----  process leave   -------");
 
