@@ -184,6 +184,7 @@ TEST_DEFINE(TEST_IOCP_TCP)
 	logger.LogMessage("%g seconds, %d connections",(tk2-tk1)/TimeSpan::Seconds(1),nCount);
 
 
+	hiocp_client.logger.reset(NULL);
 	hiocp_client.Execute(new IocpCommandStartSend);
 
 

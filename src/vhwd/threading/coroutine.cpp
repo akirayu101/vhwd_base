@@ -10,15 +10,11 @@ class VHWD_DLLIMPEXP CoroutineContext : private NonCopyable
 {
 public:
 
-	friend class Coroutine;
-	friend class CoroutineMain;
-
 	CoroutineContext(size_t stksize_);
 	~CoroutineContext();
 
-	static void raw_shed_spawn(CoroutineContext* rc);
-
-protected:
+	//Coroutine entry point
+	static void raw_proc_spawn(CoroutineContext* rc);
 
 	void init();
 
@@ -56,7 +52,7 @@ CoroutineMain& Coroutine::main_coroutine()
 
 void* heap_alloc(size_t nSize);
 void heap_free(void* pMem,size_t);
-
+void heap_protect(void* pMem_,size_t nSize_,bool f);
 
 void CoroutineContext::init()
 {
@@ -66,13 +62,12 @@ void CoroutineContext::init()
 		return;
 	}
 
-	memset(m_pStackPointer,0,m_nStackSize);
 	void** nbp=(void**)(m_pStackPointer+m_nStackSize);
 
 	nsp=nbp;
 	push(0); //padding
 	push(0); //padding
-	push((void*)CoroutineContext::raw_shed_spawn); // ret function
+	push((void*)CoroutineContext::raw_proc_spawn); // coroutine entry point
 
 	push(NULL); // return address <-- [nsp]
 
@@ -117,8 +112,17 @@ CoroutineContext::CoroutineContext(size_t stksize_)
 {
 	if(stksize_>0)
 	{
-		stksize_=sz_helper::adj(stksize_,4096);
+		int pagesize=System::GetPageSize();
+		stksize_=sz_helper::adj(stksize_,pagesize)+pagesize;
 		m_pStackPointer=(char*)heap_alloc(stksize_);
+		if(!m_pStackPointer)
+		{
+			Exception::XBadAlloc();
+		}
+
+		// protect first page to detect stack overflow
+		heap_protect(m_pStackPointer,pagesize,true);
+
 	}
 	else
 	{
@@ -156,11 +160,15 @@ bool Coroutine::spawn(Coroutine* pcortctx_)
 	if(!pcortctx_) return false;
 	Coroutine& callee(*pcortctx_);
 	int32_t val=STATE_STOPPED;
-	if(!callee.m_nState.compare_exchange(val,STATE_PAUSED))
+
+	if(!callee.m_nState.compare_exchange(val,STATE_PENDING))
 	{
 		return false;
 	}
+
 	callee.m_pContext->init();
+	callee.m_nState.store(STATE_PAUSED);
+
 	return true;
 }
 
@@ -226,7 +234,7 @@ bool Coroutine::yield(Coroutine* pcortctx_)
 }
 
 
-void CoroutineContext::raw_shed_spawn(CoroutineContext* pcortctx_)
+void CoroutineContext::raw_proc_spawn(CoroutineContext* pcortctx_)
 {
 	Coroutine& caller(*pcortctx_->m_pRoutine);
 
@@ -255,7 +263,7 @@ void CoroutineContext::raw_shed_spawn(CoroutineContext* pcortctx_)
 
 		if(&caller==&callee)
 		{
-			System::LogFetal("Coroutine::main_coroutine enter CoroutineContext::raw_shed_spawn???");
+			System::LogFetal("Coroutine::main_coroutine enter CoroutineContext::raw_proc_spawn???");
 		}
 
 		int32_t val=Coroutine::STATE_PAUSED;
@@ -271,7 +279,6 @@ void CoroutineContext::raw_shed_spawn(CoroutineContext* pcortctx_)
 
 	}
 
-	//System::LogFetal("Coroutine cannot yield failed!");
 }
 
 
@@ -279,11 +286,6 @@ void CoroutineContext::raw_shed_spawn(CoroutineContext* pcortctx_)
 
 VHWD_LEAVE
 
-
-extern "C" void ret_shed_context(vhwd::CoroutineContext* rc)
-{
-	vhwd::CoroutineContext::raw_shed_spawn(rc);
-}
 
 
 #if !defined(_WIN32)

@@ -21,12 +21,12 @@ VHWD_ENTER
 #ifdef _WIN32
 
 
-void* heap_alloc(size_t nSize)
+void* heap_alloc(size_t nSize_)
 {
-	void* pMem = ::VirtualAlloc(NULL, nSize, MEM_COMMIT, PAGE_READWRITE );
-	if(pMem)
+	void* pMem_ = ::VirtualAlloc(NULL, nSize_, MEM_COMMIT, PAGE_READWRITE );
+	if(pMem_)
 	{
-		return pMem;
+		return pMem_;
 	}
 
 	int ret=::GetLastError();
@@ -34,12 +34,18 @@ void* heap_alloc(size_t nSize)
 	return NULL;
 }
 
-void heap_free(void* pMem,size_t)
+void heap_free(void* pMem_,size_t)
 {
-	if(::VirtualFree(pMem, 0, MEM_RELEASE)==0)
+	if(::VirtualFree(pMem_, 0, MEM_RELEASE)==0)
 	{
-		System::LogTrace("VirtualFree failed: ptr=%p",pMem);
+		System::LogTrace("VirtualFree failed: ptr=%p",pMem_);
 	}
+}
+
+void heap_protect(void* pMem_,size_t nSize_,bool f)
+{
+	DWORD old;
+	VirtualProtect(pMem_,nSize_,f?PAGE_READONLY:PAGE_READWRITE,&old);
 }
 
 #else
@@ -57,6 +63,11 @@ void* heap_alloc(size_t nSize)
 	int ret=errno;
 	System::LogTrace("mmap failed: %s",strerror(ret));
 	return NULL;
+}
+
+void heap_protect(void* pMem_,size_t nSize_,bool f)
+{
+	mprotect (pMem_, nSize_, f?PROT_READ:(PROT_READ|PROT_WRITE));
 }
 
 void heap_free(void* p,size_t s)

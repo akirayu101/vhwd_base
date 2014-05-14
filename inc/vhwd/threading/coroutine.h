@@ -50,7 +50,6 @@ public:
 	~Coroutine();
 
 	// yield to coroutine that yielded to this
-	// require: called by coroutine itself
 	static bool yield_last();
 
 	// yield to coroutine main
