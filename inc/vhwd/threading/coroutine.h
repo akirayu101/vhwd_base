@@ -10,7 +10,7 @@
 
 #include "vhwd/basic/bitflags.h"
 #include "vhwd/basic/functor.h"
-#include "vhwd/basic/stringbuffer.h"
+//#include "vhwd/basic/stringbuffer.h"
 
 VHWD_ENTER
 
@@ -43,7 +43,7 @@ public:
 	};
 
 	// default stack size
-	static const int DEFAULT_STACK_SIZE=1024*256;
+	static const int DEFAULT_STACK_SIZE=1024*1024;
 
 	// stksize_ will be adjust to pagesize*n
 	Coroutine(size_t stksize_=DEFAULT_STACK_SIZE);

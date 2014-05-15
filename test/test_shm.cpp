@@ -12,7 +12,7 @@ TEST_DEFINE(TEST_Shm)
 	String filetext="helloworld";
 
 	// create a file and write some text
-	TEST_ASSERT(sm1.OpenFile("shm_sample.txt",1024,SharedMem::FLAG_RW|SharedMem::FLAG_CR));
+	TEST_ASSERT(sm1.OpenFile("shm_sample.txt",1024,FileAccess::FLAG_RW|FileAccess::FLAG_CR));
 	if(sm1.addr())
 	{
 		strcpy(sm1.addr(),filetext.c_str());
@@ -21,7 +21,7 @@ TEST_DEFINE(TEST_Shm)
 	TEST_ASSERT(sm1.addr()==NULL);
 
 	// open the file and read the text
-	TEST_ASSERT(sm2.OpenFile("shm_sample.txt",0,SharedMem::FLAG_RD));
+	TEST_ASSERT(sm2.OpenFile("shm_sample.txt",0,FileAccess::FLAG_RD));
 	if(sm1.addr() && sm2.addr())
 	{
 		TEST_ASSERT(strcmp(sm2.addr(),filetext.c_str())==0);
@@ -31,8 +31,8 @@ TEST_DEFINE(TEST_Shm)
 
 	// open SharedMem with a name;
 
-	TEST_ASSERT_MSG(sm1.Open("local_shm",1024,SharedMem::FLAG_RD|SharedMem::FLAG_WR|SharedMem::FLAG_CR),"ShmOpen");
-	TEST_ASSERT_MSG(sm2.Open("local_shm",1024,SharedMem::FLAG_RD|SharedMem::FLAG_WR),"ShmOpen");
+	TEST_ASSERT_MSG(sm1.Open("local_shm",1024,FileAccess::FLAG_RD|FileAccess::FLAG_WR|FileAccess::FLAG_CR),"ShmOpen");
+	TEST_ASSERT_MSG(sm2.Open("local_shm",1024,FileAccess::FLAG_RD|FileAccess::FLAG_WR),"ShmOpen");
 	char* p1=sm1.addr();
 	char* p2=sm2.addr();
 
@@ -56,7 +56,7 @@ TEST_DEFINE(TEST_Shm)
 	TEST_ASSERT_MSG(sm2.Alloc(4096*8),"ShmOpen");
 
 	p1=sm2.addr();
-	TEST_ASSERT_MSG(p1!=NULL,"SharedMem::Alloc failed");
+	TEST_ASSERT_MSG(p1!=NULL,"FileAccess::Alloc failed");
 	if(p1)
 	{
 		memset(p1,1,4096*8);

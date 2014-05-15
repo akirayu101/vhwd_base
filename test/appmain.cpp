@@ -6,13 +6,13 @@
 #pragma comment(lib,"vhwd.lib")
 #endif
 
+#include <intrin.h>
+
 
 int main(int argc,char** argv)
 {
 
 	vhwd::System::SetLogFile("vhwd.log");
-
-	vhwd::Logger logger;
 
 	vhwd::System::LogTrace("----  process enter   -------");
 

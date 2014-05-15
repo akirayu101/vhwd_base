@@ -132,7 +132,7 @@ IOCPPool::IOCPPool(int maxconn_)
 #endif
 }
 
-bool IOCPPool::activate(int n,bool checktimeout)
+bool IOCPPool::activate(int n)
 {
 
 	ThreadEx::InvokerGroup g;
@@ -140,10 +140,9 @@ bool IOCPPool::activate(int n,bool checktimeout)
 	{
 		g.append(&IOCPPool::svc_worker,this);
 	}
-	if(checktimeout)
-	{
-		g.append(&IOCPPool::svc_checker,this);
-	}
+
+	g.append(&IOCPPool::svc_checker,this);
+
 	return basetype::activate(g);
 }
 

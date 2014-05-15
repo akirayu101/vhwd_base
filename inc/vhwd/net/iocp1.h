@@ -30,7 +30,7 @@ public:
 
 	Logger logger;
 
-	bool activate(int nWorker_=1,bool checktimeout=false);
+	bool activate(int nWorker_=1);
 
 	IOCPPool(int maxconn_=1024*16);
 	~IOCPPool();

@@ -359,7 +359,7 @@ bool SharedMem::Open(const String& name_,size_t size_,int flag_)
 bool SharedMem::Create(const String& name_,size_t size_,int flag_)
 {
 	ShareMem_detail::shm_close(impl);
-	if(!ShareMem_detail::shm_create(impl,name_,size_,flag_|FLAG_CR))
+	if(!ShareMem_detail::shm_create(impl,name_,size_,flag_|FileAccess::FLAG_CR))
 	{
 		System::CheckError("shm_create");
 		return false;

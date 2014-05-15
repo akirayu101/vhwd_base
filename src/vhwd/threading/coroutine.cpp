@@ -3,6 +3,19 @@
 
 extern "C" void asm_swap_context(void* callee,void* caller);
 
+extern "C" void* asm_get_return_address(void* dummy)
+{
+
+#ifdef _X86_
+	char* p=((char*)&dummy)-4;
+#else
+	char* p=((char*)&dummy)-8;
+#endif
+
+	return *(char**)p;
+
+}
+
 VHWD_ENTER
 
 
@@ -32,6 +45,7 @@ public:
 };
 
 
+
 CoroutineMain::CoroutineMain():Coroutine(0)
 {
 	m_nState.store(Coroutine::STATE_RUNNING);
@@ -54,6 +68,7 @@ void* heap_alloc(size_t nSize);
 void heap_free(void* pMem,size_t);
 void heap_protect(void* pMem_,size_t nSize_,bool f);
 
+
 void CoroutineContext::init()
 {
 
@@ -66,9 +81,8 @@ void CoroutineContext::init()
 
 	nsp=nbp;
 	push(0); //padding
-	push(0); //padding
-	push((void*)CoroutineContext::raw_proc_spawn); // coroutine entry point
-
+	push(0); 
+	push(CoroutineContext::raw_proc_spawn);// coroutine entry point
 	push(NULL); // return address <-- [nsp]
 
 #ifdef _X86_
@@ -86,7 +100,7 @@ void CoroutineContext::init()
 
 #else
 
-	push(0);	// nbp
+	push(nbp-5);	// nbp
 	push(0);	// nbx
 	push(0);	// nsi;
 	push(0);	// ndi;
@@ -236,6 +250,7 @@ bool Coroutine::yield(Coroutine* pcortctx_)
 
 void CoroutineContext::raw_proc_spawn(CoroutineContext* pcortctx_)
 {
+
 	Coroutine& caller(*pcortctx_->m_pRoutine);
 
 	for(;;)
@@ -278,6 +293,7 @@ void CoroutineContext::raw_proc_spawn(CoroutineContext* pcortctx_)
 		asm_swap_context(callee.m_pContext,caller.m_pContext);
 
 	}
+
 
 }
 

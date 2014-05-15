@@ -50,7 +50,9 @@ asm_swap_context proc
 	cmp rdx,0;
 	jne lb_exit;
 	;push rcx;
-	call qword ptr[rsp+8h];
+	mov rax,qword ptr[rsp+8h];
+	sub rsp,10h;
+	call rax;
 	lb_exit:
 	ret
 asm_swap_context endp

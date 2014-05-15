@@ -128,6 +128,8 @@ TEST_DEFINE(TEST_IOCP_TCP)
 	IOCPPool hiocp_client(1024*6);
 	IOCPPool hiocp_server(1024*6);
 
+	hiocp_server.activate(1);
+	hiocp_client.activate(1);
 
 	Logger logger;
 	logger.LogMessage("testing tcp ----------------");
@@ -135,7 +137,7 @@ TEST_DEFINE(TEST_IOCP_TCP)
     DataPtrT<SessionServerEcho> pEchoServer(new SessionServerEcho);
 
 	{
-		hiocp_server.activate(1,true);
+
 		if(pEchoServer->Listen("127.0.0.1",10241))
 		{
 			logger.LogMessage("echo server ready");
@@ -145,16 +147,9 @@ TEST_DEFINE(TEST_IOCP_TCP)
 			logger.LogError("echo server failed");
 			return;
 		}
-		hiocp_server.Register(pEchoServer.get());
-		//hiocp_server.wait();
-		//return;
 
-		hiocp_client.activate(1,true);
+		hiocp_server.Register(pEchoServer.get());
 	}
-	//else
-	//{
-	//	hiocp_client.activate(1,true);
-	//}
 
 
 	TimePoint tk1=Clock::now();
@@ -266,8 +261,8 @@ TEST_DEFINE(TEST_IOCP_UDP)
 	IOCPPool hiocp_server;
 
 
-	hiocp_client.activate(1,true);
-	hiocp_server.activate(1,true);
+	hiocp_client.activate(1);
+	hiocp_server.activate(1);
 
 	Logger logger;
 	logger.LogMessage("testing udp ----------------");

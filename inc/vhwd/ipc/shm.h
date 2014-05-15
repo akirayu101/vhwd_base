@@ -40,14 +40,6 @@ public:
 	SharedMem();
 	~SharedMem();
 
-	enum
-	{
-		FLAG_RD=1<<0,
-		FLAG_WR=1<<1,
-		FLAG_RW=FLAG_RD|FLAG_WR,
-		FLAG_CR=1<<3,
-	};
-
 	typedef KO_Handle_shm<KO_Policy_handle> impl_type;
 
 	// get the size of the shared memory.

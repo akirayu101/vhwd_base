@@ -112,7 +112,6 @@ inline void  XmlParser::string_assign(String& s0,mychar_ptr p1,mychar_ptr p2)
 
 	tempbuf.reserve(p2-p1);
 
-
 	// &amp; &apos; &quot; &gt; &lt; &#...; 
 	mychar* dest=tempbuf.data();
 	while(p1!=p2)
@@ -547,7 +546,8 @@ inline void XmlParser::parse_subnodes()
 			tagvalue2=pcur;
 			if(nodes.back()->m_sValue.empty())
 			{
-				nodes.back()->m_sValue.assign(tagvalue1,tagvalue2);
+				this->string_assign(nodes.back()->m_sValue,tagvalue1,tagvalue2);
+				//nodes.back()->m_sValue.assign(tagvalue1,tagvalue2);
 			}
 
 			XmlNode* pnode=CreateNode(XmlNode::XMLNODE_DATA);
@@ -630,7 +630,7 @@ inline XmlNode* XmlParser::parse_element_node()
 
 bool XmlParser::load(const char* pstr_,size_t size_)
 {
-	if(pstr_[size_]=='\0'&&size_>0&&pstr_[size-1]!='\0')
+	if(pstr_[size_]=='\0'&&size_>0&&pstr_[size_-1]!='\0')
 	{
 		pbeg=(mychar_ptr)pstr_;
 		size=size_;
