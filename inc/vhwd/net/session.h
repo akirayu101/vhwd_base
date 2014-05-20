@@ -47,10 +47,7 @@ public:
 
 protected:
 
-	bool HasPending()
-	{
-		return m_nPendingRecv.get()!=0 || m_nPendingSend.get()!=0;
-	}
+	bool HasPending();
 
 	typedef LockFreeQueue<MyOlapPtr> LKFQueue;
 	LKFQueue lkfq_send;

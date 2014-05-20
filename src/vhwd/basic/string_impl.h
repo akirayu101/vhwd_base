@@ -1,8 +1,11 @@
 #include "vhwd/memory/mempool.h"
+#include "vhwd/basic/codecvt.h"
 #include "vhwd/collection/indexer_map.h"
 #include <cstring>
 
 VHWD_ENTER
+
+void GBKTable_init();
 
 class StringPool : public NonCopyable
 {
@@ -12,7 +15,10 @@ public:
 
 	static char_type* gpEmptyString;
 
-	StringPool():pool(MyPool::current()){}
+	StringPool():pool(MyPool::current())
+	{
+		GBKTable_init();
+	}
 	MyPool& pool;
 
 	static StringPool& current()

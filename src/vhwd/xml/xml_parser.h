@@ -75,7 +75,7 @@ protected:
 	mychar_ptr pcur; //current position
 	size_t size;
 
-	void savefile();
+
 	static void savenode(std::ostream& ofs,XmlNode* pnode,int lv=0);
 	static void tabindent(std::ostream& ofs,int lv){for(int i=0;i<lv;i++) ofs<<"\t";}
 	static void savestring(std::ostream& ofs,const String& v);

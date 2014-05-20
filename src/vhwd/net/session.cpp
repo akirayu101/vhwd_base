@@ -36,6 +36,19 @@ Session::~Session()
 
 }
 
+bool Session::HasPending()
+{
+#ifdef _WIN32
+	if(m_nPendingRecv.get()!=0 || m_nPendingSend.get()!=0)
+	{
+		return true;
+	}
+	return false;
+#else
+	return false;
+#endif
+
+}
 
 void Session::OnSendCompleted(MyOlapPtr& q)
 {

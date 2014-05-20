@@ -630,7 +630,7 @@ inline XmlNode* XmlParser::parse_element_node()
 
 bool XmlParser::load(const char* pstr_,size_t size_)
 {
-	if(pstr_[size_]=='\0'&&size_>0&&pstr_[size_-1]!='\0')
+	if(pstr_[size_]=='\0'||(size_>0&&pstr_[size_-1]!='\0'))
 	{
 		pbeg=(mychar_ptr)pstr_;
 		size=size_;

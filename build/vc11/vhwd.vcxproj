@@ -391,6 +391,7 @@
     <ClCompile Include="..\..\src\vhwd\basic\console.cpp" />
     <ClCompile Include="..\..\src\vhwd\basic\exception.cpp" />
     <ClCompile Include="..\..\src\vhwd\basic\file.cpp" />
+    <ClCompile Include="..\..\src\vhwd\basic\codecvt_gbktable.cpp" />
     <ClCompile Include="..\..\src\vhwd\basic\language.cpp" />
     <ClCompile Include="..\..\src\vhwd\basic\object.cpp" />
     <ClCompile Include="..\..\src\vhwd\basic\object_data.cpp" />

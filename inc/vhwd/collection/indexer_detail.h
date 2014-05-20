@@ -102,13 +102,13 @@ public:
 		chunk.erase(std::find(chunk.begin(),chunk.end(),id));
 	}
 
-	static int32_t hashcode_key(const key_type &v)
+	static uint32_t hashcode_key(const key_type &v)
 	{
 		hash_t<key_type> h;
 		return h(v);
 	}
 
-	static int hashcode_key(const pair_type &v)
+	static uint32_t hashcode_key(const pair_type &v)
 	{
 		return hashcode_key(v.first);
 	}

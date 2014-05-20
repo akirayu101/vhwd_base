@@ -125,8 +125,8 @@ TEST_DEFINE(TEST_IOCP_TCP)
 {
 
 
-	IOCPPool hiocp_client(1024*6);
-	IOCPPool hiocp_server(1024*6);
+	IOCPPool hiocp_client("clt",1024*6);
+	IOCPPool hiocp_server("svr",1024*6);
 
 	hiocp_server.activate(1);
 	hiocp_client.activate(1);
@@ -179,7 +179,7 @@ TEST_DEFINE(TEST_IOCP_TCP)
 	logger.LogMessage("%g seconds, %d connections",(tk2-tk1)/TimeSpan::Seconds(1),nCount);
 
 
-	hiocp_client.logger.reset(NULL);
+	//hiocp_client.logger.reset(NULL);
 	hiocp_client.Execute(new IocpCommandStartSend);
 
 
@@ -257,9 +257,8 @@ public:
 TEST_DEFINE(TEST_IOCP_UDP)
 {
 
-	IOCPPool hiocp_client;
-	IOCPPool hiocp_server;
-
+	IOCPPool hiocp_client("clt",1024*6);
+	IOCPPool hiocp_server("svr",1024*6);
 
 	hiocp_client.activate(1);
 	hiocp_server.activate(1);

@@ -6,8 +6,6 @@
 #pragma comment(lib,"vhwd.lib")
 #endif
 
-#include <intrin.h>
-
 
 int main(int argc,char** argv)
 {
@@ -18,8 +16,8 @@ int main(int argc,char** argv)
 
 	vhwd::TestMgr::current().Run(argc,argv);
 
-	vhwd::ThreadManager::current().close();
-	vhwd::ThreadManager::current().wait();
+	//vhwd::ThreadManager::current().close();
+	//vhwd::ThreadManager::current().wait();
 
 	vhwd::System::LogTrace("----  process leave   -------");
 

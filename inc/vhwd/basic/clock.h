@@ -153,6 +153,7 @@ inline TimeSpan operator+(const TimeSpan& p1,const TimeSpan& p2)
 	return TimeSpan(p1.val+p2.val);
 }
 
+
 class VHWD_DLLIMPEXP Clock
 {
 public:
@@ -162,6 +163,37 @@ public:
 
 	// process started time
 	static const TimePoint tpStarted;
+};
+
+
+class VHWD_DLLIMPEXP ElapsedTimer
+{
+public:
+
+	ElapsedTimer()
+	{
+		tick();
+	}
+
+	void tick()
+	{
+		p1=p2=Clock::now();
+	}
+
+	double tack()
+	{
+		p2=Clock::now();
+		return get();
+	}
+
+	double get()
+	{
+		return (p2-p1)/TimeSpan::Seconds(1);
+	}
+
+private:
+	TimePoint p1;
+	TimePoint p2;
 };
 
 VHWD_LEAVE

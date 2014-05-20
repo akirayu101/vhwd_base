@@ -1,29 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="../../src/vhwd/net/session_tcp.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../../src/vhwd/net/overlapped.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1011" topLine="52" />
+			<Cursor1 position="0" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../../src/vhwd/basic/exception.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../../src/vhwd/net/session_udp.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1651" topLine="97" />
+			<Cursor1 position="1691" topLine="102" />
 		</Cursor>
 	</File>
-	<File name="../../inc/vhwd/net/overlapped.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../../src/vhwd/threading/coroutine.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3497" topLine="236" />
-		</Cursor>
-	</File>
-	<File name="../../src/vhwd/threading/thread_impl.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="5659" topLine="304" />
-		</Cursor>
-	</File>
-	<File name="../../src/vhwd/net/session_udp.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2336" topLine="150" />
+			<Cursor1 position="5597" topLine="324" />
 		</Cursor>
 	</File>
 	<File name="../../src/vhwd/net/socket.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -36,14 +26,9 @@
 			<Cursor1 position="487" topLine="22" />
 		</Cursor>
 	</File>
-	<File name="../../src/vhwd/net/iocp1.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../../src/vhwd/threading/thread_impl.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="12863" topLine="623" />
-		</Cursor>
-	</File>
-	<File name="../../src/vhwd/net/session.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1594" topLine="103" />
+			<Cursor1 position="5659" topLine="304" />
 		</Cursor>
 	</File>
 	<File name="../../src/vhwd/basic/object_data.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -51,19 +36,19 @@
 			<Cursor1 position="368" topLine="24" />
 		</Cursor>
 	</File>
+	<File name="../../src/vhwd/net/session_tcp.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1011" topLine="52" />
+		</Cursor>
+	</File>
 	<File name="../../src/vhwd/basic/file.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="2871" topLine="170" />
 		</Cursor>
 	</File>
-	<File name="../../src/vhwd/threading/coroutine.cpp" open="1" top="1" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../../inc/vhwd/net/session.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="5385" topLine="282" />
-		</Cursor>
-	</File>
-	<File name="../../inc/vhwd/net/session.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1053" topLine="41" />
+			<Cursor1 position="1049" topLine="50" />
 		</Cursor>
 	</File>
 	<File name="../../src/vhwd/memory/mempool_cache.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -71,9 +56,9 @@
 			<Cursor1 position="0" topLine="50" />
 		</Cursor>
 	</File>
-	<File name="../../src/vhwd/memory/mempool_paging.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../../src/vhwd/basic/codecvt.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1344" topLine="77" />
+			<Cursor1 position="594" topLine="21" />
 		</Cursor>
 	</File>
 	<File name="../../src/vhwd/net/session_client.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -81,19 +66,19 @@
 			<Cursor1 position="1436" topLine="110" />
 		</Cursor>
 	</File>
-	<File name="../../src/vhwd/basic/stringbuffer.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="5799" topLine="284" />
-		</Cursor>
-	</File>
-	<File name="../../src/vhwd/basic/string.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="7130" topLine="332" />
-		</Cursor>
-	</File>
 	<File name="../../src/vhwd/xml/xml_parser.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="11354" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../../src/vhwd/memory/mempool_paging.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1344" topLine="77" />
+		</Cursor>
+	</File>
+	<File name="../../src/vhwd/basic/exception.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1651" topLine="97" />
 		</Cursor>
 	</File>
 	<File name="../../src/vhwd/net/session_server.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -101,14 +86,34 @@
 			<Cursor1 position="2793" topLine="144" />
 		</Cursor>
 	</File>
-	<File name="../../src/vhwd/basic/codecvt.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../../inc/vhwd/net/overlapped.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="5200" topLine="198" />
+			<Cursor1 position="3497" topLine="236" />
+		</Cursor>
+	</File>
+	<File name="../../src/vhwd/net/iocp1.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="12386" topLine="595" />
+		</Cursor>
+	</File>
+	<File name="../../src/vhwd/basic/string.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7130" topLine="351" />
+		</Cursor>
+	</File>
+	<File name="../../src/vhwd/net/session.cpp" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="860" topLine="35" />
 		</Cursor>
 	</File>
 	<File name="../../src/vhwd/ipc/shm.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="5286" topLine="240" />
+			<Cursor1 position="4844" topLine="226" />
+		</Cursor>
+	</File>
+	<File name="../../src/vhwd/basic/stringbuffer.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5696" topLine="295" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

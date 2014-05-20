@@ -18,9 +18,9 @@ SessionTCP::SessionTCP()
 
 bool SessionTCP::AsyncSend(const char* data,size_t size)
 {
-	if(size>4096)
+	if(size>VHWD_MAX_PACKET_SIZE)
 	{
-		System::LogTrace("size>4096 in %s",__FUNCTION__);
+		System::LogTrace("size>VHWD_MAX_PACKET_SIZE in %s",__FUNCTION__);
 		return false;
 	}
 

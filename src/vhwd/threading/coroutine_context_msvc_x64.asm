@@ -53,6 +53,7 @@ asm_swap_context proc
 	mov rax,qword ptr[rsp+8h];
 	sub rsp,10h;
 	call rax;
+	int 3;
 	lb_exit:
 	ret
 asm_swap_context endp

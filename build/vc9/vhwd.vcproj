@@ -218,11 +218,19 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\vhwd\basic\codecvt_gbktable.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\vhwd\basic\console.cpp"
 						>
 					</File>
 					<File
 						RelativePath="..\..\src\vhwd\basic\exception.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\basic\file.cpp"
 						>
 					</File>
 					<File
@@ -386,6 +394,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\vhwd\threading\coroutine_context_msvc_x64.asm"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\vhwd\threading\thread.cpp"
 						>
 					</File>
@@ -407,6 +419,10 @@
 					</File>
 					<File
 						RelativePath="..\..\src\vhwd\threading\thread_impl_windows.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\threading\thread_manager.cpp"
 						>
 					</File>
 					<File

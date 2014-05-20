@@ -81,8 +81,8 @@ void CoroutineContext::init()
 
 	nsp=nbp;
 	push(0); //padding
-	push(0); 
-	push(CoroutineContext::raw_proc_spawn);// coroutine entry point
+	push(0);
+	push((void*)CoroutineContext::raw_proc_spawn);// coroutine entry point
 	push(NULL); // return address <-- [nsp]
 
 #ifdef _X86_
@@ -306,9 +306,11 @@ VHWD_LEAVE
 
 #if !defined(_WIN32)
 
+// move to external asm  file
+/*
 extern "C" void asm_swap_context(void* callee,void* caller)
 {
-__asm__(
+__asm__ __volatile__ (
 	"mov %rdi,%rcx;"
 	"mov %rsi,%rdx;"
 	"mov %rbp,-0x08(%rsp);"
@@ -334,15 +336,14 @@ __asm__(
 
 	"mov (%rsp),%rdx;"
 	"cmpq $0,%rdx;"
-	"jne lb_exit;"
-
+	"jne .L1;"
 	"mov %rcx,%rdi;"
 	"call 0x8(%rsp);"
-	"lb_exit:"
-
+	".L1:"
 	)
 	;
 }
+*/
 
 #elif defined(_X86_)
 

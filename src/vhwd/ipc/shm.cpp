@@ -229,7 +229,7 @@ public:
 			}
 			hfd.reset(fd);
 
-			if(flag_&SharedMem::FLAG_CR)
+			if(flag_&FileAccess::FLAG_CR)
 			{
 				ftruncate(fd,size_);
 			}

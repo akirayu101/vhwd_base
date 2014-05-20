@@ -63,9 +63,12 @@ public:
 
 	bool Ok(){return impl.ok();}
 
+	bool Good(){return m_bGood;}
+
 private:
 
 	impl_type impl;
+	bool m_bGood;
 };
 
 

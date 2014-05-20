@@ -13,8 +13,6 @@
 
 VHWD_ENTER
 
-
-
 class VHWD_DLLIMPEXP System
 {
 public:

@@ -54,6 +54,8 @@
 	typedef __int64 int64_t;
 	typedef unsigned int uint32_t;
 	typedef unsigned __int64 uint64_t;
+	typedef short int16_t;
+	typedef unsigned short uint16_t;
 
 	#define WIN32_LEAN_AND_MEAN
 	#define NOMINMAX
@@ -194,7 +196,7 @@ template<>
 class hash_pod<1>
 {
 public:
-	static inline int32_t hash(const void* p,int n)
+	static inline uint32_t hash(const void* p,int n)
 	{
 		const char *key  = (const char *)p;
 		int32_t seed1 = 0x7FED7FED;
@@ -216,13 +218,13 @@ template<>
 class hash_pod<4>
 {
 public:
-	static inline int32_t hash(const void* p,int n)
+	static inline uint32_t hash(const void* p,int n)
 	{
-		const int32_t *hkey  = (const int32_t *)p;
-		int32_t seed1 = 0x7FED7FED;
-		int32_t seed2 = 0xEEEEEEEE;
-		int32_t seed3 = 0x3123EEEE;
-		int32_t ch;
+		const uint32_t *hkey  = (const uint32_t *)p;
+		uint32_t seed1 = 0x7FED7FED;
+		uint32_t seed2 = 0xEEEEEEEE;
+		uint32_t seed3 = 0x3123EEEE;
+		uint32_t ch;
 
 		for(int i=0;i<n;i++)
 		{
@@ -231,7 +233,7 @@ public:
 			seed1 = (ch * seed3) ^ (seed1 + seed2);
 			seed2 = (ch + seed1) + seed2 + (seed2 << 5) + 3;
 		}
-		return (int32_t)seed1;
+		return (uint32_t)seed1;
 	}
 };
 
@@ -239,7 +241,7 @@ template<int N,int D>
 class hash_base
 {
 public:
-	static inline int32_t hash(const void* p)
+	static inline uint32_t hash(const void* p)
 	{
 		return hash_pod<1>::hash(p,N);
 	}
@@ -250,7 +252,7 @@ template<int N>
 class hash_base<N,0>
 {
 public:
-	static inline int32_t hash(const void* p)
+	static inline uint32_t hash(const void* p)
 	{
 		return hash_pod<4>::hash(p,N>>2);
 	}
@@ -260,16 +262,30 @@ template<typename T> class hash_impl : public hash_base<sizeof(T),sizeof(T)%4>
 {
 public:
 	typedef hash_base<sizeof(T),sizeof(T)%4> basetype;
-	inline int32_t operator()(const T& val){return basetype::hash(&val);}
+	inline uint32_t operator()(const T& val){return basetype::hash(&val);}
 };
 
-template<> class hash_t<int32_t> : public hash_impl<int32_t>{};
-template<> class hash_t<uint32_t> : public hash_impl<uint32_t>{};
+template<typename T> class hash_raw
+{
+public:
+	inline uint32_t operator()(const T val)
+	{
+		return (int32_t)val;
+	}
+};
+
+template<> class hash_t<int16_t> : public hash_raw<int16_t>{};
+template<> class hash_t<uint16_t> : public hash_raw<uint16_t>{};
+template<> class hash_t<int32_t> : public hash_raw<int32_t>{};
+template<> class hash_t<uint32_t> : public hash_raw<uint32_t>{};
+template<> class hash_t<float32_t> : public hash_raw<float32_t>{};
+template<> class hash_t<wchar_t> : public hash_raw<wchar_t>{};
+
 template<> class hash_t<int64_t> : public hash_impl<int64_t>{};
 template<> class hash_t<uint64_t> : public hash_impl<uint64_t>{};
-template<> class hash_t<float32_t> : public hash_impl<float32_t>{};
 template<> class hash_t<float64_t> : public hash_impl<float64_t>{};
 template<> class hash_t<void*> : public hash_impl<void*>{};
+
 
 void VHWD_DLLIMPEXP OnAssertFailure(const char* what,const char* file,long line);
 const String& VHWD_DLLIMPEXP Translate(const String& msg);

@@ -22,71 +22,97 @@
 
 VHWD_ENTER
 
-// CodeCvt is used to convert between char and wchar_t.
-template<typename T>
-class VHWD_DLLIMPEXP CodeCvt
+template<int N> class char_implN;
+template<> class char_implN<1>{public:typedef unsigned char type;};
+template<> class char_implN<2>{public:typedef uint16_t type;};
+template<> class char_implN<4>{public:typedef uint32_t type;};
+template<typename T> class char_impl : public char_implN<sizeof(T)>{};
+
+
+class VHWD_DLLIMPEXP IConv
 {
 public:
 
-	typedef T char_wcs;
-	typedef char char_mbs;
 
-	static bool s2ws(StringBuffer<char_wcs>& sb,const char_mbs* p1,size_t ln);
-	static bool ws2s(StringBuffer<char_mbs>& sb,const char_wcs* p1,size_t ln);
+	static bool unicode_to_gbk(StringBuffer<unsigned char>& aa_,const uint16_t* pw_,size_t ln_);
+	static bool unicode_to_gbk(StringBuffer<unsigned char>& aa_,const uint32_t* pw_,size_t ln_);
+	static bool unicode_to_gbk(StringBuffer<unsigned char>& aa_,const unsigned char* pw_,size_t ln_){return false;}
 
-	static StringBuffer<char_wcs> s2ws(const char_mbs* p1,size_t ln)
+	static bool gbk_to_unicode(StringBuffer<uint16_t>& aw_,const unsigned char* pa_,size_t ln_);
+	static bool gbk_to_unicode(StringBuffer<uint32_t>& aw_,const unsigned char* pa_,size_t ln_);
+	static bool gbk_to_unicode(StringBuffer<unsigned char>& aw_,const unsigned char* pa_,size_t ln_){return false;}
+
+	static bool unicode_to_utf8(StringBuffer<unsigned char>& aa_,const uint16_t* pw_,size_t ln_);
+	static bool unicode_to_utf8(StringBuffer<unsigned char>& aa_,const uint32_t* pw_,size_t ln_);
+	static bool unicode_to_utf8(StringBuffer<unsigned char>& aa_,const unsigned char* pw_,size_t ln_){return false;}
+
+	static bool utf8_to_unicode(StringBuffer<uint16_t>& aw_,const unsigned char* pa_,size_t ln_);
+	static bool utf8_to_unicode(StringBuffer<uint32_t>& aw_,const unsigned char* pa_,size_t ln_);
+	static bool utf8_to_unicode(StringBuffer<unsigned char>& aw_,const unsigned char* pa_,size_t ln_){return false;}
+
+
+	template<typename WC>
+	static bool unicode_to_gbk(StringBuffer<char>& aa_,const WC* pw_,size_t ln_)
 	{
-		StringBuffer<char_wcs> sb;
-		s2ws(sb,p1,ln);
-		return sb;
+		typedef typename char_impl<char>::type char_mbs;
+		typedef typename char_impl<WC>::type char_wcs;
+		return unicode_to_gbk((StringBuffer<char_mbs>&)aa_,(const char_wcs*)pw_,ln_);
 	}
 
-	static StringBuffer<char_wcs> s2ws(const char_mbs* p1)
+	template<typename WC>
+	static bool gbk_to_unicode(StringBuffer<WC>& aw_,const char* pa_,size_t ln_)
 	{
-		StringBuffer<char_wcs> sb;
-		s2ws(sb,p1,std::char_traits<char_mbs>::length(p1));
-		return sb;
+		typedef typename char_impl<char>::type char_mbs;
+		typedef typename char_impl<WC>::type char_wcs;
+		return gbk_to_unicode((StringBuffer<char_wcs>&)aw_,(const char_mbs*)pa_,ln_);
 	}
 
-	static StringBuffer<char_wcs> s2ws(const String& p1)
+	template<typename WC>
+	static bool unicode_to_utf8(StringBuffer<char>& aa_,const WC* pw_,size_t ln_)
 	{
-		StringBuffer<char_wcs> sb;
-		s2ws(sb,p1.c_str(),p1.size());
-		return sb;
+		typedef typename char_impl<char>::type char_mbs;
+		typedef typename char_impl<WC>::type char_wcs;
+		return unicode_to_utf8((StringBuffer<char_mbs>&)aa_,(const char_wcs*)pw_,ln_);
 	}
 
-	static String ws2s(const char_wcs* p1,size_t ln)
+	template<typename WC>
+	static bool utf8_to_unicode(StringBuffer<WC>& aw_,const char* pa_,size_t ln_)
 	{
-		StringBuffer<char_mbs> sb;
-		ws2s(sb,p1,ln);
-		return sb;
+		typedef typename char_impl<char>::type char_mbs;
+		typedef typename char_impl<WC>::type char_wcs;
+		return utf8_to_unicode((StringBuffer<char_wcs>&)aw_,(const char_mbs*)pa_,ln_);
 	}
 
-	static StringBuffer<char_wcs> s2ws(const char_mbs* p1,const char_mbs* p2)
+
+	template<typename WC>
+	static bool unicode_to_ansi(StringBuffer<char>& aa_,const WC* pw_,size_t ln_)
 	{
-		return s2ws(p1,safe_distance(p1,p2));
+#ifdef _WIN32
+		return unicode_to_gbk(aa_,pw_,ln_);
+#else
+		return unicode_to_utf8(aa_,pw_,ln_);
+#endif
 	}
 
-	static String ws2s(const char_wcs* p1,const char_wcs* p2)
+	template<typename WC>
+	static bool ansi_to_unicode(StringBuffer<WC>& aw_,const char* pa_,size_t ln_)
 	{
-		return ws2s(p1,safe_distance(p1,p2));
+#ifdef _WIN32
+		return gbk_to_unicode(aw_,pa_,ln_);
+#else
+		return utf8_to_unicode(aw_,pa_,ln_);
+#endif
 	}
 
-	static String ws2s(const char_wcs* p1)
-	{
-		StringBuffer<char_mbs> sb;
-		ws2s(sb,p1,std::char_traits<char_wcs>::length(p1));
-		return sb;
-	}
+	static bool utf8_to_ansi(StringBuffer<char>& aa_,const char* pa_,size_t ln_);
 
-	static String ws2s(const StringBuffer<char_wcs>& p1)
-	{
-		StringBuffer<char_mbs> sb;
-		ws2s(sb,p1.data(),p1.size());
-		return sb;
-	}
+	static bool ansi_to_utf8(StringBuffer<char>& aa_,const char* pa_,size_t ln_);
 
+	static bool utf8_to_gbk(StringBuffer<char>& aa_,const char* pa_,size_t ln_);
+
+	static bool gbk_to_utf8(StringBuffer<char>& aa_,const char* pa_,size_t ln_);
 };
+
 
 
 VHWD_LEAVE

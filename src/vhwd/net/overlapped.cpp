@@ -133,11 +133,8 @@ bool MyOverLappedRb::init_recv(RingBufferBase& buff_recv)
 
 MyOverLappedEx::MyOverLappedEx()
 {
-	buffer=(char*)MemPoolPaging::current().allocate(4096);
-	if(!buffer)
-	{
-		Exception::XBadAlloc();
-	}
+	buffer=(char*)MemPoolPaging::current().allocate(VHWD_MAX_PACKET_SIZE);
+
 	dbuf[0].buf=buffer;
 	dbuf[0].len=0;
 	dbuf[1].buf=NULL;

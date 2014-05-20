@@ -32,7 +32,7 @@ public:
 
 	bool activate(int nWorker_=1);
 
-	IOCPPool(int maxconn_=1024*16);
+	IOCPPool(const String& name_="iocp_server",int maxconn_=1024*16);
 	~IOCPPool();
 
 	void reqexit();
@@ -46,6 +46,10 @@ public:
 	bool Execute(IocpCommand* cmd);
 
 	const IOCPAccounter& GetAccounter() const {return accounter;}
+
+	void SetName(const String& s){m_sName=s;}
+	const String& GetName() const {return m_sName;}
+
 protected:
 
 	void ccc_update_info();
@@ -73,6 +77,8 @@ protected:
 	void svc_checker();
 
 	Event m_nCanClose;
+
+	String m_sName;
 
 #ifndef _WIN32
     void HandleSend(Session& ikey);

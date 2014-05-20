@@ -1,5 +1,7 @@
 
-#include"vhwd/serialization/serializer.h"
+#include "vhwd/serialization/serializer.h"
+#include "vhwd/basic/stringbuffer.h"
+#include "vhwd/basic/codecvt.h"
 
 VHWD_ENTER
 
@@ -8,18 +10,31 @@ template<typename A>
 void serial_helper_func<A,String>::g(SerializerReader &ar,type &val)
 {
 	arr_1t<char> vect;ar >> vect;
-	val=String::utf8_to_ansi(vect.data(),vect.size());
+	StringBuffer<char> sb;
+	if(!IConv::utf8_to_ansi(sb,vect.data(),vect.size()))
+	{
+		ar.errstr("invalid string");
+	}
+	val=sb;
+
+	//val=String::utf8_to_ansi(vect.data(),vect.size());
 	//val.assign(vect.data(),vect.size());
 }
 
 template<typename A>
 void serial_helper_func<A,String>::g(SerializerWriter &ar,type &val)
 {
-	String utf8=String::ansi_to_utf8(val);
+	StringBuffer<char> sb;
+	if(!IConv::ansi_to_utf8(sb,val.c_str(),val.size()))
+	{
+		ar.errstr("invalid string");
+		return;
+	}
+	//String utf8=String::ansi_to_utf8(val);
 	//String& utf8(val);
 
-	const char *s=utf8.c_str();
-	int64_t _size=(int64_t)utf8.size();
+	const char *s=sb.data();
+	int64_t _size=(int64_t)sb.size();
 	ar << _size;
 	if(_size>0)
 	{

@@ -52,6 +52,7 @@
 		<Unit filename="../../src/vhwd/basic/bitlfags.cpp" />
 		<Unit filename="../../src/vhwd/basic/clock.cpp" />
 		<Unit filename="../../src/vhwd/basic/codecvt.cpp" />
+		<Unit filename="../../src/vhwd/basic/codecvt_gbktable.cpp" />
 		<Unit filename="../../src/vhwd/basic/console.cpp" />
 		<Unit filename="../../src/vhwd/basic/exception.cpp" />
 		<Unit filename="../../src/vhwd/basic/file.cpp" />
@@ -92,6 +93,7 @@
 		<Unit filename="../../src/vhwd/testing/test.cpp" />
 		<Unit filename="../../src/vhwd/testing/test_mgr.cpp" />
 		<Unit filename="../../src/vhwd/threading/coroutine.cpp" />
+		<Unit filename="../../src/vhwd/threading/coroutine_context_gcc_x64.S" />
 		<Unit filename="../../src/vhwd/threading/thread.cpp" />
 		<Unit filename="../../src/vhwd/threading/thread_impl.cpp" />
 		<Unit filename="../../src/vhwd/threading/thread_manager.cpp" />

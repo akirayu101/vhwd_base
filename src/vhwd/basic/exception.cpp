@@ -25,7 +25,7 @@ const char* Exception::what() throw()
 }
 #endif
 
-static const char* Exception_copy_str(const char* p,bool d)
+static const char* Exception_strdup(const char* p,bool d)
 {
 	if(!p) return NULL;
 	if(!d) return p;
@@ -39,26 +39,26 @@ static const char* Exception_copy_str(const char* p,bool d)
 Exception::Exception(const Exception& o)
 {
 	m_bDelete=o.m_bDelete;
-	m_sWhat=Exception_copy_str(o.m_sWhat,m_bDelete);
+	m_sWhat=Exception_strdup(o.m_sWhat,m_bDelete);
 }
 
 const Exception& Exception::operator=(const Exception& o)
 {
 	m_bDelete=o.m_bDelete;
-	m_sWhat=Exception_copy_str(o.m_sWhat,m_bDelete);
+	m_sWhat=Exception_strdup(o.m_sWhat,m_bDelete);
 	return *this;
 }
 
 Exception::Exception(const char* p,bool del)
 {
 	m_bDelete=del;
-	m_sWhat=Exception_copy_str(p,m_bDelete);
+	m_sWhat=Exception_strdup(p,m_bDelete);
 }
 
 Exception::Exception(const String& p)
 {
 	m_bDelete=true;
-	m_sWhat=Exception_copy_str(p.c_str(),m_bDelete);
+	m_sWhat=Exception_strdup(p.c_str(),m_bDelete);
 }
 
 Exception::~Exception() throw()

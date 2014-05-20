@@ -1,9 +1,10 @@
 #include "vhwd/basic/stringbuffer.h"
 #include "vhwd/basic/codecvt.h"
+#include "vhwd/basic/file.h"
+#include "vhwd/logging/logger.h"
 
-#include <cstring>
-#include <clocale>
-#include <fstream>
+
+//#include <fstream>
 
 VHWD_ENTER
 
@@ -21,13 +22,13 @@ class StringBufferHelper
 public:
 	static void equal(StringBuffer<T>& h,const String& o)
 	{
-		CodeCvt<T>::s2ws(h,o.c_str(),o.size());
+		IConv::ansi_to_unicode(h,o.c_str(),o.size());
 	}
 
 	static void eqadd(StringBuffer<T>& h,const String& o)
 	{
 		StringBuffer<T> tmp;
-		CodeCvt<T>::s2ws(tmp,o.c_str(),o.size());
+		IConv::ansi_to_unicode(tmp,o.c_str(),o.size());
 		h+=tmp;
 	}
 };
@@ -101,8 +102,9 @@ bool StringBuffer<T>::save(const String& file,int type)
 	bool writebom=(type&FILE_TEXT_BOM)!=0;
 	type=type&FILE_MASK;
 
-	std::ofstream ofs(file.c_str());
-	if(!ofs.good())
+	File ofs;
+
+	if(!ofs.Open(file,FileAccess::FLAG_WR))
 	{
 		return false;
 	}
@@ -111,23 +113,23 @@ bool StringBuffer<T>::save(const String& file,int type)
 	{
 	case FILE_BINARY:
 		{
-			ofs.write((char*)data(),sizeof(T)*size());
-			return ofs.good();
+			ofs.Write((char*)data(),sizeof(T)*size());
+			return ofs.Good();
 		}
 	case FILE_TEXT_ANSI:
 		{
 			if(sizeof(T)==1)
 			{
-				ofs.write((char*)data(),size());
-				return ofs.good();
+				ofs.Write((char*)data(),size());
+				return ofs.Good();
 			}
 			StringBuffer<char> sb;
-			if(!CodeCvt<T>::ws2s(sb,data(),size()))
+			if(!IConv::unicode_to_ansi(sb,data(),size()))
 			{
 				return false;
 			}
-			ofs.write((char*)sb.data(),sb.size());
-			return ofs.good();
+			ofs.Write((char*)sb.data(),sb.size());
+			return ofs.Good();
 		}
 		break;
 	case FILE_TEXT:
@@ -136,45 +138,33 @@ bool StringBuffer<T>::save(const String& file,int type)
 #ifndef _WIN32
 			if(sizeof(T)==1)
 			{
-				ofs.write((char*)data(),size());
-				return ofs.good();
+				ofs.Write((char*)data(),size());
+				return ofs.Good();
 			}
 #endif
 			StringBuffer<char> sb;
 			if(sizeof(T)==1)
 			{
-				if(!String::ansi_to_utf8(sb,*(StringBuffer<char>*)this))
+				if(!IConv::ansi_to_utf8(sb,(const char*)data(),size()))
 				{
 					return false;
 				}
 			}
 			else if(sizeof(T)==sizeof(wchar_t))
 			{
-				if(!String::wstr_to_utf8(sb,*(StringBuffer<wchar_t>*)this))
+				if(!IConv::unicode_to_utf8(sb,data(),size()))
 				{
 					return false;
-				}
-			}
-			else
-			{
-				if(!CodeCvt<T>::ws2s(sb,data(),size()))
-				{
-					return false;
-				}
-
-				if(!String::ansi_to_utf8(sb,sb))
-				{
-					return false;
-				}
+				}				
 			}
 
 			if(writebom)
 			{
-				ofs.write((char*)bom_utf8,3);
+				ofs.Write((char*)bom_utf8,3);
 			}
 
-			ofs.write(sb.data(),sb.size());
-			return ofs.good();
+			ofs.Write(sb.data(),sb.size());
+			return ofs.Good();
 		}
 		break;
 	case FILE_TEXT_UTF16_BE:
@@ -184,7 +174,7 @@ bool StringBuffer<T>::save(const String& file,int type)
 			StringBuffer<unsigned short> wb;
 			if(sizeof(T)==1)
 			{
-				if(!CodeCvt<unsigned short>::s2ws(wb,(char*)data(),size()))
+				if(!IConv::ansi_to_unicode(wb,(const char*)data(),size()))
 				{
 					return false;
 				}
@@ -210,15 +200,17 @@ bool StringBuffer<T>::save(const String& file,int type)
 
 			if(writebom)
 			{
-				ofs.write((char*)(type==FILE_TEXT_UTF16_BE?bom_utf16_be:bom_utf16_le),2);
+				ofs.Write((char*)(type==FILE_TEXT_UTF16_BE?bom_utf16_be:bom_utf16_le),2);
 			}
 
-			ofs.write((char*)wb.data(),wb.size()*2);
-			return ofs.good();
+			ofs.Write((char*)wb.data(),wb.size()*2);
+			return ofs.Good();
 
 		}
 		break;
 	default:
+
+		this_logger().LogError("Invalid type in StringBuffer<T>::save");
 		return false;
 	};
 
@@ -229,57 +221,62 @@ bool StringBuffer<T>::save(const String& file,int type)
 template<typename T>
 bool StringBuffer<T>::load(const String& file,int type)
 {
-	std::ifstream ifs;
+
+	File ifs;
 
 	type=type&FILE_MASK;
 
+	if(!ifs.Open(file))
+	{
+		this_logger().LogError("Cannot open file: %s",file);
+		return false;
+	}
+	size_t sz=ifs.Size();
+
 	if(type==FILE_BINARY)
 	{
-		ifs.open(file.c_str(),std::ios::in|std::ios::binary);
-		if(!ifs.good()) return false;
-		ifs.seekg(0,std::ios_base::end);
-		size_t sz=(size_t)ifs.tellg();
-		ifs.seekg(0,std::ios_base::beg);
-
 		if(sz%sizeof(T)!=0)
 		{
-			System::LogTrace("invalid filesize:%u",sz);
+			this_logger().LogError("Invalid filesize: %u",sz);
 			return false;
 		}
 
 		size_t size=sz/sizeof(T);
 		resize(size);
-		ifs.read((char*)data(),sz);
-		return ifs.good();
+		ifs.Read((char*)data(),sz);
+		
+		return true;
+
 	}
-
-
-	ifs.open(file.c_str(),std::ios::in|std::ios::binary);
-	if(!ifs.good()) return false;
-	ifs.seekg(0,std::ios_base::end);
-	size_t sz=(size_t)ifs.tellg();
-	ifs.seekg(0,std::ios_base::beg);
+	
 
 	unsigned char bom[4]={1,1,1,1};
-	ifs.read((char*)bom,4);
+	ifs.Read((char*)bom,4);
 
 	StringBuffer<char> sb;
 	if(bom[0]==0xEF && bom[1]==0xBB && bom[2]==0xBF) // UTF8
 	{
 		size_type df=3;
-		ifs.seekg(df,std::ios_base::beg);
+		ifs.Seek(df,File::FILEPOS_BEG);
 		size_type nz=sz-df;
 		StringBuffer<char> kb;kb.resize(nz);
-		ifs.read((char*)kb.data(),nz);
-
-		if(!String::utf8_to_ansi(sb,kb.data(),nz))
-		{
-			return false;
-		}
+		ifs.Read((char*)kb.data(),nz);
 
 		if(sizeof(T)==1)
 		{
+			if(!IConv::utf8_to_ansi(sb,kb.data(),nz))
+			{
+				return false;
+			}
 			sb.swap(*(StringBuffer<char>*)this);
+			return true;
+		}
+		else
+		{
+			if(!IConv::utf8_to_unicode((*this),kb.data(),nz))
+			{
+				return false;
+			}
 			return true;
 		}
 
@@ -288,15 +285,15 @@ bool StringBuffer<T>::load(const String& file,int type)
 	{
 		if((sz&0x1)!=0)
 		{
-			System::LogTrace("invalid UTF-16 filesize:%u",sz);
+			System::LogTrace("Invalid UTF-16 filesize: %u",sz);
 			return false;
 		}
 
 		size_type df=2;
-		ifs.seekg(df,std::ios_base::beg);
+		ifs.Seek(df,File::FILEPOS_BEG);
 		size_type nz=sz-df;
 		StringBuffer<unsigned short> kb;kb.resize(nz>>1);
-		ifs.read((char*)kb.data(),nz);
+		ifs.Read((char*)kb.data(),nz);
 
 		// CE D2
 		// 11 62;
@@ -318,24 +315,25 @@ bool StringBuffer<T>::load(const String& file,int type)
 			return true;
 		}
 
-		if(!CodeCvt<unsigned short>::ws2s(sb,kb.data(),nz>>1))
+		if(!IConv::unicode_to_ansi(sb,kb.data(),kb.size()))
 		{
 			return false;
 		}
+	
 	}
 	else if( (bom[0]==0xFF && bom[1]==0xFE && bom[2]==0 && bom[3]==0)||(bom[0]==0 && bom[1]==0 && bom[2]==0xFE && bom[3]==0xFF))
 	{
 		if((sz&0x3)!=0)
 		{
-			System::LogTrace("invalid UTF-32 filesize:%u",sz);
+			System::LogTrace("Invalid UTF-32 filesize:%u",sz);
 			return false;
 		}
 
 		size_type df=4;
-		ifs.seekg(df,std::ios_base::beg);
+		ifs.Seek(df,File::FILEPOS_BEG);
 		size_type nz=sz-df;
 		StringBuffer<unsigned int> kb;kb.resize(nz>>2);
-		ifs.read((char*)kb.data(),nz);
+		ifs.Read((char*)kb.data(),nz);
 
 		uint32_t tag=*(uint32_t*)bom;
 
@@ -355,7 +353,7 @@ bool StringBuffer<T>::load(const String& file,int type)
 			return true;
 		}
 
-		if(!CodeCvt<unsigned int>::ws2s(sb,kb.data(),nz>>2))
+		if(!IConv::unicode_to_ansi(sb,kb.data(),kb.size()))
 		{
 			return false;
 		}
@@ -363,10 +361,10 @@ bool StringBuffer<T>::load(const String& file,int type)
 	else
 	{
 		size_type df=0;
-		ifs.seekg(df,std::ios_base::beg);
+		ifs.Seek(df,File::FILEPOS_BEG);
 		size_type nz=sz-df;
 		sb.resize(nz);
-		ifs.read((char*)sb.data(),nz);
+		ifs.Read((char*)sb.data(),nz);
 
 		unsigned char* p=(unsigned char*)sb.data();
 		int t=0;
@@ -398,10 +396,12 @@ bool StringBuffer<T>::load(const String& file,int type)
 
 		if(t==1)
 		{
-			if(!String::utf8_to_ansi(sb,sb))
+			StringBuffer<char> kb;
+			if(!IConv::utf8_to_ansi(kb,sb.data(),sb.size()))
 			{
 				return false;
 			}
+			kb.swap(sb);
 		}
 	}
 
@@ -411,7 +411,7 @@ bool StringBuffer<T>::load(const String& file,int type)
 	}
 	else
 	{
-		if(!CodeCvt<T>::s2ws(*this,sb.data(),sb.size()))
+		if(!IConv::ansi_to_unicode(*this,sb.data(),sb.size()))
 		{
 			return false;
 		}

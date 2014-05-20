@@ -71,8 +71,8 @@ void ThreadPool::putq(ITask* hjob,void* pdat)
 
 void ThreadPool::reqexit()
 {
-	basetype::reqexit();
 	LockGuard<Mutex> lock1(m_tMutex);
+	basetype::reqexit();
 	m_tCond.notify_all();
 }
 
@@ -97,6 +97,8 @@ bool ThreadPool::activate()
 
 ThreadPool::TaskItem* ThreadPool::getq()
 {
+
+
 	LockGuard<Mutex> lock1(m_tMutex);
 	for(;;)
 	{
@@ -115,7 +117,6 @@ ThreadPool::TaskItem* ThreadPool::getq()
 		if(m_nWorkerWait>0 && m_nWorkerNum>m_nWorkerMin)
 		{
 			this_logger().LogMessage("too many workers, leaving");
-
 			m_nWorkerNum--;
 			return NULL;
 		}

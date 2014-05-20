@@ -79,7 +79,7 @@ int IOCPPool::Register(Session* pkey)
 }
 
 
-IOCPPool::IOCPPool(int maxconn_)
+IOCPPool::IOCPPool(const String& name_,int maxconn_):m_sName(name_)
 {
 	if(maxconn_<16)
 	{
@@ -134,6 +134,10 @@ IOCPPool::IOCPPool(int maxconn_)
 
 bool IOCPPool::activate(int n)
 {
+	if(!hIOCPhandler)
+	{
+		return false;
+	}
 
 	ThreadEx::InvokerGroup g;
 	for(int i=0;i<n;i++)
@@ -168,11 +172,11 @@ void IOCPPool::ccc_update_info()
 
 	if(_pps>5.0e3)
 	{
-		logger.LogMessage("Session_count: %d,pps: %gW, bps: %gM",accounter.nSessionCount.get(),_pps/1.0e4,_bps/(1024.0*1024.0));
+		logger.LogMessage("%s ssc: %d,pps: %gW, bps: %gM",m_sName,accounter.nSessionCount.get(),_pps/1.0e4,_bps/(1024.0*1024.0));
 	}
 	else
 	{
-		logger.LogMessage("Session_count: %d,pps: %g, bps: %gM",accounter.nSessionCount.get(),_pps,_bps/(1024.0*1024.0));
+		logger.LogMessage("%s ssc: %d,pps: %g, bps: %gM",m_sName,accounter.nSessionCount.get(),_pps,_bps/(1024.0*1024.0));
 	}
 
 	m_pAccounterTemp.swap(m_pAccounterLast);

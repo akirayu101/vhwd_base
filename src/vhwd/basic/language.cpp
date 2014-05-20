@@ -6,7 +6,8 @@
 #include "vhwd/ipc/shm.h"
 #include "vhwd/collection/linear_buffer.h"
 #include "vhwd/basic/pointer.h"
-#include <fstream>
+#include "vhwd/basic/codecvt.h"
+//#include <fstream>
 
 VHWD_ENTER
 
@@ -212,12 +213,14 @@ public:
 			bt.append(v,::strlen(v)+1);
 		}
 
-		if(!String::ansi_to_utf8(bt,bt))
+		StringBuffer<char> bs;
+
+		if(!IConv::ansi_to_utf8(bs,bt.data(),bt.size()))
 		{
 			return false;
 		}
 
-		return bt.save(file);
+		return bs.save(file);
 	}
 
 };

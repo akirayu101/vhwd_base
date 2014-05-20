@@ -130,19 +130,19 @@ public:
 		return (*this)<<v.c_str();
 	}
 
-	static String ansi_to_utf8(const String& o);
-	static String utf8_to_ansi(const String& o);
-	static String ansi_to_utf8(const char* o,size_t s);
-	static String utf8_to_ansi(const char* o,size_t s);
+	//static String ansi_to_utf8(const String& o);
+	//static String utf8_to_ansi(const String& o);
+	//static String ansi_to_utf8(const char* o,size_t s);
+	//static String utf8_to_ansi(const char* o,size_t s);
 
-	static bool ansi_to_utf8(StringBuffer<char>& o,const char* p1,size_t ln);
-	static bool utf8_to_ansi(StringBuffer<char>& o,const char* p1,size_t ln);
+	//static bool ansi_to_utf8(StringBuffer<char>& o,const char* p1,size_t ln);
+	//static bool utf8_to_ansi(StringBuffer<char>& o,const char* p1,size_t ln);
 
-	static bool ansi_to_utf8(StringBuffer<char>& o,StringBuffer<char>& s);
-	static bool utf8_to_ansi(StringBuffer<char>& o,StringBuffer<char>& s);
+	//static bool ansi_to_utf8(StringBuffer<char>& o,StringBuffer<char>& s);
+	//static bool utf8_to_ansi(StringBuffer<char>& o,StringBuffer<char>& s);
 
-	static bool wstr_to_utf8(StringBuffer<char>& o,StringBuffer<wchar_t>& s);
-	static bool utf8_to_wstr(StringBuffer<wchar_t>& s,StringBuffer<char>& o);
+	//static bool wstr_to_utf8(StringBuffer<char>& o,StringBuffer<wchar_t>& s);
+	//static bool utf8_to_wstr(StringBuffer<wchar_t>& s,StringBuffer<char>& o);
 
 	static const size_t npos=(size_t)(-1);
 
@@ -200,7 +200,7 @@ STRING_REL_OP2(>)
 template<> class hash_t<String>
 {
 public:
-	inline int32_t operator()(const String& v)
+	inline uint32_t operator()(const String& v)
 	{
 		return hash_pod<1>::hash(v.c_str(),v.size());
 	}
@@ -209,7 +209,7 @@ public:
 template<typename T> class hash_t<StringBuffer<T> >
 {
 public:
-	inline int32_t operator()(const String& v)
+	inline uint32_t operator()(const String& v)
 	{
 		return hash_pod<1>::hash(v.c_str(),sizeof(T)*v.size());
 	}
@@ -218,7 +218,7 @@ public:
 template<> class hash_t<char*>
 {
 public:
-	inline int32_t operator()(const char* v)
+	inline uint32_t operator()(const char* v)
 	{
 		return hash_pod<1>::hash(v,::strlen(v));
 	}

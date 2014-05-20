@@ -11,6 +11,7 @@
 #include "vhwd/collection/ring_buffer.h"
 #include "vhwd/collection/lockfree_queue.h"
 
+#define VHWD_MAX_PACKET_SIZE 4096
 
 VHWD_ENTER
 
@@ -120,7 +121,7 @@ public:
 class VHWD_DLLIMPEXP IPacketEx : public IPacket
 {
 public:
-	char data[4096-sizeof(IPacket)];
+	char data[VHWD_MAX_PACKET_SIZE-sizeof(IPacket)];
 };
 
 

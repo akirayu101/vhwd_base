@@ -39,11 +39,14 @@ bool File::Open(const String& filename_,int flag_)
 		NULL
 		);
 
+
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
+		m_bGood=false;
 		return false;
 	}
 
+	m_bGood=true;
 
 	impl.reset(hFile);
 
@@ -61,7 +64,6 @@ int64_t File::Size()
 	FileAccess::LargeInteger tmp;
 	tmp.d[0]=::GetFileSize(impl,&tmp.d[1]);
 	return tmp.dval;
-
 }
 
 int32_t File::Read(char* buf,size_t len)
@@ -69,6 +71,7 @@ int32_t File::Read(char* buf,size_t len)
 	DWORD nRead(0);
 	if(::ReadFile(impl,buf,len,&nRead,NULL)==FALSE)
 	{
+		m_bGood=false;
 		System::CheckError("File::Read Error");
 		return -1;
 	}
@@ -80,6 +83,7 @@ int32_t File::Write(const char* buf,size_t len)
 	DWORD nWrite(0);
 	if(::WriteFile(impl,buf,len,&nWrite,NULL)==FALSE)
 	{
+		m_bGood=false;
 		System::CheckError("File::Write Error");
 		return -1;
 	}
@@ -166,15 +170,18 @@ bool File::Open(const String& filename_,int flag_)
 	{
 		if((flag_&FileAccess::FLAG_CR)==0)
 		{
+			m_bGood=false;
 			return false;
 		}
 		fd=::open(filename.c_str(),shm_fileflag(flag_)|O_CREAT,0777);
 		if(fd<0)
 		{
+			m_bGood=false;
 			return false;
 		}
 	}
 
+	m_bGood=true;
 	impl.reset(fd);
 
 	if(flag_&FileAccess::FLAG_APPEND)
@@ -201,12 +208,20 @@ int64_t File::Size()
 int32_t File::Read(char* buf,size_t len)
 {
 	int nLen= ::read(impl,buf,len);
+	if(nLen<0)
+	{
+		m_bGood=false;
+	}
 	return nLen;
 }
 
 int32_t File::Write(const char* buf,size_t len)
 {
 	int nLen=::write(impl,buf,len);
+	if(nLen<0)
+	{
+		m_bGood=false;
+	}
 	return nLen;
 }
 
@@ -246,11 +261,12 @@ void File::Truncate(size_t size_)
 
 File::File()
 {
-
+	m_bGood=true;
 }
 
 File::File(const String& filename_,int op)
 {
+	m_bGood=true;
 	Open(filename_,op);
 }
 
