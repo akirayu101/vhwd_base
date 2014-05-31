@@ -20,6 +20,8 @@ public:
 		while(lookup_table<P>::test(*tmp)) ++tmp;
 		p=tmp;
 	}
+
+
 };
 
 
@@ -45,6 +47,23 @@ public:
 	}
 
 protected:	
+
+	template<size_t N>
+	inline void skip_tag(mychar_ptr& pcur,const char (&tag)[N])
+	{
+		if(N<2){return;}
+
+		lookup_table<lkt2uppercase> lku;
+		for(size_t i=0;i<N-1;i++)
+		{
+			if(lku(pcur[i])!=(mychar)tag[i])
+			{
+				kexpected(tag);
+				return;
+			}
+		}
+		pcur+=N-1;
+	}
 
 	XmlDocument& xmldoc;
 	arr_1t<XmlNode*> nodes;
@@ -80,11 +99,12 @@ protected:
 	static void tabindent(std::ostream& ofs,int lv){for(int i=0;i<lv;i++) ofs<<"\t";}
 	static void savestring(std::ostream& ofs,const String& v);
 
-	void kerror(mychar_ptr p1,const char* msg);
+	void kerror(const String& msg);
+	void kexpected(const String& msg);
 
 	bool parse_document();
 
-
+	//<tag attributes> content </tag>
 	XmlNode* parse_element_node();
 
 	//A document node is a specialized kind of element node. 
@@ -102,8 +122,8 @@ protected:
 	//<?i?>
 	void parse_instruction_node();
 
-	//A comment node is similar to a processing instruction. It is also a leaf node and has only a comment c:
-	//<!--c-->
+
+	//<!-- This is a comment --> 
 	void parse_comment_node();
 
 	void parse_subnodes();

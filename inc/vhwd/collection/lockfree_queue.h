@@ -275,9 +275,8 @@ public:
 		pHeader=NULL;
 	}
 
-	// create a queue with capacity of v
+	// create a lockfree queue with capacity of v
 	// v will be adjust to 2^n
-
 	void reset(size_type v)
 	{
 		v=sz_helper::n2p(v);

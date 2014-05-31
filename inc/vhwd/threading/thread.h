@@ -32,7 +32,7 @@ public:
 
 	// Copy construct and assign operator, NOTE these methods do NOT really copy any running threads.
 	Thread(const Thread& o);
-	const Thread& operator=(const Thread&){return *this;}
+	Thread& operator=(const Thread&){return *this;}
 
 	virtual ~Thread();
 

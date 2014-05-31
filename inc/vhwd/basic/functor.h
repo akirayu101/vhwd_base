@@ -110,13 +110,13 @@ public:
 	template<typename G>
 	Functor(const G& o){*this=o;}
 
-	const Functor& operator=(const Functor& o)
+	Functor& operator=(const Functor& o)
 	{
 		invoker=o.invoker;return *this;
 	}
 
 	template<typename G>
-	const Functor& operator=(const G& o)
+	Functor& operator=(const G& o)
 	{
 		class KInvoker : public Invoker
 		{
@@ -217,13 +217,13 @@ public:
 	template<typename G>
 	Functor(const G& o){*this=o;}
 
-	const Functor& operator=(const Functor& o)
+	Functor& operator=(const Functor& o)
 	{
 		invoker=o.invoker;return *this;
 	}
 
 	template<typename G>
-	const Functor& operator=(const G& o)
+	Functor& operator=(const G& o)
 	{
 		class KInvoker : public Invoker
 		{
@@ -294,13 +294,13 @@ public:
 	template<typename G>
 	Functor(const G& o){*this=o;}
 
-	const Functor& operator=(const Functor& o)
+	Functor& operator=(const Functor& o)
 	{
 		invoker=o.invoker;return *this;
 	}
 
 	template<typename G>
-	const Functor& operator=(const G& o)
+	Functor& operator=(const G& o)
 	{
 		class KInvoker : public Invoker
 		{
@@ -371,13 +371,13 @@ public:
 	template<typename G>
 	Functor(const G& o){*this=o;}
 
-	const Functor& operator=(const Functor& o)
+	Functor& operator=(const Functor& o)
 	{
 		invoker=o.invoker;return *this;
 	}
 
 	template<typename G>
-	const Functor& operator=(const G& o)
+	Functor& operator=(const G& o)
 	{
 		class KInvoker : public Invoker
 		{

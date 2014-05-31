@@ -54,10 +54,10 @@ public:
 #endif
 
 	StringBuffer(const String& o){(*this)=o;}
-	const StringBuffer& operator=(const String& o);
+	StringBuffer& operator=(const String& o);
 
-	const StringBuffer& operator+=(const StringBuffer& o){append(o.begin(),o.end());return *this;}
-	const StringBuffer& operator+=(const String& o);
+	StringBuffer& operator+=(const StringBuffer& o){append(o.begin(),o.end());return *this;}
+	StringBuffer& operator+=(const String& o);
 
 	StringBuffer& operator<<(const String& v){(*this)+=v;return *this;}
 

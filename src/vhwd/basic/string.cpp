@@ -197,7 +197,7 @@ const String& String::PrintfImpl(const char* s,...)
 	return *this;
 }
 
-const String& String::PrintfV(const char* s,va_list arglist)
+String& String::PrintfV(const char* s,va_list arglist)
 {
 	String_FormatV_internal(*this,s,arglist);
 	return *this;
@@ -243,7 +243,7 @@ void String::append(const char* p1,const char* p2)
 }
 
 
-const String& String::operator=(const char* p)
+String& String::operator=(const char* p)
 {
 	char* _pnewstr=StringPool::current().str_dup(p);
 	StringPool::current().str_free(m_pStr);
@@ -251,7 +251,7 @@ const String& String::operator=(const char* p)
 	return *this;
 }
 
-const String& String::operator=(const String& p)
+String& String::operator=(const String& p)
 {
 	char* _pnewstr=StringPool::current().str_dup(p.c_str());
 	StringPool::current().str_free(m_pStr);
@@ -259,7 +259,7 @@ const String& String::operator=(const String& p)
 	return *this;
 }
 
-const String& String::operator=(const wchar_t* p)
+String& String::operator=(const wchar_t* p)
 {
 	//(*this)=CodeCvt<wchar_t>::ws2s(p);
 
@@ -270,7 +270,7 @@ const String& String::operator=(const wchar_t* p)
 	return *this;
 }
 
-const String& String::operator+=(const char* p)
+String& String::operator+=(const char* p)
 {
 	char* _pnewstr=StringPool::current().str_cat(m_pStr,p);
 	StringPool::current().str_free(m_pStr);
@@ -278,7 +278,7 @@ const String& String::operator+=(const char* p)
 	return *this;
 }
 
-const String& String::operator+=(const String& p)
+String& String::operator+=(const String& p)
 {
 	char* _pnewstr=StringPool::current().str_cat(m_pStr,p.c_str());
 	StringPool::current().str_free(m_pStr);
@@ -287,7 +287,7 @@ const String& String::operator+=(const String& p)
 }
 
 
-const String& String::operator+=(const wchar_t* p)
+String& String::operator+=(const wchar_t* p)
 {
 	//(*this)+=CodeCvt<wchar_t>::ws2s(p);
 
@@ -637,16 +637,26 @@ String String::substr(size_t pos,size_t len) const
 }
 
 
-const String& String::replace(char c1,char c2)
+int String::replace(char c1,char c2)
 {
+	int n=0;
 	StringBuffer<char> sb(*this);
-	std::replace(sb.begin(),sb.end(),c1,c2);
+	for(size_t i=0;i<sb.size();i++)
+	{
+		if(sb[i]==c1)
+		{
+			sb[i]=c2;n++;
+		}
+	}	
+	//std::replace(sb.begin(),sb.end(),c1,c2);
 	(*this)=sb;
-	return *this;
+	return n;
 }
 
-const String& String::replace(const String& c1,const String& c2)
+int String::replace(const String& c1,const String& c2)
 {
+	int n=0;
+
 	StringBuffer<char> sb;
 
 	const char* _pOld=c1.c_str();
@@ -668,9 +678,10 @@ const String& String::replace(const String& c1,const String& c2)
 		sb.append(p1,pt);
 		sb.append(_pNew,_nNew);
 		p1=pt+_nOld;
+		n++;
 	}
 	(*this)=sb;
-	return *this;
+	return n;
 }
 
 

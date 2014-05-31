@@ -26,7 +26,7 @@ class VHWD_DLLIMPEXP Semaphore
 public:
 	Semaphore();
 	Semaphore(const Semaphore&);
-	const Semaphore& operator=(const Semaphore&){return *this;}
+	Semaphore& operator=(const Semaphore&){return *this;}
 
 	~Semaphore();
 

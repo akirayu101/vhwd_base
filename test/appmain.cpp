@@ -1,6 +1,7 @@
+
 #include "vhwd.h"
 
-//using namespace vhwd;
+using namespace vhwd;
 
 #ifdef _MSC_VER
 #pragma comment(lib,"vhwd.lib")

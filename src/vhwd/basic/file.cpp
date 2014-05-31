@@ -29,7 +29,7 @@ bool File::Open(const String& filename_,int flag_)
 	String fn=fn_encode(filename_);
 	Close();
 
-	HANDLE hFile=(HANDLE)CreateFile(
+	HANDLE hFile=(HANDLE)CreateFileA(
 		fn.c_str(),
 		FileAccess::makeflag(flag_,GENERIC_READ,GENERIC_WRITE),
 		FileAccess::makeflag(flag_,FILE_SHARE_READ,FILE_SHARE_WRITE),

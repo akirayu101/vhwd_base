@@ -86,7 +86,7 @@ public:
 	{
 		swap(const_cast<TempPtrT&>(o));
 	}
-	const TempPtrT& operator=(const TempPtrT& o)
+	TempPtrT& operator=(const TempPtrT& o)
 	{
 		swap(const_cast<TempPtrT&>(o));
 		return *this;

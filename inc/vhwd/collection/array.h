@@ -40,10 +40,10 @@ public:
 
 #if defined(VHWD_C11)
 	arr_1t(arr_1t&& p){swap(p);}
-	const arr_1t& operator=(arr_1t&& p){swap(p);return *this;}
+	arr_1t& operator=(arr_1t&& p){swap(p);return *this;}
 #endif
 
-	const arr_1t& operator=(const arr_1t& o);
+	arr_1t& operator=(const arr_1t& o);
 
 	void clear();
 
@@ -216,7 +216,7 @@ typename arr_1t<T,A>::const_reference arr_1t<T,A>::front() const
 
 
 template<typename T,typename A>
-const arr_1t<T,A>& arr_1t<T,A>::operator=(const arr_1t& o)
+arr_1t<T,A>& arr_1t<T,A>::operator=(const arr_1t& o)
 {
 	if(this==&o) return *this;
 

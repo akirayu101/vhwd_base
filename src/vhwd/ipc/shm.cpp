@@ -34,7 +34,7 @@ public:
 			FileAccess::LargeInteger tmp;
 			tmp.dval=size_;
 
-			hMapFile = CreateFileMapping(
+			hMapFile = CreateFileMappingA(
 				INVALID_HANDLE_VALUE,   // Use paging file - shared memory
 				NULL,                   // Default security attributes
 				PAGE_READWRITE,         // Allow read and write access
@@ -47,7 +47,7 @@ public:
 		}
 		else
 		{
-			hMapFile = OpenFileMapping(
+			hMapFile = OpenFileMappingA(
 				FileAccess::makeflag(flag_,FILE_MAP_READ,FILE_MAP_WRITE),
 				FALSE,                  // Do not inherit the name
 				name_.c_str()			// File mapping name
@@ -91,7 +91,7 @@ public:
 			return false;
 		}
 
-		HANDLE hFile=(HANDLE)CreateFile(
+		HANDLE hFile=(HANDLE)CreateFileA(
 			name_.c_str(),
 			FileAccess::makeflag(flag_,GENERIC_READ,GENERIC_WRITE),
 			FileAccess::makeflag(flag_,FILE_SHARE_READ,FILE_SHARE_WRITE),

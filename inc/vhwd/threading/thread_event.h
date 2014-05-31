@@ -26,7 +26,7 @@ class VHWD_DLLIMPEXP Event
 public:
 	Event(bool v=false);
 	Event(const Event&);
-	const Event& operator=(const Event&){return *this;}
+	Event& operator=(const Event&){return *this;}
 
 	~Event();
 

@@ -21,7 +21,7 @@ public:
 	Exception(const Exception& o);
 	Exception(const char* p,bool del=true);
 	Exception(const String& p);
-	const Exception& operator=(const Exception& o);
+	Exception& operator=(const Exception& o);
 
 	~Exception() throw();
 

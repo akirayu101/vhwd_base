@@ -15,6 +15,7 @@ VHWD_ENTER
 
 class VHWD_DLLIMPEXP String;
 class VHWD_DLLIMPEXP TimeSpan;
+class VHWD_DLLIMPEXP ElapsedTimer;
 
 // TimePoint
 class VHWD_DLLIMPEXP TimePoint
@@ -35,7 +36,7 @@ public:
 	String Format(const String& f="") const;
 
 	// add a timespan
-	const TimePoint& operator+=(const TimeSpan& span);
+	TimePoint& operator+=(const TimeSpan& span);
 
 	int64_t val;
 };

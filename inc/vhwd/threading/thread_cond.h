@@ -25,7 +25,7 @@ class VHWD_DLLIMPEXP Condition
 public:
 	Condition();
 	Condition(const Condition& o);
-	const Condition& operator=(const Condition&){return *this;}
+	Condition& operator=(const Condition&){return *this;}
 
 	~Condition();
 

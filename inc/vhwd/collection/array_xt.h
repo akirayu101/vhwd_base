@@ -40,10 +40,10 @@ public:
 
 #if defined(VHWD_C11)
 	arr_xt(arr_xt&& p){swap(p);}
-	const arr_xt& operator=(arr_xt&& p){swap(p);return *this;}
+	arr_xt& operator=(arr_xt&& p){swap(p);return *this;}
 #endif
 
-	const arr_xt& operator=(const arr_xt& o);
+	arr_xt& operator=(const arr_xt& o);
 
 	void resize(size_type k0,size_type k1=1,size_type k2=1,size_type k3=1,size_type k4=1,size_type k5=1);
 	void clear();
@@ -135,7 +135,7 @@ bool operator!=(const arr_xt<T,A1>& lhs,const arr_xt<T,A2>& rhs)
 }
 
 template<typename T,typename A>
-const arr_xt<T,A>& arr_xt<T,A>::operator=(const arr_xt& o)
+arr_xt<T,A>& arr_xt<T,A>::operator=(const arr_xt& o)
 {
 	if(this==&o) return *this;
 	size_type _newsize=o.size();

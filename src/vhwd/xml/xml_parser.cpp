@@ -10,20 +10,6 @@
 VHWD_ENTER
 
 template<unsigned N>
-class lkt2uppercase
-{
-public:
-	static const int value=(N>='a' && N<='z')?(N+'A'-'a'):N;
-};
-
-template<unsigned N>
-class lkt2lowercase
-{
-public:
-	static const int value=(N>='A'&&N<='Z')?(N-'A'+'a'):N;
-};
-
-template<unsigned N>
 class lkt_whitespace
 {
 public:
@@ -77,11 +63,19 @@ bool XmlParser::parse_document()
 }
 
 
-void XmlParser::kerror(mychar_ptr p,const char* msg)
+void XmlParser::kerror(const String& msg)
 {
-	size_t pos=p-pbeg;
+	size_t pos=pcur-pbeg;
 	(void)&pos;
 	String desc=String::Format("xml_parser: %s",msg);
+	Exception::XError(desc.c_str());
+}
+
+void XmlParser::kexpected(const String& msg)
+{
+	size_t pos=pcur-pbeg;
+	(void)&pos;
+	String desc=String::Format("xml_parser: %s expected",msg);
 	Exception::XError(desc.c_str());
 }
 
@@ -133,7 +127,7 @@ inline void  XmlParser::string_assign(String& s0,mychar_ptr p1,mychar_ptr p2)
 				}
 				else
 				{
-					kerror(p1,"&amp; or &apos; expected");
+					pcur=p1;kexpected("&amp; or &apos;");
 					return;
 				}
 				break;
@@ -145,7 +139,7 @@ inline void  XmlParser::string_assign(String& s0,mychar_ptr p1,mychar_ptr p2)
 				}
 				else
 				{
-					kerror(p1,"&gt; expected");
+					pcur=p1;kexpected("&gt;");
 					return;
 				}
 				break;
@@ -157,7 +151,7 @@ inline void  XmlParser::string_assign(String& s0,mychar_ptr p1,mychar_ptr p2)
 				}
 				else
 				{
-					kerror(p1,"&lt; expected");
+					pcur=p1;kexpected("&lt;");
 					return;
 				}
 				break;
@@ -169,7 +163,7 @@ inline void  XmlParser::string_assign(String& s0,mychar_ptr p1,mychar_ptr p2)
 				}
 				else
 				{
-					kerror(p1,"&quot; expected");
+					pcur=p1;kexpected("&quot;");
 					return;
 				}
 				break;
@@ -198,7 +192,7 @@ inline void  XmlParser::string_assign(String& s0,mychar_ptr p1,mychar_ptr p2)
 					}
 					if(p1[0]!=';')
 					{
-						kerror(p1,"; expected");
+						pcur=p1;kexpected(";");
 						return;
 					}
 					p1+=1;
@@ -231,7 +225,7 @@ inline void  XmlParser::string_assign(String& s0,mychar_ptr p1,mychar_ptr p2)
 					}
 					else
 					{
-						kerror(p1,"invalid unicode number");
+						pcur=p1;kerror("invalid unicode number");
 						return;
 					}
 				}
@@ -272,7 +266,7 @@ inline void XmlParser::parse_string1()
 		{
 			if(pcur[1]=='\0')
 			{
-				kerror(pcur,"unexpected data end");
+				kerror("unexpected data end");
 				return;
 			}
 			pcur+=2;
@@ -280,7 +274,7 @@ inline void XmlParser::parse_string1()
 		}
 		else
 		{
-			kerror(pcur,"\' expected");
+			kexpected("\'");
 			return;
 		}
 	}
@@ -307,7 +301,7 @@ inline void XmlParser::parse_string2()
 		{
 			if(pcur[1]=='\0')
 			{
-				kerror(pcur,"unexpected data end");
+				kerror("unexpected data end");
 				return;
 			}
 
@@ -316,7 +310,7 @@ inline void XmlParser::parse_string2()
 		}
 		else
 		{
-			kerror(pcur,"\" expected");
+			kexpected("\"");
 			return;
 		}
 	}
@@ -343,66 +337,71 @@ inline void XmlParser::parse_comment_node()
 {
 	if(pcur[2]!='-')
 	{
-		kerror(pcur,"<!-- expected");
+		kexpected("<!--");
 	}
 	pcur+=3;
 
 	skip<lkt_not_gt>(pcur);
 	if(pcur[0]!='>')
 	{
-		kerror(pcur,"> expected");
+		kexpected(">");
 	}
 
 	if(pcur[-1]!='-'||pcur[-2]!='-')
 	{
-		kerror(pcur-2,"--> expected");
+		pcur-=2;kexpected("-->");
 	}
 
 	pcur+=1;
 }
 
+
+template<unsigned N>
+class lkt_not_ltgt
+{
+public:
+	static const int value=!(N=='\0'||N=='>'||N=='<');
+};
 inline void XmlParser::parse_doctype_node()
 {
-	pcur+=1;
+	pcur+=2;
 
-	lookup_table<lkt2uppercase> lku;
-	const char* tag="DOCTYPE";
+	skip_tag(pcur,"DOCTYPE");
 
-	for(int i=0;i<7;i++)
+	size_t lt=1;
+
+	for(;;)
 	{
-		if(lku(pcur[i])!=(mychar)tag[i])
+		skip<lkt_not_ltgt>(pcur);
+		if(pcur[0]=='>')
 		{
-			kerror(pcur,"<!DOCTYPE expected");
+			pcur+=1;
+			if(--lt==0)
+			{
+				return;
+			}
+		}
+		else if(pcur[0]=='<')
+		{
+			pcur+=1;
+			++lt;
+		}
+		else
+		{
+			kexpected(">");
 			return;
 		}
 	}
 
-	pcur+=7;
-	skip<lkt_not_gt>(pcur);
-	if(pcur[0]!='>')
-	{
-		kerror(pcur,"> expected");
-	}
-	pcur+=1;
+
 }
 
 
 inline void XmlParser::parse_cdata()
 {
-	pcur+=1;
+	pcur+=2;
 
-	lookup_table<lkt2uppercase> lku;
-	const char* tag="[CDATA[[";
-
-	for(int i=0;i<8;i++)
-	{
-		if(lku(pcur[i])!=(mychar)tag[i])
-		{
-			kerror(pcur,"<![CDATA[[ expected");
-			return;
-		}
-	}
-	pcur+=8;
+	skip_tag(pcur,"[CDATA[");
 
 	mychar_ptr tagvalue1=pcur;
 	for(;;)
@@ -410,7 +409,7 @@ inline void XmlParser::parse_cdata()
 		skip<lkt_not_gt>(pcur);
 		if(pcur[0]=='\0')
 		{
-			kerror(pcur,"]]> expected");
+			kexpected("]]>");
 			return;
 		}
 		if(pcur[-1]==']'&&pcur[-2]==']')
@@ -451,7 +450,7 @@ inline void XmlParser::parse_instruction_node()
 		skip<lkt_whitespace>(pcur);
 		if(pcur[0]!='=')
 		{
-			kerror(pcur,"= expected");
+			kexpected("=");
 		}
 
 		pcur+=1;
@@ -465,7 +464,7 @@ inline void XmlParser::parse_instruction_node()
 
 	if(pcur[0]!='?'||pcur[1]!='>')
 	{
-		kerror(pcur,"?> expected");
+		kexpected("?>");
 	}
 	pcur+=2;
 
@@ -496,7 +495,7 @@ inline void XmlParser::parse_subnodes()
 				skip<lkt_whitespace>(pcur);
 				if(pcur[0]!='>')
 				{
-					kerror(pcur,"> expected");
+					kexpected(">");
 					return;
 				}
 				pcur+=1;
@@ -512,12 +511,11 @@ inline void XmlParser::parse_subnodes()
 				case 'D':
 					parse_doctype_node();
 					break;
-				case 'C':
-				case 'c':
+				case '[':
 					parse_cdata();
 					break;
 				default:
-					kerror(pcur,"unexpected character");
+					kerror("unexpected character");
 					return;
 				}
 				break;
@@ -539,7 +537,7 @@ inline void XmlParser::parse_subnodes()
 					return;
 				}
 
-				kerror(pcur,"< expected");
+				kexpected("<");
 				return;
 			}
 
@@ -574,7 +572,7 @@ inline void XmlParser::parse_attributes()
 		skip<lkt_whitespace>(pcur);
 		if(pcur[0]!='=')
 		{
-			kerror(pcur,"= expected");
+			kexpected("=");
 		}
 
 		pcur+=1;
@@ -612,7 +610,7 @@ inline XmlNode* XmlParser::parse_element_node()
 	case '/':
 		if(pcur[1]!='>')
 		{
-			kerror(pcur,"> expected");
+			kexpected(">");
 		}
 		pcur+=2;
 		return NULL;
@@ -621,7 +619,7 @@ inline XmlNode* XmlParser::parse_element_node()
 		parse_subnodes();
 		break;
 	default:
-		kerror(pcur,"> expected");
+		kexpected(">");
 	}
 
 	return NULL;

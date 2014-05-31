@@ -3,12 +3,7 @@
 #include "vhwd/basic/file.h"
 #include "vhwd/logging/logger.h"
 
-
-//#include <fstream>
-
 VHWD_ENTER
-
-
 
 template<typename T>
 StringBuffer<T>::StringBuffer(const T* p1)
@@ -70,14 +65,14 @@ public:
 
 
 template<typename T>
-const StringBuffer<T>& StringBuffer<T>::operator=(const String& o)
+StringBuffer<T>& StringBuffer<T>::operator=(const String& o)
 {
 	StringBufferHelper<T>::equal((*this),o);
 	return *this;
 }
 
 template<typename T>
-const StringBuffer<T>& StringBuffer<T>::operator+=(const String& o)
+StringBuffer<T>& StringBuffer<T>::operator+=(const String& o)
 {
 	StringBufferHelper<T>::eqadd((*this),o);
 	return *this;

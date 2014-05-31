@@ -80,19 +80,19 @@ public:
 
 	bool empty() const {return size()==0;}
 
-	const String& operator=(const String& p);
-	const String& operator=(const char* p);
-	const String& operator=(const wchar_t* p);
+	String& operator=(const String& p);
+	String& operator=(const char* p);
+	String& operator=(const wchar_t* p);
 
 	template<typename T>
-	const String& operator=(const std::basic_string<T>& o){ return (*this)=o.c_str();}
+	String& operator=(const std::basic_string<T>& o){ return (*this)=o.c_str();}
 
-	const String& operator+=(const String& p);
-	const String& operator+=(const char* p);
-	const String& operator+=(const wchar_t* p);
+	String& operator+=(const String& p);
+	String& operator+=(const char* p);
+	String& operator+=(const wchar_t* p);
 
 	template<typename T>
-	const String& operator+=(const std::basic_string<T>& o){return (*this)+=o.c_str();}
+	String& operator+=(const std::basic_string<T>& o){return (*this)+=o.c_str();}
 
 
 	#define STRING_FORMAT_IMPL(X,Y) return FormatImpl(X)
@@ -102,7 +102,7 @@ public:
 	STRING_FORMAT_FUNCTIONS(const String& Printf,STRING_PRINTF_IMPL, )
 
 	static String FormatV(const char* s,va_list vl);
-	const String& PrintfV(const char* s,va_list vl);
+	String& PrintfV(const char* s,va_list vl);
 
 	friend VHWD_DLLIMPEXP std::ostream& operator<<(std::ostream&o,const String& s);
 	friend VHWD_DLLIMPEXP std::istream& operator>>(std::istream&o,String& s);
@@ -130,26 +130,12 @@ public:
 		return (*this)<<v.c_str();
 	}
 
-	//static String ansi_to_utf8(const String& o);
-	//static String utf8_to_ansi(const String& o);
-	//static String ansi_to_utf8(const char* o,size_t s);
-	//static String utf8_to_ansi(const char* o,size_t s);
-
-	//static bool ansi_to_utf8(StringBuffer<char>& o,const char* p1,size_t ln);
-	//static bool utf8_to_ansi(StringBuffer<char>& o,const char* p1,size_t ln);
-
-	//static bool ansi_to_utf8(StringBuffer<char>& o,StringBuffer<char>& s);
-	//static bool utf8_to_ansi(StringBuffer<char>& o,StringBuffer<char>& s);
-
-	//static bool wstr_to_utf8(StringBuffer<char>& o,StringBuffer<wchar_t>& s);
-	//static bool utf8_to_wstr(StringBuffer<wchar_t>& s,StringBuffer<char>& o);
-
 	static const size_t npos=(size_t)(-1);
 
 	String substr(size_t pos,size_t len=npos) const;
 
-	const String& replace(char c1,char c2);
-	const String& replace(const String& s1,const String& c2);
+	int replace(char c1,char c2);
+	int replace(const String& s1,const String& c2);
 
 private:
 	static String FormatImpl(const char* s,...);

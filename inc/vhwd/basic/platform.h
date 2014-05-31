@@ -62,7 +62,7 @@ public:
 		}
 	}
 
-	const KO_Handle& operator=(const KO_Handle& o)
+	KO_Handle& operator=(const KO_Handle& o)
 	{
 		if(m_pCounter==o.m_pCounter)
 		{

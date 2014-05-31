@@ -108,7 +108,7 @@ public:
 
 	ObjectData();
 	ObjectData(const ObjectData& o);
-	const ObjectData& operator=(const ObjectData&){return *this;}
+	ObjectData& operator=(const ObjectData&){return *this;}
 	~ObjectData();
 
 	// Increase reference counter,

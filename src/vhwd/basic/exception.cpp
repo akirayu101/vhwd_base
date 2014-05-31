@@ -42,7 +42,7 @@ Exception::Exception(const Exception& o)
 	m_sWhat=Exception_strdup(o.m_sWhat,m_bDelete);
 }
 
-const Exception& Exception::operator=(const Exception& o)
+Exception& Exception::operator=(const Exception& o)
 {
 	m_bDelete=o.m_bDelete;
 	m_sWhat=Exception_strdup(o.m_sWhat,m_bDelete);

@@ -50,7 +50,7 @@ String TimePoint::Format(const String& f) const
 	return td.Format(f);
 }
 
-const TimePoint& TimePoint::operator+=(const TimeSpan& span)
+TimePoint& TimePoint::operator+=(const TimeSpan& span)
 {
 	val+=span.val;
 	return *this;

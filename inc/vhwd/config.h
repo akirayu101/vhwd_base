@@ -139,7 +139,7 @@ VHWD_ENTER
 class VHWD_DLLIMPEXP NonCopyable
 {
 	NonCopyable(const NonCopyable&);
-	const NonCopyable& operator=(const NonCopyable&);
+	NonCopyable& operator=(const NonCopyable&);
 protected:
 	NonCopyable(){}
 	~NonCopyable(){}
@@ -228,8 +228,7 @@ public:
 
 		for(int i=0;i<n;i++)
 		{
-			ch = *hkey;
-			hkey++;
+			ch = *hkey++;
 			seed1 = (ch * seed3) ^ (seed1 + seed2);
 			seed2 = (ch + seed1) + seed2 + (seed2 << 5) + 3;
 		}
@@ -315,6 +314,22 @@ public:
 	unsigned char operator()(unsigned char text) const {return cmap[text];}
 	static const unsigned char cmap[256];
 };
+
+
+template<unsigned N>
+class lkt2uppercase
+{
+public:
+	static const int value=(N>='a' && N<='z')?(N+'A'-'a'):N;
+};
+
+template<unsigned N>
+class lkt2lowercase
+{
+public:
+	static const int value=(N>='A'&&N<='Z')?(N-'A'+'a'):N;
+};
+
 
 template<template<unsigned> class P>
 const unsigned char lookup_table<P>::cmap[256]=
