@@ -84,11 +84,11 @@ public:
 	TempPtrT(T* p):AutoPtrT<T>(p){}
 	TempPtrT(const TempPtrT& o)
 	{
-		swap(const_cast<TempPtrT&>(o));
+		this->swap(const_cast<TempPtrT&>(o));
 	}
 	TempPtrT& operator=(const TempPtrT& o)
 	{
-		swap(const_cast<TempPtrT&>(o));
+		this->swap(const_cast<TempPtrT&>(o));
 		return *this;
 	}
 };

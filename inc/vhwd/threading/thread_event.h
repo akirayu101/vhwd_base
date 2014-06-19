@@ -12,7 +12,7 @@
 #include "vhwd/threading/thread_cond.h"
 #include "vhwd/threading/thread_mutex.h"
 
-#ifndef _WIN32
+#ifndef _MSC_VER
 #include <pthread.h>
 #else
 #include <windows.h>
@@ -40,7 +40,7 @@ public:
 protected:
 	Mutex m_tMutex;
 	Condition m_tCond;
-	int m_nValue;	
+	int m_nValue;
 };
 
 

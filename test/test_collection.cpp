@@ -62,14 +62,19 @@ TEST_DEFINE(TEST_Collection)
 	indexer_map<String,int> sm;
 	sm["a"]=1;
 	sm["b"]=4;
+	sm["c"]=2;
 	TEST_ASSERT(sm["a"]==1);
 	TEST_ASSERT(sm["b"]==4);
-	sm.set_capacity(12425);
+	sm.rehash(12425);
 	TEST_ASSERT(sm["a"]==1);
 	TEST_ASSERT(sm["b"]==4);
+
+	sm.erase("b");
+	TEST_ASSERT(sm.find("b")==-1);
 
 
 	vhwd::arr_xt<double,Allocator<double,128> > arr;
+
 
 	TEST_ASSERT_THROW(arr.resize((size_t)(-1)),std::bad_alloc);
 

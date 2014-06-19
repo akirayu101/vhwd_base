@@ -23,7 +23,7 @@ void thread_impl_entry_real(ThreadImpl* arg);
 class ThreadImpl_windows
 {
 public:
-		
+
 	typedef HANDLE thread_t;
 
 	template<typename T>
@@ -62,6 +62,8 @@ public:
 		CloseHandle(t);
 		t=NULL;
 	}
+#ifndef _MINGW
+
 
 	static PSRWLOCK g(RWLock& m)
 	{
@@ -88,6 +90,7 @@ public:
 		AcquireSRWLockExclusive(g(m));
 	}
 
+
 	//static bool rwlock_trylock_r(RWLock& m)
 	//{
 	//	return TryAcquireSRWLockShared(g(m))!=0;
@@ -107,8 +110,8 @@ public:
 	{
 		::ReleaseSRWLockExclusive(g(m));
 	}
-   
-	
+
+#endif
 
 	static PCRITICAL_SECTION g(SpinLock& m)
 	{
@@ -143,7 +146,7 @@ public:
 		::LeaveCriticalSection(g(m));
 	}
 
-   
+
 	static PCRITICAL_SECTION g(Mutex& m)
 	{
 		return (PCRITICAL_SECTION)&m;
@@ -197,7 +200,7 @@ public:
 
 	static void cond_broadcast(Condition& m)
 	{
-		WakeAllConditionVariable (g(m));		
+		WakeAllConditionVariable (g(m));
 	}
 
 	static void cond_wait(Condition& m,Mutex& k)
@@ -271,7 +274,7 @@ public:
 
 	static void* key_get(key_t& k)
 	{
-		return TlsGetValue(k);		
+		return TlsGetValue(k);
 	}
 
 

@@ -163,7 +163,7 @@ public:
 	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6,X7 x7,X8 x8){(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6,x7,x8);}
 	
 
-	inline T operator()(){if(!invoker) Exception::XBadFactor();return invoker->Invoke();}
+	inline T operator()(){if(!invoker) Exception::XBadFunctor();return invoker->Invoke();}
 	inline operator bool() const{return invoker.get()!=NULL;}
 
 private:
@@ -239,7 +239,7 @@ public:
 		return *this;
 	}
 
-	inline T operator()(X x){if(!invoker) Exception::XBadFactor();return invoker->Invoke(x);}
+	inline T operator()(X x){if(!invoker) Exception::XBadFunctor();return invoker->Invoke(x);}
 	inline operator bool() const{return invoker.get()!=NULL;}
 
 private:
@@ -316,7 +316,7 @@ public:
 		return *this;
 	}
 
-	inline T operator()(X x,Y y){if(!invoker) Exception::XBadFactor();return invoker->Invoke(x,y);}
+	inline T operator()(X x,Y y){if(!invoker) Exception::XBadFunctor();return invoker->Invoke(x,y);}
 	inline operator bool() const{return invoker.get()!=NULL;}
 
 private:
@@ -393,7 +393,7 @@ public:
 		return *this;
 	}
 
-	inline T operator()(X x,Y y,Z z){if(!invoker) Exception::XBadFactor();return invoker->Invoke(x,y,z);}
+	inline T operator()(X x,Y y,Z z){if(!invoker) Exception::XBadFunctor();return invoker->Invoke(x,y,z);}
 	inline operator bool() const{return invoker.get()!=NULL;}
 
 private:

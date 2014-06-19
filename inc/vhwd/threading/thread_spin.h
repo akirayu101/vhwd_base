@@ -10,7 +10,7 @@
 
 #include "vhwd/config.h"
 
-#ifndef _WIN32
+#ifndef _MSC_VER
 #include <pthread.h>
 #else
 #include <windows.h>
@@ -33,7 +33,7 @@ public:
 	bool try_lock();
 
 protected:
-#ifdef _WIN32
+#ifdef _MSC_VER
 	CRITICAL_SECTION impl;
 #else
 	pthread_spinlock_t impl;

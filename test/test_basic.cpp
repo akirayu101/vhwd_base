@@ -143,7 +143,7 @@ int func(int v1,int v2,int v3,int v4,int v5)
 }
 
 
-TEST_DEFINE(TEST_Factor)
+TEST_DEFINE(TEST_Functor)
 {
 	int ret=vhwd::hbind<int>::g(func,1,2,3,4,5)();
 	TEST_ASSERT(ret==func(1,2,3,4,5));

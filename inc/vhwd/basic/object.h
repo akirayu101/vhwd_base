@@ -8,6 +8,7 @@
 #ifndef __H_VHWD_BASIC_OBJECT__
 #define __H_VHWD_BASIC_OBJECT__
 
+
 #include "vhwd/basic/atomic.h"
 #include "vhwd/basic/string.h"
 
@@ -161,6 +162,67 @@ protected:
 	AtomicInt32 m_refcount;
 };
 
+class VHWD_DLLIMPEXP ObjectGroup
+{
+public:
+	ObjectGroup();
+	ObjectGroup(const ObjectGroup&);
+	ObjectGroup& operator=(const ObjectGroup&);
+	~ObjectGroup();
+
+	ObjectData* operator[](size_t n);
+	size_t size() const;
+
+	void append(ObjectData*);
+	void remove(ObjectData*);
+
+	void clear();
+
+	void swap(ObjectGroup& o);
+
+private:
+
+	void* impl;
+};
+
+template<typename T,typename B>
+class ObjectGroupT : public B
+{
+public:
+
+	T* operator[](size_t n)
+	{
+		return static_cast<T*>(impl[n]);
+	}
+
+	size_t size() const
+	{
+		return impl.size();
+	}
+
+	void append(T* d)
+	{
+		impl.append(d);
+	}
+
+	void remove(T* d)
+	{
+		impl.remove(d);
+	}
+
+	void clear()
+	{
+		impl.clear();
+	}
+
+	void swap(ObjectGroupT& o)
+	{
+		impl.swap(o.impl);
+	}
+
+private:
+	ObjectGroup impl;
+};
 
 class VHWD_DLLIMPEXP ObjectCreator
 {

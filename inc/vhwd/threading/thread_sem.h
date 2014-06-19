@@ -11,7 +11,7 @@
 
 #include "vhwd/config.h"
 
-#ifndef _WIN32
+#ifndef _MSC_VER
 #include <pthread.h>
 #include "semaphore.h"
 #else
@@ -40,7 +40,7 @@ public:
 	bool wait_until(const TimePoint& tp);
 
 protected:
-#ifdef _WIN32
+#ifdef _MSC_VER
 	void* impl;
 #else
 	sem_t impl;

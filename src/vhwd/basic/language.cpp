@@ -189,7 +189,7 @@ public:
 			j=i+1;
 		}
 
-		mapStrings.set_capacity(vp.size()/2);
+		mapStrings.rehash(vp.size()/2);
 		for(size_t i=0;i<vp.size();i+=2)
 		{
 			mapStrings[&aCont[vp[i]]]=&aCont[vp[i+1]];

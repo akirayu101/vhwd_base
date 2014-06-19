@@ -4,13 +4,17 @@
 
 #include "vhwd/basic/platform.h"
 
-#ifdef _WIN32
-#include <WinSock2.h>
+#ifdef _MSC_VER
 #pragma comment(lib, "Ws2_32.lib")
-#else
-#include <sys/socket.h>
-#include <netinet/in.h>
 #endif
+
+
+
+#ifndef _WIN32
+    #include <sys/socket.h>
+    #include <netinet/in.h>
+#endif
+
 
 VHWD_ENTER
 
@@ -64,7 +68,7 @@ public:
 
 	bool Accept(Socket& sock);
 	bool Accept(Socket& sock,IPAddress& addr);
-	
+
 	// client
 	bool Connect(const String& ip,int port);
 	bool Connect(const IPAddress& addr);

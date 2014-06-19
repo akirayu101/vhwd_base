@@ -1,4 +1,8 @@
 #include "vhwd/threading/coroutine.h"
+
+#ifdef VHWD_USE_COROUTINE
+
+
 #include "thread_impl.h"
 
 extern "C" void asm_swap_context(void* callee,void* caller);
@@ -297,9 +301,6 @@ void CoroutineContext::raw_proc_spawn(CoroutineContext* pcortctx_)
 
 }
 
-
-
-
 VHWD_LEAVE
 
 
@@ -345,7 +346,7 @@ __asm__ __volatile__ (
 }
 */
 
-#elif defined(_X86_)
+#elif defined(_X86_) && defined(_MSC_VER)
 
 #pragma warning(disable:4731 4733)
 
@@ -404,10 +405,11 @@ lb_exit:
 		ret;
 
 	}
-
 }
-
 #endif
+
+
+#endif // VHWD_USE_COROUTINE
 
 
 

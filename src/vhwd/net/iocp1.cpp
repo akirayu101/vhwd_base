@@ -565,8 +565,6 @@ void IOCPPool::HandleSend(Session& ikey)
 				if(errno==EAGAIN)
 				{
                     ikey.tmp_send=q;
-                    //ikey.m_bCanSend.store(0);
-                    //ikey.ep_ctl(EPOLLOUT);
 					break;
 				}
 				if(errno==EINTR)
@@ -580,7 +578,6 @@ void IOCPPool::HandleSend(Session& ikey)
 			else if(bRet==0)
 			{
                 ikey.tmp_send=q;
-                 //--ikey.m_nPendingSend;
                 return;
 			}
 
@@ -600,7 +597,6 @@ void IOCPPool::HandleSend(Session& ikey)
 
 	}
 
-	//--ikey.m_nPendingSend;
 }
 
 void IOCPPool::HandleRecv(Session& ikey)
@@ -664,7 +660,6 @@ void IOCPPool::HandleRecv(Session& ikey)
 			{
 				if(errno==EAGAIN)
 				{
-                    //ikey.ep_ctl(EPOLLIN);
 					break;
 				}
 				if(errno==EINTR)
@@ -700,7 +695,6 @@ void IOCPPool::HandleRecv(Session& ikey)
 
 	}
 
-	//--ikey.m_nPendingRecv;
 }
 
 void IOCPPool::svc_worker()
@@ -746,11 +740,8 @@ void IOCPPool::svc_worker()
 			{
                 continue;
 			}
-
-
+			
 			ikey.tpLast=accounter.tTimeStamp;
-
-
             if(nevt&EPOLLIN)
 			{
                 HandleRecv(ikey);
@@ -758,14 +749,7 @@ void IOCPPool::svc_worker()
 			else if(nevt&EPOLLOUT)
 			{
                 HandleSend(ikey);
-                //ikey.m_bCanSend.store(1);
   			}
-
-//  			if(ikey.m_bCanSend.get()>0 && ikey.m_nPendingSend.get()>0)
-//			{
-//                 HandleSend(ikey);
-//			}
-
 
 			if(ikey.IsError())
 			{
@@ -774,7 +758,6 @@ void IOCPPool::svc_worker()
 			else
 			{
 				ikey.m_nEpCtl.exchange(0);
-				//ikey.ep_ctl(0);
 			}
 
 		}

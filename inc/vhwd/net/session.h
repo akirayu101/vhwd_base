@@ -5,11 +5,10 @@
 #include "vhwd/net/overlapped.h"
 #include "vhwd/threading/thread.h"
 
-
-#ifdef _WIN32
-	#include <WinSock2.h>
-	#include <ws2tcpip.h>
+#if defined(_WIN32)
+	#include <winsock2.h>
 	#include <mswsock.h>
+	#include <ws2tcpip.h>
 #else
 	#include <sys/epoll.h>
 #endif
@@ -172,7 +171,7 @@ class VHWD_DLLIMPEXP SessionServer : public SessionTCP
 public:
 	typedef SessionTCP basetype;
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 	LPFN_ACCEPTEX lpfnAcceptEx;
 	LPFN_GETACCEPTEXSOCKADDRS lpfnGetAddrEx;
 #endif

@@ -39,6 +39,10 @@ class VHWD_DLLIMPEXP SerializerWriter;
 
 class VHWD_DLLIMPEXP Serializer : private NonCopyable
 {
+protected:
+
+	Serializer(int t);
+
 public:
 
 	enum
@@ -47,7 +51,6 @@ public:
 		WRITER=2,
 	};
 
-	Serializer(int t);
 	virtual ~Serializer(){}
 
 	bool is_reader(){return type==READER;}
@@ -64,7 +67,6 @@ public:
 
 	int global_version(){return gver;}
 	void global_version(int v){gver=v;}
-
 
 	virtual void close(){}
 
@@ -99,6 +101,10 @@ protected:
 
 class VHWD_DLLIMPEXP SerializerEx : public Serializer
 {
+protected:
+
+	SerializerEx(int t);
+
 public:
 
 	enum
@@ -145,7 +151,6 @@ public:
 		cached_objects.clear();
 	}
 
-	SerializerEx(int t);
 
 	Object* create(const String& s)
 	{
@@ -153,6 +158,7 @@ public:
 	}
 
 protected:
+
 	serializer_cached_objects cached_objects;
 	ObjectCreator object_creator;
 };

@@ -38,7 +38,7 @@ public:
 	static void XNotFound();
 	static void XReadOnly();
 	static void XTypeLocked();
-	static void XBadFactor();
+	static void XBadFunctor();
 	
 
 #ifdef _WIN32

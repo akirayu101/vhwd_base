@@ -140,7 +140,7 @@ template<typename T,typename A>
 arr_1t<T,A>::arr_1t(const arr_1t& o)
 {
 	size_type _newsize=o.size();
-	_xset(_newsize);
+	this->_xset(_newsize);
 
 	if(_newsize>0)
 	{

@@ -1,12 +1,6 @@
 
 #include "vhwd.h"
 
-using namespace vhwd;
-
-#ifdef _MSC_VER
-#pragma comment(lib,"vhwd.lib")
-#endif
-
 
 int main(int argc,char** argv)
 {

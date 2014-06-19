@@ -37,6 +37,16 @@ public:
 	// alternative implementation: swap(a,b);
 	static inline void move_value(T& a,T& b){a=b;}
 
+	static inline void copy_n(T* a,T* b,size_t n)
+	{
+		memcpy(a,b,sizeof(T)*n);
+	}
+
+	static inline void move_n(T* a,T* b,size_t n)
+	{
+		memcpy(a,b,sizeof(T)*n);
+	}
+
 	// if T is not POD, fill/destroy method must be implemented.
 	static inline void fill(T*,size_type){}
 	static inline void destroy(T*,size_type){}
@@ -104,8 +114,11 @@ public:
 		// get key and enter if timeout
 		QUEUE_TIMEOUT	=1<<2,
 
-		QUEUE_FREE_HEADER=1<<3,
-		QUEUE_FREE_BUFFER=1<<4,
+
+		QUEUE_PARTIAL	=1<<3,
+
+		QUEUE_FREE_HEADER=1<<4,
+		QUEUE_FREE_BUFFER=1<<5,
 	};
 
 	static T invalid_value(){return P::invalid_value();}
@@ -146,7 +159,11 @@ public:
 	// queue flags
 	BitFlags& flags()
 	{
-		if(!pHeader){static BitFlags f;return f;}
+		if(!pHeader)
+		{
+			System::LogTrace("pHeader==NULL while calling LockFreeQueue::flags");
+			static BitFlags f;return f;
+		}
 		return pHeader->flags;
 	}
 
@@ -188,7 +205,7 @@ public:
 				pHeader->kget.store(0);
 				return P::invalid_value();
 			}
-			else // wait until queue is not empty
+			else
 			{
 				// store(1) to tell others that I'm alive.
 				pHeader->kget.store(1);
@@ -201,7 +218,142 @@ public:
 		pHeader->kget.store(0); // give back the key.
 
 		return q;
+	}
 
+
+	int getq(T* p,int n)
+	{
+		wassert(pHeader!=NULL);
+		int32_t tag;
+
+		// test and check the key
+		// if original value is zero then enter and get an element, and then store zero to the key and leave
+		while((tag=pHeader->kget.fetch_add(1))!=0)
+		{
+			if(tag!=(int32_t)P::timeout())
+			{
+				P::noop();
+				continue;
+			}
+
+			if(pHeader->kget.exchange(1)==0)
+			{
+				break;
+			}
+
+			if(pHeader->flags.get(QUEUE_TIMEOUT)) // timeout
+			{
+				System::LogTrace("getq key timeout!");
+				break;
+			}
+		}
+
+
+		while(pHeader->head.get()==pHeader->rear.get()) // the queue is empty
+		{
+			if(pHeader->flags.get(QUEUE_NONBLOCK))
+			{
+				pHeader->kget.store(0);
+				return 0;
+			}
+			else
+			{
+				// store(1) to tell others that I'm alive.
+				pHeader->kget.store(1);
+				P::noop();
+			}
+		}
+
+		int rd=pHeader->head.get();
+		int wr=pHeader->rear.get();
+		int kp=(wr-rd)&pHeader->mask;
+		if(kp>n)
+		{
+			kp=n;
+		}
+		int kn=rd+kp-pHeader->mask-1;
+
+		if(kn>0)
+		{
+			P::move_n(p,pBuffer+rd,kp-kn);
+			P::move_n(p+kp-kn,pBuffer,kn);
+			pHeader->head.store(kn);
+		}
+		else
+		{
+			P::move_n(p,pBuffer+rd,kp);
+			pHeader->head.store(kn&pHeader->mask);
+		}
+
+		pHeader->kget.store(0); // give back the key.
+		return kp;
+	}
+
+	int peek(T* p,int n)
+	{
+		wassert(pHeader!=NULL);
+		int32_t tag;
+
+		// test and check the key
+		// if original value is zero then enter and get an element, and then store zero to the key and leave
+		while((tag=pHeader->kget.fetch_add(1))!=0)
+		{
+			if(tag!=(int32_t)P::timeout())
+			{
+				P::noop();
+				continue;
+			}
+
+			if(pHeader->kget.exchange(1)==0)
+			{
+				break;
+			}
+
+			if(pHeader->flags.get(QUEUE_TIMEOUT)) // timeout
+			{
+				System::LogTrace("getq key timeout!");
+				break;
+			}
+		}
+
+		while(pHeader->head.get()==pHeader->rear.get()) // the queue is empty
+		{
+			if(pHeader->flags.get(QUEUE_NONBLOCK))
+			{
+				pHeader->kget.store(0);
+				return 0;
+			}
+			else
+			{
+				// store(1) to tell others that I'm alive.
+				pHeader->kget.store(1);
+				P::noop();
+			}
+		}
+
+		int rd=pHeader->head.get();
+		int wr=pHeader->rear.get();
+		int kp=(wr-rd)&pHeader->mask;
+		if(kp>n)
+		{
+			kp=n;
+		}
+		int kn=rd+kp-pHeader->mask-1;
+
+		if(kn>0)
+		{
+			P::copy_n(p,pBuffer+rd,kp-kn);
+			P::copy_n(p+kp-kn,pBuffer,kn);
+			pHeader->head.store(kn);
+		}
+		else
+		{
+			P::copy_n(p,pBuffer+rd,kp);
+			pHeader->head.store(kn&pHeader->mask);
+		}
+
+		pHeader->kget.store(0); // give back the key.
+		return kp;
 	}
 
 	// push an element to the queue rear
@@ -251,6 +403,104 @@ public:
 		pHeader->rear.store((pHeader->rear.get()+1)&pHeader->mask); // advance rear position
 		pHeader->kput.store(0); // give back the key.
 		return true;
+	}
+
+	// push an element to the queue rear
+	int putq(T* p,int n)
+	{
+		wassert(pHeader!=NULL);
+
+		int32_t tag;
+
+		// test and check the key
+		// if original value is zero then enter and get an element, and then store zero to the key and leave
+		while((tag=pHeader->kput.fetch_add(1))!=0)
+		{
+			if(tag!=(int32_t)P::timeout())
+			{
+				P::noop();
+				continue;
+			}
+
+			if(pHeader->kput.exchange(1)==0)
+			{
+				break;
+			}
+
+			if(pHeader->flags.get(QUEUE_TIMEOUT))
+			{
+				System::LogTrace("getq key timeout!");
+				break;
+			}
+		}
+
+		while(((pHeader->rear.get()+1)&pHeader->mask)==pHeader->head.get()) // queue is full
+		{
+			if(pHeader->flags.get(QUEUE_NONBLOCK)) // give back the key and return false if nonblock
+			{
+				pHeader->kput.store(0);
+				return 0;
+			}
+			else
+			{
+				pHeader->kput.store(1); // store(1) to tell others that I'm alive.
+				P::noop();
+			}
+		}
+
+		int rd=pHeader->head.get();
+		int wr=pHeader->rear.get();
+		int kp=(rd-wr-1)&pHeader->mask;
+
+		if(kp>=n)
+		{
+			kp=n;
+		}
+		else if(!pHeader->flags.get(QUEUE_PARTIAL))
+		{
+			return 0;
+		}
+
+		int kn=wr+kp-pHeader->mask-1;
+		if(kn>0)
+		{
+			P::copy_n(pBuffer+wr,p,kp-kn);
+			P::copy_n(pBuffer,p+kp-kn,kn);
+			pHeader->rear.store(kn);
+		}
+		else
+		{
+			P::copy_n(pBuffer+wr,p,kp);
+			pHeader->rear.store(kn&pHeader->mask);
+		}
+
+		pHeader->kput.store(0); // give back the key.
+		return kp;
+	}
+
+	void rewind()
+	{
+		if(!pHeader)
+		{
+			return;
+		}
+
+		int32_t tag;
+
+		while((tag=pHeader->kput.fetch_add(1))!=0){P::noop();}
+		while((tag=pHeader->kget.fetch_add(1))!=0)
+		{
+			pHeader->kput.store(0);
+			//Thread::yield();
+			while((tag=pHeader->kput.fetch_add(1))!=0){P::noop();}
+		}
+
+		pHeader->head.store(0);
+		pHeader->rear.store(0);
+		pHeader->kput.store(0);
+		pHeader->kget.store(0);
+
+
 	}
 
 	void clear()

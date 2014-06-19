@@ -69,9 +69,17 @@ Exception::~Exception() throw()
 	}
 }
 
+template<typename T>
+inline void Exception_Throw(T& x)
+{
+	throw x;
+}
+
+
 void Exception::XError()
 {
-	XError("unknown_exception",false);
+	static Exception _tException("unknown_exception",false);
+	Exception_Throw(_tException);
 }
 
 void Exception::XError(const char*p, bool del)
@@ -79,7 +87,7 @@ void Exception::XError(const char*p, bool del)
 	throw Exception(p,del);
 }
 
-class MyBadAlloc : public std::bad_alloc
+class ExceptionBadAlloc : public std::bad_alloc
 {
 public:
 
@@ -89,48 +97,56 @@ public:
 	const char* what() throw()
 #endif
 	{
-		return "Not_enough_memory";
+		return "not_enough_memory";
 	}
 };
 
 void Exception::XBadAlloc()
 {
-	throw MyBadAlloc();
+	static ExceptionBadAlloc _tException;
+	Exception_Throw(_tException);
 }
 
 void Exception::XBadCast()
 {
-	throw Exception("badcast",false);
+	static Exception _tException("badcast",false);
+	Exception_Throw(_tException);
 }
 
 void Exception::XInvalidArgument()
 {
-	throw Exception("invalid_argument",false);
+	static Exception _tException("invalid_argument",false);
+	Exception_Throw(_tException);
 }
 
 void Exception::XInvalidIndex()
 {
-	throw Exception("invalid_index",false);
+	static Exception _tException("invalid_index",false);
+	Exception_Throw(_tException);
 }
 
 void Exception::XReadOnly()
 {
-	throw Exception("read_only",false);
+	static Exception _tException("read_only",false);
+	Exception_Throw(_tException);
 }
 
 void Exception::XTypeLocked()
 {
-	throw Exception("type_locked",false);
+	static Exception _tException("type_locked",false);
+	Exception_Throw(_tException);
 }
 
-void Exception::XBadFactor()
+void Exception::XBadFunctor()
 {
-	throw Exception("bad_factor",false);
+	static Exception _tException("bad_functor",false);
+	Exception_Throw(_tException);
 }
 
 void Exception::XNotFound()
 {
-	throw Exception("not_found",false);
+	static Exception _tException("not_found",false);
+	Exception_Throw(_tException);
 }
 
 VHWD_LEAVE

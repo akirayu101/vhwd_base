@@ -93,10 +93,12 @@ public:
 	int value;
 };
 
+#ifdef VHWD_USE_COROUTINE
+
 class RoutineProducer : public Coroutine
 {
 public:
-	
+
 	LitePtrT<Coroutine> Consumer;
 
 	void sink(int val)
@@ -181,9 +183,8 @@ TEST_DEFINE(TEST_Coroutine)
 	Coroutine::spawn(&producer);
 	TEST_ASSERT(Coroutine::yield(&producer));
 
-
-
 }
+#endif
 
 
 class MyTask : public ITask

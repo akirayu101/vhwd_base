@@ -10,20 +10,30 @@
 VHWD_ENTER
 
 template<typename T>
-class factor_reference
+class functor_reference
 {
-	const factor_reference& operator=(const factor_reference&);
+	const functor_reference& operator=(const functor_reference&);
 public:
 	T& ref;
-	factor_reference(T& f):ref(f){}
+	functor_reference(T& f):ref(f){}
 	inline operator T&(){return ref;}
 };
 
 template<typename T>
-inline factor_reference<T> mk_ref(T& v){return factor_reference<T>(v);}
+class functor_pointer : public FakePtrT<T>
+{
+public:
+	functor_pointer(T* p=NULL):FakePtrT<T>(p){}
+
+	operator T*() {return this->get();}
+	operator const T*() const {return this->get();}
+};
 
 template<typename T>
-inline factor_reference<const T> mk_cref(const T& v){return factor_reference<const T>(v);}
+inline functor_reference<T> mk_ref(T& v){return functor_reference<T>(v);}
+
+template<typename T>
+inline functor_reference<const T> mk_cref(const T& v){return functor_reference<const T>(v);}
 
 
 template<typename T>
@@ -33,39 +43,22 @@ public:
 	typedef T type;
 };
 
-template<typename T,bool F>
-class RealParamImplPointer;
-
 template<typename T>
-class RealParamImplPointer<T,true>
+class ParamRealImpl<T*>
 {
 public:
-	typedef DataPtrT<T> type;
+	typedef functor_pointer<T> type;
 };
 
 template<typename T>
-class RealParamImplPointer<T,false>
-{
-public:
-	typedef T* type;
-};
-
-template<typename T>
-class ParamRealImpl<T*> : public RealParamImplPointer<T,tl::is_convertible<T,ObjectData>::value>
-{
-public:
-
-};
-
-template<typename T>
-class ParamRealImpl<factor_reference<T> >
+class ParamRealImpl<functor_reference<T> >
 {
 public:
 	typedef T& type;
 };
 
 template<typename T>
-class ParamRealImpl<factor_reference<const T> >
+class ParamRealImpl<functor_reference<const T> >
 {
 public:
 	typedef const T& type;
@@ -222,6 +215,7 @@ public:
 		(void)&k1;(void)&k2;(void)&k3;(void)&k4;
 		(void)&k5;(void)&k6;(void)&k7;(void)&k8;
 		return (k1->*ft)();
+
 	}
 };
 
@@ -545,12 +539,11 @@ public:
 	}
 };
 
-
-
 template<typename K0,typename K1=tl::nulltype,typename K2=tl::nulltype,typename K3=tl::nulltype,typename K4=tl::nulltype,typename K5=tl::nulltype,typename K6=tl::nulltype,typename K7=tl::nulltype,typename K8=tl::nulltype>
 class ParamDispatch
 {
 public:
+
 	static inline K0 g(K0 k0,K1 k1=K1(),K2 k2=K2(),K3 k3=K3(),K4 k4=K4(),K5 k5=K5(),K6 k6=K6(),K7 k7=K7(),K8 k8=K8())
 	{
 		(void)&k0;

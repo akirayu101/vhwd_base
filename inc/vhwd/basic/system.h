@@ -17,6 +17,10 @@ class VHWD_DLLIMPEXP System
 {
 public:
 
+	static bool Execute(const String& s);
+
+	static const String& GetModulePath();
+
 	static int GetCacheLineSize();
 	static int GetCpuCount();
 	static int GetPageSize();

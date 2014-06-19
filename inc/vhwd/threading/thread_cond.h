@@ -10,7 +10,7 @@
 
 #include "vhwd/config.h"
 
-#ifndef _WIN32
+#ifndef _MSC_VER
 #include <pthread.h>
 #else
 #include <windows.h>
@@ -38,7 +38,7 @@ public:
 	bool wait_until(Mutex& Mutex,const TimePoint& tp);
 
 protected:
-#ifdef _WIN32
+#ifdef _MSC_VER
 	CONDITION_VARIABLE impl;
 #else
 	pthread_cond_t impl;

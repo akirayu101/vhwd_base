@@ -4,16 +4,20 @@
 
 #ifdef _WIN32
 #include <windows.h>
-#include "intrin.h"
-#pragma warning(disable:4146)
 #endif
+
+#ifdef _MSC_VER
+#pragma warning(disable:4146)
+#include "intrin.h"
+#endif
+
 
 //#include <atomic>
 
 VHWD_ENTER
 
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 
 template<typename T,int N>
 class AtomicImpl;
@@ -152,7 +156,7 @@ T AtomicIntT<T>::fetch_add(T v)
 template<typename T>
 T AtomicIntT<T>::fetch_sub(T v)
 {
-	return AtomicImpl<type,sizeof(T)>::fetch_sub(&val,v); 
+	return AtomicImpl<type,sizeof(T)>::fetch_sub(&val,v);
 }
 
 
@@ -160,19 +164,19 @@ T AtomicIntT<T>::fetch_sub(T v)
 template<typename T>
 T AtomicIntT<T>::fetch_and(type v)
 {
-	return AtomicImpl<type,sizeof(T)>::fetch_and(&val,v); 
+	return AtomicImpl<type,sizeof(T)>::fetch_and(&val,v);
 }
 
 template<typename T>
 T AtomicIntT<T>::fetch_or(type v)
 {
-	return AtomicImpl<type,sizeof(T)>::fetch_or(&val,v); 
+	return AtomicImpl<type,sizeof(T)>::fetch_or(&val,v);
 }
 
 template<typename T>
 T AtomicIntT<T>::fetch_xor(type v)
 {
-	return AtomicImpl<type,sizeof(T)>::fetch_xor(&val,v); 
+	return AtomicImpl<type,sizeof(T)>::fetch_xor(&val,v);
 }
 
 template<typename T>

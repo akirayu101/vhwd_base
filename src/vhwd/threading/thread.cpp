@@ -106,7 +106,7 @@ Thread& Thread::this_thread()
 
 Logger& this_logger()
 {
-	return Thread::this_data().thrd_logger;	
+	return Thread::this_data().thrd_logger;
 }
 
 

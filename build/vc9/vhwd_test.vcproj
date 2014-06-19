@@ -53,7 +53,7 @@
 				AdditionalIncludeDirectories="..\..\inc"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="0"
-				RuntimeLibrary="2"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="vhwd.h"
 				PrecompiledHeaderFile="vhwd.h.pch"

@@ -10,8 +10,6 @@
 VHWD_ENTER
 
 
-
-
 class VHWD_DLLIMPEXP ThreadImpl : public NonCopyable
 {
 public:

@@ -4,7 +4,6 @@
 #include "vhwd/basic/atomic.h"
 #include "vhwd/basic/functor.h"
 
-
 #ifdef _WIN32
 #include <windows.h>
 #endif

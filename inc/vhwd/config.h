@@ -19,8 +19,9 @@
 // use MemPoolPaging as default memory allocator
 //#define VHWD_MEMUSEPOOL
 
-
+#if !defined(_WIN32) || defined(_MSC_VER)
 #define VHWD_USE_COROUTINE
+#endif
 
 #define MACRO2STR(x) MACRO2STR_ESC(x)
 #define MACRO2STR_ESC(x) #x
@@ -49,13 +50,18 @@
 #endif
 
 
-#ifdef _WIN32
-    typedef int int32_t;
-	typedef __int64 int64_t;
-	typedef unsigned int uint32_t;
-	typedef unsigned __int64 uint64_t;
+
+#ifdef _MSC_VER
+
 	typedef short int16_t;
 	typedef unsigned short uint16_t;
+    typedef int int32_t;
+	typedef unsigned int uint32_t;
+	typedef __int64 int64_t;
+	typedef unsigned __int64 uint64_t;
+
+	//typedef long long int64_t;
+	//typedef unsigned long long uint64_t;
 
 	#define WIN32_LEAN_AND_MEAN
 	#define NOMINMAX
@@ -401,5 +407,5 @@ P<0xFC>::value,P<0xFD>::value,P<0xFE>::value,P<0xFF>::value
 };
 
 VHWD_LEAVE
-	
+
 #endif

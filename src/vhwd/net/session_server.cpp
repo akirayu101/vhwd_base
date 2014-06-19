@@ -29,7 +29,7 @@ bool SessionServer::Listen(const String& ip,int port)
 
 	sk_local.sock.Block(false);
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 	DWORD dwBytes;
 	DWORD iResult;
 
@@ -93,7 +93,7 @@ void SessionServer::StartSession(Session* pkey,IOCPPool* hpool)
 	{
 		hpool=hiocp;
 	}
-	
+
 	//this_logger().LogMessage("%p connected %d",pkey,hpool->GetAccounter().nSessionCount.get());
 	hpool->Register(pkey);
 }
@@ -103,7 +103,7 @@ MyOverLapped olap_wait_for_accept(MyOverLapped::ACTION_ACCEPT);
 bool SessionServer::WaitForAccept()
 {
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 
 	m_nPendingRecv++;
 
@@ -133,6 +133,7 @@ bool SessionServer::WaitForAccept()
 	{
 		return true;
 	}
+#elif defined(_WIN32)
 
 #else
 	WaitForRecv();
@@ -146,7 +147,7 @@ bool SessionServer::WaitForAccept()
 void SessionServer::OnRecvReady()
 {
 
-#ifndef _WIN32
+#ifndef _MSC_VER
 
 	for(;;)
 	{

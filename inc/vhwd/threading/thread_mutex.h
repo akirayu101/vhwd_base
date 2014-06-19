@@ -11,7 +11,7 @@
 #include "vhwd/config.h"
 #include "vhwd/basic/clock.h"
 
-#ifndef _WIN32
+#ifndef _MSC_VER
 #include <pthread.h>
 #else
 #include <windows.h>

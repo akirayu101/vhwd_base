@@ -1,6 +1,7 @@
 #include "vhwd/basic/system.h"
 #include "vhwd/basic/string.h"
 #include "vhwd/basic/lockguard.h"
+#include "vhwd/basic/stringbuffer.h"
 
 #include <ctime>
 #include <cstdlib>
@@ -37,6 +38,7 @@ public:
 
 SystemInfo::SystemInfo()
 {
+#ifdef _MSC_VER
 	SYSTEM_INFO info;
 	GetSystemInfo(&info);
 	m_nPageSize=info.dwPageSize;
@@ -62,6 +64,7 @@ SystemInfo::SystemInfo()
 
 	free(buffer);
 	m_nCacheLine=(int)line_size;
+#endif
 
 }
 
@@ -139,95 +142,6 @@ double System::GetCpuTime()
 #endif
 }
 
-//static FILE* fp_logfile=NULL;
-//
-//bool System::LogFile(const String& fn)
-//{
-//	if(fp_logfile)
-//	{
-//		::fclose(fp_logfile);
-//		fp_logfile=NULL;
-//	}
-//	if(fn.empty()) return false;
-//	fp_logfile=::fopen(fn.c_str(),"a");
-//	return fp_logfile!=NULL;
-//}
-//
-//void System::LogTraceImpl(const char* msg,...)
-//{
-//
-//	time_t tt=time(NULL);
-//	char buf1[256];
-//	strftime (buf1,256,"%Y-%m-%d %H:%M:%S ",localtime(&tt));
-//
-//	char buf2[1024];
-//	va_list arg;
-//	va_start(arg,msg);
-//	::vsnprintf(buf2,1024,msg,arg);
-//	va_end(arg);
-//
-//	if(fp_logfile!=NULL)
-//	{
-//        fprintf(fp_logfile,"%s trace:%s\r\n",buf1,buf2);
-//        fflush(fp_logfile);
-//	}
-//	else
-//	{
-//        printf("%s trace:%s\r\n",buf1,buf2);
-//	}
-//}
-//
-//void System::LogErrorImpl(const char* msg,...)
-//{
-//
-//	time_t tt=time(NULL);
-//	char buf1[256];
-//	strftime (buf1,256,"%Y-%m-%d %H:%M:%S ",localtime(&tt));
-//
-//	char buf2[1024];
-//	va_list arg;
-//	va_start(arg,msg);
-//	::vsnprintf(buf2,1024,msg,arg);
-//	va_end(arg);
-//
-//	if(fp_logfile!=NULL)
-//	{
-//        fprintf(fp_logfile,"%s error:%s\r\n",buf1,buf2);
-//        fflush(fp_logfile);
-//	}
-//	else
-//	{
-//        printf("%s error:%s\r\n",buf1,buf2);
-//	}
-//}
-//
-//void System::LogFetalImpl(const char* msg,...)
-//{
-//
-//	time_t tt=time(NULL);
-//	char buf1[256];
-//	strftime (buf1,256,"%Y-%m-%d %H:%M:%S ",localtime(&tt));
-//
-//	char buf2[1024];
-//	va_list arg;
-//	va_start(arg,msg);
-//	::vsnprintf(buf2,1024,msg,arg);
-//	va_end(arg);
-//
-//	if(fp_logfile!=NULL)
-//	{
-//        fprintf(fp_logfile,"%s fetal:%s\r\n",buf1,buf2);
-//        fflush(fp_logfile);
-//	}
-//	else
-//	{
-//        printf("%s fetal:%s\r\n",buf1,buf2);
-//	}
-//
-//	Exit(-1);
-//}
-
-
 
 void System::DebugBreak()
 {
@@ -243,6 +157,82 @@ void System::Exit(int v)
 	System::LogTrace("System::Exit(%d)",v);
 	::exit(v);
 }
+
+
+#ifdef _WIN32
+
+String GetModulePathImpl()
+{
+	char buf[MAX_PATH];
+	buf[0]=0;
+	::GetModuleFileNameA(NULL,buf,MAX_PATH);
+	return buf;
+}
+
+const String& System::GetModulePath()
+{
+	static String sModulePath(GetModulePathImpl());
+	return sModulePath;
+}
+
+bool System::Execute(const String& s)
+{
+	STARTUPINFOA si={sizeof(STARTUPINFO)};
+    PROCESS_INFORMATION pi;
+	StringBuffer<char> sb(s);
+	sb.push_back(0);
+
+	if(!::CreateProcessA(NULL,sb.data(),NULL,NULL,FALSE,0,NULL,NULL,&si,&pi))
+	{
+		System::LogTrace("System::Exectue:%s FAILED",s);
+		return false;
+	}
+
+	System::LogTrace("System::Exectue:%s",s);
+
+	::CloseHandle(pi.hProcess);
+	::CloseHandle(pi.hThread);
+
+	return true;
+
+
+}
+
+#else
+
+String GetModulePathImpl()
+{
+	return "";
+}
+
+const String& System::GetModulePath()
+{
+	static String sModulePath(GetModulePathImpl());
+	return sModulePath;
+}
+
+bool System::Execute(const String& s)
+{
+	int pid;
+	if((pid=fork())==-1)
+	{
+		System::LogTrace("System::Exectue:%s FAILED",s);
+		return false;
+	}
+	if(pid==0)
+	{
+		execlp(s.c_str(),NULL);
+		exit(-1);
+	}
+	else
+	{
+		System::LogTrace("System::Exectue:%s",s);
+		return true;
+	}
+}
+
+#endif
+
 
 #ifdef _WIN32
 

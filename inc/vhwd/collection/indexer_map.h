@@ -38,10 +38,21 @@ public:
 		return impl.insert(k,v);
 	}
 
-	void set_capacity(size_t n)
+	void rehash(size_t n)
 	{
-		impl.set_capacity(n);
+		impl.rehash(n);
 	}
+
+	void reserve(size_t n)
+	{
+		impl.reserve(n);
+	}
+
+	float load_factor() const
+	{
+		return impl.load_factor();
+	}
+
 
 	void clear()
 	{
@@ -63,10 +74,25 @@ public:
 		return impl.get_pair_by_idx(n);
 	}
 
+	bool empty() const
+	{
+		return impl.empty();
+	}
+
+	void swap(indexer_map& o)
+	{
+		impl.swap(o.impl);
+	}
+
+	size_t erase(const key_type& v)
+	{
+		return impl.erase(v);
+	}
+
 	size_t size() const {return impl.size();}
 
 private:
-	indexer<P> impl;
+	indexer_impl<P> impl;
 };
 
 

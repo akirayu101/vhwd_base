@@ -8,9 +8,10 @@
 #ifndef __H_VHWD_THREAD_RWLOCK__
 #define __H_VHWD_THREAD_RWLOCK__
 
+
 #include "vhwd/config.h"
 
-#ifndef _WIN32
+#ifndef _MSC_VER
 #include <pthread.h>
 #else
 #include <windows.h>
@@ -37,7 +38,7 @@ public:
 	void unlock_w();
 
 protected:
-#ifdef _WIN32
+#ifdef _MSC_VER
 	SRWLOCK impl;
 #else
 	pthread_rwlock_t impl;
@@ -76,5 +77,8 @@ public:
 	}
 };
 
+
 VHWD_LEAVE
+
+
 #endif

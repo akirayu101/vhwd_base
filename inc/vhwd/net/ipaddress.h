@@ -4,12 +4,17 @@
 
 #include "vhwd/config.h"
 
-#ifdef _WIN32
-#include <WinSock2.h>
+
+#ifdef _MSC_VER
 #pragma comment(lib, "Ws2_32.lib")
+#endif
+
+#ifdef _WIN32
+    #include <winsock2.h>
+    #include <mswsock.h>
 #else
-#include <sys/socket.h>
-#include <netinet/in.h>
+    #include <sys/socket.h>
+    #include <netinet/in.h>
 #endif
 
 VHWD_ENTER
@@ -22,7 +27,7 @@ public:
 	IPAddress();
 	IPAddress(const IPAddress&);
 	IPAddress(const String& ip,int port);
-	~IPAddress();	
+	~IPAddress();
 
 	const IPAddress& operator=(const IPAddress& o);
 

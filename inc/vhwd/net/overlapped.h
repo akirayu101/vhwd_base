@@ -1,8 +1,9 @@
 #ifndef __H_VHWD_NET_OVERLAPPED__
 #define __H_VHWD_NET_OVERLAPPED__
 
-#include "vhwd/net/socket.h"
+
 #include "vhwd/net/ipaddress.h"
+#include "vhwd/net/socket.h"
 
 #include "vhwd/basic/clock.h"
 #include "vhwd/basic/bitflags.h"

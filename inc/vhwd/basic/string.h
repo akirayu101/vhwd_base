@@ -107,8 +107,10 @@ public:
 	friend VHWD_DLLIMPEXP std::ostream& operator<<(std::ostream&o,const String& s);
 	friend VHWD_DLLIMPEXP std::istream& operator>>(std::istream&o,String& s);
 
-	bool ToLong(int64_t* val) const;
-	bool ToDouble(float64_t* val) const;
+	bool ToNumber(int64_t* val) const;
+	bool ToNumber(int32_t* val) const;
+	bool ToNumber(float32_t* val) const;
+	bool ToNumber(float64_t* val) const;
 
 	String& operator<<(char v);
 	String& operator<<(int32_t v);

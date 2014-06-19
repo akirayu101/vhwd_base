@@ -61,7 +61,6 @@ SerializerEx::SerializerEx(int t)
 
 serializer_cached_objects::serializer_cached_objects()
 {
-	m_aObjects.set_capacity(512);
 	m_aObjects.insert(NULL);
 }
 

@@ -2,6 +2,7 @@
 
 #ifdef _WIN32
 #include <WinSock2.h>
+#include <Ws2tcpip.h>
 
 VHWD_ENTER
 class SocketImpl_windows
@@ -176,7 +177,11 @@ public:
 
 	static int recv_msg(impl_type& impl,char* buf,int len)
 	{
+#ifndef _MINGW
 		return ::recv(g(impl),buf,len,MSG_WAITALL);
+#else
+		return ::recv(g(impl),buf,len,0);
+#endif
 	}
 
 	static void destroy(impl_type::type& o)

@@ -10,6 +10,10 @@
 
 #include "vhwd/basic/object.h"
 
+#ifdef _MSC_VER
+#pragma warning(disable:4180)
+#endif
+
 VHWD_ENTER
 
 
@@ -119,6 +123,7 @@ namespace detail
 		{
 			return m_ptr;
 		}
+
 		inline const T* get() const
 		{
 			return m_ptr;

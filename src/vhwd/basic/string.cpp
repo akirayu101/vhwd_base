@@ -5,13 +5,15 @@
 #include "vhwd/basic/system.h"
 #include "vhwd/basic/codecvt.h"
 
+#include "stdio.h"
 
-#ifndef _WIN32
+#ifdef _WIN32
+#include <windows.h>
+#else
 #include <cerrno>
 #include <iconv.h>
-#else
-#include <windows.h>
 #endif
+
 
 VHWD_ENTER
 
@@ -137,11 +139,21 @@ size_t String::length() const
 {
 	return ::strlen(m_pStr);
 }
+/*
+#ifdef _MINGW
+    int vsnprintf(char* dst,size_t n,const char* s,va_list arglist)
+    {
+        vsprintf(dst,s,arglist);
+        return 0;
+    }
+#endif
+*/
 
 void String_FormatV_internal(String& ret,const char* s,va_list arglist)
 {
-	static const int _ndefault_buffer_size=256;
+	static const int _ndefault_buffer_size=1024;
 	char _buffer[_ndefault_buffer_size];
+
 	int _count=vsnprintf(_buffer,_ndefault_buffer_size,s,arglist);
 
 	if(_count<0)
@@ -162,7 +174,7 @@ void String_FormatV_internal(String& ret,const char* s,va_list arglist)
 		if(_nbuf<_nLen) continue;
 
 		_vbuf.resize(_nbuf);
-		_count=::vsnprintf(&_vbuf[0],_nbuf,s,arglist);
+		_count=vsnprintf(&_vbuf[0],_nbuf,s,arglist);
 		if(_count<0)
 		{
 			ret=s;
@@ -299,14 +311,30 @@ String& String::operator+=(const wchar_t* p)
 
 }
 
-bool String::ToLong(int64_t* val) const
+
+
+bool String::ToNumber(int64_t* val) const
 {
 	if(!val) return false;
 	*val=::atoi(c_str());
 	return true;
 }
 
-bool String::ToDouble(float64_t* val) const
+bool String::ToNumber(int32_t* val) const
+{
+	if(!val) return false;
+	*val=::atoi(c_str());
+	return true;
+}
+
+bool String::ToNumber(float32_t* val) const
+{
+	if(!val) return false;
+	*val=::atof(c_str());
+	return true;
+}
+
+bool String::ToNumber(float64_t* val) const
 {
 	if(!val) return false;
 	*val=::atof(c_str());
@@ -647,7 +675,7 @@ int String::replace(char c1,char c2)
 		{
 			sb[i]=c2;n++;
 		}
-	}	
+	}
 	//std::replace(sb.begin(),sb.end(),c1,c2);
 	(*this)=sb;
 	return n;

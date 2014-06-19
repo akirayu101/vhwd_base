@@ -19,9 +19,9 @@ class ObjectCreatorImpl : public ObjectData
 {
 public:
 
-	ObjectCreatorImpl(int capacity)
+	ObjectCreatorImpl(int n)
 	{
-		kmap.set_capacity(capacity);
+		kmap.rehash(n);
 	}
 
 	Object *Create(const String &name)

@@ -54,7 +54,7 @@
 				AdditionalIncludeDirectories="..\..\inc"
 				PreprocessorDefinitions="VHWD_BUILDING"
 				BasicRuntimeChecks="0"
-				RuntimeLibrary="2"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough=""
 				PrecompiledHeaderFile=""
@@ -108,7 +108,7 @@
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"

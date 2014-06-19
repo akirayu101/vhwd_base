@@ -173,7 +173,6 @@ void MemLinking::report()
 
 	indexer_map<IMemAllocInfo,IMemAllocCount,indexer_map_trait<IMemAllocInfo,IMemAllocCount,int,Allocator<int> > > alinfo;
 	
-	alinfo.set_capacity(1024);
 	{
 		LockGuard<SpinLock> lock1(m_tSpinLink);
 		if(!m_pMemLink.tHead.pNext)

@@ -1,4 +1,4 @@
-#ifdef _WIN32
+#ifdef _MSC_VER
 #include "thread_impl_windows.h"
 typedef vhwd::ThreadImpl_windows ThreadImpl_detail;
 #else

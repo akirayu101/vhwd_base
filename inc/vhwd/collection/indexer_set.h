@@ -21,6 +21,10 @@ public:
 	typedef typename P::index_type index_type;
 	typedef typename P::key_type key_type;
 
+	size_t erase(const key_type& v)
+	{
+		return impl.erase(v);
+	}
 
 	index_type insert(const key_type& v)
 	{
@@ -37,9 +41,29 @@ public:
 		impl.clear();
 	}
 
-	void set_capacity(size_t n)
+	void rehash(size_t n)
 	{
-		impl.set_capacity(n);
+		impl.rehash(n);
+	}
+
+	void reserve(size_t n)
+	{
+		impl.reserve(n);
+	}
+
+	float load_factor() const
+	{
+		return impl.load_factor();
+	}
+
+	float max_load_factor() const
+	{
+		return impl.max_load_factor();
+	}
+
+	void max_load_factor(float z)
+	{
+		impl.max_load_factor(z);
 	}
 
 	const key_type& get(index_type n)
@@ -47,10 +71,20 @@ public:
 		return impl.get_pair_by_idx(n);
 	}
 
+	bool empty() const
+	{
+		return impl.empty();
+	}
+
+	void swap(indexer_set& o)
+	{
+		impl.swap(o.impl);
+	}
+
 	size_t size() const {return impl.size();}
 
 private:
-	indexer<P> impl;
+	indexer_impl<P> impl;
 };
 
 
