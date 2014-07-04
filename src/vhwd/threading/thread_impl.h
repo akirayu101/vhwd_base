@@ -85,9 +85,10 @@ public:
 
 	void wait();
 
+	bool activate(){return false;}
+
 };
 
-//extern ThreadMain _g_main_thread;
 
-};//namespace
+VHWD_LEAVE
 

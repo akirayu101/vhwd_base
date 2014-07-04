@@ -1,7 +1,7 @@
 #include "vhwd/logging/logger.h"
 #include "vhwd/logging/logtarget.h"
 #include "vhwd/basic/pointer.h"
-#include "vhwd/threading/thread.h"
+#include <cstdarg>
 
 #ifndef _WIN32
 #include "errno.h"

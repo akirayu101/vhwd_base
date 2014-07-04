@@ -181,11 +181,10 @@ public:
 	void swap(ObjectGroup& o);
 
 private:
-
 	void* impl;
 };
 
-template<typename T,typename B>
+template<typename T,typename B=Object>
 class ObjectGroupT : public B
 {
 public:
@@ -223,6 +222,7 @@ public:
 private:
 	ObjectGroup impl;
 };
+
 
 class VHWD_DLLIMPEXP ObjectCreator
 {

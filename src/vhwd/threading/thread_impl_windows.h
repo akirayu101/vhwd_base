@@ -62,8 +62,8 @@ public:
 		CloseHandle(t);
 		t=NULL;
 	}
-#ifndef _MINGW
 
+#ifndef _MINGW
 
 	static PSRWLOCK g(RWLock& m)
 	{

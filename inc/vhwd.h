@@ -20,9 +20,9 @@
 #include "vhwd/xml.h"
 #include "vhwd/testing/test.h"
 
-#ifdef _MSC_VER
-#pragma comment(lib,"vhwd.lib")
-#endif
+//#ifdef _MSC_VER
+//#pragma comment(lib,"vhwd.lib")
+//#endif
 
 
 #endif

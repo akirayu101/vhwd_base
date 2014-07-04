@@ -28,7 +28,7 @@ public:
 };
 
 // RingBufferBase one thread read/one thread write
-class VHWD_DLLIMPEXP RingBufferBase : private NonCopyable
+class VHWD_DLLIMPEXP RingBufferBase
 {
 public:
 
@@ -210,7 +210,7 @@ public:
 };
 
 
-class VHWD_DLLIMPEXP RingBuffer : public RingBufferBase
+class VHWD_DLLIMPEXP RingBuffer : public RingBufferBase, private NonCopyable
 {
 public:
 

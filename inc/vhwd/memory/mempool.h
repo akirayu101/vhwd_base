@@ -13,7 +13,7 @@
 
 VHWD_ENTER
 
-class VHWD_DLLIMPEXP MemPoolBase : public NonCopyable
+class VHWD_DLLIMPEXP MemPoolBase
 {
 public:
 	static void set_break_alloc(unsigned n);
@@ -27,7 +27,7 @@ class VHWD_DLLIMPEXP FixedSizeAllocatorUnit;
 // MemPoolPaging is a thread-safe and hight-efficient MemPool, it uses several fixed-size-allocator units internally.
 // Memory allocated by MemPoolPaging can be deallocated by another MemPoolPaging.
 // Memory allocated by malloc can be deallocated by MemPoolPaging.
-class VHWD_DLLIMPEXP MemPoolPaging : public MemPoolBase
+class VHWD_DLLIMPEXP MemPoolPaging : public MemPoolBase, private NonCopyable
 {
 public:
 
@@ -41,59 +41,61 @@ public:
 	static void deallocate(void* p);
 
 	// Same as above, drop the extra parameters.
-	void* allocate(size_t size,const char*,long){return allocate(size);}
+	void* allocate(size_t size,const char*,int){return allocate(size);}
 	static void deallocate(void* p,size_t){deallocate(p);}
 
 	// Default MemPoolPaging object, usually we don't need to define MemPool objects.
 	static MemPoolPaging& current();
 
+
 protected:
+	void _init();
+
 	FixedSizeAllocatorUnit* m_aSlots;
 	FixedSizeAllocatorUnit** m_pSlots;
-	size_t m_nFixedSizeCount;
 	size_t m_nFixedSizeMax;
+	size_t m_nFixedSizeCount;
 	bool m_bCustom;
 };
+
 
 // MemPoolMalloc use malloc/free to allocate/deallocate memory.
 class VHWD_DLLIMPEXP MemPoolMalloc : public MemPoolBase
 {
 public:
 
-	static void* allocate(size_t size)
-	{
-		void* pMem=::malloc(size);
-		if(pMem==NULL)
-		{
-			Exception::XBadAlloc();
-		}
-		return pMem;
-	}
+	static void* allocate(size_t size);
 
-	static void* allocate(size_t size,const char*,long){return allocate(size);}
+	static void* allocate(size_t size,const char*,int){return allocate(size);}
 	static void deallocate(void* p){if(p) ::free(p);}
 	static void deallocate(void* p,size_t){deallocate(p);}
 
-	static MemPoolMalloc& current(){static MemPoolMalloc gInstance;return gInstance;}
+	static MemPoolMalloc current(){ return MemPoolMalloc();}
 };
 
 
 // MemPoolDebug is used for detect memory leaks. compile with VHWD_MEMDEBUG macros to Enable it as global MemPool.
 template<typename T>
-class VHWD_DLLIMPEXP MemPoolDebug : public T
+class VHWD_DLLIMPEXP MemPoolDebug : public MemPoolBase
 {
 public:
-	typedef T basetype;
+
 
 	MemPoolDebug(){}
 
-	static MemPoolDebug& current();
+	static MemPoolDebug current(){return MemPoolDebug();}
 
+	static void* allocate(size_t size)
+	{
+		return allocate(size,NULL,-1);
+	}
 	// Allocate memory and insert to the MemLinking.
-	void* allocate(size_t size,const char* file,long line);
+	static void* allocate(size_t size,const char* file,int line);
 
 	// Remove from MemLinking and deallocate memory.
-	void deallocate(void* p);
+	static void deallocate(void* p);
+
+	static void deallocate(void* p,size_t){deallocate(p);}
 
 };
 

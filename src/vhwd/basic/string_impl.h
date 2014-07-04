@@ -5,7 +5,7 @@
 
 VHWD_ENTER
 
-void GBKTable_init();
+
 
 class StringPool : public NonCopyable
 {
@@ -13,12 +13,9 @@ public:
 	typedef MemPoolPaging MyPool;
 	typedef char char_type;
 
-	static char_type* gpEmptyString;
 
-	StringPool():pool(MyPool::current())
-	{
-		GBKTable_init();
-	}
+	StringPool();
+
 	MyPool& pool;
 
 	static StringPool& current()
@@ -29,7 +26,7 @@ public:
 
 	static inline char_type* str_empty()
 	{
-		return gpEmptyString;
+		return (char_type*)const_empty_buffer;
 	}
 
 	inline char_type* str_alloc(size_t s)
@@ -63,7 +60,7 @@ public:
 
 	inline void str_free(char_type* p)
 	{
-		if(p!=gpEmptyString)
+		if(p!=const_empty_buffer)
 		{
 			pool.deallocate((void*)p);
 		}

@@ -11,7 +11,7 @@
 
 #include "vhwd/config.h"
 #include "vhwd/memory/allocator.h"
-
+#include <memory>
 
 VHWD_ENTER
 

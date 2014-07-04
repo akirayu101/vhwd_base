@@ -11,7 +11,7 @@
 #include "vhwd/config.h"
 #include "vhwd/basic/string.h"
 #include "vhwd/basic/stringbuffer.h"
-#include <locale>
+//#include <locale>
 
 #ifdef _WIN32
 #include "windows.h"

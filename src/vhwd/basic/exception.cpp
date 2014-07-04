@@ -70,7 +70,7 @@ Exception::~Exception() throw()
 }
 
 template<typename T>
-inline void Exception_Throw(T& x)
+inline void Exception_Throw(const T& x)
 {
 	throw x;
 }
@@ -78,13 +78,14 @@ inline void Exception_Throw(T& x)
 
 void Exception::XError()
 {
-	static Exception _tException("unknown_exception",false);
+	static const Exception _tException("unknown_exception",false);
 	Exception_Throw(_tException);
 }
 
 void Exception::XError(const char*p, bool del)
-{
-	throw Exception(p,del);
+{	
+	Exception _tException(p,del);
+	Exception_Throw(_tException);
 }
 
 class ExceptionBadAlloc : public std::bad_alloc
@@ -103,49 +104,49 @@ public:
 
 void Exception::XBadAlloc()
 {
-	static ExceptionBadAlloc _tException;
+	static const ExceptionBadAlloc _tException;
 	Exception_Throw(_tException);
 }
 
 void Exception::XBadCast()
 {
-	static Exception _tException("badcast",false);
+	static const Exception _tException("badcast",false);
 	Exception_Throw(_tException);
 }
 
 void Exception::XInvalidArgument()
 {
-	static Exception _tException("invalid_argument",false);
+	static const Exception _tException("invalid_argument",false);
 	Exception_Throw(_tException);
 }
 
 void Exception::XInvalidIndex()
 {
-	static Exception _tException("invalid_index",false);
+	static const Exception _tException("invalid_index",false);
 	Exception_Throw(_tException);
 }
 
 void Exception::XReadOnly()
 {
-	static Exception _tException("read_only",false);
+	static const Exception _tException("read_only",false);
 	Exception_Throw(_tException);
 }
 
 void Exception::XTypeLocked()
 {
-	static Exception _tException("type_locked",false);
+	static const Exception _tException("type_locked",false);
 	Exception_Throw(_tException);
 }
 
 void Exception::XBadFunctor()
 {
-	static Exception _tException("bad_functor",false);
+	static const Exception _tException("bad_functor",false);
 	Exception_Throw(_tException);
 }
 
 void Exception::XNotFound()
 {
-	static Exception _tException("not_found",false);
+	static const Exception _tException("not_found",false);
 	Exception_Throw(_tException);
 }
 

@@ -11,6 +11,14 @@ VHWD_ENTER
 size_t MemPageCache::nPageBits=0;
 size_t MemPageCache::nPageSize=0;
 
+
+char gInstance_mempagecache[sizeof(MemPageCache)];
+
+MemPageCache& MemPageCache::current()
+{
+	return *(MemPageCache*)gInstance_mempagecache;
+}
+
 void MemPageCache::append(MemPageInfo* mi)
 {
 	size_t kp=(((size_t)mi)>>nPageBits)&nBucketMask;
@@ -57,8 +65,25 @@ MemPageInfo* MemPageCache::search(void* p_)
 }
 
 
-MemPageCache::MemPageCache()
+#ifdef _WIN32
+void detect_memory_leaks( bool on_off )  
+{  
+
+}
+#endif
+
+
+void MemPageCache::_init()
 {
+	if(nPageBits!=0)
+	{
+		return;
+	}
+
+#if defined(_WIN32) && defined(_DEBUG)
+    _CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG)|_CRTDBG_LEAK_CHECK_DF);  
+#endif
+
 	nPageBits=20;
 	nPageSize=(size_t)1<<nPageBits;
 
@@ -80,7 +105,7 @@ MemPageCache::MemPageCache()
 
 
 	// Define Fix size allocate units.
-	size_t sbit[]={8,16,24,32,48,64,80,96,112,128,256,512,768,1024,1536,2048,3072,4096};
+	size_t sbit[]={8,16,24,32,48,64,80,96,112,128,192,256,512,768,1024,1536,2048,3072,4096};
 
 	// Determine real slot count
 	m_nFixedSizeCount=sizeof(sbit)/sizeof(int);
@@ -96,9 +121,10 @@ MemPageCache::MemPageCache()
 
 	m_nFixedSizeMax=sbit[m_nFixedSizeCount-1];
 
-	// Allocate memory for aSlots and pSlots using malloc
-	m_aSlots= (FixedSizeAllocatorUnit*)::malloc(sizeof(FixedSizeAllocatorUnit)*(m_nFixedSizeCount));
-	m_pSlots=(FixedSizeAllocatorUnit**)::malloc(sizeof(void*)*(m_nFixedSizeMax+1));
+	static char aSlotMem[sizeof(FixedSizeAllocatorUnit)*sizeof(sbit)/sizeof(int)];
+	static char aSlotDat[(4096+1)*sizeof(void*)];
+	m_aSlots=(FixedSizeAllocatorUnit* )aSlotMem;
+	m_pSlots=(FixedSizeAllocatorUnit**)aSlotDat;
 
 	if(!m_aSlots||!m_pSlots)
 	{
@@ -121,6 +147,12 @@ MemPageCache::MemPageCache()
 		if(i>sbit[j]) j++;
 		m_pSlots[i]=m_aSlots+j;
 	}
+}
+
+MemPageCache::MemPageCache()
+{
+	nPageBits=0;
+	_init();
 }
 
 VHWD_LEAVE

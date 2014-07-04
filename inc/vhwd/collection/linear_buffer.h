@@ -163,7 +163,7 @@ public:
 		_xbuf();
 	}
 
-	bool load(const String& file,int t)
+	bool load(const String& file,int t=FILE_TEXT)
 	{
 		if(!aBuff.load(file,t)) return false;
 		_xbuf();wr_pos=sz_buf;
@@ -345,6 +345,32 @@ void read_element(LinearBuffer<T>& lbuf,E& v)
 }
 
 
+template<typename T>
+void read_element(LinearBuffer<T>& lbuf,String& v)
+{
+	T* p1=lbuf.gptr();
+
+	for(;;)
+	{
+		if(lbuf.eof())
+		{			
+			break;
+		}
+
+		T val=lbuf.peek();
+		if(val=='\0'||val=='\t'||val==' '||val=='\r'||val=='\n')
+		{
+			break;
+		}
+
+		lbuf.get();
+	}
+	T* p2=lbuf.gptr();
+
+	StringBuffer<T> sb(p1,p2);
+	v=sb;
+}
+
 template<typename T,typename E>
 void read_element(LinearBuffer<T>& lbuf,std::complex<E>& v)
 {
@@ -397,6 +423,11 @@ template<typename E,typename A>
 bool LinearBuffer<T>::parse(arr_1t<E,A>& a1t,int64_t* pn)
 {
 	rd_reset();
+	if(wr_pos==0)
+	{
+		a1t.clear();
+		return true;
+	}
 
 	arr_1t<E,A> tmp;
 	int64_t ln=0;
@@ -483,8 +514,8 @@ bool LinearBuffer<T>::parse(arr_xt<E,A>& axt)
 	}
 
 	int64_t sz1=a1t.size()/sz2;
-	axt.resize(sz1,sz2);
-	memcpy(axt.data(),a1t.data(),sizeof(E)*a1t.size());
+	axt.resize(sz2,sz1);
+	xmem<E>::copy(a1t.begin(),a1t.end(),axt.begin());
 	return true;
 }
 

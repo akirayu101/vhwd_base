@@ -8,6 +8,7 @@
 #include <windows.h>
 #else
 #include <sys/mman.h>
+#include <cstring>
 #include <cerrno>
 #endif
 
@@ -78,18 +79,24 @@ void heap_free(void* p,size_t s)
 
 
 
-
-MemPoolPaging::MemPoolPaging()
+void MemPoolPaging::_init()
 {
+	if(m_nFixedSizeMax!=0) return;
 
 	MemPageCache& mpc(MemPageCache::current());
+	mpc._init();
 
 	m_bCustom=false;
 	m_nFixedSizeCount=mpc.m_nFixedSizeCount;
 	m_nFixedSizeMax=mpc.m_nFixedSizeMax;
 	m_pSlots=mpc.m_pSlots;
 	m_aSlots=mpc.m_aSlots;
+}
 
+MemPoolPaging::MemPoolPaging()
+{
+	m_nFixedSizeMax=0;
+	_init();
 }
 
 MemPoolPaging::~MemPoolPaging()
@@ -111,18 +118,25 @@ MemPoolPaging::~MemPoolPaging()
 	::free(m_aSlots);
 }
 
+
+
 void* MemPoolPaging::allocate(size_t nSize)
 {
 
 	if(nSize>m_nFixedSizeMax)
 	{
-		void* p=::malloc(nSize);
-		if(p==NULL)
+		if(m_nFixedSizeMax==0)
 		{
-			System::LogTrace("malloc failed in MemPoolPaging::allocate, nSize=%u",(unsigned)nSize);
-			Exception::XBadAlloc();
+			_init();
+			if(nSize>m_nFixedSizeMax)
+			{
+				return ::malloc(nSize);
+			}
 		}
-		return p;
+		else
+		{
+			return ::malloc(nSize);
+		}
 	}
 
 	FixedSizeAllocatorUnit& sl(*m_pSlots[nSize]);
@@ -213,20 +227,10 @@ void MemPoolPaging::deallocate(void* p)
 }
 
 
-
-
+char gInstance_mempoolpaging[sizeof(MemPoolPaging)];
 MemPoolPaging& MemPoolPaging::current()
 {
-	static class MyPool : public StaticObjectWithoutDeletorT<MemPoolPaging>
-	{
-	public:
-		MyPool()
-		{
-
-		}
-
-	}gInstance;
-	return gInstance;
+	return *(MemPoolPaging*)gInstance_mempoolpaging;
 }
 
 
@@ -235,21 +239,21 @@ void* SmallObject::operator new[](size_t nSize)
 	return vhwd::MemPoolPaging::current().allocate(nSize,NULL,-1);
 }
 
-void* SmallObject::operator new(size_t nSize,const char* sFile,long nLine)
+void* SmallObject::operator new(size_t nSize,const char* sFile,int nLine)
 {
 	return vhwd::MemPoolPaging::current().allocate(nSize,sFile,nLine);
 }
 
-void* SmallObject::operator new[](size_t nSize,const char* sFile,long nLine)
+void* SmallObject::operator new[](size_t nSize,const char* sFile,int nLine)
 {
 	return vhwd::MemPoolPaging::current().allocate(nSize,sFile,nLine);
 }
 
-void SmallObject::operator delete(void* p,const char*,long)
+void SmallObject::operator delete(void* p,const char*,int)
 {
 	vhwd::MemPoolPaging::current().deallocate(p);
 }
-void SmallObject::operator delete[](void* p,const char*,long)
+void SmallObject::operator delete[](void* p,const char*,int)
 {
 	vhwd::MemPoolPaging::current().deallocate(p);
 }
@@ -272,32 +276,11 @@ VHWD_LEAVE
 
 #if defined(VHWD_MEMDEBUG) || defined(VHWD_MEMUSEPOOL)
 
-void* operator new[](size_t nSize)
-{
-	return vhwd::MemPool::current().allocate(nSize,NULL,-1);
-}
 
-void* operator new(size_t nSize,const char* sFile,long nLine)
-{
-	return vhwd::MemPool::current().allocate(nSize,sFile,nLine);
-}
 
-void* operator new[](size_t nSize,const char* sFile,long nLine)
-{
-	return vhwd::MemPool::current().allocate(nSize,sFile,nLine);
-}
-
-void operator delete(void* p,const char*,long)
-{
-	vhwd::MemPool::current().deallocate(p);
-}
-void operator delete[](void* p,const char*,long)
-{
-	vhwd::MemPool::current().deallocate(p);
-}
 void* operator new(size_t nSize)
 {
-	return vhwd::MemPool::current().allocate(nSize,NULL,-1);
+	return vhwd::MemPool::current().allocate(nSize);
 }
 
 void operator delete(void* p)
@@ -305,7 +288,52 @@ void operator delete(void* p)
 	vhwd::MemPool::current().deallocate(p);
 }
 
+void* operator new(size_t nSize,const char* sFile,int nLine)
+{
+	return vhwd::MemPool::current().allocate(nSize,sFile,nLine);
+}
+
+void operator delete(void* p,const char*,int)
+{
+	vhwd::MemPool::current().deallocate(p);
+}
+
+void* operator new(size_t nSize,int,const char* sFile,int nLine)
+{
+	return vhwd::MemPool::current().allocate(nSize,sFile,nLine);
+}
+
+void operator delete(void* p,int,const char*,int)
+{
+	vhwd::MemPool::current().deallocate(p);
+}
+
+void* operator new[](size_t nSize)
+{
+	return vhwd::MemPool::current().allocate(nSize);
+}
+
 void operator delete[](void* p)
+{
+	vhwd::MemPool::current().deallocate(p);
+}
+
+void* operator new[](size_t nSize,const char* sFile,int nLine)
+{
+	return vhwd::MemPool::current().allocate(nSize,sFile,nLine);
+}
+
+void operator delete[](void* p,const char*,int)
+{
+	vhwd::MemPool::current().deallocate(p);
+}
+
+void* operator new[](size_t nSize,int,const char* sFile,int nLine)
+{
+	return vhwd::MemPool::current().allocate(nSize,sFile,nLine);
+}
+
+void operator delete[](void* p,int,const char*,int)
 {
 	vhwd::MemPool::current().deallocate(p);
 }

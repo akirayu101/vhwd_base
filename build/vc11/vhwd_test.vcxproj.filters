@@ -7,9 +7,6 @@
     <ClCompile Include="..\..\test\test_collection.cpp">
       <Filter>tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\test\test_iocp.cpp">
-      <Filter>tests</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\test\test_serializer.cpp">
       <Filter>tests</Filter>
     </ClCompile>
@@ -20,7 +17,7 @@
       <Filter>tests</Filter>
     </ClCompile>
     <ClCompile Include="..\..\test\appmain.cpp" />
-    <ClCompile Include="..\..\test\test_memory.cpp">
+    <ClCompile Include="..\..\test\test_iocp.cpp">
       <Filter>tests</Filter>
     </ClCompile>
   </ItemGroup>

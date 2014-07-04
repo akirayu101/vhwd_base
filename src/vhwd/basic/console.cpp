@@ -1,8 +1,11 @@
 #include "vhwd/basic/console.h"
 #include "vhwd/basic/string.h"
-#include "vhwd/threading/thread_spin.h"
-#include "vhwd/threading/thread_mutex.h"
 #include "vhwd/basic/lockguard.h"
+
+
+#ifdef _WIN32
+#include "windows.h"
+#endif
 
 #include <cstdio>
 #include <iostream>
@@ -10,7 +13,7 @@
 VHWD_ENTER
 
 int g_cConsoleColor=Console::COLOR_D;
-AtomicInt32 g_tSpinConsole;
+AtomicSpin g_tSpinConsole;
 
 void ConsoleDoSetColor(int color)
 {
@@ -48,7 +51,7 @@ void ConsoleDoSetColor(int color)
 
 void Console::SetColor(int color)
 {
-	LockGuard<AtomicInt32> lock(g_tSpinConsole);
+	LockGuard<AtomicSpin> lock(g_tSpinConsole);
 	ConsoleDoSetColor(color);
 }
 
@@ -56,20 +59,20 @@ void Console::SetColor(int color)
 
 void Console::Write(const String& s)
 {
-	LockGuard<AtomicInt32> lock(g_tSpinConsole);
+	LockGuard<AtomicSpin> lock(g_tSpinConsole);
 	std::cout<<s;
 }
 
 void Console::WriteLine(const String& s)
 {
-	LockGuard<AtomicInt32> lock(g_tSpinConsole);
+	LockGuard<AtomicSpin> lock(g_tSpinConsole);
 	std::cout<<s<<std::endl;
 }
 
 
 void Console::Write(const String& s,int color)
 {
-	LockGuard<AtomicInt32> lock(g_tSpinConsole);
+	LockGuard<AtomicSpin> lock(g_tSpinConsole);
 	int oldcr=g_cConsoleColor;
 	ConsoleDoSetColor(color);
 	std::cout<<s;
@@ -78,7 +81,7 @@ void Console::Write(const String& s,int color)
 
 void Console::WriteLine(const String& s,int color)
 {
-	LockGuard<AtomicInt32> lock(g_tSpinConsole);
+	LockGuard<AtomicSpin> lock(g_tSpinConsole);
 	int oldcr=g_cConsoleColor;
 	ConsoleDoSetColor(color);
 	std::cout<<s<<std::endl;

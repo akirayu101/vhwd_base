@@ -11,8 +11,8 @@ StringBuffer<T>::StringBuffer(const T* p1)
 	assign(p1,std::char_traits<T>::length(p1));
 }
 
-template<typename T>
-class StringBufferHelper
+template<typename T,unsigned N>
+class StringBufferHelperN
 {
 public:
 	static void equal(StringBuffer<T>& h,const String& o)
@@ -28,30 +28,11 @@ public:
 	}
 };
 
-template<>
-class StringBufferHelper<char>
+
+template<typename T>
+class StringBufferHelperN<T,1>
 {
 public:
-	typedef char T;
-
-	static void equal(StringBuffer<T>& h,const String& o)
-	{
-		h.assign(o.c_str(),o.size());
-	}
-
-	static void eqadd(StringBuffer<T>& h,const String& o)
-	{
-		h.append(o.c_str(),o.size());
-	}
-};
-
-
-template<>
-class StringBufferHelper<unsigned char>
-{
-public:
-	typedef unsigned char T;
-
 	static void equal(StringBuffer<T>& h,const String& o)
 	{
 		h.assign((T*)o.c_str(),o.size());
@@ -61,6 +42,15 @@ public:
 	{
 		h.append((T*)o.c_str(),o.size());
 	}
+};
+
+
+
+template<typename T>
+class StringBufferHelper : public StringBufferHelperN<T,sizeof(T)>
+{
+public:
+
 };
 
 
@@ -99,10 +89,12 @@ bool StringBuffer<T>::save(const String& file,int type)
 
 	File ofs;
 
-	if(!ofs.Open(file,FileAccess::FLAG_WR))
+	if(!ofs.Open(file,FileAccess::FLAG_WR|FileAccess::FLAG_CR))
 	{
 		return false;
 	}
+
+	ofs.Truncate(0);
 
 	switch(type)
 	{
@@ -150,7 +142,7 @@ bool StringBuffer<T>::save(const String& file,int type)
 				if(!IConv::unicode_to_utf8(sb,data(),size()))
 				{
 					return false;
-				}				
+				}
 			}
 
 			if(writebom)
@@ -239,11 +231,11 @@ bool StringBuffer<T>::load(const String& file,int type)
 		size_t size=sz/sizeof(T);
 		resize(size);
 		ifs.Read((char*)data(),sz);
-		
+
 		return true;
 
 	}
-	
+
 
 	unsigned char bom[4]={1,1,1,1};
 	ifs.Read((char*)bom,4);
@@ -314,7 +306,7 @@ bool StringBuffer<T>::load(const String& file,int type)
 		{
 			return false;
 		}
-	
+
 	}
 	else if( (bom[0]==0xFF && bom[1]==0xFE && bom[2]==0 && bom[3]==0)||(bom[0]==0 && bom[1]==0 && bom[2]==0xFE && bom[3]==0xFF))
 	{
@@ -416,6 +408,31 @@ bool StringBuffer<T>::load(const String& file,int type)
 }
 
 
+template<typename T>
+T* StringBuffer<T>::c_str()
+{
+	if(!m_ptr)
+	{
+		this->reserve(1);
+	}
+
+	m_ptr[size()]=T();
+	return m_ptr;
+}
+
+
+
+template<typename T>
+const T* StringBuffer<T>::c_str() const
+{
+	if(!m_ptr)
+	{
+		return (const T*)const_empty_buffer;
+	}
+
+	((T*)m_ptr)[size()]=T();
+	return m_ptr;
+}
 
 
 

@@ -212,70 +212,109 @@ bool Semaphore::wait_until(const TimePoint& tp)
 	return ThreadImpl_detail::sem_timedwait(*this,(tp-Clock::now()).GetMilliSeconds());
 }
 
-Event::Event(bool v)
+Event::Event()
 {
-	m_nValue=v?1:0;
+#ifdef _WIN32
+	hEvent=::CreateEvent(NULL,FALSE,FALSE,NULL);
+#endif
 }
 
 Event::Event(const Event&)
 {
-
+#ifdef _WIN32
+	hEvent=::CreateEvent(NULL,FALSE,TRUE,NULL);
+#endif
 }
 
 
 void Event::reset()
 {
-	m_nValue=0;
+#ifdef _WIN32
+	::ResetEvent(hEvent);
+#else
+	m_nValue.store(0);
+#endif
+
 }
 
 void Event::set()
 {
+#ifdef _WIN32
+	::SetEvent(hEvent);
+#else
+	if(m_nValue.get()!=0) return;
+
 	LockGuard<Mutex> lock1(m_tMutex);
-	m_nValue=1;
+	m_nValue.store(1);
 	m_tCond.notify_all();
+#endif
 }
 
 void Event::wait()
 {
-	if(m_nValue!=0) return;
+#ifdef _WIN32
+	::WaitForSingleObject(hEvent,INFINITE);
+#else
+	if(m_nValue.get()!=0) return;
 	LockGuard<Mutex> lock1(m_tMutex);
-	if(m_nValue==0)
+	if(m_nValue.get()==0)
 	{
 		m_tCond.wait(m_tMutex);
 	}
+#endif
 }
 
 bool Event::wait_for(int ms)
 {
-	if(m_nValue!=0) return true;
+#ifdef _WIN32
+
+	DWORD rc=::WaitForSingleObject(hEvent,ms);
+	if(rc==WAIT_TIMEOUT)
+	{
+		return false;
+	}
+	return true;
+
+#else
+	if(m_nValue.get()!=0) return true;
 	LockGuard<Mutex> lock1(m_tMutex);
-	if(m_nValue==0)
+	if(m_nValue.get()==0)
 	{
 		m_tCond.wait_for(m_tMutex,ms);
 	}
-	return m_nValue!=0;
+	return m_nValue.get()!=0;
+#endif
+
 }
 
 bool Event::wait_for(const TimeSpan& ts)
 {
-	if(m_nValue!=0) return true;
+#ifdef _WIN32
+	return wait_for(ts.GetMilliSeconds());
+#else
+	if(m_nValue.get()!=0) return true;
 	LockGuard<Mutex> lock1(m_tMutex);
-	if(m_nValue==0)
+	if(m_nValue.get()==0)
 	{
 		m_tCond.wait_for(m_tMutex,ts);
 	}
-	return m_nValue!=0;
+	return m_nValue.get()!=0;
+#endif
 }
 
 bool Event::wait_until(const TimePoint& tp)
 {
-	if(m_nValue!=0) return true;
+#ifdef _WIN32
+	return wait_for(tp-Clock::now());
+#else
+	if(m_nValue.get()!=0) return true;
 	LockGuard<Mutex> lock1(m_tMutex);
-	if(m_nValue==0)
+	if(m_nValue.get()==0)
 	{
 		m_tCond.wait_until(m_tMutex,tp);
 	}
-	return m_nValue!=0;
+	return m_nValue.get()!=0;
+#endif
 }
 
 Event::~Event()

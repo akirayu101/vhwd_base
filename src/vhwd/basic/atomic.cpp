@@ -1,18 +1,18 @@
 
 #include "vhwd/basic/atomic.h"
-#include "vhwd/threading/thread.h"
+#include "vhwd/basic/lockguard.h"
+#include <cstdlib>
 
 #ifdef _WIN32
 #include <windows.h>
+#else
+#include <sched.h>
 #endif
 
 #ifdef _MSC_VER
 #pragma warning(disable:4146)
 #include "intrin.h"
 #endif
-
-
-//#include <atomic>
 
 VHWD_ENTER
 
@@ -84,6 +84,8 @@ public:
 
 };
 
+#ifndef VHWD_NO64BIT_ATOMIC
+
 template<typename T>
 class AtomicImpl<T,8>
 {
@@ -146,6 +148,7 @@ public:
 	}
 };
 
+#endif
 
 template<typename T>
 T AtomicIntT<T>::fetch_add(T v)
@@ -316,12 +319,19 @@ T AtomicIntT<T>::load() const
 
 void AtomicSpin::noop()
 {
-	Thread::yield();
+#ifdef _WIN32
+	_sleep(0);
+#else
+	sched_yield();
+#endif
 }
 
 template class AtomicIntT<int32_t>;
-template class AtomicIntT<int64_t>;
 template class AtomicIntT<uint32_t>;
+
+#ifndef VHWD_NO64BIT_ATOMIC
+template class AtomicIntT<int64_t>;
 template class AtomicIntT<uint64_t>;
+#endif
 
 VHWD_LEAVE

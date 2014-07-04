@@ -9,6 +9,7 @@
 #ifndef __H_VHWD_CONFIG__
 #define __H_VHWD_CONFIG__
 
+#include "tl.h"
 
 // enable c++11
 //#define VHWD_C11
@@ -18,6 +19,9 @@
 
 // use MemPoolPaging as default memory allocator
 //#define VHWD_MEMUSEPOOL
+
+
+//#define VHWD_NO64BIT_ATOMIC 1
 
 #if !defined(_WIN32) || defined(_MSC_VER)
 #define VHWD_USE_COROUTINE
@@ -35,8 +39,8 @@
 		#define VHWD_IMPORT __attribute__((dllimport))
 	#endif
 #else
-		#define VHWD_EXPORT
-		#define VHWD_IMPORT
+	#define VHWD_EXPORT
+	#define VHWD_IMPORT
 #endif
 
 #ifdef _MSC_VER
@@ -53,6 +57,9 @@
 
 #ifdef _MSC_VER
 
+	typedef signed char int8_t;
+	typedef unsigned char uint8_t;
+
 	typedef short int16_t;
 	typedef unsigned short uint16_t;
     typedef int int32_t;
@@ -60,8 +67,7 @@
 	typedef __int64 int64_t;
 	typedef unsigned __int64 uint64_t;
 
-	//typedef long long int64_t;
-	//typedef unsigned long long uint64_t;
+	typedef tl::meta_if<sizeof(void*)==4,int32_t,int64_t>::type intptr_t;
 
 	#define WIN32_LEAN_AND_MEAN
 	#define NOMINMAX
@@ -84,23 +90,26 @@ typedef double float64_t;
 #define _hT(x) TRANSLATE(x)
 #endif
 
-#include "tl.h"
-
-#include <cstdarg>
-#include <cstdlib>
-#include <clocale>
-#include <memory>
+//#include <cstdarg>
+//#include <cstdlib>
+//#include <clocale>
+//#include <memory>
 
 #if defined(VHWD_MEMDEBUG) || defined(VHWD_MEMUSEPOOL)
 
 void* operator new(size_t);
+void* operator new(size_t,const char*,int);
+void* operator new(size_t,int,const char*,int);
 void* operator new[](size_t);
-void* operator new(size_t,const char*,long);
-void* operator new[](size_t,const char*,long);
-void operator delete(void*,const char*,long);
-void operator delete[](void*,const char*,long);
+void* operator new[](size_t,const char*,int);
+void* operator new[](size_t,int,const char*,int);
+
 void operator delete(void*);
+void operator delete(void*,const char*,int);
+void operator delete(void*,int,const char*,int);
 void operator delete[](void*);
+void operator delete[](void*,const char*,int);
+void operator delete[](void*,int,const char*,int);
 
 #endif
 
@@ -163,10 +172,10 @@ public:
 
 	static void* operator new(size_t);
 	static void* operator new[](size_t);
-	static void* operator new(size_t,const char*,long);
-	static void* operator new[](size_t,const char*,long);
-	static void operator delete(void*,const char*,long);
-	static void operator delete[](void*,const char*,long);
+	static void* operator new(size_t,const char*,int);
+	static void* operator new[](size_t,const char*,int);
+	static void operator delete(void*,const char*,int);
+	static void operator delete[](void*,const char*,int);
 	static void operator delete(void*);
 	static void operator delete[](void*);
 

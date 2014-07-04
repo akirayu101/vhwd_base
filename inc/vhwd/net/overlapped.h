@@ -105,8 +105,8 @@ public:
 	unsigned short type;
 	int32_t kcrc;
 	TimePoint stamp;
-	int32_t tags;
-	int32_t seqid;
+	int32_t tag1;
+	int32_t tag2;
 	int32_t arg1;
 	int32_t arg2;
 
@@ -122,7 +122,8 @@ public:
 class VHWD_DLLIMPEXP IPacketEx : public IPacket
 {
 public:
-	char data[VHWD_MAX_PACKET_SIZE-sizeof(IPacket)];
+	static const int extra_size=VHWD_MAX_PACKET_SIZE-sizeof(IPacket);
+	char data[extra_size];
 };
 
 
@@ -220,8 +221,15 @@ public:
 	TimePoint	tTimeStamp;
 	AtomicInt32 nSendCount;
 	AtomicInt32 nRecvCount;
+
+#ifndef VHWD_NO64BIT_ATOMIC
 	AtomicInt64 nSendBytes;
 	AtomicInt64 nRecvBytes;
+#else
+	AtomicInt32 nSendBytes;
+	AtomicInt32 nRecvBytes;
+#endif
+
 	AtomicInt32 nSessionCount;
 };
 

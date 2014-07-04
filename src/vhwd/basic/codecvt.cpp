@@ -24,16 +24,7 @@ void GBKTable_init()
 		size_t b2=(i%gbk_ke2)+0x40;
 		if(b2>0x7E) b2=b2+1;
 		uint16_t bp=b1+b2*256;
-/*
-		uint16_t val1=g_gkb_table[i];
-		uint16_t val2;
-		int wl=::MultiByteToWideChar(CP_ACP,0,(char*)&bp,2,(wchar_t*)&val2,1);
-		if(val1!=val2)
-		{
-			val1=val1;
-			g_gkb_table[i]=val1;
-		}
-*/
+
 		g_uni_table[g_gkb_table[i]]=bp;
 	}
 }

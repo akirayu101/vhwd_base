@@ -1,7 +1,7 @@
 
 #include "vhwd/testing/test.h"
 #include "vhwd/basic.h"
-
+#include <time.h>
 
 using namespace vhwd;
 

@@ -2,6 +2,10 @@
 
 VHWD_ENTER
 
-StringPool::char_type* StringPool::gpEmptyString=(char_type*)"\0\0\0";
+void GBKTable_init();
+StringPool::StringPool():pool(MyPool::current())
+{
+	GBKTable_init();
+}
 
 VHWD_LEAVE

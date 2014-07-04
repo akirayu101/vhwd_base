@@ -93,6 +93,18 @@ bool Session::IsError()
 	return state.get()==STATE_DISCONNECT;
 }
 
+bool Session::TestTimeout(TimePoint& tp,MyOlapPtr&)
+{
+	if(tp-tpLast>tsTimeout)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 void Session::Disconnect()
 {
 

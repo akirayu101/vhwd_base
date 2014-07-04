@@ -1,7 +1,6 @@
-#include "vhwd/threading/thread_mutex.h"
 #include "vhwd/basic/lockguard.h"
-
 #include "vhwd/basic/clock.h"
+#include "vhwd/basic/atomic.h"
 
 #include <ctime>
 
@@ -56,9 +55,9 @@ TimePoint& TimePoint::operator+=(const TimeSpan& span)
 	return *this;
 }
 
-static Mutex& get_time_mutex()
+static AtomicSpin& get_time_mutex()
 {
-	static StaticObjectWithoutDeletorT<Mutex> m;
+	static StaticObjectWithoutDeletorT<AtomicSpin> m;
 	return m;
 }
 
@@ -204,7 +203,7 @@ bool TimeDetail::Parse(const TimePoint& tp_,int t)
 	tp=tp_;
 	time_t tt=tp.val/1000000;
 
-	LockGuard<Mutex> lck(get_time_mutex());
+	LockGuard<AtomicSpin> lck(get_time_mutex());
 	struct tm* pk;
 	if(t==UTC)
 	{

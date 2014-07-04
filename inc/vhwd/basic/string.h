@@ -9,6 +9,7 @@
 #define __H_VHWD_STRING__
 
 #include <cstring>
+#include <cstdarg>
 
 #include "vhwd/config.h"
 #include "vhwd/basic/language.h"
@@ -218,6 +219,7 @@ inline const char* StringParamCast::g(const String& v)
 	return v.c_str();
 }
 
+VHWD_DLLIMPEXP extern const char const_empty_buffer[64];
 
 VHWD_LEAVE
 

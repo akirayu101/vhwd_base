@@ -110,6 +110,9 @@ class ObjectT : public B
 public:
 	typedef T obj_type;
 
+	ObjectT(){}
+	ObjectT(T* p):m_refData(p){}
+
 	inline void SetData(T* d)
 	{
 		m_refData.reset(d);
@@ -129,6 +132,34 @@ protected:
 	DataPtrT<T> m_refData;
 };
 
+
+template<typename T>
+class ObjectT<T,void>
+{
+public:
+	typedef T obj_type;
+
+	ObjectT(){}
+	ObjectT(T* p):m_refData(p){}
+
+	inline void SetData(T* d)
+	{
+		m_refData.reset(d);
+	}
+
+	inline T* GetData()
+	{
+		return m_refData.get();
+	}
+
+	inline const T* GetData() const
+	{
+		return m_refData.get();
+	}
+
+protected:
+	DataPtrT<T> m_refData;
+};
 
 #define VHWD_BASEPTRT_REL_OP(X) \
 template<typename T,typename P1,typename P2>\

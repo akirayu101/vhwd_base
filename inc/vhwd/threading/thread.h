@@ -229,26 +229,6 @@ protected:
 };
 
 
-template<typename T>
-class LockPolicyYield
-{
-public:
-
-	static inline void lock(T& mtx)
-	{
-		while(mtx.exchange(1)!=0)
-		{
-			Thread::yield();
-		}
-	}
-
-	static inline void unlock(T& mtx)
-	{
-		wassert(mtx.get()==1);
-		mtx.store(0);
-	}
-};
-
 VHWD_LEAVE
 
 #endif

@@ -153,6 +153,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MinimalRebuild>true</MinimalRebuild>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -183,7 +184,7 @@
       <AdditionalIncludeDirectories>..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>VHWD_BUILDING;%(PreprocessorDefinitions);VHWD_MEMDEBUG</PreprocessorDefinitions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <PrecompiledHeaderFile>
@@ -403,6 +404,7 @@
     <ClCompile Include="..\..\src\vhwd\collection\collection.cpp" />
     <ClCompile Include="..\..\src\vhwd\ipc\pipe.cpp" />
     <ClCompile Include="..\..\src\vhwd\ipc\shm.cpp" />
+    <ClCompile Include="..\..\src\vhwd\memory\mempool_malloc.cpp" />
     <ClCompile Include="..\..\src\vhwd\net\overlapped.cpp" />
     <ClCompile Include="..\..\src\vhwd\net\iocp1.cpp" />
     <ClCompile Include="..\..\src\vhwd\net\session.cpp" />
@@ -441,6 +443,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\inc\vhwd\basic\file.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic\lockguard.h" />
     <ClInclude Include="..\..\inc\vhwd\collection.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\array.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\linear_buffer.h" />

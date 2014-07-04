@@ -187,6 +187,9 @@ void IOCPPool::ccc_handle_sock()
 {
 	accounter.tTimeStamp=Clock::now();
 
+	Session::MyOlapPtr q(Session::lkfq_free.getq());
+	if(!q) q.reset(new MyOverLappedEx);
+
 	for(int i=1;i<m_nSessionMax;i++)
 	{
 		Session* pkey=m_aSessions[i].get();
@@ -196,7 +199,7 @@ void IOCPPool::ccc_handle_sock()
 		switch(s)
 		{
 		case Session::STATE_OK:
-			if(accounter.tTimeStamp-pkey->tpLast>pkey->tsTimeout) //timeout
+			if(pkey->TestTimeout(accounter.tTimeStamp,q)) //timeout
 			{
 				pkey->Disconnect();
 			}

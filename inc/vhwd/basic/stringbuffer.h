@@ -30,10 +30,10 @@ enum
 
 
 template<typename T>
-class VHWD_DLLIMPEXP StringBuffer : public arr_1t<T,AllocatorUsePool<T,MemPoolPaging> >
+class VHWD_DLLIMPEXP StringBuffer : public arr_1t<T,AllocatorUsePool<T,MemPoolPaging,1> >
 {
 public:
-	typedef arr_1t<T,AllocatorUsePool<T,MemPoolPaging> > basetype;
+	typedef arr_1t<T,AllocatorUsePool<T,MemPoolPaging,1> > basetype;
 	typedef typename basetype::size_type size_type;
 
 	using basetype::assign;
@@ -64,6 +64,13 @@ public:
 	bool load(const String& file,int t=FILE_TEXT);
 	bool save(const String& file,int t=FILE_TEXT);
 
+	T* c_str();
+	const T* c_str() const;
+
+protected:
+
+	using basetype::m_ptr;
+	using basetype::extra;
 };
 
 

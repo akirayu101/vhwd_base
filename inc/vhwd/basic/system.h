@@ -37,6 +37,13 @@ public:
 
 	static void CheckError(const String& s);
 
+	static void Update();
+
+	static int64_t GetMemTotalPhys();
+	static int64_t GetMemAvailPhys();
+	static int64_t GetMemTotalVirtual();
+	static int64_t GetMemAvailVirtual();
+
 
 	#define STRING_FORMAT_LEVEL(X,Y) DoLogImpl(Y,X)
 

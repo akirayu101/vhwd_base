@@ -47,23 +47,6 @@ public:
 		return index_type(-1);
 	}
 
-	//static size_t chunk_erase(const key_type& k,chunk_type& chunk,value_array& value)
-	//{
-	//	for(size_t i=0;i<chunk.size();i++)
-	//	{
-	//		index_type id=chunk[i];
-	//		if(compare(k,value[id]))
-	//		{
-	//			std::swap(value[id],value.back());
-	//			value.pop_back();
-	//			std::swap(chunk[i],chunk.back());
-	//			chunk.pop_back();
-	//			return  1;
-	//		}
-	//	}
-	//	return 0;
-	//}
-
 	static size_t chunk_erase(chunk_type& chunk,index_type id)
 	{
 		for(size_t i=0;i<chunk.size();i++)
@@ -83,13 +66,11 @@ public:
 		chunk.push_back(id);
 	}
 
-
 	static int32_t hashcode_key(const key_type &k)
 	{
 		hash_t<key_type> h;
 		return h(k);
 	}
-
 	static bool compare(const key_type& k,const pair_type& v)
 	{
 		return k==v;
@@ -137,23 +118,6 @@ public:
 	{
 		chunk.push_back(id);
 	}
-
-	//static size_t chunk_erase(const key_type& k,chunk_type& chunk,value_array& value)
-	//{
-	//	for(size_t i=0;i<chunk.size();i++)
-	//	{
-	//		index_type id=chunk[i];
-	//		if(compare(k,value[id]))
-	//		{
-	//			std::swap(value[id],value.back());
-	//			value.pop_back();
-	//			std::swap(chunk[i],chunk.back());
-	//			chunk.pop_back();
-	//			return  1;
-	//		}
-	//	}
-	//	return 0;
-	//}
 
 	static size_t chunk_erase(chunk_type& chunk,index_type id)
 	{
@@ -211,7 +175,7 @@ public:
 	typedef typename P::chunk_type chunk_type;
 
 	typedef typename value_array::const_iterator const_iterator;
-
+	typedef typename value_array::iterator iterator;
 
 	indexer_impl()
 	{
@@ -219,21 +183,10 @@ public:
 		rehash(128);
 	}
 
-	//static index_type chunk_find(const key_type& k,const chunk_type& chunk,const value_array& value)
-	//{
-	//	for(size_t i=0;i<chunk.size();i++)
-	//	{
-	//		index_type id=chunk[i];
-	//		if(P::compare(k,value[id]))
-	//		{
-	//			return  id;
-	//		}
-	//	}
-	//	return index_type(-1);
-	//}
-
 	const_iterator begin() const {return values.begin();}
 	const_iterator end() const{return values.end();}
+	iterator begin() {return values.begin();}
+	iterator end() {return values.end();}
 
 	index_type find(const key_type& k) const
 	{
@@ -264,7 +217,7 @@ public:
 			return 0;
 		}
 
-		if(id1+1==values.size())
+		if((size_t)id1+1==values.size())
 		{
 			P::chunk_erase(chunk1,id1);
 			values.pop_back();
@@ -318,7 +271,7 @@ public:
 		size_t hk=P::hashcode_key(k);
 		size_t cp=hk&m_nBucketMask;
 		chunk_type& chunk(buckets[cp]);
-		index_type id=chunk_find(k,chunk,values);
+		index_type id=P::chunk_find(k,chunk,values);
 
 		if(id!=index_type(-1))
 		{

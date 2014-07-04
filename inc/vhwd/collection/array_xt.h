@@ -43,6 +43,12 @@ public:
 	arr_xt& operator=(arr_xt&& p){swap(p);return *this;}
 #endif
 
+	iterator begin(){return m_ptr;}
+	iterator end(){return m_ptr+extra().size;}
+
+	const_iterator begin() const {return m_ptr;}
+	const_iterator end() const {return m_ptr+extra().size;}
+
 	arr_xt& operator=(const arr_xt& o);
 
 	void resize(size_type k0,size_type k1=1,size_type k2=1,size_type k3=1,size_type k4=1,size_type k5=1);

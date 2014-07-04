@@ -139,15 +139,7 @@ size_t String::length() const
 {
 	return ::strlen(m_pStr);
 }
-/*
-#ifdef _MINGW
-    int vsnprintf(char* dst,size_t n,const char* s,va_list arglist)
-    {
-        vsprintf(dst,s,arglist);
-        return 0;
-    }
-#endif
-*/
+
 
 void String_FormatV_internal(String& ret,const char* s,va_list arglist)
 {
@@ -273,8 +265,6 @@ String& String::operator=(const String& p)
 
 String& String::operator=(const wchar_t* p)
 {
-	//(*this)=CodeCvt<wchar_t>::ws2s(p);
-
 	StringBuffer<char> sb;
 	IConv::unicode_to_ansi(sb,p,std::char_traits<wchar_t>::length(p));
 	(*this)=sb;
@@ -301,8 +291,6 @@ String& String::operator+=(const String& p)
 
 String& String::operator+=(const wchar_t* p)
 {
-	//(*this)+=CodeCvt<wchar_t>::ws2s(p);
-
 	StringBuffer<char> sb;
 	IConv::unicode_to_ansi(sb,p,std::char_traits<wchar_t>::length(p));
 	(*this)+=sb;
@@ -422,8 +410,6 @@ String& String::operator<<(const char* v)
 
 String& String::operator<<(const wchar_t* p)
 {
-	//(*this)+=CodeCvt<wchar_t>::ws2s(v);
-
 	StringBuffer<char> sb;
 	IConv::unicode_to_ansi(sb,p,std::char_traits<wchar_t>::length(p));
 	(*this)+=sb;
@@ -448,214 +434,6 @@ String& String::operator<<(const StringBuffer<unsigned char>& o)
 	append((char*)o.data(),o.size());
 	return *this;
 }
-//
-//#ifndef _WIN32
-//
-//String String::ansi_to_utf8(const String& o)
-//{
-//	return o;
-//}
-//
-//String String::utf8_to_ansi(const String& o)
-//{
-//	return o;
-//}
-//
-//String String::ansi_to_utf8(const char* o,size_t s)
-//{
-//	return String(o,s);
-//}
-//
-//String String::utf8_to_ansi(const char* o,size_t s)
-//{
-//	return String(o,s);
-//}
-//
-//
-//bool String::ansi_to_utf8(StringBuffer<char>& o,const char* p1,size_t ln)
-//{
-//	o.resize(ln);
-//	if(ln>0) memcpy(&o[0],p1,ln);
-//	return true;
-//}
-//
-//bool String::utf8_to_ansi(StringBuffer<char>& o,const char* p1,size_t ln)
-//{
-//	o.resize(ln);
-//	if(ln>0) memcpy(&o[0],p1,ln);
-//	return true;
-//}
-//
-//bool String::ansi_to_utf8(StringBuffer<char>& o,StringBuffer<char>& s)
-//{
-//	if(&o==&s) return true;
-//	return ansi_to_utf8(o,s.data(),s.size());
-//}
-//
-//bool String::utf8_to_ansi(StringBuffer<char>& o,StringBuffer<char>& s)
-//{
-//	if(&o==&s) return true;
-//	return utf8_to_ansi(o,s.data(),s.size());
-//}
-//
-//bool String::wstr_to_utf8(StringBuffer<char>& va,StringBuffer<wchar_t>& vh)
-//{
-//	return CodeCvt<wchar_t>::ws2s(va,vh.data(),vh.size());
-//}
-//
-//bool String::utf8_to_wstr(StringBuffer<wchar_t>& vh,StringBuffer<char>& o)
-//{
-//	return CodeCvt<wchar_t>::s2ws(vh,o.data(),o.size());
-//}
-//
-//#else
-//
-//bool String::wstr_to_utf8(StringBuffer<char>& va,StringBuffer<wchar_t>& vh)
-//{
-//	if(vh.empty())
-//	{
-//		va.resize(0);
-//		return true;
-//	}
-//
-//	va.resize(vh.size()*3+1);
-//	int wl=::WideCharToMultiByte(CP_UTF8,0,&vh[0],vh.size(),&va[0],va.size(),NULL,NULL);
-//	va.resize(wl);
-//
-//	if(wl<=0)
-//	{
-//		vh.resize(0);
-//		System::CheckError("wstr_to_utf8");
-//		return false;
-//	}
-//	vh.resize(wl);
-//	return true;
-//}
-//
-//bool String::utf8_to_wstr(StringBuffer<wchar_t>& vh,StringBuffer<char>& va)
-//{
-//	if(va.empty())
-//	{
-//		vh.resize(0);
-//		return true;
-//	}
-//
-//	char* p1=va.data();size_t ln=va.size();
-//	vh.resize(ln+1);
-//	int wl=MultiByteToWideChar(CP_UTF8,0,p1,ln,&vh[0],vh.size());
-//
-//	if(wl<=0)
-//	{
-//		vh.resize(0);
-//		System::CheckError("utf8_to_wstr");
-//		return false;
-//	}
-//	vh.resize(wl);
-//	return true;
-//}
-//
-//bool String::ansi_to_utf8(StringBuffer<char>& o,StringBuffer<char>& s)
-//{
-//	return ansi_to_utf8(o,s.data(),s.size());
-//}
-//
-//bool String::utf8_to_ansi(StringBuffer<char>& o,StringBuffer<char>& s)
-//{
-//	return utf8_to_ansi(o,s.data(),s.size());
-//}
-//
-//bool String::ansi_to_utf8(StringBuffer<char>& va,const char* p1,size_t ln)
-//{
-//	if(ln==0)
-//	{
-//		va.resize(0);
-//		return true;
-//	}
-//
-//	StringBuffer<wchar_t> vh;
-//	if(!CodeCvt<wchar_t>::s2ws(vh,p1,ln))
-//	{
-//		return false;
-//	}
-//
-//	va.resize(vh.size()*3+1);
-//	int wl=::WideCharToMultiByte(CP_UTF8,0,&vh[0],vh.size(),&va[0],va.size(),NULL,NULL);
-//
-//	if(wl<=0)
-//	{
-//		va.resize(0);
-//		System::CheckError(String::Format("ansi_to_utf8:%s",p1));
-//		return false;
-//	}
-//
-//	va[wl]='\0';
-//	va.resize(wl);
-//	return true;;
-//}
-//
-//bool String::utf8_to_ansi(StringBuffer<char>& va,const char* p1,size_t ln)
-//{
-//
-//	StringBuffer<wchar_t> vh;
-//	vh.resize(ln+1);
-//	int wl=MultiByteToWideChar(CP_UTF8,0,p1,ln,&vh[0],vh.size());
-//	if(wl<=0)
-//	{
-//		System::CheckError(String::Format("utf8_to_ansi:%s",p1));
-//		va.resize(0);
-//		return false;
-//	}
-//
-//	return CodeCvt<wchar_t>::ws2s(va,&vh[0],wl);
-//}
-//
-//
-//String String::ansi_to_utf8(const char* o,size_t s)
-//{
-//	StringBuffer<char> va;
-//	if(ansi_to_utf8(va,o,s))
-//	{
-//		return va;
-//	}
-//	else
-//	{
-//		System::LogTrace("ansi_to_utf8 failed:%s",o);
-//		return "???";
-//	}
-//
-//}
-//
-//String String::ansi_to_utf8(const String& o)
-//{
-//	return ansi_to_utf8(o.c_str(),o.size());
-//}
-//
-//String String::utf8_to_ansi(const char* o,size_t s)
-//{
-//	if(s==0) return "";
-//
-//	StringBuffer<char> va;
-//	if(utf8_to_ansi(va,o,s))
-//	{
-//		return va;
-//	}
-//	else
-//	{
-//		System::LogTrace("utf8_to_ansi failed:%s",o);
-//		return "???";
-//	}
-//}
-//
-//String String::utf8_to_ansi(const String& o)
-//{
-//	return utf8_to_ansi(o.c_str(),o.size());
-//}
-//
-//
-//
-//#endif
-
-
 
 String String::substr(size_t pos,size_t len) const
 {
@@ -663,7 +441,6 @@ String String::substr(size_t pos,size_t len) const
 	String s(m_pStr+pos,std::min(len,size()-pos));
 	return s;
 }
-
 
 int String::replace(char c1,char c2)
 {
@@ -676,7 +453,7 @@ int String::replace(char c1,char c2)
 			sb[i]=c2;n++;
 		}
 	}
-	//std::replace(sb.begin(),sb.end(),c1,c2);
+
 	(*this)=sb;
 	return n;
 }
@@ -712,5 +489,6 @@ int String::replace(const String& c1,const String& c2)
 	return n;
 }
 
+const char const_empty_buffer[64]={0};
 
 VHWD_LEAVE

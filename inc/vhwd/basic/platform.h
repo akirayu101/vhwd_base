@@ -15,6 +15,8 @@
 #include "windows.h"
 #endif
 
+#include <algorithm>
+
 VHWD_ENTER
 
 

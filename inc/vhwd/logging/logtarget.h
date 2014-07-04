@@ -77,7 +77,7 @@ public:
 
 protected:
 	FILE* fp;
-	AtomicInt32 spin;
+	AtomicSpin spin;
 };
 
 // LogFile, redirect messages to m_refData.

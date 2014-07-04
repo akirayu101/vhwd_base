@@ -12,6 +12,8 @@
 #include "vhwd/basic/platform.h"
 #include "vhwd/basic/string.h"
 #include "vhwd/basic/file.h"
+#include "vhwd/basic/bitflags.h"
+#include "vhwd/basic/pointer.h"
 
 VHWD_ENTER
 
@@ -66,6 +68,37 @@ public:
 protected:
 	impl_type impl;
 };
+
+
+
+class VHWD_DLLIMPEXP IShmMemory : public NonCopyable
+{
+public:
+
+	class IShmHeader
+	{
+	public:
+		uint64_t size;
+		AtomicInt32 state;
+		BitFlags flags;
+
+	};
+
+	~IShmMemory();
+
+protected:
+
+	bool Create(const String& name,size_t sz);
+	char* allocate(size_t s,size_t al=16);
+	void Close();
+
+	LitePtrT<IShmHeader> pHeader;
+
+	SharedMem mem;
+	size_t m_nShift;
+};
+
+
 
 VHWD_LEAVE
 #endif

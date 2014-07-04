@@ -389,4 +389,55 @@ void SharedMem::Close()
 	ShareMem_detail::shm_close(impl);
 }
 
+
+
+IShmMemory::~IShmMemory()
+{
+	Close();
+}
+
+bool IShmMemory::Create(const String& name,size_t sz)
+{
+	if(mem.Open(name,sizeof(IShmHeader)))
+	{
+		pHeader=(IShmHeader*)mem.addr();
+		sz=pHeader->size;
+		mem.Close();
+	}
+
+	m_nShift=0;
+	if(!mem.Create(name,sz))
+	{
+		return false;
+	}
+
+	pHeader=(IShmHeader*)mem.addr();
+	pHeader->size=sz;
+	return true;
+}
+
+char* IShmMemory::allocate(size_t s,size_t al)
+{
+	if(!mem.addr())
+	{
+		return NULL;
+	}
+
+	size_t kk=(m_nShift+al-1)&~(al-1);
+
+	if(kk+s>mem.size())
+	{
+		return NULL;
+	}
+
+	char* p= mem.addr()+kk;
+	m_nShift=kk+s;
+	return p;
+}
+
+void IShmMemory::Close()
+{
+	mem.Close();
+}
+
 VHWD_LEAVE

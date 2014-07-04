@@ -8,7 +8,7 @@
 #ifndef __H_VHWD_THREAD_EVENT__
 #define __H_VHWD_THREAD_EVENT__
 
-
+#include "vhwd/basic/atomic.h"
 #include "vhwd/threading/thread_cond.h"
 #include "vhwd/threading/thread_mutex.h"
 
@@ -24,7 +24,7 @@ VHWD_ENTER
 class VHWD_DLLIMPEXP Event
 {
 public:
-	Event(bool v=false);
+	Event();
 	Event(const Event&);
 	Event& operator=(const Event&){return *this;}
 
@@ -38,9 +38,15 @@ public:
 	bool wait_until(const TimePoint& tp);
 
 protected:
+
+#ifdef _WIN32
+	void* hEvent;
+#else
 	Mutex m_tMutex;
 	Condition m_tCond;
-	int m_nValue;
+	AtomicInt32 m_nValue;
+#endif
+
 };
 
 

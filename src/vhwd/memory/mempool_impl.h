@@ -1,7 +1,5 @@
 #include "vhwd/config.h"
 #include "vhwd/memory/mempool.h"
-#include "vhwd/threading/thread_spin.h"
-#include "vhwd/threading/thread.h"
 #include "vhwd/basic/lockguard.h"
 
 
@@ -38,14 +36,13 @@ public:
 class MemPageCache
 {
 public:
+
+	friend class MemPoolPaging;
+
 	static size_t nPageBits;
 	static size_t nPageSize;
 
-	static MemPageCache& current()
-	{
-		static StaticObjectWithoutDeletorT<MemPageCache> gInstance;
-		return gInstance;
-	}
+	static MemPageCache& current();
 
 
 	void append(MemPageInfo* mi);
@@ -58,9 +55,10 @@ public:
 	size_t m_nFixedSizeCount;
 	size_t m_nFixedSizeMax;
 
-	MemPageCache();
+	void _init();
 
 protected:
+	MemPageCache();
 
 	class Bucket
 	{
@@ -77,6 +75,8 @@ protected:
 
 };
 
+
+
 // FixedSizeAllocatorUnit is a fix size memory allocator unit.
 class VHWD_DLLIMPEXP FixedSizeAllocatorUnit
 {
@@ -90,9 +90,9 @@ public:
 	size_t nElemSize;
 	size_t nPageSize;
 
-	AtomicInt32 tSpin;
+	AtomicSpin tSpin;
 
-	typedef LockGuard<AtomicInt32,LockPolicyYield<AtomicInt32> > LockType;
+	typedef LockGuard<AtomicSpin> LockType;
 
 };
 
@@ -169,7 +169,7 @@ protected:
 	unsigned m_nCount;
 	unsigned m_nBreakAlloc;
 
-	SpinLock m_tSpinLink;
+	AtomicSpin m_tSpinLink;
 	ILinkList m_pMemLink;
 
 	bool m_bReportWhenExit;

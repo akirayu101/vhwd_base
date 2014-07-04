@@ -21,7 +21,7 @@
 VHWD_ENTER
 
 
-template <typename T,typename P>
+template <typename T,typename P,size_t E=0>
 class AllocatorUsePool
 {
 public:
@@ -55,7 +55,7 @@ public:
 
 	inline pointer allocate(size_type n)
 	{
-		return (T*)P::current().allocate(n*sizeof(T));
+		return (T*)P::current().allocate((n+E)*sizeof(T));
 	}
 
 	inline void deallocate(pointer p, size_type)

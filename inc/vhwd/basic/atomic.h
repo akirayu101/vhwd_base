@@ -68,6 +68,7 @@ typedef AtomicIntT<int64_t> AtomicInt64;
 typedef AtomicIntT<uint32_t> AtomicUint32;
 typedef AtomicIntT<uint64_t> AtomicUint64;
 
+
 template<typename T>
 class VHWD_DLLIMPEXP AtomicIntT<T*>
 {

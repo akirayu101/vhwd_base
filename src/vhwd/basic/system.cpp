@@ -18,9 +18,19 @@ VHWD_ENTER
 class SystemInfo
 {
 public:
+
+	int64_t m_nMemTotalPhys;
+	int64_t m_nMemAvailPhys;
+	int64_t m_nMemTotalVirtual;
+	int64_t m_nMemAvailVirtual;
+	int64_t m_nMemTotalPageFile;
+	int64_t m_nMemAvailPageFile;
+
 	int m_nCpuCount;
 	int m_nCacheLine;
 	int m_nPageSize;
+
+	void update();
 
 	static SystemInfo& current()
 	{
@@ -35,6 +45,19 @@ public:
 
 #ifdef _WIN32
 
+void SystemInfo::update()
+{
+	MEMORYSTATUSEX ms;
+	ms.dwLength=sizeof(MEMORYSTATUSEX);
+	GlobalMemoryStatusEx(&ms);
+
+	m_nMemTotalPhys=ms.ullTotalPhys;
+	m_nMemAvailPhys=ms.ullAvailPhys;
+	m_nMemTotalVirtual=ms.ullTotalVirtual;
+	m_nMemAvailVirtual=ms.ullAvailVirtual;
+	m_nMemTotalPageFile=ms.ullTotalPageFile;
+	m_nMemAvailPageFile=ms.ullAvailPageFile;
+}
 
 SystemInfo::SystemInfo()
 {
@@ -66,9 +89,15 @@ SystemInfo::SystemInfo()
 	m_nCacheLine=(int)line_size;
 #endif
 
+	update();
 }
 
 #else
+
+void SystemInfo::update()
+{
+
+}
 
 SystemInfo::SystemInfo()
 {
@@ -86,9 +115,37 @@ SystemInfo::SystemInfo()
 		fclose(p);
 	}
 
+	update();
+
 }
 
 #endif
+
+
+int64_t System::GetMemTotalPhys()
+{
+	return SystemInfo::current().m_nMemTotalPhys;
+}
+
+int64_t System::GetMemAvailPhys()
+{
+	return SystemInfo::current().m_nMemAvailPhys;
+}
+
+int64_t System::GetMemTotalVirtual()
+{
+	return SystemInfo::current().m_nMemTotalVirtual;
+}
+
+int64_t System::GetMemAvailVirtual()
+{
+	return SystemInfo::current().m_nMemAvailVirtual;
+}
+
+void System::Update()
+{
+	SystemInfo::current().update();
+}
 
 int System::GetCpuCount()
 {
@@ -163,8 +220,7 @@ void System::Exit(int v)
 
 String GetModulePathImpl()
 {
-	char buf[MAX_PATH];
-	buf[0]=0;
+	char buf[MAX_PATH];buf[0]=0;
 	::GetModuleFileNameA(NULL,buf,MAX_PATH);
 	return buf;
 }
@@ -221,7 +277,7 @@ bool System::Execute(const String& s)
 	}
 	if(pid==0)
 	{
-		execlp(s.c_str(),NULL);
+		execlp(s.c_str(),NULL,NULL);
 		exit(-1);
 	}
 	else
@@ -273,7 +329,7 @@ void System::CheckError(const String& msg)
 }
 
 
-extern AtomicInt32 g_tSpinConsole;
+extern AtomicSpin g_tSpinConsole;
 
 class SystemLoggerData
 {
@@ -303,13 +359,13 @@ public:
 
 		if(fp_logfile!=NULL)
 		{
-			LockGuard<AtomicInt32> lock1(*(AtomicInt32*)&spin);
+			LockGuard<AtomicSpin> lock1(spin);
 			fprintf(fp_logfile,"%s %s:%s\r\n",buf1,GetMsgLevel(lv),buf2);
 			fflush(fp_logfile);
 		}
 		else
 		{
-			LockGuard<AtomicInt32> lock1(g_tSpinConsole);
+			LockGuard<AtomicSpin> lock1(g_tSpinConsole);
 			printf("%s %s:%s\r\n",buf1,GetMsgLevel(lv),buf2);
 		}
 
@@ -331,7 +387,7 @@ public:
 	}
 
 	FILE* fp_logfile;
-	int32_t spin;
+	AtomicSpin spin;
 }gSystelLoggerData;
 
 
@@ -348,5 +404,7 @@ void System::DoLogImpl(int lv,const char* msg,...)
 	gSystelLoggerData.LogImplV(lv,msg,arglist);
 	va_end(arglist);
 }
+
+
 
 VHWD_LEAVE

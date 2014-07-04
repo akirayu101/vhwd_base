@@ -3,7 +3,6 @@
 #include "vhwd/basic/system.h"
 #include "vhwd/threading/thread.h"
 #include "vhwd/logging/logger.h"
-#include "vhwd/threading/thread.h"
 #include "vhwd/threading/thread_mutex.h"
 #include "vhwd/basic/lockguard.h"
 #include "vhwd/logging/logtarget.h"
@@ -11,7 +10,7 @@
 VHWD_ENTER
 
 
-void TestMgr::Tested(bool v,const char* msg,const char* file,int line)
+void TestMgr::Tested(bool v,const char* msg,const char* fn,int ln)
 {
 	static Mutex spin;
 
@@ -28,7 +27,7 @@ void TestMgr::Tested(bool v,const char* msg,const char* file,int line)
 	else
 	{
 		m_pCurrentTest->m_nFailed+=1;
-		logger.LogError("%s at %s:%d",msg,file,line);
+		logger.LogError("%s at %s:%d",msg,fn,ln);
 	}
 }
 
@@ -42,7 +41,7 @@ TestMgr::~TestMgr()
 {
 
 }
-	
+
 void TestMgr::AddTest(Test* t)
 {
 	if(t==NULL) return;

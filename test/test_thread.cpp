@@ -1,6 +1,7 @@
 
 #include "vhwd/testing/test.h"
 #include "vhwd/threading.h"
+#include "vhwd/basic.h"
 
 using namespace vhwd;
 
@@ -213,4 +214,109 @@ TEST_DEFINE(TEST_ThreadPool)
 	tpool.reqexit();
 	tpool.wait();
 
+}
+
+
+
+class EventThread : public ThreadMulti
+{
+public:
+
+	Event hEvent;
+	Semaphore hSem;
+	SpinLock spin;
+	AtomicSpin atom;
+	Mutex mutex;
+
+	size_t count;
+	size_t type;
+	size_t result;
+
+	EventThread()
+	{
+		hEvent.set();
+		hSem.post();
+		count=4;
+	}
+
+	void test(int n,const String& s)
+	{
+		TimePoint tp1=Clock::now();
+		type=n;
+		result=0;
+		activate(count);
+		wait();
+		TimePoint tp2=Clock::now();
+		Console::WriteLine(String::Format("test1:%s:%g",s,(tp2-tp1)/TimeSpan::MilliSeconds(1)));
+	}
+
+	void svc()
+	{
+		if(type==0)
+		{
+			for(size_t i=0;i<1024*1024/count;i++)
+			{
+				hEvent.wait();
+				result++;
+				hEvent.set();
+			}
+		}
+		else if(type==1)
+		{
+			for(size_t i=0;i<1024*1024/count;i++)
+			{
+				hSem.wait();
+				result++;
+				hSem.post();
+			}
+		}
+		else if(type==2)
+		{
+			for(size_t i=0;i<1024*1024/count;i++)
+			{
+				spin.lock();
+				result++;
+				spin.unlock();
+			}
+		}
+		else if(type==3)
+		{
+			for(size_t i=0;i<1024*1024/count;i++)
+			{
+				atom.lock();
+				result++;
+				atom.unlock();
+			}
+		}
+		else if(type==4)
+		{
+			for(size_t i=0;i<1024*1024/count;i++)
+			{
+				mutex.lock();
+				result++;
+				mutex.unlock();
+			}
+		}
+
+	}
+};
+
+TEST_DEFINE(TEST_ThreadOther)
+{
+	EventThread thrd;
+	thrd.test(0,"event");
+	TEST_ASSERT(thrd.result==1024*1024);
+
+	thrd.test(1,"sem");
+	TEST_ASSERT(thrd.result==1024*1024);
+
+	thrd.test(2,"spin");
+	TEST_ASSERT(thrd.result==1024*1024);
+
+	thrd.test(3,"atomic");
+	TEST_ASSERT(thrd.result==1024*1024);
+
+	thrd.test(4,"mutex");
+	TEST_ASSERT(thrd.result==1024*1024);
+	
 }

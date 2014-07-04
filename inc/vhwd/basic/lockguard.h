@@ -28,30 +28,8 @@ public:
 	{
 		mtx.unlock();
 	}
+
 };
-
-template<typename T>
-class LockPolicyDefault<AtomicIntT<T> >
-{
-public:
-
-	static inline void lock(AtomicIntT<T>& mtx)
-	{
-		while(mtx.exchange(1)!=0)
-		{
-			// spin;
-		}
-	}
-
-	static inline void unlock(AtomicIntT<T>& mtx)
-	{
-		wassert(mtx.get()==1);
-		mtx.store(0);
-	}
-};
-
-
-
 
 
 template<typename T,typename P=LockPolicyDefault<T> >

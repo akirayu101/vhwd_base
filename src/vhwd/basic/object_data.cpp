@@ -1,9 +1,7 @@
 #include "vhwd/basic/object.h"
-#include "vhwd/threading/thread.h"
-
+#include "vhwd/collection/array.h"
 
 VHWD_ENTER
-
 
 void ObjectData::IncRef()
 {

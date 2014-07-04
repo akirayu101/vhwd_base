@@ -1,10 +1,10 @@
 #include "mempool_impl.h"
 #include "vhwd/basic/lockguard.h"
-#include "vhwd/threading/thread_spin.h"
 #include "vhwd/basic/console.h"
 #include "vhwd/basic/system.h"
 #include "vhwd/collection/indexer_map.h"
 #include "vhwd/memory/allocator.h"
+#include "vhwd/basic/string.h"
 
 
 #include <algorithm>
@@ -17,8 +17,12 @@ class MemAllocInfo : public ILinkNode
 public:
 	const char* sFile;
 	unsigned int nCount;
+	unsigned int nGuard;
 	unsigned short nLine;
 	unsigned short nSize;
+
+	static const unsigned int GUARD_VALUE=0xCDEF1234;
+
 };
 
 const int MemLinking::const_fpi_size=(sizeof(MemAllocInfo)+sizeof(void*)-1)&~(sizeof(void*)-1);
@@ -37,11 +41,12 @@ void* MemLinking::insert_link(void *orignalPointer,const char* sFile,size_t nLin
 
 	MemAllocInfo* _pMemInfo=(MemAllocInfo*)orignalPointer;
 	_pMemInfo->sFile=sFile;
+	_pMemInfo->nCount=m_nCount++;
+	_pMemInfo->nGuard=MemAllocInfo::GUARD_VALUE;
 	_pMemInfo->nLine=nLine;
 	_pMemInfo->nSize=nSize;
-	_pMemInfo->nCount=m_nCount++;
 
-	LockGuard<SpinLock> lock1(m_tSpinLink);
+	LockGuard<AtomicSpin> lock1(m_tSpinLink);
 	m_pMemLink.insert(_pMemInfo);
 
 	return ((char*)orignalPointer)+const_fpi_size;
@@ -50,7 +55,11 @@ void* MemLinking::insert_link(void *orignalPointer,const char* sFile,size_t nLin
 void* MemLinking::remove_link(void* p)
 {
 	MemAllocInfo* orignalPointer=(MemAllocInfo*) (((char*)p)-const_fpi_size);
-	LockGuard<SpinLock> lock1(m_tSpinLink);
+	if(orignalPointer->nGuard!=MemAllocInfo::GUARD_VALUE)
+	{
+		return p;
+	}
+	LockGuard<AtomicSpin> lock1(m_tSpinLink);
 	orignalPointer->UnLink();
 	return orignalPointer;
 }
@@ -174,7 +183,7 @@ void MemLinking::report()
 	indexer_map<IMemAllocInfo,IMemAllocCount,indexer_map_trait<IMemAllocInfo,IMemAllocCount,int,Allocator<int> > > alinfo;
 	
 	{
-		LockGuard<SpinLock> lock1(m_tSpinLink);
+		LockGuard<AtomicSpin> lock1(m_tSpinLink);
 		if(!m_pMemLink.tHead.pNext)
 		{
 			System::LogTrace("no memory records");

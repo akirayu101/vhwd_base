@@ -362,6 +362,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\vhwd\memory\mempool_malloc.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\vhwd\memory\mempool_pageinfo.cpp"
 						>
 					</File>

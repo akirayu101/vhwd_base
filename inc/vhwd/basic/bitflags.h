@@ -30,7 +30,7 @@ public:
 	int32_t val() const;
 
 private:
-	int32_t m_flags;
+	int32_t m_nFlags;
 };
 
 VHWD_LEAVE

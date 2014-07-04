@@ -44,9 +44,12 @@ public:
 
 	virtual void Disconnect();
 
+	virtual bool TestTimeout(TimePoint& tp,MyOlapPtr& q);
+
 protected:
 
 	bool HasPending();
+
 
 	typedef LockFreeQueue<MyOlapPtr> LKFQueue;
 	LKFQueue lkfq_send;

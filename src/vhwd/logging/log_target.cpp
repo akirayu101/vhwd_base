@@ -78,7 +78,7 @@ LogFile::~LogFile()
 void LogFile::Handle(const LogRecord& o)
 {
 	if(fp==NULL) return;
-	LockGuard<AtomicInt32> lock1(spin);
+	LockGuard<AtomicSpin> lock1(spin);
 	
 	String s;
 	for(;;)
