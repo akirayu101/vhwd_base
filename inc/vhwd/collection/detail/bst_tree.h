@@ -293,42 +293,112 @@ public:
 			return n;
 		}
 	};
-	static void link_node(nodetype* n,nodetype* o)
+
+
+	void swap_node1(nodetype* n,nodetype* x)
 	{
-		nodetype* p=n->parent;
-		if(p)
+		if(n->parent)
 		{
-			if(p->child1==o)
+			if(n->parent->child1==n)
 			{
-				p->child1=n;
+				n->parent->child1=x;
 			}
 			else
 			{
-				wassert(p->child2==o);
-				p->child2=n;
+				n->parent->child2=x;
 			}
 		}
+		else
+		{
+			m_pRoot=x;
+		}
 
-		if(n->child1) n->child1->parent=n;
-		if(n->child2) n->child2->parent=n;
+		if(x->parent->child1==x)
+		{
+			x->parent->child1=n;
+		}
+		else
+		{
+			x->parent->child2=n;
+		}
+
+		n->child1->parent=x;
+		n->child2->parent=x;
+		if(x->child1) x->child1->parent=n;
+		if(x->child2) x->child2->parent=n;
+
+		std::swap(n->parent,x->parent);
+		std::swap(n->child1,x->child1);
+		std::swap(n->child2,x->child2);		
+		std::swap(n->color,x->color);
+
 	}
 
-	static void swap_node(nodetype& lhs,nodetype& rhs)
+	void swap_node2(nodetype* n,nodetype* x)
 	{
-		std::swap(lhs.parent,rhs.parent);
-		std::swap(lhs.child1,rhs.child1);
-		std::swap(lhs.child2,rhs.child2);
-		std::swap(lhs.color,rhs.color);
-		link_node(&lhs,&rhs);
-		link_node(&rhs,&lhs);
+		// n->child2==x;
+		nodetype* p=n->parent;
+		if(p)
+		{
+			if(n==p->child1)
+			{
+				p->child1=x;
+			}
+			else
+			{
+				p->child2=x;
+			}
+		}
+		else
+		{
+			m_pRoot=x;
+		}
+
+		n->child1->parent=x;
+		n->parent=x;
+		
+		if(x->child2)
+		{
+			x->child2->parent=n;
+		}
+		if(x->child1)
+		{
+			x->child1->parent=n;
+		}
+		n->child2=x->child2;
+		x->child2=n;
+
+		std::swap(n->child1,x->child1);
+		std::swap(n->color,x->color);
+		x->parent=p;
+
 	}
+
+	void swap_node(nodetype* n,nodetype* x)
+	{
+		//if(m_pRoot==n)
+		//{
+		//	m_pRoot=x;
+		//}
+
+		if(n->child2!=x)
+		{
+			swap_node1(n,x);
+		}
+		else
+		{
+			swap_node2(n,x);
+		}		
+	}
+		
+	
 
 	void do_erase(nodetype* n)
 	{
 		if(n->child1!=NULL&&n->child2!=NULL)
 		{
 			nodetype* x=P::nd_min(n->child2);
-			swap_node(*n,*x);
+			swap_node(n,x);
 		}
 		delete_one_child(n);
 		m_nSize--;
