@@ -222,7 +222,7 @@ class EventThread : public ThreadMulti
 {
 public:
 
-	Event hEvent;
+
 	Semaphore hSem;
 	SpinLock spin;
 	AtomicSpin atom;
@@ -234,7 +234,7 @@ public:
 
 	EventThread()
 	{
-		hEvent.set();
+
 		hSem.post();
 		count=4;
 	}
@@ -247,21 +247,12 @@ public:
 		activate(count);
 		wait();
 		TimePoint tp2=Clock::now();
-		Console::WriteLine(String::Format("test1:%s:%g",s,(tp2-tp1)/TimeSpan::MilliSeconds(1)));
+		Console::WriteLine(String::Format("test:%s:%g",s,(tp2-tp1)/TimeSpan::MilliSeconds(1)));
 	}
 
 	void svc()
 	{
-		if(type==0)
-		{
-			for(size_t i=0;i<1024*1024/count;i++)
-			{
-				hEvent.wait();
-				result++;
-				hEvent.set();
-			}
-		}
-		else if(type==1)
+		if(type==1)
 		{
 			for(size_t i=0;i<1024*1024/count;i++)
 			{
@@ -304,8 +295,6 @@ public:
 TEST_DEFINE(TEST_ThreadOther)
 {
 	EventThread thrd;
-	thrd.test(0,"event");
-	TEST_ASSERT(thrd.result==1024*1024);
 
 	thrd.test(1,"sem");
 	TEST_ASSERT(thrd.result==1024*1024);

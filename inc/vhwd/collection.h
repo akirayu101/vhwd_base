@@ -15,5 +15,6 @@
 #include "vhwd/collection/lockfree_queue.h"
 #include "vhwd/collection/ring_buffer.h"
 #include "vhwd/collection/linear_buffer.h"
-
+#include "vhwd/collection/bst_set.h"
+#include "vhwd/collection/bst_map.h"
 #endif

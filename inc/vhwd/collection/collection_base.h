@@ -10,7 +10,8 @@
 
 
 #include "vhwd/config.h"
-#include "vhwd/memory/allocator.h"
+#include "vhwd/memory.h"
+
 #include <memory>
 
 VHWD_ENTER
@@ -42,10 +43,10 @@ public:
 };
 
 
-template<typename T,typename A=std::allocator<T> >
+template<typename T,typename A=def_allocator >
 class arr_xt;
 
-template<typename T,typename A=std::allocator<T> >
+template<typename T,typename A=def_allocator >
 class arr_1t;
 
 
@@ -59,44 +60,186 @@ template<typename A,bool V>
 class alloc_base : public container_base
 {
 public:
-	typedef A allocater_type;
+	typedef A allocator_type;
 	typedef A _Alloc_return;
 
-	_Alloc_return get_allocator() const {return allocater_type();}
+
+	alloc_base(){}
+	alloc_base(const alloc_base&){}
+	alloc_base(const allocator_type&){}
+
+	_Alloc_return get_allocator() const {return allocator_type();}
 };
 
 template<typename A>
 class alloc_base<A,false> : public container_base
 {
 public:
-	typedef A allocater_type;
+	typedef A allocator_type;
 	typedef A& _Alloc_return;
+
+	alloc_base(){}
+	alloc_base(const alloc_base& o):_al(o._al){}
+	alloc_base(const allocator_type& al):_al(al){}
+
 	_Alloc_return get_allocator() const {return _al;}
 
 protected:
-	mutable allocater_type _al;
+	mutable allocator_type _al;
 };
 
 
+
+template<typename K,bool V,typename A>
+class keycomp_base : public alloc_base<A,tl::is_empty_type<A>::value>
+{
+public:
+	typedef K key_compare;
+	typedef K _Keycomp_return;
+
+	typedef alloc_base<A,tl::is_empty_type<A>::value> basetype;
+	typedef typename basetype::allocator_type allocator_type;
+
+	keycomp_base(){}
+	keycomp_base(const keycomp_base& o):basetype(o){}
+	keycomp_base(const key_compare&,const allocator_type& al):basetype(al){}
+
+
+	_Keycomp_return key_comp() const {return key_compare();}
+};
+
+template<typename K,typename A>
+class keycomp_base<K,false,A> : public alloc_base<A,tl::is_empty_type<A>::value>
+{
+public:
+	typedef K key_compare;
+	typedef K& _Keycomp_return;
+
+	typedef alloc_base<A,tl::is_empty_type<A>::value> basetype;
+	typedef typename basetype::allocator_type allocator_type;
+
+	keycomp_base(){}
+	keycomp_base(const keycomp_base& o):basetype(o),_kc(o._kc){}
+	keycomp_base(const key_compare& kc,const allocator_type& al):basetype(al),_kc(kc){}
+
+	_Keycomp_return key_comp() const {return _kc;}
+
+protected:
+	mutable key_compare _kc;
+};
+
+template<typename B>
+class containerB : public container_base
+{
+protected:
+	typedef B impl_type;
+public:
+
+	typedef typename impl_type::allocator_type allocator_type;
+
+	typedef typename allocator_type::value_type value_type;
+	typedef typename allocator_type::size_type size_type;
+	typedef typename allocator_type::difference_type difference_type;
+
+	typedef typename allocator_type::pointer pointer;
+	typedef typename allocator_type::const_pointer const_pointer;
+
+	typedef typename allocator_type::reference reference;
+	typedef typename allocator_type::const_reference const_reference;
+
+	typedef typename impl_type::iterator iterator;
+	typedef typename impl_type::reverse_iterator reverse_iterator;
+	typedef typename impl_type::const_iterator const_iterator;
+	typedef typename impl_type::const_reverse_iterator const_reverse_iterator;
+
+	containerB(){}
+
+	template<typename T1,typename T2>
+	containerB(const T1& kc,const T2& al):impl(kc,al){}
+
+	containerB(const containerB& o):impl(o){}
+
+#ifdef VHWD_C11
+	containerB(containerB&& o):impl(o){}
+#endif
+
+	iterator begin(){return impl.begin();}
+	iterator end(){return impl.end();}
+	reverse_iterator rbegin(){return impl.rbegin();}
+	reverse_iterator rend(){return impl.rend();}
+
+	const_iterator begin() const {return impl.begin();}
+	const_iterator end() const {return impl.end();}
+	const_reverse_iterator rbegin() const {return impl.rbegin();}
+	const_reverse_iterator rend() const {return impl.rend();}
+
+	const_iterator cbegin() const {return impl.begin();}
+	const_iterator cend() const {return impl.end();}
+	const_reverse_iterator crbegin() const {return impl.rbegin();}
+	const_reverse_iterator crend() const {return impl.rend();}
+
+	bool empty() const {return impl.empty();}
+	size_type size() const {return impl.size();}
+	size_type max_size() const{return impl.get_allocator().max_size();}
+	void clear(){impl.clear();}
+
+	void swap(containerB& o){impl.swap(o);}
+
+	typename impl_type::_Alloc_return get_allocator(){return impl.get_allocator();}
+
+protected:
+	impl_type impl;
+};
+
 template<typename A>
-class container : public alloc_base<A,tl::is_empty_type<A>::value>
+class containerA : public alloc_base<A,tl::is_empty_type<A>::value>
+{
+public:
+	typedef alloc_base<A,tl::is_empty_type<A>::value> basetype;
+	typedef A allocator_type;
+
+	typedef typename allocator_type::value_type value_type;
+	typedef typename allocator_type::size_type size_type;
+	typedef typename allocator_type::difference_type difference_type;
+
+	typedef typename allocator_type::pointer pointer;
+	typedef typename allocator_type::const_pointer const_pointer;
+
+	typedef typename allocator_type::reference reference;
+	typedef typename allocator_type::const_reference const_reference;
+
+	containerA(){}
+	containerA(const containerA& o):basetype(o){}
+	containerA(const allocator_type& al):basetype(al){}
+
+};
+
+template<typename K,typename A>
+class containerK : public keycomp_base<K,tl::is_empty_type<K>::value,A>
 {
 public:
 
-	typedef A allocater_type;
+	typedef keycomp_base<K,tl::is_empty_type<K>::value,A> basetype;
 
-	typedef typename allocater_type::value_type value_type;
-	typedef typename allocater_type::size_type size_type;
-	typedef typename allocater_type::difference_type difference_type;
+	typedef A allocator_type;
 
-	typedef typename allocater_type::pointer pointer;
-	typedef typename allocater_type::const_pointer const_pointer;
+	typedef typename allocator_type::value_type value_type;
+	typedef typename allocator_type::size_type size_type;
+	typedef typename allocator_type::difference_type difference_type;
 
-	typedef typename allocater_type::reference reference;
-	typedef typename allocater_type::const_reference const_reference;
+	typedef typename allocator_type::pointer pointer;
+	typedef typename allocator_type::const_pointer const_pointer;
+
+	typedef typename allocator_type::reference reference;
+	typedef typename allocator_type::const_reference const_reference;
+
+	typedef typename basetype::key_compare key_compare;
+
+	containerK(){}
+	containerK(const containerK& o):basetype(o){}
+	containerK(const key_compare& kc,const allocator_type& al):basetype(kc,al){}
 
 };
-
 
 
 
@@ -118,29 +261,30 @@ public:
 	static inline ptrdiff_t sub(const T* p1,const T* p2){return p2-p1;}
 };
 
-
+// D iterator direction
+// C const_iterator?
 template<typename T,bool D,bool C>
-class RandomAccessIterator;
+class rac_iterator;
 
 
 template<typename T,bool D>
-class RandomAccessIterator<T,D,true>	: public std::iterator<std::random_access_iterator_tag,T>
+class rac_iterator<T,D,true>	: public std::iterator<std::random_access_iterator_tag,T>
 {
 public:
 	typedef T* pointer;
 
-	RandomAccessIterator(const pointer x=pointer()) :_pAddress(x) {}
-	RandomAccessIterator& operator++() {_pAddress=IteratorDirection<T,D>::add(_pAddress,1);return *this;}
-	RandomAccessIterator operator++(int) {RandomAccessIterator tmp(*this); _pAddress=IteratorDirection<T,D>::add(_pAddress,1); return tmp;}
-	RandomAccessIterator& operator--() {_pAddress=IteratorDirection<T,D>::sub(_pAddress,1);return *this;}
-	RandomAccessIterator operator--(int) {RandomAccessIterator tmp(*this); _pAddress=IteratorDirection<T,D>::sub(_pAddress,1); return tmp;}
+	rac_iterator(const pointer x=pointer()) :_pAddress(x) {}
+	rac_iterator& operator++() {_pAddress=IteratorDirection<T,D>::add(_pAddress,1);return *this;}
+	rac_iterator operator++(int) {rac_iterator tmp(*this); _pAddress=IteratorDirection<T,D>::add(_pAddress,1); return tmp;}
+	rac_iterator& operator--() {_pAddress=IteratorDirection<T,D>::sub(_pAddress,1);return *this;}
+	rac_iterator operator--(int) {rac_iterator tmp(*this); _pAddress=IteratorDirection<T,D>::sub(_pAddress,1); return tmp;}
 
-	bool operator==(const RandomAccessIterator& rhs) {return _pAddress==rhs._pAddress;}
-	bool operator!=(const RandomAccessIterator& rhs) {return _pAddress!=rhs._pAddress;}
-	bool operator<(const RandomAccessIterator& rhs) {return IteratorDirection<T,D>::sub(_pAddress,rhs._pAddress)<0;}
-	bool operator<=(const RandomAccessIterator& rhs) {return IteratorDirection<T,D>::sub(_pAddress,rhs._pAddress)<=0;}
-	bool operator>(const RandomAccessIterator& rhs) {return IteratorDirection<T,D>::sub(_pAddress,rhs._pAddress)>0;}
-	bool operator>=(const RandomAccessIterator& rhs) {return IteratorDirection<T,D>::sub(_pAddress,rhs._pAddress)>=0;}
+	bool operator==(const rac_iterator& rhs) {return _pAddress==rhs._pAddress;}
+	bool operator!=(const rac_iterator& rhs) {return _pAddress!=rhs._pAddress;}
+	bool operator<(const rac_iterator& rhs) {return IteratorDirection<T,D>::sub(_pAddress,rhs._pAddress)<0;}
+	bool operator<=(const rac_iterator& rhs) {return IteratorDirection<T,D>::sub(_pAddress,rhs._pAddress)<=0;}
+	bool operator>(const rac_iterator& rhs) {return IteratorDirection<T,D>::sub(_pAddress,rhs._pAddress)>0;}
+	bool operator>=(const rac_iterator& rhs) {return IteratorDirection<T,D>::sub(_pAddress,rhs._pAddress)>=0;}
 
 	const T& operator*(){return *_pAddress;}
 	T* get(){return _pAddress;}
@@ -151,19 +295,19 @@ protected:
 };
 
 template<typename T,bool D>
-class RandomAccessIterator<T,D,false> : public RandomAccessIterator<T,D,true>
+class rac_iterator<T,D,false> : public rac_iterator<T,D,true>
 {
 protected:
-	using RandomAccessIterator<T,D,true>::_pAddress;
+	using rac_iterator<T,D,true>::_pAddress;
 public:
 	typedef T* pointer;
 
-	RandomAccessIterator(pointer x=pointer()):RandomAccessIterator<T,D,true>(x){}
+	rac_iterator(pointer x=pointer()):rac_iterator<T,D,true>(x){}
 
-	RandomAccessIterator& operator++() {_pAddress=IteratorDirection<T,D>::add(_pAddress,1);return *this;}
-	RandomAccessIterator operator++(int) {RandomAccessIterator tmp(*this); _pAddress=IteratorDirection<T,D>::add(_pAddress,1); return tmp;}
-	RandomAccessIterator& operator--() {_pAddress=IteratorDirection<T,D>::sub(_pAddress,1);return *this;}
-	RandomAccessIterator operator--(int) {RandomAccessIterator tmp(*this); _pAddress=IteratorDirection<T,D>::sub(_pAddress,1); return tmp;}
+	rac_iterator& operator++() {_pAddress=IteratorDirection<T,D>::add(_pAddress,1);return *this;}
+	rac_iterator operator++(int) {rac_iterator tmp(*this); _pAddress=IteratorDirection<T,D>::add(_pAddress,1); return tmp;}
+	rac_iterator& operator--() {_pAddress=IteratorDirection<T,D>::sub(_pAddress,1);return *this;}
+	rac_iterator operator--(int) {rac_iterator tmp(*this); _pAddress=IteratorDirection<T,D>::sub(_pAddress,1); return tmp;}
 
 	T& operator*(){return *_pAddress;}
 	T* get(){return _pAddress;}
@@ -172,42 +316,47 @@ public:
 
 
 template<typename T,bool D,bool C>
-RandomAccessIterator<T,D,C> operator+(RandomAccessIterator<T,D,C> it1,ptrdiff_t n)
+rac_iterator<T,D,C> operator+(rac_iterator<T,D,C> it1,ptrdiff_t n)
 {
 	return IteratorDirection<T,D>::add(it1.get(),n);
 }
 
 template<typename T,bool C,bool D>
-RandomAccessIterator<T,D,C> operator-(RandomAccessIterator<T,D,C> it1,ptrdiff_t n)
+rac_iterator<T,D,C> operator-(rac_iterator<T,D,C> it1,ptrdiff_t n)
 {
 	return IteratorDirection<T,D>::sub(it1.get(),n);
 }
 
 template<typename T,bool D,bool C1,bool C2>
-ptrdiff_t operator-(RandomAccessIterator<T,D,C1> it1,RandomAccessIterator<T,D,C2> it2)
+ptrdiff_t operator-(rac_iterator<T,D,C1> it1,rac_iterator<T,D,C2> it2)
 {
 	return IteratorDirection<T,D>::sub(it1.get(),it2.get());
 }
 
 
 template<typename A>
-class container_seq : public container<A>
+class containerS : public containerA<A>
 {
 public:
-    typedef container<A> basetype;
+    typedef containerA<A> basetype;
+    typedef typename basetype::allocator_type allocator_type;
     typedef typename basetype::value_type value_type;
-	typedef RandomAccessIterator<value_type,true,false> iterator;
-	typedef RandomAccessIterator<value_type,true,true> const_iterator;
+	typedef rac_iterator<value_type,true,false> iterator;
+	typedef rac_iterator<value_type,true,true> const_iterator;
 
-	typedef RandomAccessIterator<value_type,false,false> reverse_iterator;
-	typedef RandomAccessIterator<value_type,false,true> const_reverse_iterator;
+	typedef rac_iterator<value_type,false,false> reverse_iterator;
+	typedef rac_iterator<value_type,false,true> const_reverse_iterator;
 
-	typedef typename container<A>::size_type size_type;
+	typedef typename containerA<A>::size_type size_type;
 
 	size_type max_size() const
 	{
 		return this->get_allocator().max_size();
 	}
+
+	containerS(){}
+	containerS(const containerS& o):basetype(o){}
+	containerS(const allocator_type& al):basetype(al){}
 
 };
 
@@ -359,17 +508,22 @@ public:
 };
 
 template<typename T,typename A,typename E>
-class arr_base : public container_seq< AllocatorExtra<T,E,A> >
+class arr_base : public containerS< typename AllocatorE<A,E>::template rebind<T>::other >
 {
 	arr_base(const arr_base&);
 	const arr_base& operator=(const arr_base&);
 public:
 
-	typedef typename container_seq<A>::iterator iterator;
-	typedef typename container_seq<A>::const_iterator const_iterator;
-	typedef typename container_seq<A>::size_type size_type;
+	typedef containerS< typename AllocatorE<A,E>::template rebind<T>::other > basetype;
+	typedef typename basetype::iterator iterator;
+	typedef typename basetype::const_iterator const_iterator;
+	typedef typename basetype::size_type size_type;
+	typedef typename basetype::allocator_type allocator_type;
+
 
 	arr_base():m_ptr(NULL){}
+	arr_base(const A& al):basetype(allocator_type(al)),m_ptr(NULL){}
+	arr_base(const allocator_type& al):basetype(al),m_ptr(NULL){}
 
 	~arr_base()
 	{
@@ -405,8 +559,8 @@ public:
 
 	}
 
-	E& extra(){return AllocatorExtra<T,E,A>::extra(m_ptr);}
-	const E& extra() const {return AllocatorExtra<T,E,A>::extra(m_ptr);}
+	E& extra(){return allocator_type::extra(m_ptr);}
+	const E& extra() const {return allocator_type::extra(m_ptr);}
 
 	void swap(arr_base& o){std::swap(m_ptr,o.m_ptr);}
 

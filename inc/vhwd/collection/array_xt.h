@@ -35,7 +35,9 @@ public:
 	static const size_type MAX_DIM=extra_arr_xt::MAX_DIM;
 
 	arr_xt(){}
-	arr_xt(const arr_xt& o){(*this)=o;}
+	arr_xt(const A& al):basetype(al){}
+	arr_xt(const arr_xt& o):basetype(o.get_allocator()){(*this)=o;}
+
 	~arr_xt(){clear();}
 
 #if defined(VHWD_C11)

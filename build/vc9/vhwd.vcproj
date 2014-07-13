@@ -790,11 +790,15 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\inc\vhwd\collection\collection_base.h"
+						RelativePath="..\..\inc\vhwd\collection\bst_map.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\inc\vhwd\collection\indexer_detail.h"
+						RelativePath="..\..\inc\vhwd\collection\bst_set.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\inc\vhwd\collection\collection_base.h"
 						>
 					</File>
 					<File
@@ -821,6 +825,38 @@
 						RelativePath="..\..\inc\vhwd\collection\ring_buffer.h"
 						>
 					</File>
+					<Filter
+						Name="detail"
+						>
+						<File
+							RelativePath="..\..\inc\vhwd\collection\detail\bst_container.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\inc\vhwd\collection\detail\bst_tree.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\inc\vhwd\collection\detail\bst_tree_iterator.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\inc\vhwd\collection\detail\bst_tree_node.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\inc\vhwd\collection\detail\indexer_base.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\inc\vhwd\collection\detail\indexer_container.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\inc\vhwd\collection\detail\kv_trait.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 		</Filter>

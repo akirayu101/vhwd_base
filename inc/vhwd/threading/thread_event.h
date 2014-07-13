@@ -20,10 +20,11 @@
 
 VHWD_ENTER
 
-// Manual reset event
+// Manual reset event, intitial state: not set
 class VHWD_DLLIMPEXP Event
 {
 public:
+
 	Event();
 	Event(const Event&);
 	Event& operator=(const Event&){return *this;}

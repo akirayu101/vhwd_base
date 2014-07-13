@@ -1,3 +1,4 @@
+#include "vhwd/collection/detail/indexer_base.h"
 
 #include "vhwd/collection.h"
 #include "vhwd/basic/string.h"

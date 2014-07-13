@@ -1,7 +1,5 @@
 #include "vhwd.h"
-
 using namespace vhwd;
-
 
 int main(int argc,char** argv)
 {
@@ -16,7 +14,6 @@ int main(int argc,char** argv)
 
 	vhwd::System::LogTrace("----  process leave   -------");
 	vhwd::Console::Pause();
-
 
 	return 0;
 };

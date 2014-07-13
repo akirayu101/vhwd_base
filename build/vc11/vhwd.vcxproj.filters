@@ -73,6 +73,9 @@
     <Filter Include="src\vhwd\collection">
       <UniqueIdentifier>{6fde97e0-6df7-4652-96d4-e88402da27af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="inc\vhwd\collection\detail">
+      <UniqueIdentifier>{b44b99a6-7918-4b7d-b53d-c1777a478855}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\vhwd\basic\atomic.cpp">
@@ -425,9 +428,6 @@
     <ClInclude Include="..\..\inc\vhwd\collection\collection_base.h">
       <Filter>inc\vhwd\collection</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\inc\vhwd\collection\indexer_detail.h">
-      <Filter>inc\vhwd\collection</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\inc\vhwd\collection\indexer_map.h">
       <Filter>inc\vhwd\collection</Filter>
     </ClInclude>
@@ -496,6 +496,33 @@
     </ClInclude>
     <ClInclude Include="..\..\inc\vhwd\basic\lockguard.h">
       <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_container.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_tree.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_tree_iterator.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_tree_node.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\bst_map.h">
+      <Filter>inc\vhwd\collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\bst_set.h">
+      <Filter>inc\vhwd\collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\indexer_base.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\indexer_container.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\kv_trait.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -8,93 +8,91 @@
 #ifndef __H_VHWD_INDEXER_MAP__
 #define __H_VHWD_INDEXER_MAP__
 
-#include "vhwd/config.h"
-#include "vhwd/collection/indexer_detail.h"
+#include "vhwd/collection/detail/indexer_container.h"
+
 
 VHWD_ENTER
 
-template<typename K,typename V,typename P=indexer_map_trait<K,V> >
-class indexer_map
+
+template<typename K,typename V,typename A=def_allocator,typename P=indexer_trait<K,V,int> >
+class indexer_map : public indexer_container<P,A>
 {
 public:
 
-	typedef typename P::index_type index_type;
-	typedef typename P::pair_type pair_type;
-	typedef typename P::key_type key_type;
-	typedef typename P::value_type value_type;
+	typedef indexer_container<P,A> basetype;
+	typedef typename basetype::impl_type impl_type;
+	typedef typename impl_type::mapped_type mapped_type;
+	typedef typename impl_type::key_type key_type;
+	typedef typename impl_type::index_type index_type;
+	typedef typename impl_type::value_type value_type;
+	typedef typename impl_type::size_type size_type;
 
-	value_type& operator[](const key_type& k)
+
+	using basetype::impl;
+
+
+	indexer_map(){}
+	indexer_map(const indexer_map& o):basetype(o){}
+
+#ifdef VHWD_C11
+	indexer_map(indexer_map&& o):basetype(o){}
+#endif
+
+	class iterator : public impl_type::iterator
 	{
-		return P::value(impl.get_pair_by_key(k));
+	public:
+		typedef typename impl_type::iterator basetype;
+		iterator(){}
+		iterator(const basetype& o):basetype(o){}
+
+		typedef kv_pair<const key_type,mapped_type> type;
+
+		type* ptr()
+		{
+			typename impl_type::iterator it(*this);
+			return (type*)&(*it);
+		}
+
+		type& operator*(){return *ptr();}
+		type* operator->(){return ptr();}
+	};
+
+	typedef typename impl_type::const_iterator const_iterator;
+
+	iterator begin()
+	{
+		return impl.begin();
 	}
 
-	const value_type& operator[](const key_type& k) const
+	iterator end()
 	{
-		return P::value(impl.get_pair_by_key(k));
+		return impl.end();
 	}
 
-	index_type insert(const key_type& k,const value_type& v)
+	const_iterator begin() const
 	{
-		return impl.insert(k,v);
+		return impl.begin();
 	}
 
-	void rehash(size_t n)
+	const_iterator end() const
 	{
-		impl.rehash(n);
+		return impl.end();
 	}
 
-	void reserve(size_t n)
+	mapped_type& operator[](const key_type& k)
 	{
-		impl.reserve(n);
+		index_type id=impl.find2(k);
+		return this->get(id).second;
 	}
 
-	float load_factor() const
+	const mapped_type& operator[](const key_type& k) const
 	{
-		return impl.load_factor();
+		index_type id=impl.find(k);
+		if(id==impl_type::invalid_pos) Exception::XNotFound();
+		return this->get(id).second;
 	}
 
-
-	void clear()
-	{
-		impl.clear();
-	}
-
-	index_type find(const key_type& v) const
-	{
-		return impl.find(v);
-	}
-
-	const pair_type& get(index_type n) const
-	{
-		return impl.get_pair_by_idx(n);
-	}
-
-	pair_type& get(index_type n)
-	{
-		return impl.get_pair_by_idx(n);
-	}
-
-	bool empty() const
-	{
-		return impl.empty();
-	}
-
-	void swap(indexer_map& o)
-	{
-		impl.swap(o.impl);
-	}
-
-	size_t erase(const key_type& v)
-	{
-		return impl.erase(v);
-	}
-
-	size_t size() const {return impl.size();}
-
-private:
-	indexer_impl<P> impl;
 };
-
 
 VHWD_LEAVE
 #endif

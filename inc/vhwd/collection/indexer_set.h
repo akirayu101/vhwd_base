@@ -8,85 +8,45 @@
 #ifndef __H_VHWD_INDEXER_SET__
 #define __H_VHWD_INDEXER_SET__
 
-#include "vhwd/config.h"
-#include "vhwd/collection/indexer_detail.h"
-#include "vhwd/collection/array.h"
+
+#include "vhwd/collection/detail/indexer_container.h"
+
 VHWD_ENTER
 
-template<typename K,typename P=indexer_set_trait<K> >
-class indexer_set
+
+template<typename K,typename A=def_allocator,typename P=indexer_trait<K,void,int> >
+class indexer_set : public indexer_container<P,A>
 {
 public:
+	typedef indexer_container<P,A> basetype;
+	typedef typename basetype::impl_type impl_type;
+	typedef typename impl_type::key_type key_type;
+	typedef typename impl_type::index_type index_type;
+	typedef typename impl_type::value_type value_type;
+	typedef typename impl_type::size_type size_type;
 
-	typedef typename P::index_type index_type;
-	typedef typename P::key_type key_type;
+	using basetype::impl;
 
-	size_t erase(const key_type& v)
+	typedef typename impl_type::const_iterator iterator;
+
+	iterator begin() const
 	{
-		return impl.erase(v);
+		return impl.begin();
 	}
 
-	index_type insert(const key_type& v)
+	iterator end() const
 	{
-		return impl.insert(v);
+		return impl.end();
 	}
 
-	index_type find(const key_type& v)
-	{
-		return impl.find(v);
-	}
+	indexer_set(){}
+	indexer_set(const indexer_set& o):basetype(o){}
 
-	void clear()
-	{
-		impl.clear();
-	}
+#ifdef VHWD_C11
+	indexer_set(indexer_set&& o):basetype(o){}
+#endif
 
-	void rehash(size_t n)
-	{
-		impl.rehash(n);
-	}
-
-	void reserve(size_t n)
-	{
-		impl.reserve(n);
-	}
-
-	float load_factor() const
-	{
-		return impl.load_factor();
-	}
-
-	float max_load_factor() const
-	{
-		return impl.max_load_factor();
-	}
-
-	void max_load_factor(float z)
-	{
-		impl.max_load_factor(z);
-	}
-
-	const key_type& get(index_type n)
-	{
-		return impl.get_pair_by_idx(n);
-	}
-
-	bool empty() const
-	{
-		return impl.empty();
-	}
-
-	void swap(indexer_set& o)
-	{
-		impl.swap(o.impl);
-	}
-
-	size_t size() const {return impl.size();}
-
-private:
-	indexer_impl<P> impl;
 };
-
 
 VHWD_LEAVE
 #endif

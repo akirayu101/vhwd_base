@@ -12,10 +12,9 @@
 VHWD_ENTER
 
 
-class const_char_pointer_map : public indexer_map_trait<const char*,const char*,int>
+class const_char_pointer_map : public indexer_trait<const char*,const char*,int>
 {
 public:
-	typedef indexer_map_trait<const char*,const char*,int>::pair_type pair_type;
 
 	static int hashcode_key(const char* v)
 	{
@@ -23,14 +22,9 @@ public:
 		return h(v);
 	}
 
-	static int hashcode_key(const pair_type &v)
+	static bool equal(const char* k,const char* v)
 	{
-		return hashcode_key(v.first);
-	}
-
-	static bool compare(const char* k,const pair_type& v)
-	{
-		return strcmp(k,v.first)==0;
+		return strcmp(k,v)==0;
 	}
 };
 
@@ -139,7 +133,7 @@ public:
 
 	arr_1t<DataPtrT<LangData> > aDatas;
 
-	indexer_map<const char*,const char*,const_char_pointer_map> mapStrings;
+	indexer_map<const char*,const char*,def_allocator,const_char_pointer_map> mapStrings;
 
 	inline const String& Translate(const String& msg) const
 	{
@@ -198,8 +192,6 @@ public:
 		aDatas.push_back(pData);
 		return true;
 	}
-
-
 
 	bool SaveMo(const String& file)
 	{

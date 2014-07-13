@@ -60,8 +60,9 @@ public:
 };
 
 
+// shift D element align N
 template <typename T, size_t N=0,size_t D=0>
-class Allocator
+class AllocatorM
 {
 public:
 	typedef T value_type;
@@ -75,12 +76,12 @@ public:
 	typedef const T &const_reference;
 
 public:
-	inline Allocator() throw() { }
+	inline AllocatorM() throw() { }
 
 	template <typename T2>
-	inline Allocator(const Allocator<T2,N,D> &) throw() { }
+	inline AllocatorM(const AllocatorM<T2,N,D> &) throw() { }
 
-	inline ~Allocator() throw() { }
+	inline ~AllocatorM() throw() { }
 
 	inline pointer address(reference r)
 	{
@@ -117,16 +118,16 @@ public:
 
 	inline size_type max_size() const throw()
 	{
-		return size_type(-1) / sizeof(value_type);
+		return (size_type(-1)-N) / sizeof(value_type);
 	}
 
 	template <typename T2>
 	struct rebind
 	{
-		typedef Allocator<T2,N,D> other;
+		typedef AllocatorM<T2,N,D> other;
 	};
 
-	bool operator!=(const Allocator<T,N,D> &other) const
+	bool operator!=(const AllocatorM<T,N,D> &other) const
 	{
 		return !(*this == other);
 	}
@@ -134,7 +135,7 @@ public:
 	// Returns true if and only if storage allocated from *this
 	// can be deallocated from other, and vice versa.
 	// Always returns true for stateless allocators.
-	bool operator==(const Allocator &other) const
+	bool operator==(const AllocatorM &other) const
 	{
 		(void)&other;
 		return true;

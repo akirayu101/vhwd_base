@@ -215,14 +215,16 @@ bool Semaphore::wait_until(const TimePoint& tp)
 Event::Event()
 {
 #ifdef _WIN32
-	hEvent=::CreateEvent(NULL,FALSE,FALSE,NULL);
+	hEvent=::CreateEvent(NULL,TRUE,FALSE,NULL);
+#else
+	m_nResetval=munual_reset?1:0;
 #endif
 }
 
 Event::Event(const Event&)
 {
 #ifdef _WIN32
-	hEvent=::CreateEvent(NULL,FALSE,TRUE,NULL);
+	hEvent=::CreateEvent(NULL,TRUE,FALSE,NULL);
 #endif
 }
 
@@ -242,8 +244,8 @@ void Event::set()
 #ifdef _WIN32
 	::SetEvent(hEvent);
 #else
-	if(m_nValue.get()!=0) return;
 
+	if(m_nValue.get()!=0) return;
 	LockGuard<Mutex> lock1(m_tMutex);
 	m_nValue.store(1);
 	m_tCond.notify_all();
@@ -255,6 +257,7 @@ void Event::wait()
 #ifdef _WIN32
 	::WaitForSingleObject(hEvent,INFINITE);
 #else
+
 	if(m_nValue.get()!=0) return;
 	LockGuard<Mutex> lock1(m_tMutex);
 	if(m_nValue.get()==0)
@@ -319,7 +322,9 @@ bool Event::wait_until(const TimePoint& tp)
 
 Event::~Event()
 {
-
+#ifdef _WIN32
+	CloseHandle(hEvent);
+#endif
 }
 
 VHWD_LEAVE

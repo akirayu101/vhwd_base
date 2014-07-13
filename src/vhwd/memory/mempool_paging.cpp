@@ -130,12 +130,14 @@ void* MemPoolPaging::allocate(size_t nSize)
 			_init();
 			if(nSize>m_nFixedSizeMax)
 			{
-				return ::malloc(nSize);
+				//return ::malloc(nSize);
+				return MemPoolMalloc::allocate(nSize);
 			}
 		}
 		else
 		{
-			return ::malloc(nSize);
+			//return ::malloc(nSize);
+			return MemPoolMalloc::allocate(nSize);
 		}
 	}
 
@@ -228,6 +230,7 @@ void MemPoolPaging::deallocate(void* p)
 
 
 char gInstance_mempoolpaging[sizeof(MemPoolPaging)];
+
 MemPoolPaging& MemPoolPaging::current()
 {
 	return *(MemPoolPaging*)gInstance_mempoolpaging;
@@ -271,6 +274,14 @@ void SmallObject::operator delete[](void* p)
 {
 	vhwd::MemPoolPaging::current().deallocate(p);
 }
+
+void* SmallObject::operator new(size_t s,void* p)
+{
+	(void)&s;
+	return p;
+}
+
+void SmallObject::operator delete(void*,void*){}
 
 VHWD_LEAVE
 

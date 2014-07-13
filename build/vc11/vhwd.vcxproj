@@ -446,6 +446,15 @@
     <ClInclude Include="..\..\inc\vhwd\basic\lockguard.h" />
     <ClInclude Include="..\..\inc\vhwd\collection.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\array.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\bst_map.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\bst_set.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_container.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_tree.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_tree_iterator.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_tree_node.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\indexer_base.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\indexer_container.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\kv_trait.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\linear_buffer.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\lockfree_queue.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\ring_buffer.h" />
@@ -522,7 +531,6 @@
     <ClInclude Include="..\..\inc\vhwd\testing\test.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\array_xt.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\collection_base.h" />
-    <ClInclude Include="..\..\inc\vhwd\collection\indexer_detail.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\indexer_map.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\indexer_set.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\intrusive_list.h" />

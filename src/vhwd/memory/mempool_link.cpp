@@ -3,6 +3,7 @@
 #include "vhwd/basic/console.h"
 #include "vhwd/basic/system.h"
 #include "vhwd/collection/indexer_map.h"
+#include "vhwd/collection/bst_map.h"
 #include "vhwd/memory/allocator.h"
 #include "vhwd/basic/string.h"
 
@@ -117,7 +118,7 @@ void MemPoolBase::set_break_alloc(unsigned n)
 }
 
 
-class IMemAllocCount : public arr_1t<unsigned,Allocator<unsigned> >
+class IMemAllocCount : public arr_1t<unsigned,AllocatorM<unsigned> >
 {
 public:
 
@@ -139,7 +140,7 @@ public:
 	const char* sFile;
 	int nLine;
 
-	void operator()(IMemAllocCount& o)
+	void operator()(IMemAllocCount& o) const
 	{
 		String sb;
 
@@ -173,15 +174,28 @@ bool operator==(const IMemAllocInfo& lhs,const IMemAllocInfo& rhs)
 	return memcmp(&lhs,&rhs,sizeof(IMemAllocInfo))==0;
 }
 
+bool operator<(const IMemAllocInfo& lhs,const IMemAllocInfo& rhs)
+{
+	return memcmp(&lhs,&rhs,sizeof(IMemAllocInfo))<0;
+}
+
 template<>class hash_t<IMemAllocInfo> : public vhwd::hash_impl<IMemAllocInfo>{};
 
+class MemAllocInfoCompare
+{
+public:
 
+	bool operator()(const IMemAllocInfo& lhs,const IMemAllocInfo& rhs)
+	{
+		return memcmp(&lhs,&rhs,sizeof(IMemAllocInfo))<0;
+	}
+};
 
 void MemLinking::report()
 {
+	typedef bst_map<IMemAllocInfo,IMemAllocCount,MemAllocInfoCompare,AllocatorM<int> > map_type;
+	map_type alinfo;
 
-	indexer_map<IMemAllocInfo,IMemAllocCount,indexer_map_trait<IMemAllocInfo,IMemAllocCount,int,Allocator<int> > > alinfo;
-	
 	{
 		LockGuard<AtomicSpin> lock1(m_tSpinLink);
 		if(!m_pMemLink.tHead.pNext)
@@ -197,11 +211,10 @@ void MemLinking::report()
 		}
 	}
 
-
 	System::LogTrace("---memlink report begin-------");
-	for(size_t i=0;i<alinfo.size();i++)
+	for(map_type::iterator it=alinfo.begin();it!=alinfo.end();++it)
 	{
-		alinfo.get(i).first(alinfo.get(i).second);
+		(*it).first((*it).second);
 	}
 	System::LogTrace("---memlink report finished----");
 

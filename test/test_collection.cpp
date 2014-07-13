@@ -45,14 +45,14 @@ TEST_DEFINE(TEST_Array)
 
 }
 
+
+
 TEST_DEFINE(TEST_Collection)
 {
 
 	indexer_set<String> sh;
-	
 	sh.insert("hello");
 	sh.insert("world");
-
 
 	TEST_ASSERT(sh.size()==2);
 	TEST_ASSERT(sh.get(0)=="hello");
@@ -77,7 +77,7 @@ TEST_DEFINE(TEST_Collection)
 	sm.erase("b");
 	TEST_ASSERT(sm.find("b")==-1);
 
-	vhwd::arr_xt<double,Allocator<double,128> > arr;
+	vhwd::arr_xt<double,AllocatorM<double,128> > arr;
 
  	//TEST_ASSERT_THROW(arr.resize((size_t)(-1)),std::bad_alloc);
 

@@ -107,6 +107,14 @@ typedef MemPoolDebug<MemPoolPaging> MemPool;
 typedef MemPoolPaging MemPool;
 #endif
 
+
+class def_allocator : public AllocatorP<int,MemPoolPaging>
+{
+public:
+	def_allocator(){}
+	def_allocator(const AllocatorP<int,MemPoolPaging>&){}
+};
+
 VHWD_LEAVE
 
 #endif

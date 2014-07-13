@@ -34,6 +34,7 @@ public:
 
 
 	arr_1t(){}
+	arr_1t(const A& al);
 	arr_1t(const arr_1t& o);
 
 	~arr_1t();
@@ -137,7 +138,7 @@ bool operator!=(const arr_1t<T,A1>& lhs,const arr_1t<T,A2>& rhs)
 
 
 template<typename T,typename A>
-arr_1t<T,A>::arr_1t(const arr_1t& o)
+arr_1t<T,A>::arr_1t(const arr_1t& o):basetype(o.get_allocator())
 {
 	size_type _newsize=o.size();
 	this->_xset(_newsize);
@@ -147,6 +148,12 @@ arr_1t<T,A>::arr_1t(const arr_1t& o)
 		xmem<T>::uninitialized_copy_n(o.m_ptr,_newsize,m_ptr);
 		extra().size=_newsize;
 	}
+}
+
+template<typename T,typename A>
+arr_1t<T,A>::arr_1t(const A& al):basetype(al)
+{
+
 }
 
 template<typename T,typename A>

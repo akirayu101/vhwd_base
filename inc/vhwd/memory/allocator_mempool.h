@@ -21,8 +21,8 @@
 VHWD_ENTER
 
 
-template <typename T,typename P,size_t E=0>
-class AllocatorUsePool
+template <typename T,typename P>
+class AllocatorP
 {
 public:
 	typedef T value_type;
@@ -36,12 +36,15 @@ public:
 	typedef const T &const_reference;
 
 public:
-	inline AllocatorUsePool() throw() { }
+
+	AllocatorP() throw() {}
+
+	AllocatorP(const AllocatorP&){}
 
 	template <typename T2>
-	inline AllocatorUsePool(const AllocatorUsePool<T,P> &) throw() {}
+	AllocatorP(const AllocatorP<T2,P> &) throw() {}
 
-	inline ~AllocatorUsePool() throw() { }
+	~AllocatorP() throw() {}
 
 	inline pointer address(reference r)
 	{
@@ -55,7 +58,7 @@ public:
 
 	inline pointer allocate(size_type n)
 	{
-		return (T*)P::current().allocate((n+E)*sizeof(T));
+		return (T*)P::current().allocate((n)*sizeof(T));
 	}
 
 	inline void deallocate(pointer p, size_type)
@@ -83,10 +86,10 @@ public:
 	template <typename T2>
 	struct rebind
 	{
-		typedef AllocatorUsePool<T2,P> other;
+		typedef AllocatorP<T2,P> other;
 	};
 
-	bool operator!=(const AllocatorUsePool<T,P> &other) const
+	bool operator!=(const AllocatorP &other) const
 	{
 		return !(*this == other);
 	}
@@ -94,12 +97,14 @@ public:
 	// Returns true if and only if storage allocated from *this
 	// can be deallocated from other, and vice versa.
 	// Always returns true for stateless allocators.
-	bool operator==(const AllocatorUsePool &other) const
+	bool operator==(const AllocatorP &other) const
 	{
 		(void)&other;
 		return true;
 	}
 };
+
+
 
 VHWD_LEAVE
 
