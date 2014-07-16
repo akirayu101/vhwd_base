@@ -26,6 +26,7 @@ public:
 	typedef kv_pair<key_type,mapped_type> value_type;
 	typedef kv_pair<const key_type,mapped_type>& value_reference;
 
+	static const key_type& key(const key_type& v){return v;}
 	static const key_type& key(const value_type& v){return v.first;}
 	static const mapped_type& value(const value_type& v){return v.second;}
 	static value_type pair(const key_type& k,const mapped_type& v=mapped_type()){return value_type(k,v);}

@@ -43,7 +43,7 @@ public:
 				_pItem=P::_end();
 				return;
 			}
-			if(p->child2!=_pItem)
+			if(p->child1==_pItem)
 			{
 				_pItem=p;
 				return;
@@ -63,10 +63,10 @@ public:
 			return;
 		}
 
-		if(_pItem->child2)
+		if(_pItem->child1)
 		{
-			_pItem=_pItem->child2;
-			while(_pItem->child1) _pItem=_pItem->child1;
+			_pItem=_pItem->child1;
+			while(_pItem->child2) _pItem=_pItem->child2;
 			return;
 		}
 
@@ -78,7 +78,7 @@ public:
 				_pItem=P::_beg();
 				return;
 			}
-			if(p->child2!=_pItem)
+			if(p->child2==_pItem)
 			{
 				_pItem=p;
 				return;

@@ -9,7 +9,7 @@
 #define __H_VHWD_COLLECTION_ARRAY_XT__
 
 
-#include "vhwd/collection/collection_base.h"
+#include "vhwd/collection/detail/collection_base.h"
 
 VHWD_ENTER
 

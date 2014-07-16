@@ -57,7 +57,7 @@ public:
 	indexer_base()
 	{
 		m_nMaxLoadFactor=2.0;
-		rehash(128);
+		rehash(32);
 	}
 
 	indexer_base(const indexer_base& o):values(o.values)
@@ -361,14 +361,22 @@ public:
 
 	void reserve(size_t n_)
 	{
+		values.reserve(n_);
 		rehash((double(n_)/double(m_nMaxLoadFactor)+0.5));
 	}
 
 	void rehash(size_t s_)
 	{
 
-		size_t sz=1<<8;
-		while(sz<s_) sz<<=1;
+		size_t sz=1<<5;
+		if(s_==0)
+		{
+			sz=m_nBucketCount;
+		}
+		else
+		{
+			while(sz<s_) sz<<=1;
+		}
 		size_t mk=sz-1;
 
 		chunk_array cks;
