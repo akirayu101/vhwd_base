@@ -845,6 +845,10 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\inc\vhwd\collection\detail\collection_base.h"
+							>
+						</File>
+						<File
 							RelativePath="..\..\inc\vhwd\collection\detail\indexer_base.h"
 							>
 						</File>

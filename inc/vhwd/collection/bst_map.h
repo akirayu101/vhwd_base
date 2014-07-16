@@ -22,9 +22,9 @@ public:
 	typedef typename basetype::allocator_type allocator_type;
 
 	bst_map(){}
-	bst_map(const bst_map& o):basetype(o){}
 	bst_map(const key_compare& kc,const A& al=A()):basetype(kc,al){}
 
+	bst_map(const bst_map& o):basetype(o){}
 	bst_map& operator=(const bst_map& o){impl=o.impl;return *this;}
 
 #ifdef VHWD_C11
@@ -34,18 +34,46 @@ public:
 
 	mapped_type& operator[](const key_type& k)
 	{
-		return impl.template handle<typename impl_type::fp_insert_node>(k)->extra;
+		return impl.template handle_key<typename impl_type::fp_insert_node>(k)->extra;
 	}
 
 	const mapped_type& operator[](const key_type& k) const
 	{
-		typename impl_type::nodetype* n=impl.handle<impl_type::fp_return_node>(k);
+		typename impl_type::nodetype* n=impl.handle_key<impl_type::fp_return_node>(k);
 		if(!n) Exception::XNotFound();
 		return n->extra;
 	}
 
 };
 
+
+template<typename K,typename V,typename C=std::less<K>,typename A=def_allocator >
+class bst_multimap : public bst_multi_container<bst_trait<K,V,C>,A>
+{
+protected:
+	typedef bst_multi_container<bst_trait<K,V,C>,A> basetype;
+	typedef typename basetype::key_type key_type;
+	typedef typename basetype::impl_type impl_type;
+	typedef V mapped_type;
+	using basetype::impl;
+
+public:
+
+	typedef typename basetype::key_compare key_compare;
+	typedef typename basetype::allocator_type allocator_type;
+
+	bst_multimap(){}
+	bst_multimap(const key_compare& kc,const A& al=A()):basetype(kc,al){}
+
+	bst_multimap(const bst_multimap& o):basetype(o){}
+	bst_multimap& operator=(const bst_multimap& o){impl=o.impl;return *this;}
+
+#ifdef VHWD_C11
+	bst_multimap(bst_multimap&& o):basetype(o){}
+	bst_multimap& operator=(bst_multimap&& o){swap(o);return *this;}
+#endif
+
+};
 
 VHWD_LEAVE
 

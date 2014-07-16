@@ -19,39 +19,39 @@ RWLock::RWLock(const RWLock&)
 
 RWLock::~RWLock()
 {
-	ThreadImpl_detail::rwlock_destroy(*this);	
+	ThreadImpl_detail::rwlock_destroy(*this);
 }
 
 void RWLock::lock_r()
 {
-	ThreadImpl_detail::rwlock_lock_r(*this);	
+	ThreadImpl_detail::rwlock_lock_r(*this);
 }
 
 void RWLock::lock_w()
 {
-	ThreadImpl_detail::rwlock_lock_w(*this);	
+	ThreadImpl_detail::rwlock_lock_w(*this);
 }
 
 
 //bool RWLock::trylock_r()
 //{
-//	return ThreadImpl_detail::rwlock_trylock_r(*this);	
+//	return ThreadImpl_detail::rwlock_trylock_r(*this);
 //}
 //
 //bool RWLock::trylock_w()
 //{
-//	return ThreadImpl_detail::rwlock_trylock_w(*this);	
+//	return ThreadImpl_detail::rwlock_trylock_w(*this);
 //}
 
 
 void RWLock::unlock_r()
 {
-	ThreadImpl_detail::rwlock_unlock_r(*this);	
+	ThreadImpl_detail::rwlock_unlock_r(*this);
 }
 
 void RWLock::unlock_w()
 {
-	ThreadImpl_detail::rwlock_unlock_w(*this);	
+	ThreadImpl_detail::rwlock_unlock_w(*this);
 }
 
 Mutex::Mutex()
@@ -66,22 +66,22 @@ Mutex::Mutex(const Mutex&)
 
 Mutex::~Mutex()
 {
-	ThreadImpl_detail::mutex_destroy(*this);	
+	ThreadImpl_detail::mutex_destroy(*this);
 }
 
 void Mutex::lock()
 {
-	ThreadImpl_detail::mutex_lock(*this);	
+	ThreadImpl_detail::mutex_lock(*this);
 }
 
 bool Mutex::try_lock()
 {
-	return ThreadImpl_detail::mutex_trylock(*this);	
+	return ThreadImpl_detail::mutex_trylock(*this);
 }
 
 void Mutex::unlock()
 {
-	ThreadImpl_detail::mutex_unlock(*this);	
+	ThreadImpl_detail::mutex_unlock(*this);
 }
 
 SpinLock::SpinLock()
@@ -96,23 +96,23 @@ SpinLock::SpinLock(const SpinLock&)
 
 SpinLock::~SpinLock()
 {
-	ThreadImpl_detail::spinlock_destroy(*this);	
+	ThreadImpl_detail::spinlock_destroy(*this);
 }
 
 void SpinLock::lock()
 {
-	ThreadImpl_detail::spinlock_lock(*this);	
+	ThreadImpl_detail::spinlock_lock(*this);
 }
 
 bool SpinLock::try_lock()
 {
-	return ThreadImpl_detail::spinlock_trylock(*this);	
+	return ThreadImpl_detail::spinlock_trylock(*this);
 }
 
 
 void SpinLock::unlock()
 {
-	ThreadImpl_detail::spinlock_unlock(*this);	
+	ThreadImpl_detail::spinlock_unlock(*this);
 }
 
 
@@ -216,8 +216,6 @@ Event::Event()
 {
 #ifdef _WIN32
 	hEvent=::CreateEvent(NULL,TRUE,FALSE,NULL);
-#else
-	m_nResetval=munual_reset?1:0;
 #endif
 }
 

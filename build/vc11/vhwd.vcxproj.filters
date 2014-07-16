@@ -425,9 +425,6 @@
     <ClInclude Include="..\..\inc\vhwd\collection\array_xt.h">
       <Filter>inc\vhwd\collection</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\inc\vhwd\collection\collection_base.h">
-      <Filter>inc\vhwd\collection</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\inc\vhwd\collection\indexer_map.h">
       <Filter>inc\vhwd\collection</Filter>
     </ClInclude>
@@ -522,6 +519,9 @@
       <Filter>inc\vhwd\collection\detail</Filter>
     </ClInclude>
     <ClInclude Include="..\..\inc\vhwd\collection\detail\kv_trait.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\collection_base.h">
       <Filter>inc\vhwd\collection\detail</Filter>
     </ClInclude>
   </ItemGroup>

@@ -157,10 +157,10 @@ public:
 	template<typename T1,typename T2>
 	containerB(const T1& kc,const T2& al):impl(kc,al){}
 
-	containerB(const containerB& o):impl(o){}
+	containerB(const containerB& o):impl(o.impl){}
 
 #ifdef VHWD_C11
-	containerB(containerB&& o):impl(o){}
+	containerB(containerB&& o):impl(o.impl){}
 #endif
 
 	iterator begin(){return impl.begin();}
@@ -183,12 +183,12 @@ public:
 	size_type max_size() const{return impl.get_allocator().max_size();}
 	void clear(){impl.clear();}
 
-	void swap(containerB& o){impl.swap(o);}
+	void swap(containerB& o){impl.swap(o.impl);}
 
 	typename impl_type::_Alloc_return get_allocator(){return impl.get_allocator();}
 
 protected:
-	impl_type impl;
+	mutable impl_type impl;
 };
 
 template<typename A>

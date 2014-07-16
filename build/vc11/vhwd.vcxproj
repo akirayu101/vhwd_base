@@ -452,6 +452,7 @@
     <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_tree.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_tree_iterator.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_tree_node.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\collection_base.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\detail\indexer_base.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\detail\indexer_container.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\detail\kv_trait.h" />
@@ -530,7 +531,6 @@
     <ClInclude Include="..\..\inc\vhwd\memory\mempool.h" />
     <ClInclude Include="..\..\inc\vhwd\testing\test.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\array_xt.h" />
-    <ClInclude Include="..\..\inc\vhwd\collection\collection_base.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\indexer_map.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\indexer_set.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\intrusive_list.h" />

@@ -8,7 +8,7 @@
 #ifndef __H_VHWD_COLLECTION_LOCKFREE_QUEUE__
 #define __H_VHWD_COLLECTION_LOCKFREE_QUEUE__
 
-#include "vhwd/collection/collection_base.h"
+#include "vhwd/collection/detail/collection_base.h"
 #include "vhwd/basic/atomic.h"
 #include "vhwd/basic/bitflags.h"
 #include "vhwd/basic/exception.h"
