@@ -6,11 +6,11 @@
 
 VHWD_ENTER
 
-template<typename T,typename A>
-class bst_container : public containerB<bst_tree<T,A> >
+template<typename P,typename A>
+class bst_container : public containerB<bst_tree<P,A> >
 {
 protected:
-	typedef containerB<bst_tree<T,A> > basetype;
+	typedef containerB<bst_tree<P,A> > basetype;
 	typedef typename basetype::impl_type impl_type;
 	using basetype::impl;
 
@@ -113,7 +113,7 @@ public:
 		typename impl_type::_Keycomp_return kc;
 		bool operator()(const value_type& lhs,const value_type& rhs)
 		{
-			return kc(T::key(lhs),T::key(rhs));
+			return kc(P::key(lhs),P::key(rhs));
 		}
 	};
 
@@ -128,12 +128,12 @@ public:
 	}
 };
 
-template<typename T,typename A>
-class bst_multi_container : public bst_container<T,A>
+template<typename P,typename A>
+class bst_multi_container : public bst_container<P,A>
 {
 public:
 protected:
-	typedef bst_container<T,A> basetype;
+	typedef bst_container<P,A> basetype;
 	typedef typename basetype::impl_type impl_type;
 	using basetype::impl;
 
