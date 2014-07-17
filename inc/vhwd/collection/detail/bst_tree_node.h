@@ -115,37 +115,69 @@ public:
 		node->color=node->color==COLOR_RED?COLOR_BLACK:COLOR_RED;
 	}
 
-	static nodetype* _nil(){return ((nodetype*)NULL)+0;}
-	static nodetype* _beg(){return ((nodetype*)NULL)+1;}
-	static nodetype* _end(){return ((nodetype*)NULL)+2;}
-	static nodetype* _val(){return ((nodetype*)NULL)+3;}
-
-	static nodetype* _min(nodetype* p)
+	static nodetype* _min(nodetype* n)
 	{
-		if(!p) return _beg();
-		while(p->child1) p=p->child1;
-		return p;
+		if(!n) return NULL;
+		while(n->child1) n=n->child1;
+		return n;
 	}
-	static nodetype* _max(nodetype* p)
+	static nodetype* _max(nodetype* n)
 	{
-		if(!p) return _end();
-		while(p->child2) p=p->child2;
-		return p;
+		if(!n) return NULL;
+		while(n->child2) n=n->child2;
+		return n;
 	}
 
-	static nodetype*  nd_min(nodetype* p)
+	static nodetype* _inc(nodetype* n)
 	{
-		if(!p) return NULL;
-		while(p->child1) p=p->child1;
-		return p;
+		wassert(n!=NULL);
+		if(n->child2)
+		{
+			n=n->child2;
+			while(n->child1) n=n->child1;
+			return n;
+		}
+		
+		for(;;)
+		{
+			nodetype* p=n->parent;			
+			if(!p)
+			{
+				return NULL;
+			}
+			if(p->child1==n)
+			{
+				return p;
+			}
+			n=p;
+		}
 	}
 
-	static nodetype*  nd_max(nodetype* p)
+	static nodetype* _dec(nodetype* n)
 	{
-		if(!p) return NULL;
-		while(p->child2) p=p->child2;
-		return p;
+		wassert(n!=NULL);
+		if(n->child1)
+		{
+			n=n->child1;
+			while(n->child2) n=n->child2;
+			return n;
+		}
+		
+		for(;;)
+		{
+			nodetype* p=n->parent;			
+			if(!p)
+			{
+				return NULL;
+			}
+			if(p->child2==n)
+			{
+				return p;
+			}
+			n=p;
+		}
 	}
+
 };
 
 template<typename K,typename V,typename C>

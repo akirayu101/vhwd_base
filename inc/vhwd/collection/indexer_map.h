@@ -45,7 +45,7 @@ public:
 		iterator(){}
 		iterator(const basetype& o):basetype(o){}
 
-		typedef kv_pair<const key_type,mapped_type> type;
+		typedef std::pair<const key_type,mapped_type> type;
 
 		type* ptr()
 		{

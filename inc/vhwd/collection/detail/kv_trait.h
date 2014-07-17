@@ -3,18 +3,10 @@
 #define __H_VHWD_COLLECTION_KV_TRAIT__
 
 #include "vhwd/config.h"
+#include <utility>
 
 VHWD_ENTER
 
-template<typename K,typename V>
-class kv_pair
-{
-public:
-	K first;
-	V second;
-	kv_pair(){}
-	kv_pair(const K& k,const V& v=V()):first(k),second(v){}
-};
 
 template<typename K,typename V=void>
 class kv_trait
@@ -23,8 +15,8 @@ public:
 
 	typedef K key_type;
 	typedef V mapped_type;
-	typedef kv_pair<key_type,mapped_type> value_type;
-	typedef kv_pair<const key_type,mapped_type>& value_reference;
+	typedef std::pair<key_type,mapped_type> value_type;
+	typedef std::pair<const key_type,mapped_type>& value_reference;
 
 	static const key_type& key(const key_type& v){return v;}
 	static const key_type& key(const value_type& v){return v.first;}

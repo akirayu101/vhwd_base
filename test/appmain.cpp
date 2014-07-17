@@ -1,5 +1,4 @@
 #include "vhwd.h"
-
 using namespace vhwd;
 
 

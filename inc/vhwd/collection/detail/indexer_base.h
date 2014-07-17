@@ -37,8 +37,6 @@ public:
 	{
 		return k1==k2;
 	}
-
-
 };
 
 

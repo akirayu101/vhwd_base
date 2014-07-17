@@ -46,9 +46,90 @@ TEST_DEFINE(TEST_Array)
 }
 
 
+void test_bst_set()
+{
+	bst_set<int> s;
+	for(int i=0;i<1024;++i)
+	{
+		s.insert(i);
+	}
+
+	TEST_ASSERT(s.size()==1024);
+	TEST_ASSERT(s.find(9)!=s.end());
+	TEST_ASSERT(s.count(9)==1);
+	s.erase(9);
+	TEST_ASSERT(s.find(9)==s.end());
+	TEST_ASSERT(s.count(9)==0);
+	TEST_ASSERT(s.size()==1023);
+
+	TEST_ASSERT(s.insert(1).second==false);
+	TEST_ASSERT(s.insert(2048).second==true);
+
+	std::vector<int> aa(s.begin(),s.end());
+	std::vector<int> bb(s.rbegin(),s.rend());
+
+	TEST_ASSERT(aa.size()==s.size());
+	TEST_ASSERT(bb.size()==s.size());
+
+	TEST_ASSERT(std::is_sorted(aa.begin(),aa.end(),std::less<int>()));
+	TEST_ASSERT(std::is_sorted(bb.rbegin(),bb.rend(),std::less<int>()));
+
+	s.clear();
+	TEST_ASSERT(s.size()==0);
+
+}
+
+
+void test_bst_multiset()
+{
+	bst_multiset<int> s;
+	for(int i=0;i<1024;++i)
+	{
+		s.insert(i);
+	}
+	for(int i=0;i<1024;++i)
+	{
+		s.insert(i);
+	}
+
+	TEST_ASSERT(s.size()==2048);
+	TEST_ASSERT(s.find(9)!=s.end());
+	TEST_ASSERT(s.count(9)==2);
+	s.erase(9);
+	TEST_ASSERT(s.find(9)==s.end());
+	TEST_ASSERT(s.count(9)==0);
+	TEST_ASSERT(s.size()==2046);
+
+	s.insert(1);
+	TEST_ASSERT(s.count(1)==3);
+
+	std::pair<bst_multiset<int>::iterator,bst_multiset<int>::iterator> eqr(s.equal_range(1));
+	for(bst_multiset<int>::iterator it=eqr.first;it!=eqr.second;++it)
+	{
+		TEST_ASSERT((*it)==1);
+	}
+
+	
+
+	std::vector<int> aa(s.begin(),s.end());
+	std::vector<int> bb(s.rbegin(),s.rend());
+
+	TEST_ASSERT(aa.size()==s.size());
+	TEST_ASSERT(bb.size()==s.size());
+
+	TEST_ASSERT(std::is_sorted(aa.begin(),aa.end(),std::less<int>()));
+	TEST_ASSERT(std::is_sorted(bb.rbegin(),bb.rend(),std::less<int>()));
+
+	s.clear();
+	TEST_ASSERT(s.size()==0);
+
+}
+
 
 TEST_DEFINE(TEST_Collection)
 {
+	test_bst_set();
+	test_bst_multiset();
 
 	indexer_set<String> sh;
 	sh.insert("hello");

@@ -40,9 +40,9 @@ public:
 	typedef bst_iterator<P,false,true> const_reverse_iterator;
 
 	iterator begin(){return gen_iterator<iterator>(P::_min(m_pRoot));}
-	iterator end(){return gen_iterator<iterator>(P::_end());}
+	iterator end(){return gen_iterator<iterator>(NULL);}
 	reverse_iterator rbegin(){return gen_iterator<reverse_iterator>(P::_max(m_pRoot));}
-	reverse_iterator rend(){return gen_iterator<reverse_iterator>(P::_beg());}
+	reverse_iterator rend(){return gen_iterator<reverse_iterator>(NULL);}
 
 
 	bst_tree(){m_pRoot=NULL;m_nSize=0;}
@@ -95,11 +95,11 @@ public:
 	{
 	public:
 		typedef R ret_type;
-		static ret_type handle_root(const bst_tree& t,key_reference){return R();}
-		static ret_type handle_add1(const bst_tree& t,key_reference,nodetype*){return R();}
-		static ret_type handle_add2(const bst_tree& t,key_reference,nodetype*){return R();}
-		static ret_type handle_equal(const bst_tree& t,key_reference,nodetype*){return R();}
-		static ret_type handle_multi(const bst_tree& t,key_reference,nodetype*){return R();}
+		static ret_type handle_root(bst_tree& t,key_reference){return R();}
+		static ret_type handle_add1(bst_tree& t,key_reference,nodetype*){return R();}
+		static ret_type handle_add2(bst_tree& t,key_reference,nodetype*){return R();}
+		static ret_type handle_equal(bst_tree& t,key_reference,nodetype*){return R();}
+		static ret_type handle_multi(bst_tree& t,key_reference,nodetype*){return R();}
 	};
 
 
@@ -107,27 +107,27 @@ public:
 	{
 	public:
 		typedef iterator ret_type;
-		static ret_type handle_root(const bst_tree& t,key_reference){return t.gen_iterator<iterator>(P::_end());}
-		static ret_type handle_add1(const bst_tree& t,key_reference,nodetype*){return t.gen_iterator<iterator>(P::_end());}
-		static ret_type handle_add2(const bst_tree& t,key_reference,nodetype*){return t.gen_iterator<iterator>(P::_end());}
-		static ret_type handle_equal(const bst_tree& t,key_reference,nodetype*){return t.gen_iterator<iterator>(P::_end());}
-		static ret_type handle_multi(const bst_tree& t,key_reference,nodetype*){return t.gen_iterator<iterator>(P::_end());}
+		static ret_type handle_root(bst_tree& t,key_reference){return t.gen_iterator<iterator>(NULL);}
+		static ret_type handle_add1(bst_tree& t,key_reference,nodetype*){return t.gen_iterator<iterator>(NULL);}
+		static ret_type handle_add2(bst_tree& t,key_reference,nodetype*){return t.gen_iterator<iterator>(NULL);}
+		static ret_type handle_equal(bst_tree& t,key_reference,nodetype*){return t.gen_iterator<iterator>(NULL);}
+		static ret_type handle_multi(bst_tree& t,key_reference,nodetype*){return t.gen_iterator<iterator>(NULL);}
 	};
 
 	class fp_return_iterator : public fp_base_iterator
 	{
 	public:
 		typedef iterator ret_type;
-		static ret_type handle_equal(const bst_tree& t,key_reference,nodetype* n){return t.gen_iterator<ret_type>(n);}
-		static ret_type handle_multi(const bst_tree& t,key_reference,nodetype* n){return t.gen_iterator<ret_type>(n);}
+		static ret_type handle_equal(bst_tree& t,key_reference,nodetype* n){return t.gen_iterator<ret_type>(n);}
+		static ret_type handle_multi(bst_tree& t,key_reference,nodetype* n){return t.gen_iterator<ret_type>(n);}
 	};
 
 	class fp_return_node : public fp_base<nodetype*>
 	{
 	public:
 		typedef nodetype* ret_type;
-		static ret_type handle_equal(const bst_tree& t,key_reference,nodetype* n){return n;}
-		static ret_type handle_multi(const bst_tree& t,key_reference,nodetype* n){return n;}
+		static ret_type handle_equal(bst_tree& t,key_reference,nodetype* n){return n;}
+		static ret_type handle_multi(bst_tree& t,key_reference,nodetype* n){return n;}
 	};
 
 	class fp_lower_bound;
@@ -151,14 +151,14 @@ public:
 	template<typename ITERATOR>
 	ITERATOR gen_iterator(nodetype* p)
 	{
-		return ITERATOR(p,(const nodetype**)&m_pRoot);
+		return ITERATOR(p,&m_pRoot);
 	}
 
-	template<typename ITERATOR>
-	ITERATOR gen_iterator(nodetype* p) const
-	{
-		return ITERATOR(p,(const nodetype**)&m_pRoot);
-	}
+	//template<typename ITERATOR>
+	//ITERATOR gen_iterator(nodetype* p) const
+	//{
+	//	return ITERATOR(p,&m_pRoot);
+	//}
 
 protected:
 
@@ -375,12 +375,11 @@ public:
 
 	static ret_type handle_multi(bst_tree& t,key_reference v,nodetype* n)
 	{
-		ret_type num=1;
-		iterator t0=t.gen_iterator<iterator>(n);
+		ret_type num=1;		
 		while(1)
 		{
-			nodetype* x=(++iterator(t0)).get_item();
-			if(x<P::_val()||t.key_comp()(v,x->value))
+			nodetype* x=P::_inc(n);
+			if(x==NULL||t.key_comp()(v,x->value))
 			{
 				break;
 			}
@@ -389,8 +388,8 @@ public:
 
 		while(1)
 		{
-			nodetype* x=(--iterator(t0)).get_item();
-			if(x<P::_val()||t.key_comp()(x->value,v))
+			nodetype* x=P::_dec(n);
+			if(x==NULL||t.key_comp()(x->value,v))
 			{
 				break;
 			}
@@ -408,11 +407,11 @@ class bst_tree<P,A>::fp_lower_bound : public fp_base_iterator
 {
 public:
 	typedef iterator ret_type;
-	static ret_type handle_add1(const bst_tree& t,key_reference,nodetype* n){return t.gen_iterator<iterator>(n);}
-	static ret_type handle_add2(const bst_tree& t,key_reference,nodetype* n){return ++t.gen_iterator<iterator>(n);}
-	static ret_type handle_equal(const bst_tree& t,key_reference,nodetype* n){return t.gen_iterator<iterator>(n);}
+	static ret_type handle_add1(bst_tree& t,key_reference,nodetype* n){return t.gen_iterator<iterator>(n);}
+	static ret_type handle_add2(bst_tree& t,key_reference,nodetype* n){return ++t.gen_iterator<iterator>(n);}
+	static ret_type handle_equal(bst_tree& t,key_reference,nodetype* n){return t.gen_iterator<iterator>(n);}
 
-	static ret_type handle_multi(const bst_tree& t,key_reference v,nodetype* n)
+	static ret_type handle_multi(bst_tree& t,key_reference v,nodetype* n)
 	{
 		if(!n->child1) return t.gen_iterator<iterator>(n);
 		for(;;)
@@ -450,10 +449,10 @@ class bst_tree<P,A>::fp_upper_bound : public fp_base_iterator
 {
 public:
 	typedef typename fp_base_iterator::ret_type ret_type;
-	static ret_type handle_add1(const bst_tree& t,key_reference,nodetype* n){return t.gen_iterator<iterator>(n);}
-	static ret_type handle_add2(const bst_tree& t,key_reference,nodetype* n){return ++t.gen_iterator<iterator>(n);}
-	static ret_type handle_equal(const bst_tree& t,key_reference,nodetype* n){return ++t.gen_iterator<iterator>(n);}
-	static ret_type handle_multi(const bst_tree& t,key_reference v,nodetype* n)
+	static ret_type handle_add1(bst_tree& t,key_reference,nodetype* n){return t.gen_iterator<iterator>(n);}
+	static ret_type handle_add2(bst_tree& t,key_reference,nodetype* n){return ++t.gen_iterator<iterator>(n);}
+	static ret_type handle_equal(bst_tree& t,key_reference,nodetype* n){return ++t.gen_iterator<iterator>(n);}
+	static ret_type handle_multi(bst_tree& t,key_reference v,nodetype* n)
 	{
 		if(!n->child2) return ++t.gen_iterator<iterator>(n);
 		for(;;)
@@ -489,11 +488,11 @@ class bst_tree<P,A>::fp_equal_range
 {
 public:
 	typedef std::pair<iterator,iterator> ret_type;
-	static ret_type handle_root(const bst_tree& t,key_reference){iterator it=t.gen_iterator<iterator>(P::_end());return ret_type(it,it);}
-	static ret_type handle_add1(const bst_tree& t,key_reference,nodetype* n){iterator it=t.gen_iterator<iterator>(n);return ret_type(it,it);}
-	static ret_type handle_add2(const bst_tree& t,key_reference,nodetype* n){iterator it=++t.gen_iterator<iterator>(n);return ret_type(it,it);}
-	static ret_type handle_equal(const bst_tree& t,key_reference,nodetype* n){iterator it=t.gen_iterator<iterator>(n);return ret_type(it,++iterator(it));}
-	static ret_type handle_multi(const bst_tree& t,key_reference v,nodetype* n)
+	static ret_type handle_root(bst_tree& t,key_reference){iterator it=t.gen_iterator<iterator>(NULL);return ret_type(it,it);}
+	static ret_type handle_add1(bst_tree& t,key_reference,nodetype* n){iterator it=t.gen_iterator<iterator>(n);return ret_type(it,it);}
+	static ret_type handle_add2(bst_tree& t,key_reference,nodetype* n){iterator it=++t.gen_iterator<iterator>(n);return ret_type(it,it);}
+	static ret_type handle_equal(bst_tree& t,key_reference,nodetype* n){iterator it=t.gen_iterator<iterator>(n);return ret_type(it,++iterator(it));}
+	static ret_type handle_multi(bst_tree& t,key_reference v,nodetype* n)
 	{
 		return ret_type(fp_lower_bound::handle_multi(t,v,n),fp_upper_bound::handle_multi(t,v,n));
 	}
@@ -1062,8 +1061,8 @@ void bst_tree<P,A>::do_erase(nodetype* n)
 {
 	if(n->child1!=NULL&&n->child2!=NULL)
 	{
-		//nodetype* x=P::nd_min(n->child2);
-		nodetype* x=P::nd_max(n->child1);
+		//nodetype* x=P::_min(n->child2);
+		nodetype* x=P::_max(n->child1);
 		do_erase_swap_node(n,x);
 	}
 	delete_one_child(n);
@@ -1073,28 +1072,28 @@ void bst_tree<P,A>::do_erase(nodetype* n)
 template<typename P,typename A>
 typename bst_tree<P,A>::iterator bst_tree<P,A>::erase(const_iterator position)
 {
-	wassert(position.get_root()==m_pRoot);
-	nodetype* n=position.get_item();
-	if(n<P::_val())
+	wassert(position.root()==m_pRoot);
+	nodetype* n=position.node();
+	if(n==NULL)
 	{
 		return end();
 	}
 	++position;
 	do_erase(n);
 
-	return gen_iterator<iterator>(position.get_item());
+	return gen_iterator<iterator>(position.node());
 }
 
 template<typename P,typename A>
 typename bst_tree<P,A>::iterator bst_tree<P,A>::erase(const_iterator p1,const_iterator p2)
 {
-	wassert(p1.get_root()==m_pRoot);
-	wassert(p2.get_root()==m_pRoot);
+	wassert(p1.root()==m_pRoot);
+	wassert(p2.root()==m_pRoot);
 
 	while(p1!=p2)
 	{
-		nodetype* n=p1.get_item();
-		if(n<P::_val())
+		nodetype* n=p1.node();
+		if(n==NULL)
 		{
 			System::LogError("%s failed! INVALID iterator!","bst_tree<...>::erase");
 			return end();
@@ -1103,7 +1102,7 @@ typename bst_tree<P,A>::iterator bst_tree<P,A>::erase(const_iterator p1,const_it
 		++p1;
 		do_erase(n);
 	}
-	return gen_iterator<iterator>(p2.get_item());
+	return gen_iterator<iterator>(p2.node());
 }
 
 template<typename P,typename A>
