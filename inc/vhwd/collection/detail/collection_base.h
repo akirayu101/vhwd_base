@@ -49,7 +49,6 @@ class arr_xt;
 template<typename T,typename A=def_allocator >
 class arr_1t;
 
-
 class container_base
 {
 public:
@@ -61,14 +60,12 @@ class alloc_base : public container_base
 {
 public:
 	typedef A allocator_type;
-	typedef A _Alloc_return;
-
 
 	alloc_base(){}
 	alloc_base(const alloc_base&){}
 	alloc_base(const allocator_type&){}
 
-	_Alloc_return get_allocator() const {return allocator_type();}
+	allocator_type& get_allocator() const {return *(allocator_type*)(NULL);}
 };
 
 template<typename A>
@@ -76,13 +73,12 @@ class alloc_base<A,false> : public container_base
 {
 public:
 	typedef A allocator_type;
-	typedef A& _Alloc_return;
 
 	alloc_base(){}
 	alloc_base(const alloc_base& o):_al(o._al){}
 	alloc_base(const allocator_type& al):_al(al){}
 
-	_Alloc_return get_allocator() const {return _al;}
+	allocator_type& get_allocator() const {return _al;}
 
 protected:
 	mutable allocator_type _al;
@@ -95,8 +91,6 @@ class keycomp_base : public alloc_base<A,tl::is_empty_type<A>::value>
 {
 public:
 	typedef K key_compare;
-	typedef K _Keycomp_return;
-
 	typedef alloc_base<A,tl::is_empty_type<A>::value> basetype;
 	typedef typename basetype::allocator_type allocator_type;
 
@@ -105,7 +99,7 @@ public:
 	keycomp_base(const key_compare&,const allocator_type& al):basetype(al){}
 
 
-	_Keycomp_return key_comp() const {return key_compare();}
+	key_compare& key_comp() const {return *(key_compare*)(NULL);}
 };
 
 template<typename K,typename A>
@@ -113,8 +107,6 @@ class keycomp_base<K,false,A> : public alloc_base<A,tl::is_empty_type<A>::value>
 {
 public:
 	typedef K key_compare;
-	typedef K& _Keycomp_return;
-
 	typedef alloc_base<A,tl::is_empty_type<A>::value> basetype;
 	typedef typename basetype::allocator_type allocator_type;
 
@@ -122,7 +114,7 @@ public:
 	keycomp_base(const keycomp_base& o):basetype(o),_kc(o._kc){}
 	keycomp_base(const key_compare& kc,const allocator_type& al):basetype(al),_kc(kc){}
 
-	_Keycomp_return key_comp() const {return _kc;}
+	key_compare& key_comp() const {return _kc;}
 
 protected:
 	mutable key_compare _kc;
@@ -185,7 +177,7 @@ public:
 
 	void swap(containerB& o){impl.swap(o.impl);}
 
-	typename impl_type::_Alloc_return get_allocator(){return impl.get_allocator();}
+	allocator_type& get_allocator(){return impl.get_allocator();}
 
 protected:
 	mutable impl_type impl;

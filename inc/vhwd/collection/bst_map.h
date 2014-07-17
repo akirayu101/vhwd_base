@@ -11,15 +11,15 @@ class bst_map : public bst_container<bst_trait<K,V,C>,A>
 {
 protected:
 	typedef bst_container<bst_trait<K,V,C>,A> basetype;
-	typedef typename basetype::key_type key_type;
 	typedef typename basetype::impl_type impl_type;
-	typedef V mapped_type;
 	using basetype::impl;
 
 public:
 
-	typedef typename basetype::key_compare key_compare;
-	typedef typename basetype::allocator_type allocator_type;
+	typedef typename impl_type::key_type key_type;
+	typedef typename impl_type::mapped_type mapped_type;
+	typedef typename impl_type::key_compare key_compare;
+	typedef typename impl_type::allocator_type allocator_type;
 
 	bst_map(){}
 	bst_map(const key_compare& kc,const A& al=A()):basetype(kc,al){}
@@ -39,7 +39,7 @@ public:
 
 	const mapped_type& operator[](const key_type& k) const
 	{
-		typename impl_type::nodetype* n=impl.handle_key<impl_type::fp_return_node>(k);
+		typename impl_type::node_type* n=impl.handle_key<impl_type::fp_return_node>(k);
 		if(!n) Exception::XNotFound();
 		return n->extra;
 	}
@@ -52,15 +52,15 @@ class bst_multimap : public bst_multi_container<bst_trait<K,V,C>,A>
 {
 protected:
 	typedef bst_multi_container<bst_trait<K,V,C>,A> basetype;
-	typedef typename basetype::key_type key_type;
 	typedef typename basetype::impl_type impl_type;
-	typedef V mapped_type;
 	using basetype::impl;
 
 public:
 
-	typedef typename basetype::key_compare key_compare;
-	typedef typename basetype::allocator_type allocator_type;
+	typedef typename impl_type::key_type key_type;
+	typedef typename impl_type::mapped_type mapped_type;
+	typedef typename impl_type::key_compare key_compare;
+	typedef typename impl_type::allocator_type allocator_type;
 
 	bst_multimap(){}
 	bst_multimap(const key_compare& kc,const A& al=A()):basetype(kc,al){}

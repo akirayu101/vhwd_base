@@ -108,7 +108,7 @@ void MemPageCache::_init()
 	size_t sbit[]={8,16,24,32,48,64,80,96,112,128,192,256,512,768,1024,1536,2048,3072,4096};
 
 	// Determine real slot count
-	m_nFixedSizeCount=sizeof(sbit)/sizeof(int);
+	m_nFixedSizeCount=sizeof(sbit)/sizeof(size_t);
 
 	for(size_t i=3;i<m_nFixedSizeCount;i++)
 	{

@@ -22,7 +22,7 @@ public:
 	typedef typename impl_type::key_type key_type;
 	typedef typename impl_type::value_type value_type;
 	typedef typename impl_type::key_compare key_compare;
-	typedef typename basetype::allocator_type allocator_type;
+	typedef typename impl_type::allocator_type allocator_type;
 
 	bst_container(){}
 	bst_container(const key_compare& kc,const A& al):basetype(kc,allocator_type(al)){}
@@ -101,28 +101,26 @@ public:
 		return impl.template handle_key<typename impl_type::fp_equal_range>(v);
 	}
 
-	typename impl_type::_Keycomp_return key_comp() const
+	key_compare& key_comp() const
 	{
 		return impl.key_comp();
 	}
 
-	class value_compare
+	class value_compare : public key_compare
 	{
 	public:
-		value_compare(typename impl_type::_Keycomp_return kc_):kc(kc_){}
-		typename impl_type::_Keycomp_return kc;
 		bool operator()(const value_type& lhs,const value_type& rhs)
 		{
-			return kc(P::key(lhs),P::key(rhs));
+			return key_compare::operator()(P::key(lhs),P::key(rhs));
 		}
 	};
 
-	value_compare value_comp() const
+	value_compare& value_comp() const
 	{
-		return value_compare(impl.key_comp());
+		return (value_compare&)(impl.key_comp());
 	}
 
-	typename impl_type::_Alloc_return get_allocator() const
+	allocator_type& get_allocator() const
 	{
 		return impl.get_allocator();
 	}
@@ -131,7 +129,7 @@ public:
 template<typename P,typename A>
 class bst_multi_container : public bst_container<P,A>
 {
-public:
+
 protected:
 	typedef bst_container<P,A> basetype;
 	typedef typename basetype::impl_type impl_type;
@@ -158,7 +156,6 @@ public:
 	iterator insert(const value_type& v)
 	{
 		return impl.template handle_multi_value<typename impl_type::fp_insert_pair>(v).first;
-		return iterator();
 	}
 
 	template <class InputIterator>

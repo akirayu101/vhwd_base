@@ -48,11 +48,16 @@ TEST_DEFINE(TEST_Array)
 
 void test_bst_set()
 {
-	bst_set<int> s;
+	std::vector<int> aInts;
 	for(int i=0;i<1024;++i)
 	{
-		s.insert(i);
+		aInts.push_back(i);
 	}
+	std::random_shuffle(aInts.begin(),aInts.end());
+
+	bst_set<int> s;
+	s.insert(aInts.begin(),aInts.end());
+
 
 	TEST_ASSERT(s.size()==1024);
 	TEST_ASSERT(s.find(9)!=s.end());
@@ -65,15 +70,6 @@ void test_bst_set()
 	TEST_ASSERT(s.insert(1).second==false);
 	TEST_ASSERT(s.insert(2048).second==true);
 
-	std::vector<int> aa(s.begin(),s.end());
-	std::vector<int> bb(s.rbegin(),s.rend());
-
-	TEST_ASSERT(aa.size()==s.size());
-	TEST_ASSERT(bb.size()==s.size());
-
-	TEST_ASSERT(std::is_sorted(aa.begin(),aa.end(),std::less<int>()));
-	TEST_ASSERT(std::is_sorted(bb.rbegin(),bb.rend(),std::less<int>()));
-
 	s.clear();
 	TEST_ASSERT(s.size()==0);
 
@@ -82,15 +78,20 @@ void test_bst_set()
 
 void test_bst_multiset()
 {
+	std::vector<int> aInts;
+	for(int i=0;i<1024;++i)
+	{
+		aInts.push_back(i);
+	}
+	for(int i=0;i<1024;++i)
+	{
+		aInts.push_back(i);
+	}
+	std::random_shuffle(aInts.begin(),aInts.end());
+
+
 	bst_multiset<int> s;
-	for(int i=0;i<1024;++i)
-	{
-		s.insert(i);
-	}
-	for(int i=0;i<1024;++i)
-	{
-		s.insert(i);
-	}
+	s.insert(aInts.begin(),aInts.end());
 
 	TEST_ASSERT(s.size()==2048);
 	TEST_ASSERT(s.find(9)!=s.end());
@@ -108,18 +109,7 @@ void test_bst_multiset()
 	{
 		TEST_ASSERT((*it)==1);
 	}
-
 	
-
-	std::vector<int> aa(s.begin(),s.end());
-	std::vector<int> bb(s.rbegin(),s.rend());
-
-	TEST_ASSERT(aa.size()==s.size());
-	TEST_ASSERT(bb.size()==s.size());
-
-	TEST_ASSERT(std::is_sorted(aa.begin(),aa.end(),std::less<int>()));
-	TEST_ASSERT(std::is_sorted(bb.rbegin(),bb.rend(),std::less<int>()));
-
 	s.clear();
 	TEST_ASSERT(s.size()==0);
 
@@ -161,7 +151,6 @@ TEST_DEFINE(TEST_Collection)
 	vhwd::arr_xt<double,AllocatorM<double,128> > arr;
 
  	//TEST_ASSERT_THROW(arr.resize((size_t)(-1)),std::bad_alloc);
-
 
 	arr.resize(6,5,4,3,2,1);
 	arr(3,3)=3.25;

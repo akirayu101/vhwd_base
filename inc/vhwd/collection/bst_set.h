@@ -13,12 +13,14 @@ VHWD_ENTER
 template<typename T,typename C=std::less<T>,typename A=def_allocator>
 class bst_set : public bst_container<bst_trait<T,void,C>,A>
 {
-public:
+protected:
 	typedef bst_container<bst_trait<T,void,C>,A> basetype;
-	typedef typename basetype::key_compare key_compare;
-	typedef typename basetype::allocator_type allocator_type;
-
+	typedef typename basetype::impl_type impl_type;
 	using basetype::impl;
+
+public:
+	typedef typename impl_type::key_compare key_compare;
+	typedef typename impl_type::allocator_type allocator_type;
 
 	bst_set(){}
 	bst_set(const bst_set& o):basetype(o){}
@@ -37,12 +39,14 @@ public:
 template<typename T,typename C=std::less<T>,typename A=def_allocator>
 class bst_multiset : public bst_multi_container<bst_trait<T,void,C>,A>
 {
-public:
+protected:
 	typedef bst_multi_container<bst_trait<T,void,C>,A> basetype;
-	typedef typename basetype::key_compare key_compare;
-	typedef typename basetype::allocator_type allocator_type;
-
+	typedef typename basetype::impl_type impl_type;
 	using basetype::impl;
+
+public:
+	typedef typename impl_type::key_compare key_compare;
+	typedef typename impl_type::allocator_type allocator_type;
 
 	bst_multiset(){}
 	bst_multiset(const bst_multiset& o):basetype(o){}

@@ -1,6 +1,4 @@
 #include "vhwd.h"
-using namespace vhwd;
-
 
 int main(int argc,char** argv)
 {

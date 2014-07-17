@@ -13,23 +13,23 @@ VHWD_ENTER
 #undef new
 
 template<typename P,typename A>
-class bst_tree : public containerK<typename P::key_compare,typename A::template rebind<typename P::nodetype>::other >
+class bst_tree : public containerK<typename P::key_compare,typename A::template rebind<typename P::node_type>::other >
 {
 public:
-	typedef containerK<typename P::key_compare,typename A::template rebind<typename P::nodetype>::other > basetype;
+	typedef containerK<typename P::key_compare,typename A::template rebind<typename P::node_type>::other > basetype;
 
-	typedef typename P::nodetype nodetype;
+	typedef typename P::node_type node_type;
 	typedef typename P::key_type key_type;
 	typedef typename P::mapped_type mapped_type;
 	typedef typename P::value_type value_type;
-	typedef typename P::key_reference key_reference;
+	typedef typename P::const_key_reference const_key_reference;
 
 	typedef typename P::key_compare key_compare;
 	typedef typename basetype::size_type size_type;
 	typedef typename basetype::allocator_type allocator_type;
 
 private:
-	nodetype* m_pRoot;
+	node_type* m_pRoot;
 	size_t m_nSize;
 
 public:
@@ -39,9 +39,9 @@ public:
 	typedef bst_iterator<P,true,true> const_iterator;
 	typedef bst_iterator<P,false,true> const_reverse_iterator;
 
-	iterator begin(){return gen_iterator<iterator>(P::_min(m_pRoot));}
+	iterator begin(){return gen_iterator<iterator>(P::nd_min(m_pRoot));}
 	iterator end(){return gen_iterator<iterator>(NULL);}
-	reverse_iterator rbegin(){return gen_iterator<reverse_iterator>(P::_max(m_pRoot));}
+	reverse_iterator rbegin(){return gen_iterator<reverse_iterator>(P::nd_max(m_pRoot));}
 	reverse_iterator rend(){return gen_iterator<reverse_iterator>(NULL);}
 
 
@@ -95,11 +95,11 @@ public:
 	{
 	public:
 		typedef R ret_type;
-		static ret_type handle_root(bst_tree& t,key_reference){return R();}
-		static ret_type handle_add1(bst_tree& t,key_reference,nodetype*){return R();}
-		static ret_type handle_add2(bst_tree& t,key_reference,nodetype*){return R();}
-		static ret_type handle_equal(bst_tree& t,key_reference,nodetype*){return R();}
-		static ret_type handle_multi(bst_tree& t,key_reference,nodetype*){return R();}
+		static ret_type handle_empty(bst_tree& t,const_key_reference){return R();}
+		static ret_type handle_node1(bst_tree& t,const_key_reference,node_type*){return R();}
+		static ret_type handle_node2(bst_tree& t,const_key_reference,node_type*){return R();}
+		static ret_type handle_equal(bst_tree& t,const_key_reference,node_type*){return R();}
+		static ret_type handle_multi(bst_tree& t,const_key_reference,node_type*){return R();}
 	};
 
 
@@ -107,27 +107,27 @@ public:
 	{
 	public:
 		typedef iterator ret_type;
-		static ret_type handle_root(bst_tree& t,key_reference){return t.gen_iterator<iterator>(NULL);}
-		static ret_type handle_add1(bst_tree& t,key_reference,nodetype*){return t.gen_iterator<iterator>(NULL);}
-		static ret_type handle_add2(bst_tree& t,key_reference,nodetype*){return t.gen_iterator<iterator>(NULL);}
-		static ret_type handle_equal(bst_tree& t,key_reference,nodetype*){return t.gen_iterator<iterator>(NULL);}
-		static ret_type handle_multi(bst_tree& t,key_reference,nodetype*){return t.gen_iterator<iterator>(NULL);}
+		static ret_type handle_empty(bst_tree& t,const_key_reference){return t.gen_iterator<iterator>(NULL);}
+		static ret_type handle_node1(bst_tree& t,const_key_reference,node_type*){return t.gen_iterator<iterator>(NULL);}
+		static ret_type handle_node2(bst_tree& t,const_key_reference,node_type*){return t.gen_iterator<iterator>(NULL);}
+		static ret_type handle_equal(bst_tree& t,const_key_reference,node_type*){return t.gen_iterator<iterator>(NULL);}
+		static ret_type handle_multi(bst_tree& t,const_key_reference,node_type*){return t.gen_iterator<iterator>(NULL);}
 	};
 
 	class fp_return_iterator : public fp_base_iterator
 	{
 	public:
 		typedef iterator ret_type;
-		static ret_type handle_equal(bst_tree& t,key_reference,nodetype* n){return t.gen_iterator<ret_type>(n);}
-		static ret_type handle_multi(bst_tree& t,key_reference,nodetype* n){return t.gen_iterator<ret_type>(n);}
+		static ret_type handle_equal(bst_tree& t,const_key_reference,node_type* n){return t.gen_iterator<ret_type>(n);}
+		static ret_type handle_multi(bst_tree& t,const_key_reference,node_type* n){return t.gen_iterator<ret_type>(n);}
 	};
 
-	class fp_return_node : public fp_base<nodetype*>
+	class fp_return_node : public fp_base<node_type*>
 	{
 	public:
-		typedef nodetype* ret_type;
-		static ret_type handle_equal(bst_tree& t,key_reference,nodetype* n){return n;}
-		static ret_type handle_multi(bst_tree& t,key_reference,nodetype* n){return n;}
+		typedef node_type* ret_type;
+		static ret_type handle_equal(bst_tree& t,const_key_reference,node_type* n){return n;}
+		static ret_type handle_multi(bst_tree& t,const_key_reference,node_type* n){return n;}
 	};
 
 	class fp_lower_bound;
@@ -137,86 +137,79 @@ public:
 	class fp_insert_pair;
 	class fp_erase;
 
-	static bool check_node(nodetype* n);
+	static bool check_node(node_type* n);
 
-	void do_erase_swap_node0(nodetype* n,nodetype* x);
-	void do_erase_swap_node1(nodetype* n,nodetype* x);
-	void do_erase_swap_node2(nodetype* n,nodetype* x);
-	void do_erase_swap_node(nodetype* n,nodetype* x);
+	void do_erase_swap_node0(node_type* n,node_type* x);
+	void do_erase_swap_node1(node_type* n,node_type* x);
+	void do_erase_swap_node2(node_type* n,node_type* x);
+	void do_erase_swap_node(node_type* n,node_type* x);
 
-	void do_erase(nodetype* n);
+	void do_erase(node_type* n);
 	iterator erase(const_iterator position);
 	iterator erase(const_iterator p1,const_iterator p2);
 
 	template<typename ITERATOR>
-	ITERATOR gen_iterator(nodetype* p)
+	ITERATOR gen_iterator(node_type* p)
 	{
 		return ITERATOR(p,&m_pRoot);
 	}
 
-	//template<typename ITERATOR>
-	//ITERATOR gen_iterator(nodetype* p) const
-	//{
-	//	return ITERATOR(p,&m_pRoot);
-	//}
-
 protected:
+	// new_root should be old_root->child1 or old_root->child2;
+	void rotate(node_type* old_root,node_type* new_root);
+	void rotate_right(node_type* node);
+	void rotate_left(node_type* node);
 
 #ifdef VHWD_C11
 	template<typename X>
-	nodetype* bst_construct(X&& o);
+	node_type* bst_construct(X&& o);
 #endif
 
 	template<typename X>
-	nodetype* bst_construct(const X& o);
+	node_type* bst_construct(const X& o);
+	node_type* bst_copy_recursive(node_type* r);
 
-	void bst_destroy(nodetype* n);
-	void bst_destroy_recursive(nodetype* n);
+	void bst_destroy(node_type* n);
+	void bst_destroy_recursive(node_type* n);
 
-	nodetype* bst_copy_recursive(nodetype* r);
+	bool bst_validate(){return bst_depth()>=0;}
 
-	bool bst_validate() const{return bst_depth()>=0;}
-
-	int bst_depth() const;
-	int bst_depth_real(nodetype* n) const;
+	int bst_depth();
+	int bst_depth_real(node_type* n);
 
 	size_t depth() const{return depth_real(m_pRoot);}
-	size_t depth_real(nodetype* n) const
+	size_t depth_real(node_type* n)
 	{
 		if(n==NULL) return 0;
 		return 1+std::max(depth_real(n->child1),depth_real(n->child2));
 	}
 
-	static nodetype* bst_sibling(nodetype* n);
+	static node_type* bst_sibling(node_type* n);
 
-	void adjust_insert_case1(nodetype* n);
-	void adjust_insert_case2(nodetype* p,nodetype* n);
-	void adjust_insert_case3(nodetype* p,nodetype* n);
-	void adjust_insert_case4(nodetype* p,nodetype* n);
-	void adjust_insert_case5(nodetype* n);
+	void adjust_insert_case1(node_type* n);
+	void adjust_insert_case2(node_type* p,node_type* n);
+	void adjust_insert_case3(node_type* p,node_type* n);
+	void adjust_insert_case4(node_type* p,node_type* n);
+	void adjust_insert_case5(node_type* n);
 
-	void delete_one_child(nodetype *n);
-    void adjust_delete_case1(nodetype *n);
-    void adjust_delete_case2(nodetype* p,nodetype *s);
-    void adjust_delete_case3(nodetype* p,nodetype *s);
-    void adjust_delete_case5(nodetype* p,nodetype *s);
-    void adjust_delete_case6(nodetype* p,nodetype *s);
+	void delete_one_child(node_type *n);
+    void adjust_delete_case1(node_type *n);
+    void adjust_delete_case2(node_type* p,node_type *s);
+    void adjust_delete_case3(node_type* p,node_type *s);
+    void adjust_delete_case5(node_type* p,node_type *s);
+    void adjust_delete_case6(node_type* p,node_type *s);
 
-	static void set_child1(nodetype* node,nodetype* child)
+	static void set_child1(node_type* node,node_type* child)
 	{
 		node->child1=child;
 		if(child) child->parent=node;
 	}
-	static void set_child2(nodetype* node,nodetype* child)
+
+	static void set_child2(node_type* node,node_type* child)
 	{
 		node->child2=child;
 		if(child) child->parent=node;
 	}
-
-	void rotate(nodetype* old_root,nodetype* new_root);
-	void rotate_right(nodetype* node);
-	void rotate_left(nodetype* node);
-
 };
 
 template<typename P,typename A>
@@ -230,12 +223,12 @@ bst_tree<P,A>& bst_tree<P,A>::operator=(const bst_tree& o)
 #ifdef VHWD_C11
 template<typename P,typename A>
 template<typename X>
-typename bst_tree<P,A>::nodetype* bst_tree<P,A>::bst_construct(X&& o)
+typename bst_tree<P,A>::node_type* bst_tree<P,A>::bst_construct(X&& o)
 {
-	nodetype* p=get_allocator().allocate(1);
+	node_type* p=get_allocator().allocate(1);
 	try
 	{
-		new(p) nodetype(o);
+		new(p) node_type(o);
 	}
 	catch(...)
 	{
@@ -255,12 +248,12 @@ bst_tree<P,A>& bst_tree<P,A>::operator=(bst_tree&& o)
 
 template<typename P,typename A>
 template<typename X>
-typename bst_tree<P,A>::nodetype* bst_tree<P,A>::bst_construct(const X& o)
+typename bst_tree<P,A>::node_type* bst_tree<P,A>::bst_construct(const X& o)
 {
-	nodetype* p=this->get_allocator().allocate(1);
+	node_type* p=this->get_allocator().allocate(1);
 	try
 	{
-		new(p) nodetype(o);
+		new(p) node_type(o);
 	}
 	catch(...)
 	{
@@ -285,14 +278,14 @@ void bst_tree<P,A>::clear()
 }
 
 template<typename P,typename A>
-void bst_tree<P,A>::bst_destroy(nodetype* n)
+void bst_tree<P,A>::bst_destroy(node_type* n)
 {
-	n->~nodetype();
+	n->~node_type();
 	this->get_allocator().deallocate(n,1);
 }
 
 template<typename P,typename A>
-void bst_tree<P,A>::bst_destroy_recursive(nodetype* n)
+void bst_tree<P,A>::bst_destroy_recursive(node_type* n)
 {
 	if(!n) return;
 	bst_destroy_recursive(n->child1);
@@ -306,28 +299,28 @@ typename G::ret_type bst_tree<P,A>::handle_real(G& g,const K& v)
 {
 	if(m_pRoot==NULL)
 	{
-		return g.handle_root(*this,v);
+		return g.handle_empty(*this,v);
 	}
 
-	nodetype* node=m_pRoot;
+	node_type* node=m_pRoot;
 	for(;;)
 	{
-		if(this->key_comp()(P::key(v),node->value))
+		if(this->key_comp()(P::key(v),P::key(node)))
 		{
 			if(node->child1==NULL)
 			{
-				return g.handle_add1(*this,v,node);
+				return g.handle_node1(*this,v,node);
 			}
 			else
 			{
 				node=node->child1;
 			}
 		}
-		else if(this->key_comp()(node->value,P::key(v)))
+		else if(this->key_comp()(P::key(node),P::key(v)))
 		{
 			if(node->child2==NULL)
 			{
-				return g.handle_add2(*this,v,node);
+				return g.handle_node2(*this,v,node);
 			}
 			else
 			{
@@ -349,9 +342,11 @@ typename G::ret_type bst_tree<P,A>::handle_real(G& g,const K& v)
 }
 
 template<typename P,typename A>
-typename bst_tree<P,A>::nodetype* bst_tree<P,A>::bst_sibling(nodetype* n)
+typename bst_tree<P,A>::node_type* bst_tree<P,A>::bst_sibling(node_type* n)
 {
-	nodetype* p=n->parent;
+	wassert(n!=NULL&&n->parent!=NULL);
+
+	node_type* p=n->parent;
 	if(n==p->child1)
 	{
 		return p->child2;
@@ -363,23 +358,20 @@ typename bst_tree<P,A>::nodetype* bst_tree<P,A>::bst_sibling(nodetype* n)
 }
 
 template<typename P,typename A>
-class bst_tree<P,A>::fp_erase
+class bst_tree<P,A>::fp_erase : public fp_base<size_type>
 {
 public:
 	typedef size_type ret_type;
-	typedef const key_type& key_reference;
-	static ret_type handle_root(bst_tree&,key_reference){return 0;}
-	static ret_type handle_add1(bst_tree&,key_reference,nodetype*){return 0;}
-	static ret_type handle_add2(bst_tree&,key_reference,nodetype*){return 0;}
-	static ret_type handle_equal(bst_tree& t,key_reference,nodetype* n){t.do_erase(n);return 1;}
+	typedef const key_type& const_key_reference;
 
-	static ret_type handle_multi(bst_tree& t,key_reference v,nodetype* n)
+	static ret_type handle_equal(bst_tree& t,const_key_reference,node_type* n){t.do_erase(n);return 1;}
+	static ret_type handle_multi(bst_tree& t,const_key_reference v,node_type* n)
 	{
 		ret_type num=1;		
 		while(1)
 		{
-			nodetype* x=P::_inc(n);
-			if(x==NULL||t.key_comp()(v,x->value))
+			node_type* x=P::nd_inc(n);
+			if(x==NULL||t.key_comp()(v,P::key(x)))
 			{
 				break;
 			}
@@ -388,8 +380,8 @@ public:
 
 		while(1)
 		{
-			nodetype* x=P::_dec(n);
-			if(x==NULL||t.key_comp()(x->value,v))
+			node_type* x=P::nd_dec(n);
+			if(x==NULL||t.key_comp()(P::key(x),v))
 			{
 				break;
 			}
@@ -407,16 +399,16 @@ class bst_tree<P,A>::fp_lower_bound : public fp_base_iterator
 {
 public:
 	typedef iterator ret_type;
-	static ret_type handle_add1(bst_tree& t,key_reference,nodetype* n){return t.gen_iterator<iterator>(n);}
-	static ret_type handle_add2(bst_tree& t,key_reference,nodetype* n){return ++t.gen_iterator<iterator>(n);}
-	static ret_type handle_equal(bst_tree& t,key_reference,nodetype* n){return t.gen_iterator<iterator>(n);}
+	static ret_type handle_node1(bst_tree& t,const_key_reference,node_type* n){return t.gen_iterator<iterator>(n);}
+	static ret_type handle_node2(bst_tree& t,const_key_reference,node_type* n){return ++t.gen_iterator<iterator>(n);}
+	static ret_type handle_equal(bst_tree& t,const_key_reference,node_type* n){return t.gen_iterator<iterator>(n);}
 
-	static ret_type handle_multi(bst_tree& t,key_reference v,nodetype* n)
+	static ret_type handle_multi(bst_tree& t,const_key_reference v,node_type* n)
 	{
 		if(!n->child1) return t.gen_iterator<iterator>(n);
 		for(;;)
 		{
-			if(t.key_comp()(n->value,v))
+			if(t.key_comp()(P::key(n),v))
 			{
 				if(n->child2)
 				{
@@ -449,15 +441,15 @@ class bst_tree<P,A>::fp_upper_bound : public fp_base_iterator
 {
 public:
 	typedef typename fp_base_iterator::ret_type ret_type;
-	static ret_type handle_add1(bst_tree& t,key_reference,nodetype* n){return t.gen_iterator<iterator>(n);}
-	static ret_type handle_add2(bst_tree& t,key_reference,nodetype* n){return ++t.gen_iterator<iterator>(n);}
-	static ret_type handle_equal(bst_tree& t,key_reference,nodetype* n){return ++t.gen_iterator<iterator>(n);}
-	static ret_type handle_multi(bst_tree& t,key_reference v,nodetype* n)
+	static ret_type handle_node1(bst_tree& t,const_key_reference,node_type* n){return t.gen_iterator<iterator>(n);}
+	static ret_type handle_node2(bst_tree& t,const_key_reference,node_type* n){return ++t.gen_iterator<iterator>(n);}
+	static ret_type handle_equal(bst_tree& t,const_key_reference,node_type* n){return ++t.gen_iterator<iterator>(n);}
+	static ret_type handle_multi(bst_tree& t,const_key_reference v,node_type* n)
 	{
 		if(!n->child2) return ++t.gen_iterator<iterator>(n);
 		for(;;)
 		{
-			if(t.key_comp()(v,n->value))
+			if(t.key_comp()(v,P::key(n)))
 			{
 				if(n->child1)
 				{
@@ -488,11 +480,11 @@ class bst_tree<P,A>::fp_equal_range
 {
 public:
 	typedef std::pair<iterator,iterator> ret_type;
-	static ret_type handle_root(bst_tree& t,key_reference){iterator it=t.gen_iterator<iterator>(NULL);return ret_type(it,it);}
-	static ret_type handle_add1(bst_tree& t,key_reference,nodetype* n){iterator it=t.gen_iterator<iterator>(n);return ret_type(it,it);}
-	static ret_type handle_add2(bst_tree& t,key_reference,nodetype* n){iterator it=++t.gen_iterator<iterator>(n);return ret_type(it,it);}
-	static ret_type handle_equal(bst_tree& t,key_reference,nodetype* n){iterator it=t.gen_iterator<iterator>(n);return ret_type(it,++iterator(it));}
-	static ret_type handle_multi(bst_tree& t,key_reference v,nodetype* n)
+	static ret_type handle_empty(bst_tree& t,const_key_reference){iterator it=t.gen_iterator<iterator>(NULL);return ret_type(it,it);}
+	static ret_type handle_node1(bst_tree& t,const_key_reference,node_type* n){iterator it=t.gen_iterator<iterator>(n);return ret_type(it,it);}
+	static ret_type handle_node2(bst_tree& t,const_key_reference,node_type* n){iterator it=++t.gen_iterator<iterator>(n);return ret_type(it,it);}
+	static ret_type handle_equal(bst_tree& t,const_key_reference,node_type* n){iterator it=t.gen_iterator<iterator>(n);return ret_type(it,++iterator(it));}
+	static ret_type handle_multi(bst_tree& t,const_key_reference v,node_type* n)
 	{
 		return ret_type(fp_lower_bound::handle_multi(t,v,n),fp_upper_bound::handle_multi(t,v,n));
 	}
@@ -506,7 +498,7 @@ class bst_tree<P,A>::fp_insert_pair
 public:
 	typedef std::pair<iterator,bool> ret_type;
 
-	ret_type handle_root(bst_tree& t,const value_type& v)
+	ret_type handle_empty(bst_tree& t,const value_type& v)
 	{
 		t.m_pRoot=t.bst_construct(v);
 		P::mark_black(t.m_pRoot);
@@ -514,41 +506,41 @@ public:
 		return ret_type(t.gen_iterator<iterator>(t.m_pRoot),true);
 	}
 
-	ret_type handle_add1(bst_tree& t,const value_type& v,nodetype* p)
+	ret_type handle_node1(bst_tree& t,const value_type& v,node_type* p)
 	{
-		nodetype* n=t.bst_construct(v);
+		node_type* n=t.bst_construct(v);
 		set_child1(p,n);
 		return adjust_insert(t,n);
 	}
 
-	ret_type handle_add2(bst_tree& t,const value_type& v,nodetype* p)
+	ret_type handle_node2(bst_tree& t,const value_type& v,node_type* p)
 	{
-		nodetype* n=t.bst_construct(v);
+		node_type* n=t.bst_construct(v);
 		set_child2(p,n);
 		return adjust_insert(t,n);
 	}
 
-	ret_type adjust_insert(bst_tree& t,nodetype* n)
+	ret_type adjust_insert(bst_tree& t,node_type* n)
 	{
 		t.adjust_insert_case1(n);
 		t.m_nSize++;
 		return ret_type(t.gen_iterator<iterator>(n),true);
 	}
 
-	ret_type handle_equal(bst_tree& t,const value_type&,nodetype* n)
+	ret_type handle_equal(bst_tree& t,const value_type&,node_type* n)
 	{
 		return ret_type(t.gen_iterator<iterator>(n),false);
 	}
 
-	ret_type handle_multi(bst_tree& t,const value_type& v,nodetype* n)
+	ret_type handle_multi(bst_tree& t,const value_type& v,node_type* n)
 	{
 		for(;;)
 		{
-			if(t.key_comp()(P::key(v),n->value))
+			if(t.key_comp()(P::key(v),P::key(n)))
 			{
 				if(n->child1==NULL)
 				{
-					return handle_add1(t,v,n);
+					return handle_node1(t,v,n);
 				}
 				else
 				{
@@ -559,7 +551,7 @@ public:
 			{
 				if(n->child2==NULL)
 				{
-					return handle_add2(t,v,n);
+					return handle_node2(t,v,n);
 				}
 				else
 				{
@@ -576,9 +568,9 @@ template<typename P,typename A>
 class bst_tree<P,A>::fp_insert_node
 {
 public:
-	typedef nodetype* ret_type;
+	typedef node_type* ret_type;
 
-	ret_type handle_root(bst_tree& t,key_reference v)
+	ret_type handle_empty(bst_tree& t,const_key_reference v)
 	{
 		t.m_pRoot=t.bst_construct(v);
 		P::mark_black(t.m_pRoot);
@@ -586,33 +578,33 @@ public:
 		return t.m_pRoot;
 	}
 
-	ret_type handle_add1(bst_tree& t,key_reference v,nodetype* p)
+	ret_type handle_node1(bst_tree& t,const_key_reference v,node_type* p)
 	{
-		nodetype* n=t.bst_construct(v);
+		node_type* n=t.bst_construct(v);
 		set_child1(p,n);
 		return adjust_insert(t,n);
 	}
 
-	ret_type handle_add2(bst_tree& t,key_reference v,nodetype* p)
+	ret_type handle_node2(bst_tree& t,const_key_reference v,node_type* p)
 	{
-		nodetype* n=t.bst_construct(v);
+		node_type* n=t.bst_construct(v);
 		set_child2(p,n);
 		return adjust_insert(t,n);
 	}
 
-	ret_type adjust_insert(bst_tree& t,nodetype* n)
+	ret_type adjust_insert(bst_tree& t,node_type* n)
 	{
 		t.adjust_insert_case1(n);
 		t.m_nSize++;
 		return n;
 	}
 
-	ret_type handle_equal(bst_tree&,key_reference,nodetype* n)
+	ret_type handle_equal(bst_tree&,const_key_reference,node_type* n)
 	{
 		return n;
 	}
 
-	ret_type handle_multi(bst_tree&,key_reference,nodetype* n)
+	ret_type handle_multi(bst_tree&,const_key_reference,node_type* n)
 	{
 		return n;
 	}
@@ -621,7 +613,7 @@ public:
 
 
 template<typename P,typename A>
-void bst_tree<P,A>::rotate(nodetype* old_root,nodetype* new_root)
+void bst_tree<P,A>::rotate(node_type* old_root,node_type* new_root)
 {
 	if(new_root==old_root->child1)
 	{
@@ -632,14 +624,15 @@ void bst_tree<P,A>::rotate(nodetype* old_root,nodetype* new_root)
 		rotate_left(old_root);
 	}
 }
+
 template<typename P,typename A>
-void bst_tree<P,A>::rotate_right(nodetype* node)
+void bst_tree<P,A>::rotate_right(node_type* node)
 {
 
 	wassert(node->child1!=NULL);
 
-	nodetype* oldr=node->parent;
-	nodetype* newr=node->child1;
+	node_type* oldr=node->parent;
+	node_type* newr=node->child1;
 	set_child1(node,newr->child2);
 	set_child2(newr,node);
 
@@ -660,13 +653,14 @@ void bst_tree<P,A>::rotate_right(nodetype* node)
 		newr->parent=NULL;
 	}
 }
+
 template<typename P,typename A>
-void bst_tree<P,A>::rotate_left(nodetype* node)
+void bst_tree<P,A>::rotate_left(node_type* node)
 {
 	wassert(node->child2!=NULL);
 
-	nodetype* oldr=node->parent;
-	nodetype* newr=node->child2;
+	node_type* oldr=node->parent;
+	node_type* newr=node->child2;
 	set_child2(node,newr->child1);
 	set_child1(newr,node);
 
@@ -689,7 +683,7 @@ void bst_tree<P,A>::rotate_left(nodetype* node)
 }
 
 template<typename P,typename A>
-void bst_tree<P,A>::do_erase_swap_node(nodetype* n,nodetype* x)
+void bst_tree<P,A>::do_erase_swap_node(node_type* n,node_type* x)
 {
 	std::swap(n->color,x->color);
 	if(n->child2==x)
@@ -707,9 +701,9 @@ void bst_tree<P,A>::do_erase_swap_node(nodetype* n,nodetype* x)
 }
 
 template<typename P,typename A>
-void bst_tree<P,A>::do_erase_swap_node0(nodetype* n,nodetype* x)
+void bst_tree<P,A>::do_erase_swap_node0(node_type* n,node_type* x)
 {
-	nodetype* p=n->parent;
+	node_type* p=n->parent;
 	if(p)
 	{
 		if(p->child1==n)
@@ -750,14 +744,14 @@ void bst_tree<P,A>::do_erase_swap_node0(nodetype* n,nodetype* x)
 }
 
 template<typename P,typename A>
-void bst_tree<P,A>::do_erase_swap_node1(nodetype* n,nodetype* x)
+void bst_tree<P,A>::do_erase_swap_node1(node_type* n,node_type* x)
 {
 	wassert(n->child1==x);
 	wassert(n->child2!=NULL);
 	wassert(x->child2==NULL);
 
 	// parent
-	nodetype* p=n->parent;
+	node_type* p=n->parent;
 	x->parent=p;
 	if(p)
 	{
@@ -785,14 +779,14 @@ void bst_tree<P,A>::do_erase_swap_node1(nodetype* n,nodetype* x)
 }
 
 template<typename P,typename A>
-void bst_tree<P,A>::do_erase_swap_node2(nodetype* n,nodetype* x)
+void bst_tree<P,A>::do_erase_swap_node2(node_type* n,node_type* x)
 {
 	wassert(n->child2==x);
 	wassert(n->child1!=NULL);
 	wassert(x->child1==NULL);
 
 	// parent
-	nodetype* p=n->parent;
+	node_type* p=n->parent;
 	x->parent=p;
 	if(p)
 	{
@@ -821,11 +815,11 @@ void bst_tree<P,A>::do_erase_swap_node2(nodetype* n,nodetype* x)
 }
 
 template<typename P,typename A>
-void bst_tree<P,A>::delete_one_child(nodetype *n)
+void bst_tree<P,A>::delete_one_child(node_type *n)
 {
 
-    nodetype *child=n->child1!=NULL?n->child1:n->child2;
-	nodetype* p=n->parent;
+    node_type *child=n->child1!=NULL?n->child1:n->child2;
+	node_type* p=n->parent;
 
 	if (p == NULL)
 	{
@@ -869,7 +863,7 @@ void bst_tree<P,A>::delete_one_child(nodetype *n)
 		}
 		else if(P::is_black(n))
 		{
-			nodetype* s=p->child1;
+			node_type* s=p->child1;
 			if(s==NULL) s=p->child2;
 			adjust_delete_case2(p,s);
 		}
@@ -880,9 +874,9 @@ void bst_tree<P,A>::delete_one_child(nodetype *n)
 
 
 template<typename P,typename A>
-void bst_tree<P,A>::adjust_delete_case1(nodetype *n)
+void bst_tree<P,A>::adjust_delete_case1(node_type *n)
 {
-	nodetype* p=n->parent;
+	node_type* p=n->parent;
 	if(!p)
 	{
 		wassert(P::is_black(n));
@@ -891,7 +885,7 @@ void bst_tree<P,A>::adjust_delete_case1(nodetype *n)
 	adjust_delete_case2(p,p->child1==n?p->child2:p->child1);
 }
 template<typename P,typename A>
-void bst_tree<P,A>::adjust_delete_case2(nodetype* p,nodetype *s)
+void bst_tree<P,A>::adjust_delete_case2(node_type* p,node_type *s)
 {
 	if(P::is_red(s))
 	{
@@ -913,7 +907,7 @@ void bst_tree<P,A>::adjust_delete_case2(nodetype* p,nodetype *s)
 	adjust_delete_case3(p,s);
 }
 template<typename P,typename A>
-void bst_tree<P,A>::adjust_delete_case3(nodetype* p,nodetype *s) // case3 and case4
+void bst_tree<P,A>::adjust_delete_case3(node_type* p,node_type *s) // case3 and case4
 {
 	wassert(P::is_black(s));
 
@@ -937,7 +931,7 @@ void bst_tree<P,A>::adjust_delete_case3(nodetype* p,nodetype *s) // case3 and ca
 
 }
 template<typename P,typename A>
-void bst_tree<P,A>::adjust_delete_case5(nodetype* p,nodetype *s)
+void bst_tree<P,A>::adjust_delete_case5(node_type* p,node_type *s)
 {
 	wassert(P::is_black(s));
 	if(s==p->child2 && P::is_black(s->child2) && P::is_red(s->child1))
@@ -959,7 +953,7 @@ void bst_tree<P,A>::adjust_delete_case5(nodetype* p,nodetype *s)
 
 }
 template<typename P,typename A>
-void bst_tree<P,A>::adjust_delete_case6(nodetype* p,nodetype *s)
+void bst_tree<P,A>::adjust_delete_case6(node_type* p,node_type *s)
 {
 	P::mark(s,p);
 	P::mark_black(p);
@@ -977,9 +971,9 @@ void bst_tree<P,A>::adjust_delete_case6(nodetype* p,nodetype *s)
 
 
 template<typename P,typename A>
-void bst_tree<P,A>::adjust_insert_case1(nodetype* n)
+void bst_tree<P,A>::adjust_insert_case1(node_type* n)
 {
-	nodetype* p=n->parent;
+	node_type* p=n->parent;
 	if(!p)
 	{
 		m_pRoot=n;
@@ -990,7 +984,7 @@ void bst_tree<P,A>::adjust_insert_case1(nodetype* n)
 }
 
 template<typename P,typename A>
-void bst_tree<P,A>::adjust_insert_case2(nodetype* p,nodetype* n)
+void bst_tree<P,A>::adjust_insert_case2(node_type* p,node_type* n)
 {
 	if(P::is_black(p))
 	{
@@ -1000,9 +994,9 @@ void bst_tree<P,A>::adjust_insert_case2(nodetype* p,nodetype* n)
 }
 
 template<typename P,typename A>
-void bst_tree<P,A>::adjust_insert_case3(nodetype* p,nodetype* n)
+void bst_tree<P,A>::adjust_insert_case3(node_type* p,node_type* n)
 {
-	nodetype* g=p->parent;
+	node_type* g=p->parent;
 	if( P::is_red(g->child1) && P::is_red(g->child2))
 	{
 		P::mark_black(g->child1);
@@ -1017,9 +1011,9 @@ void bst_tree<P,A>::adjust_insert_case3(nodetype* p,nodetype* n)
 }
 
 template<typename P,typename A>
-void bst_tree<P,A>::adjust_insert_case4(nodetype* p,nodetype* n)
+void bst_tree<P,A>::adjust_insert_case4(node_type* p,node_type* n)
 {
-	nodetype* g=p->parent;
+	node_type* g=p->parent;
 	if(n==p->child2 && p==g->child1)
 	{
 		rotate_left(p);
@@ -1034,10 +1028,10 @@ void bst_tree<P,A>::adjust_insert_case4(nodetype* p,nodetype* n)
 }
 
 template<typename P,typename A>
-void bst_tree<P,A>::adjust_insert_case5(nodetype* n)
+void bst_tree<P,A>::adjust_insert_case5(node_type* n)
 {
-	nodetype* p=n->parent;
-	nodetype* g=p->parent;
+	node_type* p=n->parent;
+	node_type* g=p->parent;
 	P::mark_black(p);
 	P::mark_red(g);
 
@@ -1057,12 +1051,12 @@ void bst_tree<P,A>::adjust_insert_case5(nodetype* n)
 
 
 template<typename P,typename A>
-void bst_tree<P,A>::do_erase(nodetype* n)
+void bst_tree<P,A>::do_erase(node_type* n)
 {
 	if(n->child1!=NULL&&n->child2!=NULL)
 	{
-		//nodetype* x=P::_min(n->child2);
-		nodetype* x=P::_max(n->child1);
+		//node_type* x=P::nd_min(n->child2);
+		node_type* x=P::nd_max(n->child1);
 		do_erase_swap_node(n,x);
 	}
 	delete_one_child(n);
@@ -1073,15 +1067,16 @@ template<typename P,typename A>
 typename bst_tree<P,A>::iterator bst_tree<P,A>::erase(const_iterator position)
 {
 	wassert(position.root()==m_pRoot);
-	nodetype* n=position.node();
+	node_type* n=position.node();
 	if(n==NULL)
 	{
+		System::LogError("%s failed! INVALID iterator!","bst_tree<...>::erase");
 		return end();
 	}
-	++position;
+	node_type* x=P::nd_inc(n);
 	do_erase(n);
 
-	return gen_iterator<iterator>(position.node());
+	return gen_iterator<iterator>(x);
 }
 
 template<typename P,typename A>
@@ -1092,7 +1087,7 @@ typename bst_tree<P,A>::iterator bst_tree<P,A>::erase(const_iterator p1,const_it
 
 	while(p1!=p2)
 	{
-		nodetype* n=p1.node();
+		node_type* n=p1.node();
 		if(n==NULL)
 		{
 			System::LogError("%s failed! INVALID iterator!","bst_tree<...>::erase");
@@ -1106,7 +1101,7 @@ typename bst_tree<P,A>::iterator bst_tree<P,A>::erase(const_iterator p1,const_it
 }
 
 template<typename P,typename A>
-int bst_tree<P,A>::bst_depth() const
+int bst_tree<P,A>::bst_depth()
 {
 	if(!m_pRoot) return 0;
 	try
@@ -1120,7 +1115,7 @@ int bst_tree<P,A>::bst_depth() const
 }
 
 template<typename P,typename A>
-int bst_tree<P,A>::bst_depth_real(nodetype* n) const
+int bst_tree<P,A>::bst_depth_real(node_type* n)
 {
 	if(n==NULL) return 0;
 
@@ -1146,7 +1141,7 @@ int bst_tree<P,A>::bst_depth_real(nodetype* n) const
 }
 
 template<typename P,typename A>
-bool bst_tree<P,A>::check_node(nodetype* n)
+bool bst_tree<P,A>::check_node(node_type* n)
 {
 	if(n->child1 && n->child1->parent!=n)
 	{
@@ -1165,11 +1160,11 @@ bool bst_tree<P,A>::check_node(nodetype* n)
 
 
 template<typename P,typename A>
-typename bst_tree<P,A>::nodetype* bst_tree<P,A>::bst_copy_recursive(nodetype* r)
+typename bst_tree<P,A>::node_type* bst_tree<P,A>::bst_copy_recursive(node_type* r)
 {
 	if(!r) return NULL;
 
-	nodetype* p=bst_construct(*r);
+	node_type* p=bst_construct(*r);
 	try
 	{
 		p->child1=bst_copy_recursive(r->child1);

@@ -7,18 +7,6 @@
 
 extern "C" void asm_swap_context(void* callee,void* caller);
 
-extern "C" void* asm_get_return_address(void* dummy)
-{
-
-#ifdef _X86_
-	char* p=((char*)&dummy)-4;
-#else
-	char* p=((char*)&dummy)-8;
-#endif
-
-	return *(char**)p;
-
-}
 
 VHWD_ENTER
 

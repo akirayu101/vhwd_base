@@ -130,13 +130,11 @@ void* MemPoolPaging::allocate(size_t nSize)
 			_init();
 			if(nSize>m_nFixedSizeMax)
 			{
-				//return ::malloc(nSize);
 				return MemPoolMalloc::allocate(nSize);
 			}
 		}
 		else
 		{
-			//return ::malloc(nSize);
 			return MemPoolMalloc::allocate(nSize);
 		}
 	}

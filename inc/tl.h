@@ -69,26 +69,26 @@ namespace tl
 
 	template <typename T>  class is_empty_type : public value_type<sizeof(detail::test_empty<T>)==sizeof(int)>{};
 
-
 	namespace detail
 	{
-		template<bool B,typename T>
+		template<typename T,bool B>
 		class derive_if_empty_base;
 
-		template<typename T> class derive_if_empty_base<false,T>{};
+		template<typename T> class derive_if_empty_base<T,false>{};
 
 		template<typename T>
-		class derive_if_empty_base<true,T> : public T {};
+		class derive_if_empty_base<T,true> : public T {};
 	}
 
 	template<typename T>
-	class derive_if_empty : public detail::derive_if_empty_base<is_empty_type<T>::value,T>{};
+	class derive_if_empty : public detail::derive_if_empty_base<T,is_empty_type<T>::value>{};
 
 	template<bool B,typename T1,typename T2>
 	class select_base : public T1{};
 
 	template<typename T1,typename T2>
 	class select_base<false,T1,T2> : public T2{};
+
 
 // ----------------------------------------------------------------------------------------
 

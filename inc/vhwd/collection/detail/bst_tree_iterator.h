@@ -12,10 +12,10 @@ class bst_iterator_base : public std::iterator<std::bidirectional_iterator_tag,t
 {
 public:
 
-	typedef typename P::nodetype nodetype;
+	typedef typename P::node_type node_type;
 	typedef typename P::value_type value_type;
 
-	bst_iterator_base(nodetype* p,nodetype** r):m_pNode(p),m_ppRoot(r){}
+	bst_iterator_base(node_type* p,node_type** r):m_pNode(p),m_ppRoot(r){}
 
 	value_type* item()
 	{
@@ -23,12 +23,12 @@ public:
 		return (value_type*)&m_pNode->value;
 	}
 
-	nodetype* root()
+	node_type* root()
 	{
 		wassert(m_ppRoot!=NULL);
-		return *(nodetype**)m_ppRoot;
+		return *(node_type**)m_ppRoot;
 	}
-	nodetype* node(){return m_pNode;}
+	node_type* node(){return m_pNode;}
 
 	bool is_valid(){return m_pNode!=NULL;}
 
@@ -42,7 +42,7 @@ protected:
 		{
 			if(m_pNode)
 			{
-				m_pNode=P::_inc(m_pNode);
+				m_pNode=P::nd_inc(m_pNode);
 			}
 			else
 			{
@@ -53,7 +53,7 @@ protected:
 		{
 			if(m_pNode)
 			{
-				m_pNode=P::_dec(m_pNode);
+				m_pNode=P::nd_dec(m_pNode);
 			}
 			else
 			{
@@ -70,11 +70,11 @@ protected:
 		{
 			if(m_pNode)
 			{
-				m_pNode=P::_dec(m_pNode);
+				m_pNode=P::nd_dec(m_pNode);
 			}
 			else
 			{
-				m_pNode=P::_max(root());
+				m_pNode=P::nd_max(root());
 				wassert(m_pNode!=NULL);
 			}
 		}
@@ -82,36 +82,35 @@ protected:
 		{
 			if(m_pNode)
 			{
-				m_pNode=P::_inc(m_pNode);
+				m_pNode=P::nd_inc(m_pNode);
 
 			}
 			else
 			{
-				m_pNode=P::_min(root());
+				m_pNode=P::nd_min(root());
 				wassert(m_pNode!=NULL);
 			}
 		}
 	}
 
-	nodetype* m_pNode;
-	nodetype** m_ppRoot;
+	node_type* m_pNode;
+	node_type** m_ppRoot;
 };
 
 
 template<typename P,bool D,bool C>
 class bst_iterator;
 
-
 template<typename P,bool D>
 class bst_iterator<P,D,true> : public bst_iterator_base<P>
 {
 public:
 	typedef bst_iterator_base<P> basetype;
-	typedef typename P::nodetype nodetype;
+	typedef typename P::node_type node_type;
 	typedef typename P::value_type value_type;
 
 	bst_iterator():basetype(NULL,NULL){}
-	bst_iterator(nodetype* p,nodetype** r):basetype(p,r){}
+	bst_iterator(node_type* p,node_type** r):basetype(p,r){}
 
 	bst_iterator& operator++(){this->template fwd<D>();return *this;}
 	bst_iterator& operator--(){this->template bwd<D>();return *this;}
@@ -142,11 +141,11 @@ class bst_iterator<P,D,false> : public bst_iterator<P,D,true>
 {
 public:
 	typedef bst_iterator<P,D,true> basetype;
-	typedef typename P::nodetype nodetype;
+	typedef typename P::node_type node_type;
 	typedef typename P::value_type value_type;
 
 	bst_iterator(){}
-	bst_iterator(nodetype* p,nodetype** r):basetype(p,r){}
+	bst_iterator(node_type* p,node_type** r):basetype(p,r){}
 
 	bst_iterator& operator++(){this->template fwd<D>();return *this;}
 	bst_iterator& operator--(){this->template bwd<D>();return *this;}
