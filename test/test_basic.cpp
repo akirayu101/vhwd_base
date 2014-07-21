@@ -192,10 +192,10 @@ class MyObjectT : public Object
 {
 public:
 	T impl;
-	DECLARE_OBJECT_INFO_T(MyObjectT<T>,ObjectInfo)
+	DECLARE_OBJECT_INFO(MyObjectT,ObjectInfo)
 };
 
-IMPLEMENT_OBJECT_INFO_NAME_T(MyObjectT<T>,ObjectInfo,"myobj")
+IMPLEMENT_OBJECT_INFO_NAME_T1(MyObjectT,ObjectInfo,"myobj")
 
 
 TEST_DEFINE(TEST_Object)

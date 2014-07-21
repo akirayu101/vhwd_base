@@ -49,7 +49,7 @@ public:
 	typedef typename P::value_type value_type;
 	typedef typename P::mapped_type mapped_type;
 	typedef typename P::index_type index_type;
-	typedef typename P::value_reference value_reference;
+	typedef typename P::value_proxy value_proxy;
 	typedef typename P::chunk_node chunk_node;
 
 	indexer_base()
@@ -74,13 +74,14 @@ public:
 
 	indexer_base& operator=(const indexer_base& o)
 	{
+		if(this==&o) return *this;
 		indexer_base tmp(o);swap(o);
 		return *this;
 	}
 
 #ifdef VHWD_C11
 	indexer_base(indexer_base&& o){m_nMaxLoadFactor=2.0;swap(o);}
-	indexer_base& operator=(indexer_base&& o){swap(o);return *this;}
+	indexer_base& operator=(indexer_base&& o){if(this==&o) return *this;swap(o);return *this;}
 #endif
 
 	class chunk_type
@@ -92,6 +93,27 @@ public:
 		{
 			phead=copy_recursive(o.phead);
 		}
+
+		chunk_type& operator=(const chunk_type& o)
+		{
+			phead=copy_recursive(o.phead);
+			return *this;
+		}
+
+#ifdef VHWD_C11
+		chunk_type(chunk_type&& o)
+		{
+			if(this==&o) return;
+			phead=o.phead;o.phead=NULL;
+		}
+
+		chunk_type& operator=(chunk_type&& o)
+		{
+			if(this==&o) return;
+			phead=o.phead;o.phead=NULL;
+			return *this;
+		}
+#endif
 
 		static chunk_node* copy_recursive(chunk_node* p)
 		{
@@ -160,7 +182,6 @@ public:
 	const_reverse_iterator rend() const{return values.rend();}
 	reverse_iterator rbegin() {return values.rbegin();}
 	reverse_iterator rend() {return values.rend();}
-
 
 	static const index_type invalid_pos=index_type(-1);
 
@@ -339,12 +360,7 @@ public:
 		return 1;
 	}
 
-	value_reference get_by_id(index_type k)
-	{
-		return (value_reference)values[k];
-	}
-
-	const value_type& get_by_id(index_type k) const
+	value_type& get_by_id(index_type k)
 	{
 		return values[k];
 	}

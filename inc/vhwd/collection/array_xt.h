@@ -36,7 +36,8 @@ public:
 
 	arr_xt(){}
 	arr_xt(const A& al):basetype(al){}
-	arr_xt(const arr_xt& o):basetype(o.get_allocator()){(*this)=o;}
+	arr_xt(const arr_xt& o);
+	arr_xt& operator=(const arr_xt& o);
 
 	~arr_xt(){clear();}
 
@@ -50,8 +51,6 @@ public:
 
 	const_iterator begin() const {return m_ptr;}
 	const_iterator end() const {return m_ptr+extra().size;}
-
-	arr_xt& operator=(const arr_xt& o);
 
 	void resize(size_type k0,size_type k1=1,size_type k2=1,size_type k3=1,size_type k4=1,size_type k5=1);
 	void clear();
@@ -141,6 +140,26 @@ bool operator!=(const arr_xt<T,A1>& lhs,const arr_xt<T,A2>& rhs)
 {
 	return !(lhs==rhs);
 }
+template<typename T,typename A>
+arr_xt<T,A>::arr_xt(const arr_xt& o):basetype(o.get_allocator())
+{
+	size_type _newsize=o.size();
+	this->_xset(_newsize);
+	if(_newsize==0) return;
+
+	try
+	{
+		xmem<T>::uninitialized_copy_n(o.m_ptr,_newsize,m_ptr);
+		extra()=o.extra();
+		extra().capacity=_newsize;
+	}
+	catch(...)
+	{
+		this->_xset(0);
+		throw;
+	}
+	
+}
 
 template<typename T,typename A>
 arr_xt<T,A>& arr_xt<T,A>::operator=(const arr_xt& o)
@@ -151,18 +170,12 @@ arr_xt<T,A>& arr_xt<T,A>::operator=(const arr_xt& o)
 	{
 		xmem<T>::copy_n(o.m_ptr,_newsize,m_ptr);
 		extra()=o.extra();
-		return *this;
 	}
-
-	clear();
-	this->_xset(_newsize);
-
-	if(_newsize>0)
+	else
 	{
-		xmem<T>::uninitialized_copy_n(o.m_ptr,_newsize,m_ptr);
-		extra()=o.extra();
-		extra().capacity=_newsize;
+		arr_xt(o).swap(*this);
 	}
+
 	return *this;
 }
 

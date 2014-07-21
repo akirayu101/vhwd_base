@@ -9,37 +9,57 @@ VHWD_ENTER
 template<typename A>
 void serial_helper_func<A,String>::g(SerializerReader &ar,type &val)
 {
-	arr_1t<char> vect;ar >> vect;
-	StringBuffer<char> sb;
-	if(!IConv::utf8_to_ansi(sb,vect.data(),vect.size()))
-	{
-		ar.errstr("invalid string");
-	}
-	val=sb;
+	intarr_t n(0);
+	serial_pod<A,intarr_t>::g(ar,n);
+	arr_1t<char> vect;vect.resize(n);
 
-	//val=String::utf8_to_ansi(vect.data(),vect.size());
-	//val.assign(vect.data(),vect.size());
+	ar.recv(vect.data(),n);
+
+	if(ar.flags.get(Serializer::STRCVT_UTF8))
+	{
+		StringBuffer<char> sb;
+		if(!IConv::utf8_to_ansi(sb,vect.data(),vect.size()))
+		{
+			ar.errstr("invalid string");
+		}
+		val=sb;
+	}
+	else
+	{
+		val.assign(vect.data(),n);
+	}
+
 }
 
 template<typename A>
 void serial_helper_func<A,String>::g(SerializerWriter &ar,type &val)
 {
-	StringBuffer<char> sb;
-	if(!IConv::ansi_to_utf8(sb,val.c_str(),val.size()))
-	{
-		ar.errstr("invalid string");
-		return;
-	}
-	//String utf8=String::ansi_to_utf8(val);
-	//String& utf8(val);
+	const char *p;
+	intarr_t n;
 
-	const char *s=sb.data();
-	int64_t _size=(int64_t)sb.size();
-	ar << _size;
-	if(_size>0)
+	if(ar.flags.get(Serializer::STRCVT_UTF8))
 	{
-		ar.send((char *)s,_size);
+		StringBuffer<char> sb;
+		if(!IConv::ansi_to_utf8(sb,val.c_str(),val.size()))
+		{
+			ar.errstr("invalid string");
+			return;
+		}
+		p=sb.data();
+		n=(intarr_t)sb.size();
 	}
+	else
+	{
+		p=val.c_str();
+		n=(intarr_t)val.size();
+	}
+
+	serial_pod<A,intarr_t>::g(ar,n);
+	if(n>0)
+	{
+		ar.send((char *)p,n);
+	}
+
 }
 
 template class VHWD_DLLIMPEXP serial_helper_func<SerializerWriter,String>;
@@ -159,7 +179,8 @@ SerializerWriter &SerializerWriter::tag(const char *msg)
 int SerializerWriter::local_version(int v)
 {
 	int32_t vh(v);
-	return send((char *)&vh,sizeof(int32_t));
+	send((char *)&vh,sizeof(int32_t));
+	return v;
 }
 
 VHWD_LEAVE

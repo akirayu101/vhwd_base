@@ -14,7 +14,7 @@ VHWD_ENTER
 
 
 template<typename T>
-class policy_list_next
+class policy_list
 {
 public:
 
@@ -34,7 +34,7 @@ public:
 	}
 };
 
-template<typename T,typename P=policy_list_next<T> >
+template<typename T,typename P=policy_list<T> >
 class intrusive_list : public NonCopyable
 {
 public:

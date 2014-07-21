@@ -55,20 +55,23 @@ ObjectGroup::ObjectGroup()
 
 ObjectGroup::ObjectGroup(const ObjectGroup& o)
 {
-	impl=NULL;
-	(*this)=o;
+	ObjectGroupImpl* p1=(ObjectGroupImpl*)o.impl;
+	ObjectGroupImpl* p2=NULL;
+	if(p1)
+	{
+		p2=new ObjectGroupImpl(*p1);
+		for(size_t i=0;i<p2->size();i++)
+		{
+			if((*p2)[i]) (*p2)[i]->IncRef();
+		}
+	}
+	impl=p2;
 }
 
 ObjectGroup& ObjectGroup::operator=(const ObjectGroup& o)
 {
-	if(impl==o.impl) return *this;
-	ObjectGroupImpl* _tmp=new ObjectGroupImpl(*(ObjectGroupImpl*)o.impl);
-	for(size_t i=0;i<_tmp->size();i++)
-	{
-		(*_tmp)[i]->IncRef();
-	}
-	clear();
-	impl=_tmp;
+	if(this==&o) return *this;
+	ObjectGroup(o).swap(*this);
 	return *this;
 }
 

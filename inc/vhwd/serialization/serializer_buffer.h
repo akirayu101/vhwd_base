@@ -16,7 +16,7 @@ VHWD_ENTER
 
 
 
-class VHWD_DLLIMPEXP SerializerBuffer : protected SerializerReader, protected SerializerWriter
+class VHWD_DLLIMPEXP SerializerBuffer : public SerializerDuplex
 {
 public:
 
@@ -31,11 +31,6 @@ public:
 	// allocate buffer
 	void alloc(size_t bufsize);
 
-	// get writer
-	SerializerWriter& writer(){return *this;}
-
-	// get reader
-	SerializerReader& reader(){return *this;}
 
 	char* gbeg(){return lbuf.gbeg();} // buffer begin
 	char* gptr(){return lbuf.gptr();} // get position begin
@@ -44,13 +39,12 @@ public:
 
 protected:
 
-	bool send(char* data,size_t size);
-	bool recv(char* data,size_t size);
+	void send(char* data,size_t size);
+	void recv(char* data,size_t size);
 
 	LinearBuffer<char> lbuf;
 
 };
-
 
 
 VHWD_LEAVE

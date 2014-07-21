@@ -17,19 +17,18 @@ VHWD_ENTER
 template<typename K,typename V,typename A=def_allocator,typename P=indexer_trait<K,V,int> >
 class indexer_map : public indexer_container<P,A>
 {
-public:
-
+protected:
 	typedef indexer_container<P,A> basetype;
 	typedef typename basetype::impl_type impl_type;
+	using basetype::impl;
+
+public:
+
 	typedef typename impl_type::mapped_type mapped_type;
 	typedef typename impl_type::key_type key_type;
 	typedef typename impl_type::index_type index_type;
 	typedef typename impl_type::value_type value_type;
 	typedef typename impl_type::size_type size_type;
-
-
-	using basetype::impl;
-
 
 	indexer_map(){}
 	indexer_map(const indexer_map& o):basetype(o){}

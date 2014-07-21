@@ -8,19 +8,27 @@
 
 using namespace vhwd;
 
+template<typename T1,typename T2>
 class serializable_data : public ObjectData
 {
 public:
-	float64_t val;
+
+	T1 val;
+	T2 tmp;
+
 	bool Serialize(Serializer& ar)
 	{
-		ar & val;
+		ar & val & tmp;
 		return ar.good();
 	}
+
 	DECLARE_OBJECT_INFO(serializable_data,ObjectInfo)
+
+
+
 };
 
-IMPLEMENT_OBJECT_INFO(serializable_data,ObjectInfo)
+IMPLEMENT_OBJECT_INFO_T2(serializable_data,ObjectInfo)
 
 class sample_data
 {
@@ -31,7 +39,7 @@ public:
 
 	arr_1t<int32_t> aInts;
 	String s1;
-	DataPtrT<serializable_data> dptr1;
+	DataPtrT<serializable_data<float,String> > dptr1;
 	DataPtrT<ObjectData> dptr2;
 
 	int32_t ivals[10];
@@ -39,7 +47,8 @@ public:
 
 	void Serialize(Serializer& ar)
 	{
-		ar & aInts & aMaps & s1 & dptr1 & dptr2 & ivals & arr;
+		ar & aInts & aMaps & s1 & ivals & arr;
+		ar & dptr1 & dptr2;
 	}
 
 };
@@ -60,8 +69,10 @@ TEST_DEFINE(TEST_Serializer)
 	dat[0].aMaps["gg"]=1.034;
 	dat[0].s1="sample_string";
 
-	serializable_data* p1=new serializable_data;
+	serializable_data<float,String>* p1=new serializable_data<float,String>;
 	p1->val=1.324;
+	p1->tmp="hello";
+
 	dat[0].dptr1.reset(p1);
 	dat[0].dptr2.reset(p1);
 
@@ -72,11 +83,25 @@ TEST_DEFINE(TEST_Serializer)
 	dat[0].ivals[3]=32;
 
 	writer.open("test_serializer.dat");
-	writer & dat[0];
+	try
+	{
+		writer & dat[0];
+	}
+	catch(...)
+	{
+		TEST_ASSERT_MSG(false,"serializer write file failed!");
+	}
 	writer.close();
 
 	reader.open("test_serializer.dat");
-	reader & dat[1];
+	try
+	{
+		reader & dat[1];
+	}
+	catch(...)
+	{
+		TEST_ASSERT_MSG(false,"serializer read file failed!");
+	}
 	reader.close();
 
 	TEST_ASSERT(dat[1].aInts==dat[0].aInts);
@@ -109,8 +134,15 @@ TEST_DEFINE(TEST_Serializer)
 	double v1[4]={1.234,234.0,323,432};
 	double v2[4];
 
-	sbuf.writer() & v1; // write data to buffer
-	sbuf.reader() & v2; // read data from buffer
+	try
+	{
+		sbuf.writer() & v1; // write data to buffer
+		sbuf.reader() & v2; // read data from buffer
+	}
+	catch(...)
+	{
+		TEST_ASSERT_MSG(false,"SerializerBuffer failed!");
+	}
 
 	TEST_ASSERT(memcmp(v1,v2,sizeof(double)*4)==0);
 	TEST_ASSERT(sbuf.skip()); // reader reach the end of buffer

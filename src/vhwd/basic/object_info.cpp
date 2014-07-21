@@ -35,7 +35,7 @@ public:
 	}
 
 
-	indexer_map<String,ObjectInfo *> kmap;
+	indexer_map<String,ObjectInfo*> kmap;
 };
 
 void ObjectCreator::reset(ObjectData *p)

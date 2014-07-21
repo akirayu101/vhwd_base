@@ -17,16 +17,17 @@ VHWD_ENTER
 template<typename K,typename A=def_allocator,typename P=indexer_trait<K,void,int> >
 class indexer_set : public indexer_container<P,A>
 {
-public:
+protected:
 	typedef indexer_container<P,A> basetype;
 	typedef typename basetype::impl_type impl_type;
+	using basetype::impl;
+
+public:
+
 	typedef typename impl_type::key_type key_type;
 	typedef typename impl_type::index_type index_type;
 	typedef typename impl_type::value_type value_type;
 	typedef typename impl_type::size_type size_type;
-
-	using basetype::impl;
-
 	typedef typename impl_type::const_iterator iterator;
 
 	iterator begin() const

@@ -241,6 +241,7 @@ typename bst_tree<P,A>::node_type* bst_tree<P,A>::bst_construct(X&& o)
 template<typename P,typename A>
 bst_tree<P,A>& bst_tree<P,A>::operator=(bst_tree&& o)
 {
+	if(this==&o) return *this;
 	o.swap(*this);
 	return *this;
 }

@@ -442,6 +442,16 @@ String String::substr(size_t pos,size_t len) const
 	return s;
 }
 
+int String::find (char c, int pos) const
+{
+	int n=(int)size();
+	for(int i=pos;i<n;i++)
+	{
+		if(m_pStr[i]==c) return i;
+	}
+	return -1;
+}
+
 int String::replace(char c1,char c2)
 {
 	int n=0;

@@ -3,16 +3,22 @@
 
 VHWD_ENTER
 
-bool SerializerReaderStream::recv(char* data,size_t size)
+void SerializerReaderStream::recv(char* data,size_t size)
 {
 	fs.read(data,size);
-	return fs.good();
+	if(!fs.good())
+	{
+		errstr("read failed");
+	}
 }
 
-bool SerializerWriterStream::send(char* data,size_t size)
+void SerializerWriterStream::send(char* data,size_t size)
 {
 	fs.write(data,size);
-	return fs.good();
+	if(!fs.good())
+	{
+		errstr("write failed");
+	}
 }
 
 VHWD_LEAVE

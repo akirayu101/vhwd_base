@@ -22,7 +22,7 @@ public:
 	bool good() const {return fs.good();}
 
 protected:
-	bool recv(char* data,size_t size);
+	void recv(char* data,size_t size);
 	std::istream& fs;
 };
 
@@ -35,7 +35,7 @@ public:
 	bool good() const {return fs.good();}
 
 protected:
-	bool send(char* data,size_t size);
+	void send(char* data,size_t size);
 	std::ostream& fs;
 };
 

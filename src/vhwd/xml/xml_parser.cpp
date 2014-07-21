@@ -10,13 +10,6 @@
 VHWD_ENTER
 
 template<unsigned N>
-class lkt_whitespace
-{
-public:
-	static const int value=N==' '||N=='\t'||N=='\r'||N=='\n';
-};
-
-template<unsigned N>
 class lkt_name
 {
 public:

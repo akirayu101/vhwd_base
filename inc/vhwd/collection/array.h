@@ -36,6 +36,7 @@ public:
 	arr_1t(){}
 	arr_1t(const A& al);
 	arr_1t(const arr_1t& o);
+	arr_1t& operator=(const arr_1t& o);
 
 	~arr_1t();
 
@@ -43,8 +44,6 @@ public:
 	arr_1t(arr_1t&& p){swap(p);}
 	arr_1t& operator=(arr_1t&& p){swap(p);return *this;}
 #endif
-
-	arr_1t& operator=(const arr_1t& o);
 
 	void clear();
 
@@ -143,11 +142,48 @@ arr_1t<T,A>::arr_1t(const arr_1t& o):basetype(o.get_allocator())
 	size_type _newsize=o.size();
 	this->_xset(_newsize);
 
-	if(_newsize>0)
+	if(_newsize==0) return;
+	try
 	{
 		xmem<T>::uninitialized_copy_n(o.m_ptr,_newsize,m_ptr);
 		extra().size=_newsize;
 	}
+	catch(...)
+	{
+		this->_xset(0);
+		throw;
+	}
+}
+
+template<typename T,typename A>
+arr_1t<T,A>& arr_1t<T,A>::operator=(const arr_1t& o)
+{
+	if(this==&o) return *this;
+
+	size_type _newsize=o.size();
+	size_type _capacity=extra().capacity;
+	if(_capacity<_newsize||_capacity>(_newsize*2))
+	{
+		arr_1t(o).swap(*this);
+	}
+	else
+	{
+		size_type _oldsize=extra().size;
+		if(_newsize>_oldsize)
+		{
+			xmem<T>::copy_n(o.m_ptr,_oldsize,m_ptr);
+			xmem<T>::uninitialized_copy_n(o.m_ptr+_oldsize,_newsize-_oldsize,m_ptr+_oldsize);
+			extra().size=_newsize;
+		}
+		else
+		{
+			xmem<T>::copy_n(o.m_ptr,_newsize,m_ptr);
+			xmem<T>::destroy(o.m_ptr+_newsize,_oldsize-_newsize);
+			extra().size=_newsize;
+		}
+	}
+
+	return *this;
 }
 
 template<typename T,typename A>
@@ -221,39 +257,6 @@ typename arr_1t<T,A>::const_reference arr_1t<T,A>::front() const
 	return m_ptr[0];
 }
 
-
-template<typename T,typename A>
-arr_1t<T,A>& arr_1t<T,A>::operator=(const arr_1t& o)
-{
-	if(this==&o) return *this;
-
-	size_type _newsize=o.size();
-	if(extra().capacity<_newsize)
-	{
-		clear();
-		_xset(_newsize);
-		xmem<T>::uninitialized_copy_n(o.m_ptr,_newsize,m_ptr);
-		extra().size=_newsize;
-	}
-	else
-	{
-		size_type _oldsize=extra().size;
-		if(_newsize>_oldsize)
-		{
-			xmem<T>::copy_n(o.m_ptr,_oldsize,m_ptr);
-			xmem<T>::uninitialized_copy_n(o.m_ptr+_oldsize,_newsize-_oldsize,m_ptr+_oldsize);
-			extra().size=_newsize;
-		}
-		else
-		{
-			xmem<T>::copy_n(o.m_ptr,_newsize,m_ptr);
-			xmem<T>::destroy(o.m_ptr+_newsize,_oldsize-_newsize);
-			extra().size=_newsize;
-		}
-	}
-
-	return *this;
-}
 template<typename T,typename A>
 void arr_1t<T,A>::clear()
 {
@@ -288,7 +291,7 @@ void arr_1t<T,A>::reserve(size_type capacity_)
 		return;
 	}
 
-	arr_1t<T,A> tmp;
+	arr_1t tmp;
 	tmp._xset(capacity_);
 	size_type _oldsize=extra().size;
 	xmem<T>::uninitialized_copy_n(m_ptr,_oldsize,tmp.m_ptr);
@@ -300,7 +303,8 @@ void arr_1t<T,A>::reserve(size_type capacity_)
 template<typename T,typename A>
 void arr_1t<T,A>::resize(size_type newsize_,const T& val_)
 {
-	if(newsize_<=extra().capacity)
+	size_type _capacity=extra().capacity;
+	if(newsize_<=_capacity)
 	{
 		size_type _oldsize=extra().size;
 		if(newsize_>=_oldsize)
@@ -317,10 +321,8 @@ void arr_1t<T,A>::resize(size_type newsize_,const T& val_)
 	else
 	{
 		size_type _oldsize=extra().size;
-
-		arr_1t<T,A> tmp;
+		arr_1t tmp;
 		tmp._xset(newsize_);
-
 		xmem<T>::uninitialized_copy_n(m_ptr,_oldsize,tmp.m_ptr);
 		try
 		{
@@ -331,7 +333,6 @@ void arr_1t<T,A>::resize(size_type newsize_,const T& val_)
 			xmem<T>::destroy(tmp.m_ptr,_oldsize);
 			throw;
 		}
-
 		tmp.extra().size=newsize_;
 		swap(tmp);
 	}
@@ -351,7 +352,7 @@ void arr_1t<T,A>::append(It first_,size_type count_)
 	}
 	else
 	{
-		arr_1t<T,A> tmp;
+		arr_1t tmp;
 		tmp._xgen(_newsize);
 
 		xmem<T>::uninitialized_copy_n(m_ptr,_oldsize,tmp.m_ptr);

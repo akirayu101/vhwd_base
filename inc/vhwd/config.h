@@ -123,6 +123,7 @@ template<> class ObjectNameT<TYPE>{public:static String MakeName(const String& s
 #define DEFINE_OBJECT_NAME_T(TYPE,DESC)\
 template<typename T> class ObjectNameT<TYPE<T> >{public:static String MakeName(const String& s){return ObjectNameT<T>::MakeName((s+"#")+DESC);} };
 
+
 #define VHWD_ENTER namespace vhwd{
 #define VHWD_LEAVE };
 

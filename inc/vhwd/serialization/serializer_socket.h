@@ -36,7 +36,7 @@ VHWD_ENTER
 // }
 // //call ar.wr_skip() to clear send buffer;
 //
-class VHWD_DLLIMPEXP SerializerSocket : protected SerializerReader, protected SerializerWriter
+class VHWD_DLLIMPEXP SerializerSocket : public SerializerDuplex
 {
 public:
 
@@ -70,15 +70,9 @@ protected:
 	LinearBuffer<char> lbuf_rd;
 	LinearBuffer<char> lbuf_wr;
 
-	bool recv(char* data,size_t size_)
-	{
-		return size_==(size_t)lbuf_rd.recv(data,size_);
-	}
+	void recv(char* data,size_t size_);
+	void send(char* data,size_t size_);
 
-	bool send(char* data,size_t size_)
-	{
-		return size_==(size_t)lbuf_wr.send(data,size_);
-	}
 };
 
 

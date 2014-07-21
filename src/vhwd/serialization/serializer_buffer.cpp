@@ -26,29 +26,19 @@ void SerializerBuffer::alloc(size_t bufsize)
 }
 
 
-bool SerializerBuffer::send(char* data,size_t size)
+void SerializerBuffer::send(char* data,size_t size)
 {
-	if(lbuf.send(data,size)==size)
-	{
-		return true;
-	}
-	else
+	if(lbuf.send(data,size)!=size)
 	{
 		writer().errstr("no_buffer");
-		return false;
 	}
 }
 
-bool SerializerBuffer::recv(char* data,size_t size)
+void SerializerBuffer::recv(char* data,size_t size)
 {
-	if(lbuf.recv(data,size)==size)
-	{
-		return true;
-	}
-	else
+	if(lbuf.recv(data,size)!=size)
 	{
 		reader().errstr("eof");
-		return false;
 	}
 }
 

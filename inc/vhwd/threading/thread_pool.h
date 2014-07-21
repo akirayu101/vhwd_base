@@ -12,7 +12,11 @@ VHWD_ENTER
 class VHWD_DLLIMPEXP ITask : public ObjectData
 {
 public:
+
 	virtual void svc(void* pdat)=0;
+
+	// call if task canceled!
+	virtual void del(void* pdat){}
 };
 
 
@@ -39,7 +43,7 @@ public:
 
 protected:
 
-	class TaskItem
+	class TaskItem : public NonCopyable
 	{
 	public:
 		TaskItem():next(NULL){}

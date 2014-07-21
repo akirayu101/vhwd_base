@@ -72,6 +72,14 @@ void ThreadPool::putq(ITask* hjob,void* pdat)
 void ThreadPool::reqexit()
 {
 	LockGuard<Mutex> lock1(m_tMutex);
+	for(;;)
+	{
+		TaskItem* q=m_tTaskQueue.pop_front();
+		if(!q) break;
+		q->hjob->del(q->pdat);
+		delete q;
+	}
+
 	basetype::reqexit();
 	m_tCond.notify_all();
 }
@@ -97,8 +105,6 @@ bool ThreadPool::activate()
 
 ThreadPool::TaskItem* ThreadPool::getq()
 {
-
-
 	LockGuard<Mutex> lock1(m_tMutex);
 	for(;;)
 	{
@@ -135,10 +141,7 @@ void ThreadPool::svc()
 	for(;;)
 	{
 		q=getq();
-		if(!q)
-		{
-			break;
-		}
+		if(!q)	break;
 		q->hjob->svc(q->pdat);
 		delete q;
 	}

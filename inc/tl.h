@@ -601,6 +601,9 @@ namespace tl
 		template<typename T>
 		struct is_pod : public is_scalar_type<T>{};
 
+		template<>
+		struct is_pod<bool> : public value_type<true>{};
+
 }
 
 #endif

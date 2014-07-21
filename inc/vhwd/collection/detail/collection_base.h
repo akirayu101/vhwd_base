@@ -11,7 +11,6 @@
 
 #include "vhwd/config.h"
 #include "vhwd/memory.h"
-
 #include <memory>
 
 VHWD_ENTER
@@ -476,15 +475,9 @@ public:
 struct extra_vec_1t
 {
 	typedef size_t size_type;
-
 	size_type capacity;
 	size_type size;
-
-	extra_vec_1t()
-	{
-		capacity=0;
-		size=0;
-	}
+	extra_vec_1t(){capacity=0;size=0;}
 };
 
 
@@ -554,7 +547,11 @@ public:
 	E& extra(){return allocator_type::extra(m_ptr);}
 	const E& extra() const {return allocator_type::extra(m_ptr);}
 
-	void swap(arr_base& o){std::swap(m_ptr,o.m_ptr);}
+	void swap(arr_base& o)
+	{
+		if(this==&o) return;
+		std::swap(m_ptr,o.m_ptr);
+	}
 
 	T& operator[](size_type n){return m_ptr[n];}
 	const T& operator[](size_type n) const {return m_ptr[n];}

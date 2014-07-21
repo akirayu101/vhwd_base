@@ -140,6 +140,8 @@ public:
 	int replace(char c1,char c2);
 	int replace(const String& s1,const String& c2);
 
+	int find (char c, int pos = 0) const;
+
 private:
 	static String FormatImpl(const char* s,...);
 	const String& PrintfImpl(const char* s,...);

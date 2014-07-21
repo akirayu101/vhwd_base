@@ -16,18 +16,12 @@
 public:\
 	typedef INFO infobase;\
 	typedef ObjectInfoT<TYPE,INFO> infotype;\
-	virtual infobase* GetObjectInfo() const;\
 	static  infotype sm_info;\
-	virtual const String& GetObjectName() const {return TYPE::sm_info.GetObjectName();}\
+	virtual infobase* GetObjectInfo() const{return &sm_info;}\
+	virtual const String& GetObjectName() const {return sm_info.GetObjectName();}
 
 
-#define DECLARE_OBJECT_INFO_ABSTRACT(TYPE,INFO)	\
-public:\
-	typedef INFO infobase;\
-	typedef INFO infotype;\
-	virtual infobase* GetObjectInfo() const;\
-	static  infotype sm_info;\
-	virtual const String& GetObjectName() const {return TYPE::sm_info.GetObjectName();}\
+#define DECLARE_OBJECT_INFO_ABSTRACT(TYPE,INFO)	
 
 
 #define DECLARE_OBJECT_INFO_BASE(TYPE,INFO,BASE)	\
@@ -40,25 +34,20 @@ public:\
 
 #define IMPLEMENT_OBJECT_INFO_NAME(TYPE,INFO,NAME)	\
 	TYPE::infotype TYPE::sm_info(NAME);\
-	TYPE::infobase* TYPE::GetObjectInfo() const {return &TYPE::sm_info;}
-
 
 #define IMPLEMENT_OBJECT_INFO(TYPE,INFO)	IMPLEMENT_OBJECT_INFO_NAME(TYPE,INFO,#TYPE)
 
-#define DECLARE_OBJECT_INFO_T(TYPE,INFO)	\
-public:\
-	typedef INFO infobase;\
-	typedef vhwd::ObjectInfoT<TYPE,INFO> infotype;\
-	virtual infobase* GetObjectInfo() const;\
-	static  infotype sm_info;\
-	virtual const String& GetObjectName() const {return TYPE::sm_info.GetObjectName();}\
+
+#define IMPLEMENT_OBJECT_INFO_NAME_T1(TYPE,INFO,NAME)	\
+	template<typename T1> typename TYPE<T1>::infotype  TYPE<T1>::sm_info(vhwd::ObjectNameT<T1>::MakeName(NAME));
 
 
-#define IMPLEMENT_OBJECT_INFO_NAME_T(TYPE,INFO,NAME)	\
-	template<typename T> typename TYPE::infotype TYPE::sm_info(vhwd::ObjectNameT<T>::MakeName(NAME));\
-	template<typename T> typename TYPE::infobase* TYPE::GetObjectInfo() const {return &TYPE::sm_info;}
+#define IMPLEMENT_OBJECT_INFO_NAME_T2(TYPE,INFO,NAME)	\
+	template<typename T1,typename T2> typename TYPE<T1,T2>::infotype TYPE<T1,T2>::sm_info(vhwd::ObjectNameT<T2>::MakeName(vhwd::ObjectNameT<T1>::MakeName(NAME)));
 
-#define IMPLEMENT_OBJECT_INFO_T(TYPE,INFO)	IMPLEMENT_OBJECT_INFO_NAME_T(TYPE,INFO,#TYPE)
+
+#define IMPLEMENT_OBJECT_INFO_T1(TYPE,INFO)	IMPLEMENT_OBJECT_INFO_NAME_T1(TYPE,INFO,#TYPE)
+#define IMPLEMENT_OBJECT_INFO_T2(TYPE,INFO)	IMPLEMENT_OBJECT_INFO_NAME_T2(TYPE,INFO,#TYPE)
 
 VHWD_ENTER
 
@@ -191,7 +180,7 @@ public:
 
 	T* operator[](size_t n)
 	{
-		return static_cast<T*>(impl[n]);
+		return (T*)(impl[n]);
 	}
 
 	size_t size() const
@@ -258,6 +247,7 @@ private:
 DEFINE_OBJECT_NAME(String,"str");
 DEFINE_OBJECT_NAME(bool,"i01");
 DEFINE_OBJECT_NAME(char,"i08");
+DEFINE_OBJECT_NAME(wchar_t,"wch");
 DEFINE_OBJECT_NAME(int32_t,"i32");
 DEFINE_OBJECT_NAME(int64_t,"i64");
 DEFINE_OBJECT_NAME(uint32_t,"u32");

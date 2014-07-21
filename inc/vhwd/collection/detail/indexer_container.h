@@ -10,10 +10,13 @@ VHWD_ENTER
 template<typename P,typename A=def_allocator>
 class indexer_container : public container_base
 {
-public:
+protected:
 	typedef indexer_base<P,A> impl_type;
-	impl_type impl;
+	mutable impl_type impl;
 
+	typedef typename impl_type::value_proxy value_proxy;
+
+public:
 	typedef typename impl_type::key_type key_type;
 	typedef typename impl_type::value_type value_type;
 	typedef typename impl_type::index_type index_type;
@@ -81,9 +84,9 @@ public:
 		impl.max_load_factor(z);
 	}
 
-	typename impl_type::value_reference get(index_type n)
+	value_proxy& get(index_type n)
 	{
-		return impl.get_by_id(n);
+		return *(value_proxy*)&impl.get_by_id(n);
 	}
 
 	const value_type& get(index_type n) const

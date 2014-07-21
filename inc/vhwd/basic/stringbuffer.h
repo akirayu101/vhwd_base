@@ -99,6 +99,13 @@ public:
 	static const int value=(N>='A'&&N<='Z')?(N-'A'+'a'):N;
 };
 
+template<unsigned N>
+class lkt_whitespace
+{
+public:
+	static const int value=N==' '||N=='\t'||N=='\r'||N=='\n';
+};
+
 
 template<template<unsigned> class P>
 const unsigned char lookup_table<P>::cmap[256]=

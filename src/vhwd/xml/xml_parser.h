@@ -7,7 +7,8 @@
 
 VHWD_ENTER
 
-class ParserBase
+
+class VHWD_DLLIMPEXP ParserBase : public Object
 {
 public:
 
@@ -21,11 +22,8 @@ public:
 		p=tmp;
 	}
 
-
 };
 
-
-	
 class XmlParser : public ParserBase
 {
 public:
@@ -36,12 +34,12 @@ public:
 	bool load(const String& f);
 	bool save(const String& f);
 
-	inline XmlNode* CreateNode(int t=XmlNode::XMLNODE_ELEMENT)
+	XmlNode* CreateNode(int t=XmlNode::XMLNODE_ELEMENT)
 	{
 		return new XmlNode(t);
 	}
 
-	inline XmlAttribute* CreateAttr()
+	XmlAttribute* CreateAttr()
 	{
 		return new XmlAttribute();
 	}

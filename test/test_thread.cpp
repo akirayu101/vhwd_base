@@ -218,7 +218,7 @@ TEST_DEFINE(TEST_ThreadPool)
 
 
 
-class EventThread : public ThreadMulti
+class ThreadSync : public ThreadMulti
 {
 public:
 
@@ -232,7 +232,7 @@ public:
 	size_t type;
 	size_t result;
 
-	EventThread()
+	ThreadSync()
 	{
 
 		hSem.post();
@@ -294,7 +294,7 @@ public:
 
 TEST_DEFINE(TEST_ThreadOther)
 {
-	EventThread thrd;
+	ThreadSync thrd;
 
 	thrd.test(1,"sem");
 	TEST_ASSERT(thrd.result==1024*1024);
