@@ -15,5 +15,4 @@ bool XmlAttribute::Serialize(Serializer& ar)
 	return ar.good();
 }
 
-
 VHWD_LEAVE

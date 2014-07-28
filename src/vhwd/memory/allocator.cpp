@@ -2,7 +2,6 @@
 
 VHWD_ENTER
 
-
 void* AlignedAlloc(size_t size,size_t align,size_t shift)
 {
 	unsigned char* _pRaw=(unsigned char*)::malloc(size+align);

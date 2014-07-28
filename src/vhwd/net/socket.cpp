@@ -4,7 +4,6 @@
 #include "vhwd/memory/mempool.h"
 #include "vhwd/basic/system.h"
 
-
 #include "socket_impl_detail.h"
 
 

@@ -1,7 +1,5 @@
 #include "mempool_impl.h"
 
-
-
 VHWD_ENTER
 
 FixedSizeAllocatorUnit::FixedSizeAllocatorUnit(size_t n)

@@ -238,7 +238,7 @@ inline void  XmlParser::string_assign(String& s0,mychar_ptr p1,mychar_ptr p2)
 			}
 			break;
 			default:
-				*dest++='&';
+				*dest++=*p1++;
 				break;
 			}
 		}

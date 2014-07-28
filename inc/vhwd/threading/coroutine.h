@@ -93,9 +93,6 @@ protected:
 };
 
 
-
-
-
 // coroutine that use functor as entry point.
 class VHWD_DLLIMPEXP CoroutineEx : public Coroutine
 {

@@ -14,6 +14,12 @@ ObjectInfo::ObjectInfo(const String& s)
 	}
 }
 
+ObjectInfo::~ObjectInfo() {}
+
+const String& ObjectInfo::GetObjectName() const
+{
+	return m_sClassName;
+}
 
 class ObjectCreatorImpl : public ObjectData
 {

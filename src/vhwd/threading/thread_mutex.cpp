@@ -6,7 +6,6 @@
 
 VHWD_ENTER
 
-
 RWLock::RWLock()
 {
 	ThreadImpl_detail::rwlock_create(*this);

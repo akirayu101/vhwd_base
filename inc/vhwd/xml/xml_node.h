@@ -13,12 +13,13 @@
 
 VHWD_ENTER
 
-
+class VHWD_DLLIMPEXP XmlDocument;
 
 class VHWD_DLLIMPEXP XmlNode : public XmlBase
 {
 public:
 	friend class XmlParser;
+	friend class XmlDocument;
 
 	enum
 	{
@@ -171,7 +172,9 @@ protected:
 
 	int32_t m_nNodeType;
 
-	void EnsureChildrenParent();
+	void xml_ensure_children_parent();
+
+	static XmlNode* xml_copy_recursive(const XmlNode* node);
 
 };
 

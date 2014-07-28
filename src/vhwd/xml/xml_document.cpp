@@ -6,23 +6,29 @@
 
 VHWD_ENTER
 
-XmlDocument::XmlDocument(const XmlDocument& o)
+
+XmlDocument::XmlDocument():XmlNode(XmlNode::XMLNODE_ROOT)
 {
-	(*this)=o;
+
+}
+
+XmlDocument::~XmlDocument()
+{
+
+}
+
+XmlDocument::XmlDocument(const XmlDocument& o):XmlNode(o)
+{
+	XmlNode* node=xml_copy_recursive(&o);
+	listNodes.swap(node->listNodes);
+	listAttrs.swap(node->listAttrs);
+	xml_ensure_children_parent();
+	delete node;
 }
 
 const XmlDocument& XmlDocument::operator=(const XmlDocument& src)
 {
-	XmlDocument dst;
-
-	SerializerBuffer sbuf;
-	sbuf.writer() & src;
-	sbuf.reader() & dst;
-	if(!sbuf.skip())
-	{
-		System::LogError("XmlDocument::operator= failed!");
-	}
-	swap(dst);
+	XmlDocument(src).swap(*this);
 	return *this;
 }
 
@@ -48,16 +54,6 @@ bool XmlDocument::SaveXml(const String& s)
 {
 	XmlParser parser(*this);
 	return parser.save(s);
-}
-
-XmlDocument::XmlDocument():XmlNode(XmlNode::XMLNODE_ROOT)
-{
-
-}
-
-XmlDocument::~XmlDocument()
-{
-
 }
 
 VHWD_LEAVE

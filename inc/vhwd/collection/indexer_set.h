@@ -28,8 +28,6 @@ public:
 	typedef typename impl_type::index_type index_type;
 	typedef typename impl_type::value_type value_type;
 	typedef typename impl_type::size_type size_type;
-	typedef typename impl_type::const_iterator iterator;
-
 
 	indexer_set() {}
 	indexer_set(const indexer_set& o):basetype(o) {}

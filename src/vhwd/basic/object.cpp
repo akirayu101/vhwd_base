@@ -2,7 +2,6 @@
 
 VHWD_ENTER
 
-
 bool Object::Serialize(Serializer&)
 {
 	return true;

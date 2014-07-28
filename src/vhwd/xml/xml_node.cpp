@@ -28,7 +28,7 @@ XmlNode::~XmlNode()
 	DeleteAttributes();
 }
 
-void XmlNode::EnsureChildrenParent()
+void XmlNode::xml_ensure_children_parent()
 {
 	for(XmlNode* pnode=GetFirstChild(); pnode!=NULL; pnode=pnode->GetNext())
 	{
@@ -43,8 +43,8 @@ void XmlNode::swap(XmlNode& o)
 	std::swap(m_nNodeType,o.m_nNodeType);
 	listNodes.swap(o.listNodes);
 	listAttrs.swap(o.listAttrs);
-	EnsureChildrenParent();
-	o.EnsureChildrenParent();
+	xml_ensure_children_parent();
+	o.xml_ensure_children_parent();
 }
 
 bool XmlNode::Serialize(Serializer& ar)
@@ -107,5 +107,24 @@ bool XmlNode::Serialize(Serializer& ar)
 	return ar.good();
 }
 
+
+
+XmlNode* XmlNode::xml_copy_recursive(const XmlNode* node)
+{
+	if(!node) return NULL;
+
+	AutoPtrT<XmlNode> nnew(new XmlNode(*node));
+	for(const XmlNode* p=node->GetFirstChild();p;p=p->GetNext())
+	{
+		nnew->listNodes.append(xml_copy_recursive(p));
+	}
+	for(const XmlAttribute* p=node->GetFirstAttribute();p;p=p->GetNext())
+	{
+		nnew->listAttrs.append(new XmlAttribute(*p));
+	}
+	nnew->xml_ensure_children_parent();
+	return nnew.release();
+ 
+}
 
 VHWD_LEAVE

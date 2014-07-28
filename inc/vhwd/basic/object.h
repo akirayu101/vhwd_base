@@ -58,12 +58,10 @@ class VHWD_DLLIMPEXP ObjectInfo : private NonCopyable
 {
 public:
 	ObjectInfo(const String& s);
-	virtual ~ObjectInfo() {}
+	virtual ~ObjectInfo();
 
-	const String& GetObjectName() const
-	{
-		return m_sClassName;
-	}
+	const String& GetObjectName() const;
+
 	virtual Object* CreateObject()=0;
 
 protected:
@@ -101,10 +99,8 @@ public:
 
 	ObjectData();
 	ObjectData(const ObjectData& o);
-	ObjectData& operator=(const ObjectData&)
-	{
-		return *this;
-	}
+
+	ObjectData& operator=(const ObjectData&){return *this;}
 	~ObjectData();
 
 	// Increase reference counter,

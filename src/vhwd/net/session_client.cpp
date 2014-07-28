@@ -23,7 +23,6 @@ void SessionClient::OnDisconnected()
 	basetype::OnDisconnected();
 }
 
-
 bool SessionClient::Connect(const String& ip,int port)
 {
 
