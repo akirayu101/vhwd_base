@@ -26,23 +26,32 @@ void ConsoleDoSetColor(int color)
 	switch(color)
 	{
 	case 0:
-		::printf("\033[22;30m");break;
+		::printf("\033[22;30m");
+		break;
 	case Console::COLOR_R:
-		::printf("\033[01;31m");break;
+		::printf("\033[01;31m");
+		break;
 	case Console::COLOR_R|Console::COLOR_S:
-		::printf("\033[22;31m");break;
+		::printf("\033[22;31m");
+		break;
 	case Console::COLOR_G:
-		::printf("\033[01;32m");break;
+		::printf("\033[01;32m");
+		break;
 	case Console::COLOR_G|Console::COLOR_S:
-		::printf("\033[22;32m");break;
+		::printf("\033[22;32m");
+		break;
 	case Console::COLOR_B:
-		::printf("\033[01;34m");break;
+		::printf("\033[01;34m");
+		break;
 	case Console::COLOR_B|Console::COLOR_S:
-		::printf("\033[22;34m");break;
+		::printf("\033[22;34m");
+		break;
 	case Console::COLOR_D:
-		::printf("\033[0m");break;
+		::printf("\033[0m");
+		break;
 	default:
-		::printf("\033[0m");break;
+		::printf("\033[0m");
+		break;
 	};
 
 #endif

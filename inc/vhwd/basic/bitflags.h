@@ -33,8 +33,14 @@ private:
 	int32_t m_nFlags;
 };
 
-inline bool operator==(const BitFlags lhs,const BitFlags rhs){return lhs.val()==rhs.val();}
-inline bool operator!=(const BitFlags lhs,const BitFlags rhs){return lhs.val()!=rhs.val();}
+inline bool operator==(const BitFlags lhs,const BitFlags rhs)
+{
+	return lhs.val()==rhs.val();
+}
+inline bool operator!=(const BitFlags lhs,const BitFlags rhs)
+{
+	return lhs.val()!=rhs.val();
+}
 
 
 VHWD_LEAVE

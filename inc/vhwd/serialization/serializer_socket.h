@@ -20,7 +20,7 @@ VHWD_ENTER
 
 // Usage:
 // SerializerSocket ar;
-// 
+//
 // //reader
 // if(ar.rd_sync()) // recv data from socket and store to recv buffer.
 // {
@@ -43,13 +43,22 @@ public:
 	SerializerSocket();
 
 	// get writer
-	SerializerWriter& writer(){return *this;}
+	SerializerWriter& writer()
+	{
+		return *this;
+	}
 
 	// get reader
-	SerializerReader& reader(){return *this;}
+	SerializerReader& reader()
+	{
+		return *this;
+	}
 
 
-	void close(){sock.Close();}
+	void close()
+	{
+		sock.Close();
+	}
 
 	// read data from socket and store to buffer.
 	bool rd_sync();

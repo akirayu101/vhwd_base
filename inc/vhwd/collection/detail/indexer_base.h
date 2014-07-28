@@ -52,43 +52,56 @@ public:
 	typedef typename P::value_proxy value_proxy;
 	typedef typename P::chunk_node chunk_node;
 
+	static const size_t g_nInitialBucketCount=32; 
+
 	indexer_base()
 	{
 		m_nMaxLoadFactor=2.0;
-		rehash(32);
+		m_nBucketMask=0;
+		m_nBucketCount=0;
 	}
 
 	indexer_base(const indexer_base& o):values(o.values)
 	{
 		m_nMaxLoadFactor=o.m_nMaxLoadFactor;
-		try
+		m_nBucketMask=0;
+		m_nBucketCount=0;
+		if(!values.empty())
 		{
-			reserve(values.size());
-		}
-		catch(...)
-		{
-			values.clear();
-			throw;
+			rehash(0);
 		}
 	}
 
 	indexer_base& operator=(const indexer_base& o)
 	{
 		if(this==&o) return *this;
-		indexer_base tmp(o);swap(o);
+		indexer_base(o).swap(*this);
 		return *this;
 	}
 
 #ifdef VHWD_C11
-	indexer_base(indexer_base&& o){m_nMaxLoadFactor=2.0;swap(o);}
-	indexer_base& operator=(indexer_base&& o){if(this==&o) return *this;swap(o);return *this;}
+
+	indexer_base(indexer_base&& o)
+	{
+		swap(o);
+	}
+
+	indexer_base& operator=(indexer_base&& o)
+	{
+		if(this!=&o) swap(o);
+		return *this;
+	}
+
 #endif
 
 	class chunk_type
 	{
 	public:
 		chunk_node* phead;
-		chunk_type(){phead=NULL;}
+		chunk_type()
+		{
+			phead=NULL;
+		}
 		chunk_type(const chunk_type& o)
 		{
 			phead=copy_recursive(o.phead);
@@ -104,13 +117,15 @@ public:
 		chunk_type(chunk_type&& o)
 		{
 			if(this==&o) return;
-			phead=o.phead;o.phead=NULL;
+			phead=o.phead;
+			o.phead=NULL;
 		}
 
 		chunk_type& operator=(chunk_type&& o)
 		{
 			if(this==&o) return;
-			phead=o.phead;o.phead=NULL;
+			phead=o.phead;
+			o.phead=NULL;
 			return *this;
 		}
 #endif
@@ -141,7 +156,8 @@ public:
 		{
 			while(p)
 			{
-				chunk_node* t=p;p=p->pnext;
+				chunk_node* t=p;
+				p=p->pnext;
 				destroy(t);
 			}
 		}
@@ -165,6 +181,7 @@ public:
 	typedef typename A::template rebind<chunk_node>::other chunk_allocator;
 
 	typedef arr_1t<value_type,typename A::template rebind<value_type>::other > value_array;
+	typedef arr_1t<value_proxy,typename A::template rebind<value_type>::other > proxy_array;
 	typedef arr_1t<chunk_type,typename A::template rebind<chunk_type>::other > chunk_array;
 
 	typedef typename value_array::iterator iterator;
@@ -173,21 +190,51 @@ public:
 	typedef typename value_array::const_reverse_iterator const_reverse_iterator;
 
 
-	const_iterator begin() const {return values.begin();}
-	const_iterator end() const{return values.end();}
-	iterator begin() {return values.begin();}
-	iterator end() {return values.end();}
+	const_iterator begin() const
+	{
+		return values.begin();
+	}
 
-	const_reverse_iterator rbegin() const {return values.rbegin();}
-	const_reverse_iterator rend() const{return values.rend();}
-	reverse_iterator rbegin() {return values.rbegin();}
-	reverse_iterator rend() {return values.rend();}
+	const_iterator end() const
+	{
+		return values.end();
+	}
+
+	iterator begin()
+	{
+		return values.begin();
+	}
+
+	iterator end()
+	{
+		return values.end();
+	}
+
+	const_reverse_iterator rbegin() const
+	{
+		return values.rbegin();
+	}
+
+	const_reverse_iterator rend() const
+	{
+		return values.rend();
+	}
+
+	reverse_iterator rbegin()
+	{
+		return values.rbegin();
+	}
+
+	reverse_iterator rend()
+	{
+		return values.rend();
+	}
 
 	static const index_type invalid_pos=index_type(-1);
 
 	index_type chunk_find(const chunk_type& chunk,const key_type& k) const
 	{
-		for(chunk_node* p=chunk.phead;p!=NULL;p=p->pnext)
+		for(chunk_node* p=chunk.phead; p!=NULL; p=p->pnext)
 		{
 			if(P::equal(P::key(values[p->index]),k)) return p->index;
 		}
@@ -204,7 +251,7 @@ public:
 
 	static void chunk_replace(chunk_type& chunk,index_type id1,index_type id2)
 	{
-		for(chunk_node* n=chunk.phead;n;n=n->pnext)
+		for(chunk_node* n=chunk.phead; n; n=n->pnext)
 		{
 			if(n->index==id1)
 			{
@@ -270,6 +317,11 @@ public:
 
 	index_type find(const key_type& k) const
 	{
+		if(m_nBucketMask==0)
+		{
+			return invalid_pos;
+		}
+
 		size_t hk=P::hashcode_key(k);
 		size_t cp=hk&m_nBucketMask;
 		const chunk_type& chunk(buckets[cp]);
@@ -281,6 +333,12 @@ public:
 	{
 		const key_type& k(P::key(v));
 		size_t hk=P::hashcode_key(k);
+
+		if(m_nBucketMask==0)
+		{
+			rehash(g_nInitialBucketCount);
+		}
+
 		size_t cp=hk&m_nBucketMask;
 		chunk_type& chunk(buckets[cp]);
 		index_type id=chunk_find(chunk,k);
@@ -292,6 +350,7 @@ public:
 
 		id=(index_type)values.size();
 		chunk_insert(chunk,id);
+
 		try
 		{
 			values.push_back(v);
@@ -309,6 +368,12 @@ public:
 
 	index_type find2(const key_type& k)
 	{
+
+		if(m_nBucketMask==0)
+		{
+			rehash(g_nInitialBucketCount);
+		}
+
 		size_t hk=P::hashcode_key(k);
 		size_t cp=hk&m_nBucketMask;
 		chunk_type& chunk(buckets[cp]);
@@ -337,6 +402,11 @@ public:
 
 	size_t erase(const key_type& k)
 	{
+		if(m_nBucketMask==0)
+		{
+			return 0;
+		}
+
 		size_t hk1=P::hashcode_key(k);
 		size_t cp1=hk1&m_nBucketMask;
 		chunk_type& chunk1(buckets[cp1]);
@@ -376,27 +446,36 @@ public:
 	void reserve(size_t n_)
 	{
 		values.reserve(n_);
-		rehash((double(n_)/double(m_nMaxLoadFactor)+0.5));
+		size_t bc=::ceil(double(n_)/double(m_nMaxLoadFactor));
+		if(bc>m_nBucketCount)
+		{
+			rehash(bc);
+		}
+	}
+
+	size_t min_bucket_count() const
+	{
+		return (double(values.size())/double(m_nMaxLoadFactor)+0.5);
 	}
 
 	void rehash(size_t s_)
 	{
+		if(s_==0&&values.empty())
+		{
+			buckets.clear();
+			m_nBucketCount=0;
+			m_nBucketMask=0;
+			return;
+		}
 
-		size_t sz=1<<5;
-		if(s_==0)
-		{
-			sz=m_nBucketCount;
-		}
-		else
-		{
-			while(sz<s_) sz<<=1;
-		}
+		size_t bc=min_bucket_count();
+		size_t sz=sz_helper::n2p(std::max(s_,bc));
 		size_t mk=sz-1;
 
 		chunk_array cks;
 		cks.resize(sz);
 		size_t n=values.size();
-		for(size_t i=0;i<n;i++)
+		for(size_t i=0; i<n; i++)
 		{
 			size_t hk=P::hashcode_key(P::key(values[i]));
 			size_t cp=hk&mk;
@@ -418,10 +497,25 @@ public:
 		buckets.resize(m_nBucketCount);
 	}
 
-	size_t size() const {return values.size();}
+	size_t size() const
+	{
+		return values.size();
+	}
 
-	value_array& get_values(){return values;}
-	const value_array& get_values() const {return values;}
+	value_array& get_values()
+	{
+		return values;
+	}
+
+	proxy_array& get_proxys()
+	{
+		return (proxy_array&)values;
+	}
+
+	const value_array& get_values() const
+	{
+		return values;
+	}
 
 	float load_factor() const
 	{

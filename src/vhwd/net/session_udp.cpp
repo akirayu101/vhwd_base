@@ -135,14 +135,14 @@ void SessionUDP::DoAsyncSend()
 
 	MyOverLappedEx &idat(*q);
 	int bRet=WSASendTo(sk_local.sock,
-			&idat.dbuf[0],
-			idat.dbuf[1].buf?2:1,
-			&idat.size,
-			0,
-			idat.peer,
-			idat.peer.v4size(),
-			&idat.olap,
-			NULL);
+					   &idat.dbuf[0],
+					   idat.dbuf[1].buf?2:1,
+					   &idat.size,
+					   0,
+					   idat.peer,
+					   idat.peer.v4size(),
+					   &idat.olap,
+					   NULL);
 
 	if(bRet!=0 && WSAGetLastError()!=WSA_IO_PENDING)
 	{
@@ -177,14 +177,14 @@ void SessionUDP::DoAsyncRecv()
 	MyOverLappedEx &idat(*q);
 
 	int bRet=WSARecvFrom(sk_local.sock,
-		&idat.dbuf[0],
-		idat.dbuf[1].buf?2:1,
-		&idat.size,
-		&iocp_flag_recv,
-		idat.peer,
-		idat.peer,
-		&idat.olap,
-		NULL);
+						 &idat.dbuf[0],
+						 idat.dbuf[1].buf?2:1,
+						 &idat.size,
+						 &iocp_flag_recv,
+						 idat.peer,
+						 idat.peer,
+						 &idat.olap,
+						 NULL);
 
 	if(bRet!=0 && WSAGetLastError()!=WSA_IO_PENDING)
 	{

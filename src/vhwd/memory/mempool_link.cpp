@@ -100,7 +100,7 @@ MemLinking& MemLinking::current()
 #endif
 		}
 
-	}mp;
+	} mp;
 	return mp;
 }
 
@@ -131,7 +131,7 @@ public:
 class IMemAllocInfo
 {
 public:
-	IMemAllocInfo(){}
+	IMemAllocInfo() {}
 	IMemAllocInfo(MemAllocInfo* p)
 	{
 		sFile=p->sFile;
@@ -179,7 +179,7 @@ bool operator<(const IMemAllocInfo& lhs,const IMemAllocInfo& rhs)
 	return memcmp(&lhs,&rhs,sizeof(IMemAllocInfo))<0;
 }
 
-template<>class hash_t<IMemAllocInfo> : public vhwd::hash_impl<IMemAllocInfo>{};
+template<>class hash_t<IMemAllocInfo> : public vhwd::hash_impl<IMemAllocInfo> {};
 
 class MemAllocInfoCompare
 {
@@ -204,7 +204,7 @@ void MemLinking::report()
 			return;
 		}
 
-		for(ILinkNode* link=m_pMemLink.tHead.pNext;link!=NULL;link=link->pNext)
+		for(ILinkNode* link=m_pMemLink.tHead.pNext; link!=NULL; link=link->pNext)
 		{
 			MemAllocInfo* fp=(MemAllocInfo*)link;
 			alinfo[fp](fp);
@@ -212,7 +212,7 @@ void MemLinking::report()
 	}
 
 	System::LogTrace("---memlink report begin-------");
-	for(map_type::iterator it=alinfo.begin();it!=alinfo.end();++it)
+	for(map_type::iterator it=alinfo.begin(); it!=alinfo.end(); ++it)
 	{
 		(*it).first((*it).second);
 	}

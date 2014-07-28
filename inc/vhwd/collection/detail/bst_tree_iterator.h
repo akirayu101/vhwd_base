@@ -15,7 +15,7 @@ public:
 	typedef typename P::node_type node_type;
 	typedef typename P::value_type value_type;
 
-	bst_iterator_base(node_type* p,node_type** r):m_pNode(p),m_ppRoot(r){}
+	bst_iterator_base(node_type* p,node_type** r):m_pNode(p),m_ppRoot(r) {}
 
 	value_type* item()
 	{
@@ -28,9 +28,15 @@ public:
 		wassert(m_ppRoot!=NULL);
 		return *(node_type**)m_ppRoot;
 	}
-	node_type* node(){return m_pNode;}
+	node_type* node()
+	{
+		return m_pNode;
+	}
 
-	bool is_valid(){return m_pNode!=NULL;}
+	bool is_valid()
+	{
+		return m_pNode!=NULL;
+	}
 
 protected:
 
@@ -109,14 +115,32 @@ public:
 	typedef typename P::node_type node_type;
 	typedef typename P::value_type value_type;
 
-	bst_iterator():basetype(NULL,NULL){}
-	bst_iterator(node_type* p,node_type** r):basetype(p,r){}
+	bst_iterator():basetype(NULL,NULL) {}
+	bst_iterator(node_type* p,node_type** r):basetype(p,r) {}
 
-	bst_iterator& operator++(){this->template fwd<D>();return *this;}
-	bst_iterator& operator--(){this->template bwd<D>();return *this;}
+	bst_iterator& operator++()
+	{
+		this->template fwd<D>();
+		return *this;
+	}
+	bst_iterator& operator--()
+	{
+		this->template bwd<D>();
+		return *this;
+	}
 
-	bst_iterator operator++(int){bst_iterator tmp(*this);++(*this);return tmp;}
-	bst_iterator operator--(int){bst_iterator tmp(*this);--(*this);return tmp;}
+	bst_iterator operator++(int)
+	{
+		bst_iterator tmp(*this);
+		++(*this);
+		return tmp;
+	}
+	bst_iterator operator--(int)
+	{
+		bst_iterator tmp(*this);
+		--(*this);
+		return tmp;
+	}
 
 	bool operator==(const bst_iterator& it)
 	{
@@ -130,8 +154,14 @@ public:
 		return this->m_pNode!=it.m_pNode;
 	}
 
-	const value_type& operator*(){return *this->item();}
-	const value_type* operator->(){return this->item();}
+	const value_type& operator*()
+	{
+		return *this->item();
+	}
+	const value_type* operator->()
+	{
+		return this->item();
+	}
 
 };
 
@@ -144,17 +174,41 @@ public:
 	typedef typename P::node_type node_type;
 	typedef typename P::value_type value_type;
 
-	bst_iterator(){}
-	bst_iterator(node_type* p,node_type** r):basetype(p,r){}
+	bst_iterator() {}
+	bst_iterator(node_type* p,node_type** r):basetype(p,r) {}
 
-	bst_iterator& operator++(){this->template fwd<D>();return *this;}
-	bst_iterator& operator--(){this->template bwd<D>();return *this;}
+	bst_iterator& operator++()
+	{
+		this->template fwd<D>();
+		return *this;
+	}
+	bst_iterator& operator--()
+	{
+		this->template bwd<D>();
+		return *this;
+	}
 
-	bst_iterator operator++(int){bst_iterator tmp(*this);++(*this);return tmp;}
-	bst_iterator operator--(int){bst_iterator tmp(*this);--(*this);return tmp;}
+	bst_iterator operator++(int)
+	{
+		bst_iterator tmp(*this);
+		++(*this);
+		return tmp;
+	}
+	bst_iterator operator--(int)
+	{
+		bst_iterator tmp(*this);
+		--(*this);
+		return tmp;
+	}
 
-	value_type& operator*(){return *this->item();}
-	value_type* operator->(){return this->item();}
+	value_type& operator*()
+	{
+		return *this->item();
+	}
+	value_type* operator->()
+	{
+		return this->item();
+	}
 
 };
 

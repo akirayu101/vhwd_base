@@ -45,11 +45,20 @@ public:
 	typedef KO_Handle_shm<KO_Policy_handle> impl_type;
 
 	// get the size of the shared memory.
-	inline size_t size() const{return impl.m_nSize;}
+	inline size_t size() const
+	{
+		return impl.m_nSize;
+	}
 
 	// get the starting address of the shared memory.
-	char* addr(){return impl.m_pAddr;}
-	const char* addr() const {return impl.m_pAddr;}
+	char* addr()
+	{
+		return impl.m_pAddr;
+	}
+	const char* addr() const
+	{
+		return impl.m_pAddr;
+	}
 
 	// Create/Open shared memory with given name and given size.
 	bool Create(const String& name_,size_t size_,int flag_=FileAccess::FLAG_RW);

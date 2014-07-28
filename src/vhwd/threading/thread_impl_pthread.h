@@ -230,7 +230,7 @@ public:
 
 	static void sem_post(Semaphore& m,int n)
 	{
-		for(int i=0;i<n;i++)
+		for(int i=0; i<n; i++)
 		{
 			::sem_post(g(m));
 		}

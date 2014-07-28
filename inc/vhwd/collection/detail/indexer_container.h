@@ -21,17 +21,30 @@ public:
 	typedef typename impl_type::value_type value_type;
 	typedef typename impl_type::index_type index_type;
 	typedef typename impl_type::size_type size_type;
-
-	indexer_container(){}
-	indexer_container(const indexer_container& o):impl(o.impl){}
+	typedef typename impl_type::value_array value_array;
+	indexer_container() {}
+	indexer_container(const indexer_container& o):impl(o.impl) {}
 
 #ifdef VHWD_C11
-	indexer_container(indexer_container&& o):impl(o.impl){}
+	indexer_container(indexer_container&& o):impl(o.impl) {}
 #endif
 
-	void swap(indexer_container& o)
+	typedef typename impl_type::proxy_array::iterator iterator;
+	typedef typename impl_type::proxy_array::iterator const_iterator;
+
+	iterator begin(){return impl.get_proxys().begin();}
+	iterator end(){return impl.get_proxys().end();}
+	const_iterator begin() const {return impl.get_proxys().begin();}
+	const_iterator end() const {return impl.get_proxys().end();}
+	const_iterator cbegin() const {return impl.get_proxys().begin();}
+	const_iterator cend() const {return impl.get_proxys().end();}
+
+	void swap(indexer_container& o){impl.swap(o.impl);}
+
+	void swap(value_array& o)
 	{
-		impl.swap(o.impl);
+		impl.get_values().swap(o);
+		impl.rehash(0);
 	}
 
 	index_type find(const key_type& v) const
@@ -86,7 +99,7 @@ public:
 
 	value_proxy& get(index_type n)
 	{
-		return *(value_proxy*)&impl.get_by_id(n);
+		return (value_proxy&)impl.get_by_id(n);
 	}
 
 	const value_type& get(index_type n) const
@@ -99,7 +112,10 @@ public:
 		return impl.empty();
 	}
 
-	size_t size() const {return impl.size();}
+	size_t size() const
+	{
+		return impl.size();
+	}
 
 };
 

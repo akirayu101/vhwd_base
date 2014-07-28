@@ -30,21 +30,12 @@ public:
 	typedef typename impl_type::size_type size_type;
 	typedef typename impl_type::const_iterator iterator;
 
-	iterator begin() const
-	{
-		return impl.begin();
-	}
 
-	iterator end() const
-	{
-		return impl.end();
-	}
-
-	indexer_set(){}
-	indexer_set(const indexer_set& o):basetype(o){}
+	indexer_set() {}
+	indexer_set(const indexer_set& o):basetype(o) {}
 
 #ifdef VHWD_C11
-	indexer_set(indexer_set&& o):basetype(o){}
+	indexer_set(indexer_set&& o):basetype(o) {}
 #endif
 
 };

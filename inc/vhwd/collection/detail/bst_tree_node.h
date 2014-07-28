@@ -35,14 +35,37 @@ public:
 	mapped_type extra;
 	color_type color;
 
-	bst_node(){parent=child1=child2=NULL;color=COLOR_RED;}
-	bst_node(const key_type& k):value(k){parent=child1=child2=NULL;color=COLOR_RED;}
-	bst_node(const value_type& p):value(p.first),extra(p.second){parent=child1=child2=NULL;color=COLOR_RED;}
-	bst_node(const bst_node& n):value(n.value),extra(n.extra),color(n.color){parent=child1=child2=NULL;}
+	bst_node()
+	{
+		parent=child1=child2=NULL;
+		color=COLOR_RED;
+	}
+	bst_node(const key_type& k):value(k)
+	{
+		parent=child1=child2=NULL;
+		color=COLOR_RED;
+	}
+	bst_node(const value_type& p):value(p.first),extra(p.second)
+	{
+		parent=child1=child2=NULL;
+		color=COLOR_RED;
+	}
+	bst_node(const bst_node& n):value(n.value),extra(n.extra),color(n.color)
+	{
+		parent=child1=child2=NULL;
+	}
 
 #ifdef VHWD_C11
-	bst_node(key_type&& k):value(k){parent=child1=child2=NULL;color=COLOR_RED;}
-	bst_node(value_type&& v):value(v.first),extra(v.second){parent=child1=child2=NULL;color=COLOR_RED;}
+	bst_node(key_type&& k):value(k)
+	{
+		parent=child1=child2=NULL;
+		color=COLOR_RED;
+	}
+	bst_node(value_type&& v):value(v.first),extra(v.second)
+	{
+		parent=child1=child2=NULL;
+		color=COLOR_RED;
+	}
 #endif
 
 };
@@ -62,12 +85,27 @@ public:
 	key_type value;
 	color_type color;
 
-	bst_node(){parent=child1=child2=NULL;color=COLOR_RED;}
-	bst_node(const key_type& k):value(k){parent=child1=child2=NULL;color=COLOR_RED;}
-	bst_node(const bst_node& n):value(n.value),color(n.color){parent=child1=child2=NULL;}
+	bst_node()
+	{
+		parent=child1=child2=NULL;
+		color=COLOR_RED;
+	}
+	bst_node(const key_type& k):value(k)
+	{
+		parent=child1=child2=NULL;
+		color=COLOR_RED;
+	}
+	bst_node(const bst_node& n):value(n.value),color(n.color)
+	{
+		parent=child1=child2=NULL;
+	}
 
 #ifdef VHWD_C11
-	bst_node(key_type&& k):value(k){parent=child1=child2=NULL;color=COLOR_RED;}
+	bst_node(key_type&& k):value(k)
+	{
+		parent=child1=child2=NULL;
+		color=COLOR_RED;
+	}
 #endif
 
 };
@@ -198,9 +236,19 @@ public:
 	typedef typename basetype::value_type value_type;
 	typedef typename basetype::node_type node_type;
 
-	static const key_type& key(const key_type& v){return v;}
-	static const key_type& key(const value_type& v){return v.first;}
-	static const key_type& key(node_type* node){wassert(node!=NULL);return node->value;}
+	static const key_type& key(const key_type& v)
+	{
+		return v;
+	}
+	static const key_type& key(const value_type& v)
+	{
+		return v.first;
+	}
+	static const key_type& key(node_type* node)
+	{
+		wassert(node!=NULL);
+		return node->value;
+	}
 
 };
 
@@ -213,8 +261,15 @@ public:
 	typedef typename basetype::value_type value_type;
 	typedef typename basetype::node_type node_type;
 
-	static const key_type& key(const key_type& v){return v;}
-	static const key_type& key(node_type* node){wassert(node!=NULL);return node->value;}
+	static const key_type& key(const key_type& v)
+	{
+		return v;
+	}
+	static const key_type& key(node_type* node)
+	{
+		wassert(node!=NULL);
+		return node->value;
+	}
 };
 
 

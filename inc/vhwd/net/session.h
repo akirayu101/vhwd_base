@@ -6,11 +6,11 @@
 #include "vhwd/threading/thread.h"
 
 #if defined(_WIN32)
-	#include <winsock2.h>
-	#include <mswsock.h>
-	#include <ws2tcpip.h>
+#include <winsock2.h>
+#include <mswsock.h>
+#include <ws2tcpip.h>
 #else
-	#include <sys/epoll.h>
+#include <sys/epoll.h>
 #endif
 
 
@@ -233,7 +233,11 @@ private:
 class Q2Packet
 {
 public:
-	void reset(){qp=0;ap.clear();}
+	void reset()
+	{
+		qp=0;
+		ap.clear();
+	}
 
 	bool update(Session::MyOlapPtr& q)
 	{
@@ -273,7 +277,7 @@ public:
 		}
 
 
-		for(;_left>=2;)
+		for(; _left>=2;)
 		{
 			IPacketEx* _packet=(IPacketEx*)_pbuf;
 			if(_packet->size<=_left)
@@ -297,8 +301,14 @@ public:
 		return true;
 	}
 
-	size_t size(){return ap.size();}
-	IPacketEx& operator[](size_t i){return *ap[i];}
+	size_t size()
+	{
+		return ap.size();
+	}
+	IPacketEx& operator[](size_t i)
+	{
+		return *ap[i];
+	}
 
 private:
 	IPacketEx pk;

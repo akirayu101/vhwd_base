@@ -47,7 +47,10 @@ public:
 		P::unlock(mtx);
 	}
 
-	operator T&(){return mtx;}
+	operator T&()
+	{
+		return mtx;
+	}
 
 private:
 	T& mtx;

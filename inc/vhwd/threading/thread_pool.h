@@ -16,7 +16,7 @@ public:
 	virtual void svc(void* pdat)=0;
 
 	// call if task canceled!
-	virtual void del(void* pdat){}
+	virtual void del(void* pdat) {}
 };
 
 
@@ -46,8 +46,8 @@ protected:
 	class TaskItem : public NonCopyable
 	{
 	public:
-		TaskItem():next(NULL){}
-		TaskItem(ITask* hjob_,void* pdat_):hjob(hjob_),pdat(pdat_),next(NULL){}
+		TaskItem():next(NULL) {}
+		TaskItem(ITask* hjob_,void* pdat_):hjob(hjob_),pdat(pdat_),next(NULL) {}
 
 		DataPtrT<ITask> hjob;
 		void* pdat;
@@ -68,7 +68,7 @@ protected:
 
 	void svc();
 
-	
+
 };
 
 

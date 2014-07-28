@@ -42,7 +42,9 @@ namespace detail
 	public:
 		static inline void reset(T* &p1,T* p2)
 		{
-			if(p1==p2) return;delete p1;p1=p2;
+			if(p1==p2) return;
+			delete p1;
+			p1=p2;
 		}
 
 	private:
@@ -101,7 +103,7 @@ namespace detail
 
 		inline BasePtrT(const BasePtrT& p) :m_ptr(NULL)
 		{
-			P::equal(m_ptr,const_cast<T*&>(p.m_ptr));	
+			P::equal(m_ptr,const_cast<T*&>(p.m_ptr));
 		}
 
 		inline ~BasePtrT()
@@ -111,7 +113,9 @@ namespace detail
 
 		inline void swap(BasePtrT& p)
 		{
-			T* tmp(m_ptr);m_ptr=p.m_ptr;p.m_ptr=tmp;
+			T* tmp(m_ptr);
+			m_ptr=p.m_ptr;
+			p.m_ptr=tmp;
 		}
 
 		inline void reset(pointer p)
@@ -128,17 +132,17 @@ namespace detail
 		{
 			return m_ptr;
 		}
-/*
-		inline operator pointer()
-		{
-			return m_ptr;
-		}
+		/*
+				inline operator pointer()
+				{
+					return m_ptr;
+				}
 
-		inline operator const pointer() const
-		{
-			return m_ptr;
-		}
-*/
+				inline operator const pointer() const
+				{
+					return m_ptr;
+				}
+		*/
 		inline T &operator*()
 		{
 			return *m_ptr;

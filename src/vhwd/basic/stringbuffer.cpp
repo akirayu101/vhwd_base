@@ -75,11 +75,11 @@ StringBuffer<T>& StringBuffer<T>::operator+=(const String& o)
 //UTF-32 (BE)	00 00 FE FF
 //UTF-32 (LE)	FF FE 00 00
 
-static const unsigned char bom_utf8[]={0xEF,0xBB,0xBF};
-static const unsigned char bom_utf16_le[]={0xFF,0xFE};
-static const unsigned char bom_utf16_be[]={0xFE,0xFF};
-static const unsigned char bom_utf32_le[]={0xFF,0xFE,0x00,0x00};
-static const unsigned char bom_utf32_be[]={0x00,0x00,0xFE,0xFF};
+static const unsigned char bom_utf8[]= {0xEF,0xBB,0xBF};
+static const unsigned char bom_utf16_le[]= {0xFF,0xFE};
+static const unsigned char bom_utf16_be[]= {0xFE,0xFF};
+static const unsigned char bom_utf32_le[]= {0xFF,0xFE,0x00,0x00};
+static const unsigned char bom_utf32_be[]= {0x00,0x00,0xFE,0xFF};
 
 template<typename T>
 bool StringBuffer<T>::save(const String& file,int type)
@@ -99,109 +99,109 @@ bool StringBuffer<T>::save(const String& file,int type)
 	switch(type)
 	{
 	case FILE_BINARY:
-		{
-			ofs.Write((char*)data(),sizeof(T)*size());
-			return ofs.Good();
-		}
+	{
+		ofs.Write((char*)data(),sizeof(T)*size());
+		return ofs.Good();
+	}
 	case FILE_TEXT_ANSI:
+	{
+		if(sizeof(T)==1)
 		{
-			if(sizeof(T)==1)
-			{
-				ofs.Write((char*)data(),size());
-				return ofs.Good();
-			}
-			StringBuffer<char> sb;
-			if(!IConv::unicode_to_ansi(sb,data(),size()))
-			{
-				return false;
-			}
-			ofs.Write((char*)sb.data(),sb.size());
+			ofs.Write((char*)data(),size());
 			return ofs.Good();
 		}
-		break;
+		StringBuffer<char> sb;
+		if(!IConv::unicode_to_ansi(sb,data(),size()))
+		{
+			return false;
+		}
+		ofs.Write((char*)sb.data(),sb.size());
+		return ofs.Good();
+	}
+	break;
 	case FILE_TEXT:
 	case FILE_TEXT_UTF8:
-		{
+	{
 #ifndef _WIN32
-			if(sizeof(T)==1)
-			{
-				ofs.Write((char*)data(),size());
-				return ofs.Good();
-			}
-#endif
-			StringBuffer<char> sb;
-			if(sizeof(T)==1)
-			{
-				if(!IConv::ansi_to_utf8(sb,(const char*)data(),size()))
-				{
-					return false;
-				}
-			}
-			else if(sizeof(T)==sizeof(wchar_t))
-			{
-				if(!IConv::unicode_to_utf8(sb,data(),size()))
-				{
-					return false;
-				}
-			}
-
-			if(writebom)
-			{
-				ofs.Write((char*)bom_utf8,3);
-			}
-
-			ofs.Write(sb.data(),sb.size());
+		if(sizeof(T)==1)
+		{
+			ofs.Write((char*)data(),size());
 			return ofs.Good();
 		}
-		break;
-	case FILE_TEXT_UTF16_BE:
-	case FILE_TEXT_UTF16_LE:
+#endif
+		StringBuffer<char> sb;
+		if(sizeof(T)==1)
 		{
-
-			StringBuffer<unsigned short> wb;
-			if(sizeof(T)==1)
-			{
-				if(!IConv::ansi_to_unicode(wb,(const char*)data(),size()))
-				{
-					return false;
-				}
-			}
-			else if(sizeof(T)==2)
-			{
-				wb.append((unsigned short*)data(),size());
-			}
-			else
+			if(!IConv::ansi_to_utf8(sb,(const char*)data(),size()))
 			{
 				return false;
 			}
-
-
-			if(type==FILE_TEXT_UTF16_BE)
-			{
-				char* p=(char*)wb.data();
-				for(size_t i=0;i<wb.size();i++)
-				{
-					std::swap(p[2*i+0],p[2*i+1]);
-				}
-			}
-
-			if(writebom)
-			{
-				ofs.Write((char*)(type==FILE_TEXT_UTF16_BE?bom_utf16_be:bom_utf16_le),2);
-			}
-
-			ofs.Write((char*)wb.data(),wb.size()*2);
-			return ofs.Good();
-
 		}
-		break;
+		else if(sizeof(T)==sizeof(wchar_t))
+		{
+			if(!IConv::unicode_to_utf8(sb,data(),size()))
+			{
+				return false;
+			}
+		}
+
+		if(writebom)
+		{
+			ofs.Write((char*)bom_utf8,3);
+		}
+
+		ofs.Write(sb.data(),sb.size());
+		return ofs.Good();
+	}
+	break;
+	case FILE_TEXT_UTF16_BE:
+	case FILE_TEXT_UTF16_LE:
+	{
+
+		StringBuffer<unsigned short> wb;
+		if(sizeof(T)==1)
+		{
+			if(!IConv::ansi_to_unicode(wb,(const char*)data(),size()))
+			{
+				return false;
+			}
+		}
+		else if(sizeof(T)==2)
+		{
+			wb.append((unsigned short*)data(),size());
+		}
+		else
+		{
+			return false;
+		}
+
+
+		if(type==FILE_TEXT_UTF16_BE)
+		{
+			char* p=(char*)wb.data();
+			for(size_t i=0; i<wb.size(); i++)
+			{
+				std::swap(p[2*i+0],p[2*i+1]);
+			}
+		}
+
+		if(writebom)
+		{
+			ofs.Write((char*)(type==FILE_TEXT_UTF16_BE?bom_utf16_be:bom_utf16_le),2);
+		}
+
+		ofs.Write((char*)wb.data(),wb.size()*2);
+		return ofs.Good();
+
+	}
+	break;
 	default:
 
 		this_logger().LogError("Invalid type in StringBuffer<T>::save");
 		return false;
 	};
 
-    return true;
+	return true;
 }
 
 
@@ -237,7 +237,7 @@ bool StringBuffer<T>::load(const String& file,int type)
 	}
 
 
-	unsigned char bom[4]={1,1,1,1};
+	unsigned char bom[4]= {1,1,1,1};
 	ifs.Read((char*)bom,4);
 
 	StringBuffer<char> sb;
@@ -246,7 +246,8 @@ bool StringBuffer<T>::load(const String& file,int type)
 		size_type df=3;
 		ifs.Seek(df,File::FILEPOS_BEG);
 		size_type nz=sz-df;
-		StringBuffer<char> kb;kb.resize(nz);
+		StringBuffer<char> kb;
+		kb.resize(nz);
 		ifs.Read((char*)kb.data(),nz);
 
 		if(sizeof(T)==1)
@@ -279,7 +280,8 @@ bool StringBuffer<T>::load(const String& file,int type)
 		size_type df=2;
 		ifs.Seek(df,File::FILEPOS_BEG);
 		size_type nz=sz-df;
-		StringBuffer<unsigned short> kb;kb.resize(nz>>1);
+		StringBuffer<unsigned short> kb;
+		kb.resize(nz>>1);
 		ifs.Read((char*)kb.data(),nz);
 
 		// CE D2
@@ -290,7 +292,7 @@ bool StringBuffer<T>::load(const String& file,int type)
 		if(tag==0xFFFE) //BE
 		{
 			char *pc=(char*)kb.data();
-			for(size_type i=0;i<nz;i+=2)
+			for(size_type i=0; i<nz; i+=2)
 			{
 				std::swap(pc[i],pc[i+1]);
 			}
@@ -319,7 +321,8 @@ bool StringBuffer<T>::load(const String& file,int type)
 		size_type df=4;
 		ifs.Seek(df,File::FILEPOS_BEG);
 		size_type nz=sz-df;
-		StringBuffer<unsigned int> kb;kb.resize(nz>>2);
+		StringBuffer<unsigned int> kb;
+		kb.resize(nz>>2);
 		ifs.Read((char*)kb.data(),nz);
 
 		uint32_t tag=*(uint32_t*)bom;
@@ -327,7 +330,7 @@ bool StringBuffer<T>::load(const String& file,int type)
 		if(tag==0xFFFE0000) //BE
 		{
 			char* pc=(char*)kb.data();
-			for(size_type i=0;i<nz;i+=4)
+			for(size_type i=0; i<nz; i+=4)
 			{
 				std::swap(pc[i+0],pc[i+3]);
 				std::swap(pc[i+1],pc[i+2]);
@@ -357,20 +360,25 @@ bool StringBuffer<T>::load(const String& file,int type)
 		int t=0;
 		int n=0;
 
-		for(size_type i=0;i<nz;i++)
+		for(size_type i=0; i<nz; i++)
 		{
 			unsigned c=p[i];
 			if(c<0x80) continue;
-			for(n=0;((c<<=1)&0x80)>0;n++);
-			if(n>3) {t=-1;break;}
+			for(n=0; ((c<<=1)&0x80)>0; n++);
+			if(n>3)
+			{
+				t=-1;
+				break;
+			}
 
 			if(i+n>=nz)
 			{
-				t=-1;break;
+				t=-1;
+				break;
 			}
 
 			t=1;
-			for(int j=1;j<=n;j++)
+			for(int j=1; j<=n; j++)
 			{
 				if(((p[i+j])&0xC0)!=0x80)
 				{

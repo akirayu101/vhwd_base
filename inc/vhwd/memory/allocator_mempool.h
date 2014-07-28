@@ -39,7 +39,7 @@ public:
 
 	AllocatorP() throw() {}
 
-	AllocatorP(const AllocatorP&){}
+	AllocatorP(const AllocatorP&) {}
 
 	template <typename T2>
 	AllocatorP(const AllocatorP<T2,P> &) throw() {}

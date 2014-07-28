@@ -27,7 +27,10 @@ public:
 
 	Event();
 	Event(const Event&);
-	Event& operator=(const Event&){return *this;}
+	Event& operator=(const Event&)
+	{
+		return *this;
+	}
 
 	~Event();
 

@@ -3,7 +3,7 @@
 
 
 VHWD_ENTER
-	
+
 MemPageInfo* MemPageInfo::CreatePage(FixedSizeAllocatorUnit& sl)
 {
 	MemPageInfo* mi=(MemPageInfo*)heap_alloc(sl.nPageSize);
@@ -23,7 +23,7 @@ MemPageInfo* MemPageInfo::CreatePage(FixedSizeAllocatorUnit& sl)
 
 	mi->pSibling=NULL;
 
-	for(size_t i=1;i<sl.nElemCount;i++)
+	for(size_t i=1; i<sl.nElemCount; i++)
 	{
 		MemPageNode* pTemp=(MemPageNode*)(((char*)hPrev)+sl.nElemSize);
 		hPrev->pNext=pTemp;

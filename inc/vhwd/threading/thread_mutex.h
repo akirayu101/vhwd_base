@@ -26,7 +26,10 @@ public:
 
 	Mutex();
 	Mutex(const Mutex&);
-	Mutex& operator=(const Mutex&){return *this;}
+	Mutex& operator=(const Mutex&)
+	{
+		return *this;
+	}
 
 	~Mutex();
 

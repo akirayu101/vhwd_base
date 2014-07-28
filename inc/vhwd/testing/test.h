@@ -13,55 +13,55 @@
 #include "vhwd/collection/array.h"
 
 #define TEST_ASSERT_MSG(X,Y) \
-try\
-{\
-	vhwd::TestMgr::current().Tested((X),Y,__FILE__,__LINE__);\
-}\
-catch(...)\
-{\
-	vhwd::TestMgr::current().Tested(false,Y,__FILE__,__LINE__);\
-}
+	try\
+	{\
+		vhwd::TestMgr::current().Tested((X),Y,__FILE__,__LINE__);\
+	}\
+	catch(...)\
+	{\
+		vhwd::TestMgr::current().Tested(false,Y,__FILE__,__LINE__);\
+	}
 
 #define TEST_ASSERT(X) TEST_ASSERT_MSG(X,#X)
 
 #define TEST_ASSERT_THROW(X,Y) \
-for(;;)\
-{\
-	try{(X);}\
-	catch(Y&)\
+	for(;;)\
 	{\
-		TEST_ASSERT_MSG(true,#X);\
+		try{(X);}\
+		catch(Y&)\
+		{\
+			TEST_ASSERT_MSG(true,#X);\
+			break;\
+		} \
+		catch(...){}\
+		TEST_ASSERT_MSG(false,#X);\
 		break;\
-	} \
-	catch(...){}\
-	TEST_ASSERT_MSG(false,#X);\
-	break;\
-}\
+	}\
 
 #define TEST_ASSERT_THROW_ANY(X) \
-for(;;){ \
-	try{(X);}\
-	catch(...)\
-	{\
-		TEST_ASSERT_MSG(true,#X);\
+	for(;;){ \
+		try{(X);}\
+		catch(...)\
+		{\
+			TEST_ASSERT_MSG(true,#X);\
+			break;\
+		} \
+		TEST_ASSERT_MSG(false,#X);\
 		break;\
-	} \
-	TEST_ASSERT_MSG(false,#X);\
-	break;\
-}\
+	}\
 
 
 #define TEST_DEFINE(X) \
-class Test##X : public vhwd::Test\
-{\
-protected:\
-	Test##X():Test(#X){}\
-public:\
-	virtual void RunTest();\
-	static Test##X impl;\
-};\
-Test##X Test##X::impl;\
-void Test##X::RunTest()
+	class Test##X : public vhwd::Test\
+	{\
+	protected:\
+		Test##X():Test(#X){}\
+	public:\
+		virtual void RunTest();\
+		static Test##X impl;\
+	};\
+	Test##X Test##X::impl;\
+	void Test##X::RunTest()
 
 
 
@@ -84,7 +84,7 @@ protected:
 public:
 
 	friend class TestMgr;
-	virtual ~Test(){}
+	virtual ~Test() {}
 
 	virtual void Run();
 	virtual void RunTest()=0;
@@ -100,7 +100,11 @@ class VHWD_DLLIMPEXP TestMgr : private NonCopyable
 	TestMgr();
 	~TestMgr();
 public:
-	static TestMgr& current(){static TestMgr g;return g;}
+	static TestMgr& current()
+	{
+		static TestMgr g;
+		return g;
+	}
 
 	void AddTest(Test* t);
 	void Run(int argc,char** argv);

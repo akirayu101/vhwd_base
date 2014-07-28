@@ -388,7 +388,7 @@ extern "C" void asm_swap_context(void* callee,void* caller)
 		push ecx;
 		call edx;
 
-lb_exit:
+		lb_exit:
 		// esp already modified, return directly.
 		ret;
 

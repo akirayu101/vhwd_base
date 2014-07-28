@@ -40,15 +40,27 @@ public:
 
 	void DisconnectAll();
 
-	KO_Policy_handle::type native_handle(){return hIOCPhandler;}
+	KO_Policy_handle::type native_handle()
+	{
+		return hIOCPhandler;
+	}
 
 	int Register(Session* session);
 	bool Execute(IocpCommand* cmd);
 
-	const IOCPAccounter& GetAccounter() const {return accounter;}
+	const IOCPAccounter& GetAccounter() const
+	{
+		return accounter;
+	}
 
-	void SetName(const String& s){m_sName=s;}
-	const String& GetName() const {return m_sName;}
+	void SetName(const String& s)
+	{
+		m_sName=s;
+	}
+	const String& GetName() const
+	{
+		return m_sName;
+	}
 
 protected:
 
@@ -81,8 +93,8 @@ protected:
 	String m_sName;
 
 #ifndef _WIN32
-    void HandleSend(Session& ikey);
-    void HandleRecv(Session& ikey);
+	void HandleSend(Session& ikey);
+	void HandleRecv(Session& ikey);
 #endif
 
 };

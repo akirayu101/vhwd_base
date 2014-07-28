@@ -25,7 +25,7 @@ asm_swap_context proc
 	mov qword ptr[rsp-50h],r8;
 	mov r8,gs:[16];
 	mov qword ptr[rsp-58h],r8;
-		
+
 	mov qword ptr[edx],rsp;
 	mov rsp,qword ptr[ecx];
 
@@ -57,6 +57,5 @@ asm_swap_context proc
 	lb_exit:
 	ret
 asm_swap_context endp
-
  
 	end

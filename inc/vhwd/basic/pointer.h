@@ -19,11 +19,11 @@ class LitePtrT : public detail::BasePtrT<T,detail::po_lite<T> >
 {
 public:
 
-    typedef detail::BasePtrT<T,detail::po_lite<T> > basetype;
-    typedef T* pointer;
-    using basetype::m_ptr;
+	typedef detail::BasePtrT<T,detail::po_lite<T> > basetype;
+	typedef T* pointer;
+	using basetype::m_ptr;
 
-	LitePtrT(pointer p=NULL):basetype(p){}
+	LitePtrT(pointer p=NULL):basetype(p) {}
 
 	inline operator pointer()
 	{
@@ -53,7 +53,7 @@ public:
 		reset(o.get());
 	}
 
-	DataPtrT(T *p=NULL):detail::BasePtrT<T,detail::po_data<T> >(p){}
+	DataPtrT(T *p=NULL):detail::BasePtrT<T,detail::po_data<T> >(p) {}
 
 };
 
@@ -64,7 +64,7 @@ class AutoPtrT : public detail::BasePtrT<T,detail::po_auto<T> > , private NonCop
 public:
 	using detail::BasePtrT<T,detail::po_auto<T> >::m_ptr;
 
-	explicit AutoPtrT(T *p=NULL) : detail::BasePtrT<T,detail::po_auto<T> >(p){}
+	explicit AutoPtrT(T *p=NULL) : detail::BasePtrT<T,detail::po_auto<T> >(p) {}
 
 	inline T *release()
 	{
@@ -80,8 +80,8 @@ class TempPtrT : public AutoPtrT<T>
 {
 public:
 
-	TempPtrT(){}
-	TempPtrT(T* p):AutoPtrT<T>(p){}
+	TempPtrT() {}
+	TempPtrT(T* p):AutoPtrT<T>(p) {}
 	TempPtrT(const TempPtrT& o)
 	{
 		this->swap(const_cast<TempPtrT&>(o));
@@ -100,7 +100,7 @@ class FakePtrT : public tl::meta_if<tl::is_convertible<T,ObjectData>::value,Data
 {
 public:
 	typedef typename tl::meta_if<tl::is_convertible<T,ObjectData>::value,DataPtrT<T>,LitePtrT<T> >::type basetype;
-	FakePtrT(T* p=NULL):basetype(p){}
+	FakePtrT(T* p=NULL):basetype(p) {}
 
 };
 
@@ -110,8 +110,8 @@ class ObjectT : public B
 public:
 	typedef T obj_type;
 
-	ObjectT(){}
-	ObjectT(T* p):m_refData(p){}
+	ObjectT() {}
+	ObjectT(T* p):m_refData(p) {}
 
 	inline void SetData(T* d)
 	{
@@ -139,8 +139,8 @@ class ObjectT<T,void>
 public:
 	typedef T obj_type;
 
-	ObjectT(){}
-	ObjectT(T* p):m_refData(p){}
+	ObjectT() {}
+	ObjectT(T* p):m_refData(p) {}
 
 	inline void SetData(T* d)
 	{
@@ -162,21 +162,21 @@ protected:
 };
 
 #define VHWD_BASEPTRT_REL_OP(X) \
-template<typename T,typename P1,typename P2>\
-inline bool operator X(const detail::BasePtrT<T,P1>& lhs,const detail::BasePtrT<T,P2>& rhs)\
-{\
-	return lhs.get() X rhs.get();\
-}\
-template<typename T,typename P>\
-inline bool operator X(const detail::BasePtrT<T,P>& lhs,T* rhs)\
-{\
-	return lhs.get() X rhs;\
-}\
-template<typename T,typename P>\
-inline bool operator X(T* lhs,const detail::BasePtrT<T,P>& rhs)\
-{\
-	return lhs X rhs.get();\
-}\
+	template<typename T,typename P1,typename P2>\
+	inline bool operator X(const detail::BasePtrT<T,P1>& lhs,const detail::BasePtrT<T,P2>& rhs)\
+	{\
+		return lhs.get() X rhs.get();\
+	}\
+	template<typename T,typename P>\
+	inline bool operator X(const detail::BasePtrT<T,P>& lhs,T* rhs)\
+	{\
+		return lhs.get() X rhs;\
+	}\
+	template<typename T,typename P>\
+	inline bool operator X(T* lhs,const detail::BasePtrT<T,P>& rhs)\
+	{\
+		return lhs X rhs.get();\
+	}\
 
 VHWD_BASEPTRT_REL_OP(==)
 VHWD_BASEPTRT_REL_OP(!=)

@@ -45,12 +45,12 @@ public:
 	static int64_t GetMemAvailVirtual();
 
 
-	#define STRING_FORMAT_LEVEL(X,Y) DoLogImpl(Y,X)
+#define STRING_FORMAT_LEVEL(X,Y) DoLogImpl(Y,X)
 
 #ifndef NDEBUG
 	STRING_FORMAT_FUNCTIONS(static void LogDeubg,STRING_FORMAT_LEVEL,LOGLEVEL_DEBUG)
 #else
-	static void LogDebug(...){}
+	static void LogDebug(...) {}
 #endif
 
 	STRING_FORMAT_FUNCTIONS(static void LogInfo,STRING_FORMAT_LEVEL,LOGLEVEL_INFO)
@@ -60,12 +60,12 @@ public:
 	STRING_FORMAT_FUNCTIONS(static void LogWarning,STRING_FORMAT_LEVEL,LOGLEVEL_WARNING)
 	STRING_FORMAT_FUNCTIONS(static void LogError,STRING_FORMAT_LEVEL,LOGLEVEL_ERROR)
 	STRING_FORMAT_FUNCTIONS(static void LogFetal,STRING_FORMAT_LEVEL,LOGLEVEL_FETAL)
-	#undef STRING_FORMAT_LEVEL
+#undef STRING_FORMAT_LEVEL
 
 	static bool SetLogFile(const String& fn,bool app=true);
 
 private:
-	static void DoLogImpl(int v,const char* msg,...);	
+	static void DoLogImpl(int v,const char* msg,...);
 };
 
 VHWD_LEAVE

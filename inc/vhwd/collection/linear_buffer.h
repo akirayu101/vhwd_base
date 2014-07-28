@@ -142,10 +142,22 @@ public:
 		return kp;
 	}
 
-	T* gbeg(){return pBuffer;} // buffer begin
-	T* gptr(){return pBuffer+rd_pos;} // get position begin
-	T* gend(){return pBuffer+wr_pos;} // get position end or put position begin
-	T* last(){return pBuffer+sz_buf;}
+	T* gbeg()
+	{
+		return pBuffer;   // buffer begin
+	}
+	T* gptr()
+	{
+		return pBuffer+rd_pos;   // get position begin
+	}
+	T* gend()
+	{
+		return pBuffer+wr_pos;   // get position end or put position begin
+	}
+	T* last()
+	{
+		return pBuffer+sz_buf;
+	}
 
 	// assign external buffer
 	void assign(T* pbuf_,size_t size_)
@@ -166,7 +178,8 @@ public:
 	bool load(const String& file,int t=FILE_TEXT)
 	{
 		if(!aBuff.load(file,t)) return false;
-		_xbuf();wr_pos=sz_buf;
+		_xbuf();
+		wr_pos=sz_buf;
 		return true;
 	}
 
@@ -353,7 +366,7 @@ void read_element(LinearBuffer<T>& lbuf,String& v)
 	for(;;)
 	{
 		if(lbuf.eof())
-		{			
+		{
 			break;
 		}
 
@@ -494,7 +507,8 @@ template<typename T>
 template<typename E,typename A>
 bool LinearBuffer<T>::parse(arr_xt<E,A>& axt)
 {
-	arr_1t<E,A> a1t;int64_t sz2;
+	arr_1t<E,A> a1t;
+	int64_t sz2;
 
 	if(!parse(a1t,&sz2))
 	{

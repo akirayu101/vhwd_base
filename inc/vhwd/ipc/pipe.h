@@ -46,7 +46,7 @@ class VHWD_DLLIMPEXP NamedPipe : public Pipe
 public:
 	friend class pipe_detail;
 
-	NamedPipe(){}
+	NamedPipe() {}
 
 // server
 	bool Create(const String& name);

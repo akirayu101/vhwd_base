@@ -13,7 +13,7 @@
 #include "vhwd/basic/string.h"
 
 #define DECLARE_OBJECT_INFO(TYPE,INFO)	\
-public:\
+	public:\
 	typedef INFO infobase;\
 	typedef ObjectInfoT<TYPE,INFO> infotype;\
 	static  infotype sm_info;\
@@ -21,7 +21,7 @@ public:\
 	virtual const String& GetObjectName() const {return sm_info.GetObjectName();}
 
 
-#define DECLARE_OBJECT_INFO_ABSTRACT(TYPE,INFO)	
+#define DECLARE_OBJECT_INFO_ABSTRACT(TYPE,INFO)
 
 
 #define DECLARE_OBJECT_INFO_BASE(TYPE,INFO,BASE)	\
@@ -58,9 +58,12 @@ class VHWD_DLLIMPEXP ObjectInfo : private NonCopyable
 {
 public:
 	ObjectInfo(const String& s);
-	virtual ~ObjectInfo(){}
+	virtual ~ObjectInfo() {}
 
-	const String& GetObjectName() const {return m_sClassName;}
+	const String& GetObjectName() const
+	{
+		return m_sClassName;
+	}
 	virtual Object* CreateObject()=0;
 
 protected:
@@ -73,7 +76,7 @@ class ObjectInfoT : public INFO
 {
 public:
 	typedef INFO basetype;
-	ObjectInfoT(const String &name):basetype(name){}
+	ObjectInfoT(const String &name):basetype(name) {}
 
 	Object *CreateObject()
 	{
@@ -86,7 +89,7 @@ class VHWD_DLLIMPEXP Object
 {
 public:
 
-	virtual ~Object(){}
+	virtual ~Object() {}
 	virtual bool Serialize(Serializer& ar);
 
 	DECLARE_OBJECT_INFO(Object,ObjectInfo)
@@ -98,7 +101,10 @@ public:
 
 	ObjectData();
 	ObjectData(const ObjectData& o);
-	ObjectData& operator=(const ObjectData&){return *this;}
+	ObjectData& operator=(const ObjectData&)
+	{
+		return *this;
+	}
 	~ObjectData();
 
 	// Increase reference counter,
@@ -112,6 +118,7 @@ public:
 	// Get reference count.
 	int GetRef() const;
 
+	// Increase reference count of p2, decrease reference count of p1
 	static void locked_reset(ObjectData*&p1,ObjectData* p2)
 	{
 		if(p1==p2) return;
@@ -145,8 +152,8 @@ public:
 
 protected:
 
-	virtual void on_destroy(){}
-	virtual void on_created(){}
+	virtual void on_destroy() {}
+	virtual void on_created() {}
 
 	AtomicInt32 m_refcount;
 };

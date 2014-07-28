@@ -13,6 +13,8 @@
 
 VHWD_ENTER
 
+class VHWD_DLLIMPEXP String;
+
 class VHWD_DLLIMPEXP Exception : public std::exception
 {
 public:
@@ -27,7 +29,8 @@ public:
 
 	// Throw Exception
 	static void XError();
-	static void XError(const char*p, bool del=true);
+	static void XError(const String& s);
+	static void XError(const char*p, bool del);
 
 	// Throw std::bad_alloc
 	static void XBadAlloc();

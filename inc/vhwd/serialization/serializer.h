@@ -31,10 +31,10 @@ namespace tl
 {
 
 	template<typename T>
-	struct is_pod<std::complex<T> > : public is_pod<T>{};
+	struct is_pod<std::complex<T> > : public is_pod<T> {};
 
 	template<typename X,typename Y>
-	struct is_pod<std::pair<X,Y> > : public value_type<is_pod<X>::value&&is_pod<Y>::value>{};
+	struct is_pod<std::pair<X,Y> > : public value_type<is_pod<X>::value&&is_pod<Y>::value> {};
 
 };
 
@@ -76,24 +76,39 @@ public:
 		STRCVT_UTF8	=1,	// convert string to utf8
 	};
 
-	virtual ~Serializer(){}
+	virtual ~Serializer() {}
 
-	bool is_reader(){return type==READER;}
-	bool is_writer(){return type==WRITER;}
+	bool is_reader()
+	{
+		return type==READER;
+	}
+	bool is_writer()
+	{
+		return type==WRITER;
+	}
 
 	virtual void errstr(const String&)=0;
 
-	virtual bool good() const {return true;}
+	virtual bool good() const
+	{
+		return true;
+	}
 
 	virtual Serializer& tag(char ch)=0;
 	virtual Serializer& tag(const char* msg)=0;
 
 	virtual int local_version(int v)=0;
 
-	int global_version(){return gver;}
-	void global_version(int v){gver=v;}
+	int global_version()
+	{
+		return gver;
+	}
+	void global_version(int v)
+	{
+		gver=v;
+	}
 
-	virtual void close(){}
+	virtual void close() {}
 
 	BitFlags flags;
 
@@ -187,10 +202,10 @@ protected:
 class VHWD_DLLIMPEXP SerializerReader : public SerializerEx
 {
 public:
-	SerializerReader():SerializerEx(READER){}
+	SerializerReader():SerializerEx(READER) {}
 
 	virtual void recv(char* data,size_t size)=0;
-	virtual void close(){}
+	virtual void close() {}
 
 	virtual SerializerReader& tag(char ch);
 	virtual SerializerReader& tag(const char* msg);
@@ -202,10 +217,10 @@ class VHWD_DLLIMPEXP SerializerWriter : public SerializerEx
 {
 public:
 
-	SerializerWriter():SerializerEx(WRITER){}
+	SerializerWriter():SerializerEx(WRITER) {}
 
 	virtual void send(char* data,size_t size)=0;
-	virtual void close(){}
+	virtual void close() {}
 
 	virtual SerializerWriter& tag(char ch);
 	virtual SerializerWriter& tag(const char* msg);
@@ -217,10 +232,16 @@ class VHWD_DLLIMPEXP SerializerDuplex : protected SerializerReader, protected Se
 {
 public:
 	// get writer
-	SerializerWriter& writer(){return *this;}
+	SerializerWriter& writer()
+	{
+		return *this;
+	}
 
 	// get reader
-	SerializerReader& reader(){return *this;}
+	SerializerReader& reader()
+	{
+		return *this;
+	}
 
 };
 
@@ -260,8 +281,17 @@ class serial_pod_cast : public serial_pod<A,T>
 public:
 	static const int value=0;
 	typedef I type;
-	static void g(SerializerReader& ar,type& val_){T val;serial_pod<A,T>::g(ar,val);val_=val;}
-	static void g(SerializerWriter& ar,type& val_){T val(val_);serial_pod<A,T>::g(ar,val);}
+	static void g(SerializerReader& ar,type& val_)
+	{
+		T val;
+		serial_pod<A,T>::g(ar,val);
+		val_=val;
+	}
+	static void g(SerializerWriter& ar,type& val_)
+	{
+		T val(val_);
+		serial_pod<A,T>::g(ar,val);
+	}
 };
 
 template<typename A,typename T>
@@ -270,8 +300,17 @@ class serial_pod_cast<A,bool,T> : public serial_pod<A,T>
 public:
 	static const int value=0;
 	typedef bool type;
-	static void g(SerializerReader& ar,type& val_){T val;serial_pod<A,T>::g(ar,val);val_=val!=0;}
-	static void g(SerializerWriter& ar,type& val_){T val(val_?1:0);serial_pod<A,T>::g(ar,val);}
+	static void g(SerializerReader& ar,type& val_)
+	{
+		T val;
+		serial_pod<A,T>::g(ar,val);
+		val_=val!=0;
+	}
+	static void g(SerializerWriter& ar,type& val_)
+	{
+		T val(val_?1:0);
+		serial_pod<A,T>::g(ar,val);
+	}
 };
 
 template<typename A,typename T>
@@ -279,14 +318,20 @@ class serial_pod
 {
 public:
 	static const int value=tl::is_pod<T>::value;
-	static void g(SerializerReader& ar,T& val){ar.recv((char*)&val,sizeof(T));}
-	static void g(SerializerWriter& ar,T& val){ar.send((char*)&val,sizeof(T));}
+	static void g(SerializerReader& ar,T& val)
+	{
+		ar.recv((char*)&val,sizeof(T));
+	}
+	static void g(SerializerWriter& ar,T& val)
+	{
+		ar.send((char*)&val,sizeof(T));
+	}
 };
 
-template<typename A> class serial_pod<A,bool> : public serial_pod_cast<A,bool,char>{};
-template<typename A> class serial_pod<A,long> : public serial_pod_cast<A,long,int64_t>{};
-template<typename A> class serial_pod<A,unsigned long> : public serial_pod_cast<A,unsigned long,int64_t>{};
-template<typename A> class serial_pod<A,wchar_t> : public serial_pod_cast<A,wchar_t,int32_t>{};
+template<typename A> class serial_pod<A,bool> : public serial_pod_cast<A,bool,char> {};
+template<typename A> class serial_pod<A,long> : public serial_pod_cast<A,long,int64_t> {};
+template<typename A> class serial_pod<A,unsigned long> : public serial_pod_cast<A,unsigned long,int64_t> {};
+template<typename A> class serial_pod<A,wchar_t> : public serial_pod_cast<A,wchar_t,int32_t> {};
 
 
 template<typename A,typename T,bool>
@@ -295,7 +340,10 @@ class serial_arr_handler_impl
 public:
 	static void g(A& ar,T* ptr,intarr_t s)
 	{
-		for(intarr_t i=0;i<s;i++){serial_helper_test<A,T>::g(ar,ptr[i]);}
+		for(intarr_t i=0; i<s; i++)
+		{
+			serial_helper_test<A,T>::g(ar,ptr[i]);
+		}
 	}
 };
 
@@ -316,7 +364,7 @@ public:
 };
 
 template<typename A,typename T>
-class serial_arr_handler : public serial_arr_handler_impl<A,T,serial_pod<A,T>::value>{};
+class serial_arr_handler : public serial_arr_handler_impl<A,T,serial_pod<A,T>::value> {};
 
 
 template<typename A,typename T,typename V>
@@ -339,7 +387,7 @@ public:
 		intarr_t n=(intarr_t)val.size();
 		serial_pod<A,intarr_t>::g(ar,n);
 		if(n==0) return;
-		serial_arr_handler<A,T>::g(ar,&val[0],n);		
+		serial_arr_handler<A,T>::g(ar,&val[0],n);
 	}
 };
 
@@ -357,9 +405,11 @@ public:
 		serial_pod<A,intarr_t>::g(ar,n);
 		val.resize(n);
 		if(n==0) return;
-		for(intarr_t i=0;i<n;i++)
+		for(intarr_t i=0; i<n; i++)
 		{
-			bool c1;serial_pod<A,bool>::g(ar,c1);val[i]=c1;
+			bool c1;
+			serial_pod<A,bool>::g(ar,c1);
+			val[i]=c1;
 		}
 	}
 	static void g(SerializerWriter& ar,type& val)
@@ -367,9 +417,10 @@ public:
 		intarr_t n=(intarr_t)val.size();
 		serial_pod<A,intarr_t>::g(ar,n);
 		if(n==0) return;
-		for(intarr_t i=0;i<n;i++)
+		for(intarr_t i=0; i<n; i++)
 		{
-			bool c1(val[i]);serial_pod<A,bool>::g(ar,c1);
+			bool c1(val[i]);
+			serial_pod<A,bool>::g(ar,c1);
 		}
 	}
 
@@ -383,19 +434,21 @@ public:
 	typedef typename type::iterator iterator;
 	static void g(SerializerReader& ar,type& val)
 	{
-		intarr_t n=0;T v;
-		serial_pod<A,intarr_t>::g(ar,n);		
-		for(intarr_t i=0;i<n;i++)
+		intarr_t n=0;
+		T v;
+		serial_pod<A,intarr_t>::g(ar,n);
+		for(intarr_t i=0; i<n; i++)
 		{
-			ar & v;val.insert(v);
+			ar & v;
+			val.insert(v);
 		}
 	}
 
 	static void g(SerializerWriter& ar,type& val)
 	{
 		intarr_t n=(intarr_t)val.size();
-		serial_pod<A,intarr_t>::g(ar,n);	
-		for(iterator it=val.begin();it!=val.end();it++)
+		serial_pod<A,intarr_t>::g(ar,n);
+		for(iterator it=val.begin(); it!=val.end(); it++)
 		{
 			ar << (*it);
 		}
@@ -496,7 +549,7 @@ public:
 			ar.errstr("CANNOT_CREATE_OBJECT");
 			return;
 		}
-		
+
 		pointer tmp=dynamic_cast<pointer>(obj);
 		if(!tmp)
 		{
@@ -588,17 +641,24 @@ template<typename A,typename T>
 class serial_switch<A,T,1>
 {
 public:
-	static void g(A& ar,T& val){val.Serialize(ar);}
+	static void g(A& ar,T& val)
+	{
+		val.Serialize(ar);
+	}
 };
 
 template<typename A,typename T>
-class serial_switch<A,T,2> : public serial_pod<A,T>{};
+class serial_switch<A,T,2> : public serial_pod<A,T> {};
 
 template<typename A,typename T>
 class serial_switch<A,T,3>
 {
 public:
-	static void g(A& ar,Object& val){ar.put(&val);val.Serialize(ar);}
+	static void g(A& ar,Object& val)
+	{
+		ar.put(&val);
+		val.Serialize(ar);
+	}
 };
 
 
@@ -695,14 +755,16 @@ public:
 
 	static void g(SerializerReader& ar,type& val)
 	{
-		intarr_t n(0);serial_pod<A,intarr_t>::g(ar,n);
+		intarr_t n(0);
+		serial_pod<A,intarr_t>::g(ar,n);
 		if(n!=(intarr_t)N) ar.errstr("invalid_array_size");
 		serial_arr_handler<A,T>::g(ar,&val[0],n);
 	}
 
 	static void g(SerializerWriter& ar,type& val)
 	{
-		intarr_t n=(intarr_t)N;serial_pod<A,intarr_t>::g(ar,n);
+		intarr_t n=(intarr_t)N;
+		serial_pod<A,intarr_t>::g(ar,n);
 		serial_arr_handler<A,T>::g(ar,&val[0],n);
 	}
 
@@ -719,14 +781,14 @@ template<typename A,typename T>
 class serial_helper_func<A,DataPtrT<T> > : public serial_ptr_holder<A,T,DataPtrT<T> >
 {
 public:
-	
+
 };
 
 template<typename A,typename T,typename X,typename Y>
 class serial_helper_func<A,std::basic_string<T,X,Y> > : public serial_arr<A,T,std::basic_string<T,X,Y> >
 {
 public:
-	
+
 };
 
 
@@ -750,7 +812,7 @@ public:
 
 	static void g(SerializerReader& ar,type& val)
 	{
-		intarr_t d[type::MAX_DIM]={0};
+		intarr_t d[type::MAX_DIM]= {0};
 		serial_arr_handler<A,intarr_t>::g(ar,d,type::MAX_DIM);
 		val.resize(d[0],d[1],d[2],d[3],d[4],d[5]);
 		serial_arr_handler<A,T>::g(ar,val.data(),val.size());
@@ -760,7 +822,7 @@ public:
 	static void g(SerializerWriter& ar,type& val)
 	{
 		intarr_t d[type::MAX_DIM];
-		for(int i=0;i<(int)type::MAX_DIM;i++)
+		for(int i=0; i<(int)type::MAX_DIM; i++)
 		{
 			d[i]=val.size(i);
 		}
@@ -866,13 +928,15 @@ SerializerWriter& operator <<(Serializer& ar,T& val)
 template<typename T>
 SerializerDuplex& operator >>(SerializerDuplex& ar,T& val)
 {
-	ar.reader() >> val;return ar;
+	ar.reader() >> val;
+	return ar;
 }
 
 template<typename T>
 SerializerDuplex& operator <<(SerializerDuplex& ar,T& val)
 {
-	ar.writer() << val;return ar;
+	ar.writer() << val;
+	return ar;
 }
 
 VHWD_LEAVE

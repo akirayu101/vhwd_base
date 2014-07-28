@@ -60,7 +60,7 @@ ObjectGroup::ObjectGroup(const ObjectGroup& o)
 	if(p1)
 	{
 		p2=new ObjectGroupImpl(*p1);
-		for(size_t i=0;i<p2->size();i++)
+		for(size_t i=0; i<p2->size(); i++)
 		{
 			if((*p2)[i]) (*p2)[i]->IncRef();
 		}
@@ -111,7 +111,7 @@ void ObjectGroup::remove(ObjectData* d)
 	size_t i=0;
 	size_t n=grp.size();
 
-	for(;i<n;i++)
+	for(; i<n; i++)
 	{
 		if(grp[i]==d) break;
 	}
@@ -121,7 +121,7 @@ void ObjectGroup::remove(ObjectData* d)
 		return;
 	}
 
-	for(;i<n-1;i++)
+	for(; i<n-1; i++)
 	{
 		grp[i]=grp[i+1];
 	}
@@ -129,14 +129,14 @@ void ObjectGroup::remove(ObjectData* d)
 	d->DecRef();
 	grp.pop_back();
 
-	
+
 }
 
 void ObjectGroup::clear()
 {
 	if(!impl) return;
 	ObjectGroupImpl& grp(*(ObjectGroupImpl*)impl);
-	for(size_t i=0;i<grp.size();i++)
+	for(size_t i=0; i<grp.size(); i++)
 	{
 		grp[i]->DecRef();
 	}

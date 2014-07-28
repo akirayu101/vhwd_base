@@ -49,7 +49,7 @@ public:
 class VHWD_DLLIMPEXP LogNull : public LogTarget
 {
 public:
-	virtual void Handle(const LogRecord&){}
+	virtual void Handle(const LogRecord&) {}
 };
 
 // LogConsole, display messages in console window.
@@ -73,7 +73,10 @@ public:
 
 	virtual void Handle(const LogRecord&);
 
-	bool IsOk(){return fp!=NULL;}
+	bool IsOk()
+	{
+		return fp!=NULL;
+	}
 
 protected:
 	FILE* fp;

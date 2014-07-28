@@ -1,4 +1,3 @@
-
 #ifndef __H_VHWD_TEMPLATE_LIBRARY__
 #define __H_VHWD_TEMPLATE_LIBRARY__
 
@@ -24,8 +23,8 @@
 #pragma warning(disable : 4996)
 
 // This is a warning you get from visual studio 2003:
-//    warning C4345: behavior change: an object of POD type constructed with an initializer
-//    of the form () will be default-initialized.
+//	warning C4345: behavior change: an object of POD type constructed with an initializer
+//	of the form () will be default-initialized.
 // I love it when this compiler gives warnings about bugs in previous versions of itself.
 #pragma warning(disable : 4345)
 
@@ -67,39 +66,39 @@ namespace tl
 		};
 	}
 
-	template <typename T>  class is_empty_type : public value_type<sizeof(detail::test_empty<T>)==sizeof(int)>{};
+	template <typename T>  class is_empty_type : public value_type<sizeof(detail::test_empty<T>)==sizeof(int)> {};
 
 	namespace detail
 	{
 		template<typename T,bool B>
 		class derive_if_empty_base;
 
-		template<typename T> class derive_if_empty_base<T,false>{};
+		template<typename T> class derive_if_empty_base<T,false> {};
 
 		template<typename T>
 		class derive_if_empty_base<T,true> : public T {};
 	}
 
 	template<typename T>
-	class derive_if_empty : public detail::derive_if_empty_base<T,is_empty_type<T>::value>{};
+	class derive_if_empty : public detail::derive_if_empty_base<T,is_empty_type<T>::value> {};
 
 	template<bool B,typename T1,typename T2>
-	class select_base : public T1{};
+	class select_base : public T1 {};
 
 	template<typename T1,typename T2>
-	class select_base<false,T1,T2> : public T2{};
+	class select_base<false,T1,T2> : public T2 {};
 
 
 // ----------------------------------------------------------------------------------------
 
-    /*!A is_same_type
+	/*!A is_same_type
 
-        This is a template where is_same_type<T,U>::value == true when T and U are the
-        same type and false otherwise.
-    !*/
+		This is a template where is_same_type<T,U>::value == true when T and U are the
+		same type and false otherwise.
+	!*/
 
-    template <typename T,typename U> class is_same_type : public value_type<false>{};
-    template <typename T>  class is_same_type<T,T> : public value_type<true>{};
+	template <typename T,typename U> class is_same_type : public value_type<false> {};
+	template <typename T>  class is_same_type<T,T> : public value_type<true> {};
 
 	template<bool B,typename T1,typename T2>
 	class meta_if;
@@ -119,8 +118,8 @@ namespace tl
 	};
 
 
-	class emptytype{};
-	class nulltype{};
+	class emptytype {};
+	class nulltype {};
 
 	namespace detail
 	{
@@ -151,19 +150,19 @@ namespace tl
 		template <int N>
 		struct typelist_at< nulltype, N>
 		{
-		   typedef nulltype type;
+			typedef nulltype type;
 		};
 
 		template <typename Head, typename Tail>
 		struct typelist_at< typelist_pair<Head, Tail>, 0>
 		{
-		   typedef Head type;
+			typedef Head type;
 		};
 
 		template <typename Head, typename Tail, unsigned int i>
 		struct typelist_at<typelist_pair<Head, Tail>, i>
 		{
-		   typedef typename typelist_at<Tail, i-1>::type type;
+			typedef typename typelist_at<Tail, i-1>::type type;
 		};
 
 
@@ -172,22 +171,22 @@ namespace tl
 		template <typename T>
 		struct typelist_id<nulltype, T>
 		{
-		   static const int value = -1 ;
+			static const int value = -1 ;
 		};
 
 		template <typename T, typename Tail>
 		struct typelist_id<typelist_pair<T, Tail>, T>
 		{
-		   static const int value = 0 ;
+			static const int value = 0 ;
 		};
 
 		template <typename Head, typename Tail, typename T>
 		struct typelist_id<typelist_pair<Head, Tail>, T>
 		{
 		private:
-		   static const int temp = typelist_id<Tail, T>::value;
+			static const int temp = typelist_id<Tail, T>::value;
 		public:
-		   static const int value = temp == -1 ? -1 : 1 + temp ;
+			static const int value = temp == -1 ? -1 : 1 + temp ;
 		};
 
 
@@ -196,13 +195,13 @@ namespace tl
 		template <>
 		struct typelist_length< nulltype >
 		{
-		   static const int value = 0 ;
+			static const int value = 0 ;
 		};
 
 		template <>
 		struct typelist_length< typelist_pair<nulltype, nulltype> >
 		{
-		   static const int value = 0 ;
+			static const int value = 0 ;
 		};
 
 		template <typename T, typename U>
@@ -216,10 +215,10 @@ namespace tl
 		struct typelist_cat
 		{
 			typedef typelist_pair< typename TL1::type1,
-				typename typelist_cat
-				<
+					typename typelist_cat
+					<
 					typename TL1::type2,TL2>::type
-				> type;
+					> type;
 		};
 
 		template<typename TL2>
@@ -239,10 +238,10 @@ namespace tl
 		struct typelist_map
 		{
 			typedef typelist_pair< TL2<typename TL1::type1> ,
-				typename typelist_map
-				<
+					typename typelist_map
+					<
 					typename TL1::type2,TL2>::type
-				> type;
+					> type;
 		};
 
 		template<template<typename> class TL2>
@@ -315,27 +314,27 @@ namespace tl
 
 
 	template<
-		typename T1=nulltype,
-		typename T2=nulltype,
-		typename T3=nulltype,
-		typename T4=nulltype,
-		typename T5=nulltype,
-		typename T6=nulltype,
-		typename T7=nulltype,
-		typename T8=nulltype,
-		typename T9=nulltype,
-		typename T10=nulltype,
-		typename T11=nulltype,
-		typename T12=nulltype,
-		typename T13=nulltype,
-		typename T14=nulltype,
-		typename T15=nulltype,
-		typename T16=nulltype,
-		typename T17=nulltype,
-		typename T18=nulltype,
-		typename T19=nulltype,
-		typename T20=nulltype
-	>
+	typename T1=nulltype,
+			 typename T2=nulltype,
+			 typename T3=nulltype,
+			 typename T4=nulltype,
+			 typename T5=nulltype,
+			 typename T6=nulltype,
+			 typename T7=nulltype,
+			 typename T8=nulltype,
+			 typename T9=nulltype,
+			 typename T10=nulltype,
+			 typename T11=nulltype,
+			 typename T12=nulltype,
+			 typename T13=nulltype,
+			 typename T14=nulltype,
+			 typename T15=nulltype,
+			 typename T16=nulltype,
+			 typename T17=nulltype,
+			 typename T18=nulltype,
+			 typename T19=nulltype,
+			 typename T20=nulltype
+			 >
 	struct mk_typelist
 	{
 		typedef detail::typelist_pair<T1,typename mk_typelist<T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20>::helper> helper;
@@ -352,58 +351,64 @@ namespace tl
 
 // ----------------------------------------------------------------------------------------
 
-    /*!A is_pointer_type
+	/*!A is_pointer_type
 
-        This is a template where is_pointer_type<T>::value == true when T is a pointer
-        type and false otherwise.
-    !*/
+		This is a template where is_pointer_type<T>::value == true when T is a pointer
+		type and false otherwise.
+	!*/
 
-    template <typename T>	class is_pointer_type : public value_type<false>{};
-    template <typename T>   class is_pointer_type<T*> : public value_type<true>{};
-
-// ----------------------------------------------------------------------------------------
-
-    /*!A is_const_type
-
-        This is a template where is_const_type<T>::value == true when T is a const
-        type and false otherwise.
-    !*/
-
-    template <typename T> struct is_const_type : public value_type<false>{};
-	template <typename T> struct is_const_type<const T> : public value_type<true>{};
-
+	template <typename T>	class is_pointer_type : public value_type<false> {};
+	template <typename T>   class is_pointer_type<T*> : public value_type<true> {};
 
 // ----------------------------------------------------------------------------------------
 
-    /*!A is_reference_type
+	/*!A is_const_type
 
-        This is a template where is_reference_type<T>::value == true when T is a reference
-        type and false otherwise.
-    !*/
+		This is a template where is_const_type<T>::value == true when T is a const
+		type and false otherwise.
+	!*/
 
-    template <typename T> struct is_reference_type : public value_type<false>{};
-    template <typename T> struct is_reference_type<const T&>  : public value_type<true>{};
-    template <typename T> struct is_reference_type<T&>  : public value_type<true>{};
+	template <typename T> struct is_const_type : public value_type<false> {};
+	template <typename T> struct is_const_type<const T> : public value_type<true> {};
 
 
 // ----------------------------------------------------------------------------------------
 
-    /*!A is_convertible
+	/*!A is_reference_type
 
-        This is a template that can be used to determine if one type is convertible
-        into another type.
+		This is a template where is_reference_type<T>::value == true when T is a reference
+		type and false otherwise.
+	!*/
 
-        For example:
-            is_convertible<int,float>::value == true    // because ints are convertible to floats
-            is_convertible<int*,float>::value == false  // because int pointers are NOT convertible to floats
-    !*/
+	template <typename T> struct is_reference_type : public value_type<false> {};
+	template <typename T> struct is_reference_type<const T&>  : public value_type<true> {};
+	template <typename T> struct is_reference_type<T&>  : public value_type<true> {};
+
+
+// ----------------------------------------------------------------------------------------
+
+	/*!A is_convertible
+
+		This is a template that can be used to determine if one type is convertible
+		into another type.
+
+		For example:
+			is_convertible<int,float>::value == true	// because ints are convertible to floats
+			is_convertible<int*,float>::value == false  // because int pointers are NOT convertible to floats
+	!*/
 	namespace detail
 	{
 		template <typename from, typename to>
 		struct is_convertible_helper
 		{
-			struct type1 { char a[1]; };
-			struct type2 { char a[2]; };
+			struct type1
+			{
+				char a[1];
+			};
+			struct type2
+			{
+				char a[2];
+			};
 			static from& from_helper();
 			static type1 test(to&);
 			static type2 test(...);
@@ -412,17 +417,17 @@ namespace tl
 		};
 	}
 
-    template <typename from, typename to>
-	struct is_convertible : public value_type< detail::is_convertible_helper<from,to>::value >{};
+	template <typename from, typename to>
+	struct is_convertible : public value_type< detail::is_convertible_helper<from,to>::value > {};
 
 
 // ----------------------------------------------------------------------------------------
 
-    /*!A is_unsigned_type
+	/*!A is_unsigned_type
 
-        This is a template where is_unsigned_type<T>::value == true when T is an unsigned
-        integral type and false when T is a signed integral type.
-    !*/
+		This is a template where is_unsigned_type<T>::value == true when T is an unsigned
+		integral type and false when T is a signed integral type.
+	!*/
 	namespace detail
 	{
 		template <typename T>
@@ -432,23 +437,26 @@ namespace tl
 		};
 	}
 
-	template <typename T> struct is_unsigned_type : public value_type< detail::is_unsigned_type_helper<T>::value >{};
+	template <typename T> struct is_unsigned_type : public value_type< detail::is_unsigned_type_helper<T>::value > {};
 
 
 // ----------------------------------------------------------------------------------------
 
-    /*!A is_signed_type
+	/*!A is_signed_type
 
-        This is a template where is_signed_type<T>::value == true when T is a signed
-        integral type and false when T is an unsigned integral type.
-    !*/
-    template <typename T> struct is_signed_type : public value_type< !detail::is_unsigned_type_helper<T>::value >{};
+		This is a template where is_signed_type<T>::value == true when T is a signed
+		integral type and false when T is an unsigned integral type.
+	!*/
+	template <typename T> struct is_signed_type : public value_type< !detail::is_unsigned_type_helper<T>::value > {};
 
 
 
 	template <bool B, class T = void> struct enable_if_c;
 
-	template <class T> struct enable_if_c<true, T> {typedef T type;};
+	template <class T> struct enable_if_c<true, T>
+	{
+		typedef T type;
+	};
 	template <class T> struct enable_if_c<false,T> {};
 
 
@@ -463,7 +471,7 @@ namespace tl
 
 
 	template <bool B, class T = void>
-	struct disable_if_c : public enable_if_c<!B,T>{};
+	struct disable_if_c : public enable_if_c<!B,T> {};
 
 	template <class Cond, class T = void>
 	struct disable_if : public disable_if_c<Cond::value, T> {};
@@ -481,128 +489,146 @@ namespace tl
 	typedef mk_typelist<float,double,long double>::type floating_type;
 
 
-	template <typename T> struct is_scalar_type : public value_type<false>{};
+	template <typename T> struct is_scalar_type : public value_type<false> {};
 
-    template <> struct is_scalar_type<float>           : public value_type<true>{};
-    template <> struct is_scalar_type<double>          : public value_type<true>{};
-    template <> struct is_scalar_type<long double>     : public value_type<true>{};
-    template <> struct is_scalar_type<short>           : public value_type<true>{};
-    template <> struct is_scalar_type<int>             : public value_type<true>{};
-    template <> struct is_scalar_type<long>            : public value_type<true>{};
-    template <> struct is_scalar_type<unsigned short>  : public value_type<true>{};
-    template <> struct is_scalar_type<unsigned int>    : public value_type<true>{};
-    template <> struct is_scalar_type<unsigned long>   : public value_type<true>{};
-    template <> struct is_scalar_type<long long>       : public value_type<true>{};
-    template <> struct is_scalar_type<unsigned long long>       : public value_type<true>{};
-    template <> struct is_scalar_type<char>            : public value_type<true>{};
-    template <> struct is_scalar_type<wchar_t>         : public value_type<true>{};
-    template <> struct is_scalar_type<signed char>     : public value_type<true>{};
-    template <> struct is_scalar_type<unsigned char>   : public value_type<true>{};
-
-
-// ----------------------------------------------------------------------------------------
-
-    /*!A tabs
-
-        This is a template to compute the absolute value a number at compile time.
-
-        For example,
-            tabs<-4>::value == 4
-            tabs<4>::value == 4
-    !*/
-
-        template <long x, typename enabled=void>
-        struct tabs { const static long value = x; };
-        template <long x>
-        struct tabs<x,typename enable_if_c<(x < 0)>::type> { const static long value = -x; };
-
-// ----------------------------------------------------------------------------------------
-
-    /*!A tmax
-
-        This is a template to compute the max of two values at compile time
-
-        For example,
-            tmax<4,7>::value == 7
-    !*/
-
-        template <long x, long y, typename enabled=void>
-        struct tmax { const static long value = x; };
-        template <long x, long y>
-        struct tmax<x,y,typename enable_if_c<(y > x)>::type> { const static long value = y; };
-
-// ----------------------------------------------------------------------------------------
-
-    /*!A tmin
-
-        This is a template to compute the min of two values at compile time
-
-        For example,
-            tmin<4,7>::value == 4
-    !*/
-
-        template <long x, long y, typename enabled=void>
-        struct tmin { const static long value = x; };
-        template <long x, long y>
-        struct tmin<x,y,typename enable_if_c<(y < x)>::type> { const static long value = y; };
-
+	template <> struct is_scalar_type<float>		   : public value_type<true> {};
+	template <> struct is_scalar_type<double>          : public value_type<true> {};
+	template <> struct is_scalar_type<long double>     : public value_type<true> {};
+	template <> struct is_scalar_type<short>           : public value_type<true> {};
+	template <> struct is_scalar_type<int>             : public value_type<true> {};
+	template <> struct is_scalar_type<long>            : public value_type<true> {};
+	template <> struct is_scalar_type<unsigned short>  : public value_type<true> {};
+	template <> struct is_scalar_type<unsigned int>    : public value_type<true> {};
+	template <> struct is_scalar_type<unsigned long>   : public value_type<true> {};
+	template <> struct is_scalar_type<long long>       : public value_type<true> {};
+	template <> struct is_scalar_type<unsigned long long>       : public value_type<true> {};
+	template <> struct is_scalar_type<char>            : public value_type<true> {};
+	template <> struct is_scalar_type<wchar_t>         : public value_type<true> {};
+	template <> struct is_scalar_type<signed char>     : public value_type<true> {};
+	template <> struct is_scalar_type<unsigned char>   : public value_type<true> {};
 
 
 // ----------------------------------------------------------------------------------------
 
+	/*!A tabs
 
-		template<typename T>
-		class type_trait_base
-		{
-		public:
+	    This is a template to compute the absolute value a number at compile time.
 
-			typedef T type;
-			typedef T* pointer;
-			typedef const T* const_pointer;
-			typedef T base_type;
-			typedef nulltype elem_type;
-			typedef const T const_type;
-			typedef T& reference;
-			typedef const T& const_reference;
-			typedef typename meta_if<is_scalar_type<T>::value,const_type,const_reference>::type param_type;
-			typedef const_type return_type;
+	    For example,
+	        tabs<-4>::value == 4
+	        tabs<4>::value == 4
+	!*/
 
-		};
-		
+	template <long x, typename enabled=void>
+	struct tabs
+	{
+		const static long value = x;
+	};
+	template <long x>
+	struct tabs<x,typename enable_if_c<(x < 0)>::type>
+	{
+		const static long value = -x;
+	};
 
-		template<typename T>
-		class type_trait : public type_trait_base<T>
-		{
-		public:
+// ----------------------------------------------------------------------------------------
 
-		};
+	/*!A tmax
 
-		template<typename T>
-		class type_trait<const T> : public type_trait<T>
-		{
-		public:
-			typedef const T type;
-		};
+	    This is a template to compute the max of two values at compile time
 
-		template<typename T>
-		class type_trait<T&> : public type_trait<T>
-		{
-		public:
-			typedef T& type;
-		};
+	    For example,
+	        tmax<4,7>::value == 7
+	!*/
 
-		template<typename T>
-		class type_trait<T*> : public type_trait<T>
-		{
-		public:
-			typedef T* type;
-		};
+	template <long x, long y, typename enabled=void>
+	struct tmax
+	{
+		const static long value = x;
+	};
+	template <long x, long y>
+	struct tmax<x,y,typename enable_if_c<(y > x)>::type>
+	{
+		const static long value = y;
+	};
 
-		template<typename T>
-		struct is_pod : public is_scalar_type<T>{};
+// ----------------------------------------------------------------------------------------
 
-		template<>
-		struct is_pod<bool> : public value_type<true>{};
+	/*!A tmin
+
+	    This is a template to compute the min of two values at compile time
+
+	    For example,
+	        tmin<4,7>::value == 4
+	!*/
+
+	template <long x, long y, typename enabled=void>
+	struct tmin
+	{
+		const static long value = x;
+	};
+	template <long x, long y>
+	struct tmin<x,y,typename enable_if_c<(y < x)>::type>
+	{
+		const static long value = y;
+	};
+
+
+
+// ----------------------------------------------------------------------------------------
+
+
+	template<typename T>
+	class type_trait_base
+	{
+	public:
+
+		typedef T type;
+		typedef T* pointer;
+		typedef const T* const_pointer;
+		typedef T base_type;
+		typedef nulltype elem_type;
+		typedef const T const_type;
+		typedef T& reference;
+		typedef const T& const_reference;
+		typedef typename meta_if<is_scalar_type<T>::value,const_type,const_reference>::type param_type;
+		typedef const_type return_type;
+
+	};
+
+
+	template<typename T>
+	class type_trait : public type_trait_base<T>
+	{
+	public:
+
+	};
+
+	template<typename T>
+	class type_trait<const T> : public type_trait<T>
+	{
+	public:
+		typedef const T type;
+	};
+
+	template<typename T>
+	class type_trait<T&> : public type_trait<T>
+	{
+	public:
+		typedef T& type;
+	};
+
+	template<typename T>
+	class type_trait<T*> : public type_trait<T>
+	{
+	public:
+		typedef T* type;
+	};
+
+	template<typename T>
+	struct is_pod : public is_scalar_type<T> {};
+
+	template<>
+	struct is_pod<bool> : public value_type<true> {};
 
 }
 

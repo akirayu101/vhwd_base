@@ -21,8 +21,11 @@ public:
 
 	typedef T type;
 
-	AtomicIntT(){val=0;}
-	AtomicIntT(T v):val(v){}
+	AtomicIntT()
+	{
+		val=0;
+	}
+	AtomicIntT(T v):val(v) {}
 
 
 	// fetch_add performs value=value+v and return original value
@@ -51,7 +54,10 @@ public:
 	T operator--();
 	T operator--(int);
 
-	T get() const {return val;}
+	T get() const
+	{
+		return val;
+	}
 
 	// load return value
 	T load() const;
@@ -88,9 +94,18 @@ public:
 		return impl.compare_exchange(*(diff_type*)&expected,(diff_type)v);
 	}
 
-	type get(){return (type)impl.get();}
-	type load(){return (type)impl.load();}
-	void store(type v){impl.store((diff_type)v);}
+	type get()
+	{
+		return (type)impl.get();
+	}
+	type load()
+	{
+		return (type)impl.load();
+	}
+	void store(type v)
+	{
+		impl.store((diff_type)v);
+	}
 
 protected:
 	impl_type impl;
@@ -137,7 +152,7 @@ public:
 	AtomicInt32 m_nUseCount;
 	AtomicInt32 m_nWeakCount;
 
-	RefCounter():m_nUseCount(0),m_nWeakCount(0){}
+	RefCounter():m_nUseCount(0),m_nWeakCount(0) {}
 
 	void IncUseCount()
 	{

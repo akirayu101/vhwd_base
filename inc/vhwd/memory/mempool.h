@@ -41,8 +41,14 @@ public:
 	static void deallocate(void* p);
 
 	// Same as above, drop the extra parameters.
-	void* allocate(size_t size,const char*,int){return allocate(size);}
-	static void deallocate(void* p,size_t){deallocate(p);}
+	void* allocate(size_t size,const char*,int)
+	{
+		return allocate(size);
+	}
+	static void deallocate(void* p,size_t)
+	{
+		deallocate(p);
+	}
 
 	// Default MemPoolPaging object, usually we don't need to define MemPool objects.
 	static MemPoolPaging& current();
@@ -66,11 +72,23 @@ public:
 
 	static void* allocate(size_t size);
 
-	static void* allocate(size_t size,const char*,int){return allocate(size);}
-	static void deallocate(void* p){if(p) ::free(p);}
-	static void deallocate(void* p,size_t){deallocate(p);}
+	static void* allocate(size_t size,const char*,int)
+	{
+		return allocate(size);
+	}
+	static void deallocate(void* p)
+	{
+		if(p) ::free(p);
+	}
+	static void deallocate(void* p,size_t)
+	{
+		deallocate(p);
+	}
 
-	static MemPoolMalloc current(){ return MemPoolMalloc();}
+	static MemPoolMalloc current()
+	{
+		return MemPoolMalloc();
+	}
 };
 
 
@@ -81,9 +99,12 @@ class VHWD_DLLIMPEXP MemPoolDebug : public MemPoolBase
 public:
 
 
-	MemPoolDebug(){}
+	MemPoolDebug() {}
 
-	static MemPoolDebug current(){return MemPoolDebug();}
+	static MemPoolDebug current()
+	{
+		return MemPoolDebug();
+	}
 
 	static void* allocate(size_t size)
 	{
@@ -95,7 +116,10 @@ public:
 	// Remove from MemLinking and deallocate memory.
 	static void deallocate(void* p);
 
-	static void deallocate(void* p,size_t){deallocate(p);}
+	static void deallocate(void* p,size_t)
+	{
+		deallocate(p);
+	}
 
 };
 
@@ -111,8 +135,8 @@ typedef MemPoolPaging MemPool;
 class def_allocator : public AllocatorP<int,MemPoolPaging>
 {
 public:
-	def_allocator(){}
-	def_allocator(const AllocatorP<int,MemPoolPaging>&){}
+	def_allocator() {}
+	def_allocator(const AllocatorP<int,MemPoolPaging>&) {}
 };
 
 VHWD_LEAVE

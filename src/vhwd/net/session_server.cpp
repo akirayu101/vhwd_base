@@ -36,9 +36,9 @@ bool SessionServer::Listen(const String& ip,int port)
 	GUID GuidAcceptEx = WSAID_ACCEPTEX;
 
 	iResult = WSAIoctl(sk_local.sock, SIO_GET_EXTENSION_FUNCTION_POINTER,
-				&GuidAcceptEx, sizeof (GuidAcceptEx),
-				&lpfnAcceptEx, sizeof (lpfnAcceptEx),
-				&dwBytes, NULL, NULL);
+					   &GuidAcceptEx, sizeof (GuidAcceptEx),
+					   &lpfnAcceptEx, sizeof (lpfnAcceptEx),
+					   &dwBytes, NULL, NULL);
 
 	if (iResult == SOCKET_ERROR)
 	{
@@ -50,9 +50,9 @@ bool SessionServer::Listen(const String& ip,int port)
 	GUID GuidGetAddrEx = WSAID_GETACCEPTEXSOCKADDRS;
 
 	iResult = WSAIoctl(sk_local.sock, SIO_GET_EXTENSION_FUNCTION_POINTER,
-				&GuidGetAddrEx, sizeof (GuidGetAddrEx),
-				&lpfnGetAddrEx, sizeof (lpfnGetAddrEx),
-				&dwBytes, NULL, NULL);
+					   &GuidGetAddrEx, sizeof (GuidGetAddrEx),
+					   &lpfnGetAddrEx, sizeof (lpfnGetAddrEx),
+					   &dwBytes, NULL, NULL);
 
 	if (iResult == SOCKET_ERROR)
 	{
@@ -112,14 +112,14 @@ bool SessionServer::WaitForAccept()
 	sk_remote.sock.Ensure(Socket::TCP);
 
 	int bRet = lpfnAcceptEx(
-		sk_local.sock,
-		sk_remote.sock,
-		tmp_buffer,
-		0,
-		sizeof(sockaddr_in) + 16,
-		sizeof(sockaddr_in) + 16,
-		&idat.size,
-		&idat.olap);
+				   sk_local.sock,
+				   sk_remote.sock,
+				   tmp_buffer,
+				   0,
+				   sizeof(sockaddr_in) + 16,
+				   sizeof(sockaddr_in) + 16,
+				   &idat.size,
+				   &idat.olap);
 
 	if(bRet!=0 && WSAGetLastError()!=WSA_IO_PENDING)
 	{

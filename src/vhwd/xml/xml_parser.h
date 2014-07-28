@@ -44,15 +44,18 @@ public:
 		return new XmlAttribute();
 	}
 
-protected:	
+protected:
 
 	template<size_t N>
 	inline void skip_tag(mychar_ptr& pcur,const char (&tag)[N])
 	{
-		if(N<2){return;}
+		if(N<2)
+		{
+			return;
+		}
 
 		lookup_table<lkt2uppercase> lku;
-		for(size_t i=0;i<N-1;i++)
+		for(size_t i=0; i<N-1; i++)
 		{
 			if(lku(pcur[i])!=(mychar)tag[i])
 			{
@@ -87,14 +90,17 @@ protected:
 
 	};
 
-	mychar_ptr pbeg; 
+	mychar_ptr pbeg;
 	mychar_ptr pend;
 	mychar_ptr pcur; //current position
 	size_t size;
 
 
 	static void savenode(std::ostream& ofs,XmlNode* pnode,int lv=0);
-	static void tabindent(std::ostream& ofs,int lv){for(int i=0;i<lv;i++) ofs<<"\t";}
+	static void tabindent(std::ostream& ofs,int lv)
+	{
+		for(int i=0; i<lv; i++) ofs<<"\t";
+	}
 	static void savestring(std::ostream& ofs,const String& v);
 
 	void kerror(const String& msg);
@@ -105,23 +111,23 @@ protected:
 	//<tag attributes> content </tag>
 	XmlNode* parse_element_node();
 
-	//A document node is a specialized kind of element node. 
-	//It has a type p but no attributes. Instead it has an optional URL u. 
-	//The intent of the URL is to specify a specialized data model for this node and its children. 
+	//A document node is a specialized kind of element node.
+	//It has a type p but no attributes. Instead it has an optional URL u.
+	//The intent of the URL is to specify a specialized data model for this node and its children.
 	//A document node looks like this:
 	//<!doctype p "u">c1 . . . cm for m>0
 	void parse_doctype_node();
 
-	//A processing instruction (PI) node is always a leaf node. 
-	//It only has an instruction i associated with it. 
-	//The instruction is a sequence of zero or more characters, without any restrictions, 
-	//except that the sequence may not start with the three characters `xml' (upper, lower or mixed case) followed by a space or newline. 
+	//A processing instruction (PI) node is always a leaf node.
+	//It only has an instruction i associated with it.
+	//The instruction is a sequence of zero or more characters, without any restrictions,
+	//except that the sequence may not start with the three characters `xml' (upper, lower or mixed case) followed by a space or newline.
 	//It looks like this in the XML document:
 	//<?i?>
 	void parse_instruction_node();
 
 
-	//<!-- This is a comment --> 
+	//<!-- This is a comment -->
 	void parse_comment_node();
 
 	void parse_subnodes();

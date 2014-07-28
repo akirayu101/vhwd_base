@@ -66,7 +66,7 @@ void TestMgr::Run(int argc_,char** argv_)
 	logger.LogMessage("TestMgr: %d Tests",tests.size());
 	logger.Printf("---------------------------------------");
 
-	for(arr_1t<Test*>::iterator it=tests.begin();it!=tests.end();++it)
+	for(arr_1t<Test*>::iterator it=tests.begin(); it!=tests.end(); ++it)
 	{
 		m_pCurrentTest=(*it);
 

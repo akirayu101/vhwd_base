@@ -30,12 +30,22 @@ class VHWD_DLLIMPEXP RingBufferBase
 {
 public:
 
-	RingBufferBase(){pBuffer=NULL;pHeader=NULL;}
+	RingBufferBase()
+	{
+		pBuffer=NULL;
+		pHeader=NULL;
+	}
 
 	void rewind();
 
-	void wr_flip(int n){pHeader->wr_pos=(pHeader->wr_pos+n)&pHeader->mask;}
-	void rd_flip(int n){pHeader->rd_pos=(pHeader->rd_pos+n)&pHeader->mask;}
+	void wr_flip(int n)
+	{
+		pHeader->wr_pos=(pHeader->wr_pos+n)&pHeader->mask;
+	}
+	void rd_flip(int n)
+	{
+		pHeader->rd_pos=(pHeader->rd_pos+n)&pHeader->mask;
+	}
 
 	bool packet();
 	int packet(void* p_,int n);

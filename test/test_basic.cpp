@@ -41,10 +41,12 @@ TEST_DEFINE(TEST_String)
 
 	String s8;
 
-	s8="";s8<<'A';
+	s8="";
+	s8<<'A';
 	TEST_ASSERT(s8=="A");
 
-	s8="";s8<<"hello";
+	s8="";
+	s8<<"hello";
 	TEST_ASSERT(s8=="hello");
 
 	s8<<"world";
@@ -58,26 +60,32 @@ TEST_DEFINE(TEST_String)
 
 
 	int32_t i32=12345678;
-	s8="";s8<<i32;
+	s8="";
+	s8<<i32;
 	TEST_ASSERT(s8=="12345678");
 
 	int64_t i64=123456890123456890;
-	s8="";s8<<i64;
+	s8="";
+	s8<<i64;
 	TEST_ASSERT(s8=="123456890123456890");
 
 	uint32_t u32=12345678;
-	s8="";s8<<u32;
+	s8="";
+	s8<<u32;
 	TEST_ASSERT(s8=="12345678");
 
 	uint64_t u64=123456890123456890;
-	s8="";s8<<u64;
+	s8="";
+	s8<<u64;
 	TEST_ASSERT(s8=="123456890123456890");
 
 	float32_t f32=1.25;
-	s8="";s8<<f32;
+	s8="";
+	s8<<f32;
 
 	float64_t f64=2.125;
-	s8="";s8<<f64;
+	s8="";
+	s8<<f64;
 
 
 }
@@ -179,9 +187,9 @@ TEST_DEFINE(TEST_Basic_other)
 
 	Console::WriteLine(
 		String::Format("cores: %d, pagesize: %d, cacheline: %d",
-		System::GetCpuCount(),
-		System::GetPageSize(),
-		System::GetCacheLineSize()));
+					   System::GetCpuCount(),
+					   System::GetPageSize(),
+					   System::GetCacheLineSize()));
 
 }
 

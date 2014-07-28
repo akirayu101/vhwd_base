@@ -22,15 +22,23 @@ public:
 	typedef typename impl_type::key_compare key_compare;
 	typedef typename impl_type::allocator_type allocator_type;
 
-	bst_set(){}
-	bst_set(const bst_set& o):basetype(o){}
-	bst_set(const key_compare& kc,const A& al=A()):basetype(kc,al){}
+	bst_set() {}
+	bst_set(const bst_set& o):basetype(o) {}
+	bst_set(const key_compare& kc,const A& al=A()):basetype(kc,al) {}
 
-	bst_set& operator=(const bst_set& o){impl=o.impl;return *this;}
+	bst_set& operator=(const bst_set& o)
+	{
+		impl=o.impl;
+		return *this;
+	}
 
 #ifdef VHWD_C11
-	bst_set(bst_set&& o):basetype(o){}
-	bst_set& operator=(bst_set&& o){this->swap(o);return *this;}
+	bst_set(bst_set&& o):basetype(o) {}
+	bst_set& operator=(bst_set&& o)
+	{
+		this->swap(o);
+		return *this;
+	}
 #endif
 
 };
@@ -48,15 +56,23 @@ public:
 	typedef typename impl_type::key_compare key_compare;
 	typedef typename impl_type::allocator_type allocator_type;
 
-	bst_multiset(){}
-	bst_multiset(const bst_multiset& o):basetype(o){}
-	bst_multiset(const key_compare& kc,const A& al=A()):basetype(kc,al){}
+	bst_multiset() {}
+	bst_multiset(const bst_multiset& o):basetype(o) {}
+	bst_multiset(const key_compare& kc,const A& al=A()):basetype(kc,al) {}
 
-	bst_multiset& operator=(const bst_multiset& o){impl=o.impl;return *this;}
+	bst_multiset& operator=(const bst_multiset& o)
+	{
+		impl=o.impl;
+		return *this;
+	}
 
 #ifdef VHWD_C11
-	bst_multiset(bst_multiset&& o):basetype(o){}
-	bst_multiset& operator=(bst_multiset&& o){this->swap(o);return *this;}
+	bst_multiset(bst_multiset&& o):basetype(o) {}
+	bst_multiset& operator=(bst_multiset&& o)
+	{
+		this->swap(o);
+		return *this;
+	}
 #endif
 
 };

@@ -34,23 +34,45 @@ public:
 
 	static const size_type MAX_DIM=extra_arr_xt::MAX_DIM;
 
-	arr_xt(){}
-	arr_xt(const A& al):basetype(al){}
+	arr_xt() {}
+	arr_xt(const A& al):basetype(al) {}
 	arr_xt(const arr_xt& o);
 	arr_xt& operator=(const arr_xt& o);
 
-	~arr_xt(){clear();}
+	~arr_xt()
+	{
+		clear();
+	}
 
 #if defined(VHWD_C11)
-	arr_xt(arr_xt&& p){swap(p);}
-	arr_xt& operator=(arr_xt&& p){swap(p);return *this;}
+	arr_xt(arr_xt&& p)
+	{
+		swap(p);
+	}
+	arr_xt& operator=(arr_xt&& p)
+	{
+		swap(p);
+		return *this;
+	}
 #endif
 
-	iterator begin(){return m_ptr;}
-	iterator end(){return m_ptr+extra().size;}
+	iterator begin()
+	{
+		return m_ptr;
+	}
+	iterator end()
+	{
+		return m_ptr+extra().size;
+	}
 
-	const_iterator begin() const {return m_ptr;}
-	const_iterator end() const {return m_ptr+extra().size;}
+	const_iterator begin() const
+	{
+		return m_ptr;
+	}
+	const_iterator end() const
+	{
+		return m_ptr+extra().size;
+	}
 
 	void resize(size_type k0,size_type k1=1,size_type k2=1,size_type k3=1,size_type k4=1,size_type k5=1);
 	void clear();
@@ -105,27 +127,42 @@ public:
 		return m_ptr[k0+extra().dims[0]*(k1+extra().dims[1]*(k2+extra().dims[2]*(k3+extra().dims[3]*(k4+extra().dims[4]*k5))))];
 	}
 
-	inline size_type size() const {return extra().size;}
-	inline size_type size(int n) const {return extra().dims[n];}
-	const size_type* size_ptr() const {return extra().dims;}
+	inline size_type size() const
+	{
+		return extra().size;
+	}
+	inline size_type size(int n) const
+	{
+		return extra().dims[n];
+	}
+	const size_type* size_ptr() const
+	{
+		return extra().dims;
+	}
 
-	inline T* data(){return m_ptr;}
-	inline const T* data() const {return m_ptr;}
+	inline T* data()
+	{
+		return m_ptr;
+	}
+	inline const T* data() const
+	{
+		return m_ptr;
+	}
 };
 
 
 template<typename T,typename A1,typename A2>
 bool operator==(const arr_xt<T,A1>& lhs,const arr_xt<T,A2>& rhs)
 {
-    typedef size_t size_type;
+	typedef size_t size_type;
 	if(lhs.size()!=rhs.size()) return false;
 
-	for(size_type i=0;i<lhs.MAX_DIM;i++)
+	for(size_type i=0; i<lhs.MAX_DIM; i++)
 	{
 		if(lhs.size(i)!=rhs.size(i)) return false;
 	}
 
-	for(size_type i=0;i<lhs.size();i++)
+	for(size_type i=0; i<lhs.size(); i++)
 	{
 		if(lhs[i]!=rhs[i]) return false;
 	}
@@ -158,7 +195,7 @@ arr_xt<T,A>::arr_xt(const arr_xt& o):basetype(o.get_allocator())
 		this->_xset(0);
 		throw;
 	}
-	
+
 }
 
 template<typename T,typename A>
@@ -212,15 +249,15 @@ void arr_xt<T,A>::resize(size_type k0,size_type k1,size_type k2,size_type k3,siz
 
 	if(_newsize>0)
 	{
-		for(size_type a0=0;a0<std::min(_Eold.dims[0],_Enew.dims[0]);a0++)
-		for(size_type a1=0;a1<std::min(_Eold.dims[1],_Enew.dims[1]);a1++)
-		for(size_type a2=0;a2<std::min(_Eold.dims[2],_Enew.dims[2]);a2++)
-		for(size_type a3=0;a3<std::min(_Eold.dims[3],_Enew.dims[3]);a3++)
-		for(size_type a4=0;a4<std::min(_Eold.dims[4],_Enew.dims[4]);a4++)
-		for(size_type a5=0;a5<std::min(_Eold.dims[5],_Enew.dims[5]);a5++)
-		{
-			tmp(a0,a1,a2,a3,a4,a5)=(*this)(a0,a1,a2,a3,a4,a5);
-		}
+		for(size_type a0=0; a0<std::min(_Eold.dims[0],_Enew.dims[0]); a0++)
+			for(size_type a1=0; a1<std::min(_Eold.dims[1],_Enew.dims[1]); a1++)
+				for(size_type a2=0; a2<std::min(_Eold.dims[2],_Enew.dims[2]); a2++)
+					for(size_type a3=0; a3<std::min(_Eold.dims[3],_Enew.dims[3]); a3++)
+						for(size_type a4=0; a4<std::min(_Eold.dims[4],_Enew.dims[4]); a4++)
+							for(size_type a5=0; a5<std::min(_Eold.dims[5],_Enew.dims[5]); a5++)
+							{
+								tmp(a0,a1,a2,a3,a4,a5)=(*this)(a0,a1,a2,a3,a4,a5);
+							}
 	}
 
 	swap(tmp);
@@ -239,6 +276,15 @@ void arr_xt<T,A>::clear()
 	extra().dims[5]=1;
 	this->_xset(0);
 }
+
+template<typename T,typename A> class hash_t<arr_xt<T,A> >
+{
+public:
+	uint32_t operator()(const arr_xt<T,A>& o)
+	{
+		return hash_array<T>::hash(o.data(),o.size());
+	}
+};
 
 VHWD_LEAVE
 #endif

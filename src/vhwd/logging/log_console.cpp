@@ -35,7 +35,7 @@ LogConsole::LogConsole()
 {
 	aColors.resize(LOGLEVEL_MAX+1);
 	flags.add(FLAG_COLORED);
-	for(size_t i=0;i<LOGLEVEL_MAX;i++)
+	for(size_t i=0; i<LOGLEVEL_MAX; i++)
 	{
 		aColors[i]=Console::COLOR_D;
 	}

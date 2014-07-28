@@ -26,8 +26,8 @@ public:
 		sock_type p=socket(PF_INET,t,0);
 		if(p>=0)
 		{
-            int opt =1;
-            setsockopt(p,SOL_SOCKET,SO_REUSEADDR,&opt,sizeof(opt));
+			int opt =1;
+			setsockopt(p,SOL_SOCKET,SO_REUSEADDR,&opt,sizeof(opt));
 			impl.reset(p);
 			return true;
 		}
@@ -181,7 +181,7 @@ public:
 
 	static int recv(impl_type& impl,char* buf,int len,IPAddress& addr)
 	{
-        socklen_t nlen=addr.v4size();
+		socklen_t nlen=addr.v4size();
 		while(true)
 		{
 			int result=::recvfrom(g(impl),buf,len,0,addr,&nlen);

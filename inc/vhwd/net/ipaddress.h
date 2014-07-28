@@ -10,11 +10,11 @@
 #endif
 
 #ifdef _WIN32
-    #include <winsock2.h>
-    #include <mswsock.h>
+#include <winsock2.h>
+#include <mswsock.h>
 #else
-    #include <sys/socket.h>
-    #include <netinet/in.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 #endif
 
 VHWD_ENTER
@@ -45,15 +45,30 @@ public:
 	int* sz_ptr();
 	int v4size() const;
 
-	operator struct sockaddr*(){return sk_addr();}
-	operator struct sockaddr_in*(){return sk_addr_in();}
-	operator const struct sockaddr*() const{return sk_addr();}
-	operator const struct sockaddr_in*() const {return sk_addr_in();}
-	operator int*(){return sz_ptr();}
+	operator struct sockaddr*()
+	{
+		return sk_addr();
+	}
+	operator struct sockaddr_in*()
+	{
+		return sk_addr_in();
+	}
+	operator const struct sockaddr*() const
+	{
+		return sk_addr();
+	}
+	operator const struct sockaddr_in*() const
+	{
+		return sk_addr_in();
+	}
+	operator int*()
+	{
+		return sz_ptr();
+	}
 
 private:
 	void ensure() const;
-    mutable struct sockaddr_in* pimpl;
+	mutable struct sockaddr_in* pimpl;
 	mutable int nsize;
 };
 

@@ -1,4 +1,3 @@
-
 #include "vhwd/serialization/serializer.h"
 #include "vhwd/basic/stringbuffer.h"
 #include "vhwd/basic/codecvt.h"
@@ -11,7 +10,8 @@ void serial_helper_func<A,String>::g(SerializerReader &ar,type &val)
 {
 	intarr_t n(0);
 	serial_pod<A,intarr_t>::g(ar,n);
-	arr_1t<char> vect;vect.resize(n);
+	arr_1t<char> vect;
+	vect.resize(n);
 
 	ar.recv(vect.data(),n);
 

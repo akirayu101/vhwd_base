@@ -10,14 +10,14 @@ ThreadManager& ThreadManager::current()
 	{
 	public:
 
-		StaticThreadPool(){}
+		StaticThreadPool() {}
 
 		~StaticThreadPool()
 		{
 
 		}
-		
-	}_g_thread_pool;
+
+	} _g_thread_pool;
 	return _g_thread_pool;
 }
 

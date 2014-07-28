@@ -118,20 +118,20 @@ TEST_DEFINE(TEST_Serializer)
 
 	if(dat[1].arr.size(0)==dat[0].arr.size(0))
 	{
-		for(size_t i=0;i<dat[1].arr.size(0);i++)
+		for(size_t i=0; i<dat[1].arr.size(0); i++)
 		{
 			TEST_ASSERT(dat[1].arr(i)==dat[0].arr(i));
 		}
 	}
 
-	for(int i=0;i<10;i++)
+	for(int i=0; i<10; i++)
 	{
 		TEST_ASSERT(dat[1].ivals[i]==dat[0].ivals[i]);
 	}
 
 	SerializerBuffer sbuf;
 
-	double v1[4]={1.234,234.0,323,432};
+	double v1[4]= {1.234,234.0,323,432};
 	double v2[4];
 
 	try

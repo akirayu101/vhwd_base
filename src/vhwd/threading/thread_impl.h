@@ -70,7 +70,7 @@ class ThreadMain : public Thread
 public:
 	static bool m_bReqExit;
 
-	ThreadMain(){}
+	ThreadMain() {}
 	ThreadMain(const ThreadMain&);
 
 	bool test_destroy()
@@ -85,7 +85,10 @@ public:
 
 	void wait();
 
-	bool activate(){return false;}
+	bool activate()
+	{
+		return false;
+	}
 
 };
 

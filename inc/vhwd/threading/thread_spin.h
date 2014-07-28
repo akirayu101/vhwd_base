@@ -24,7 +24,10 @@ public:
 
 	SpinLock();
 	SpinLock(const SpinLock&);
-	SpinLock& operator=(const SpinLock&){return *this;}
+	SpinLock& operator=(const SpinLock&)
+	{
+		return *this;
+	}
 
 	~SpinLock();
 

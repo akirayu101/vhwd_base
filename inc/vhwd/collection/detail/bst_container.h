@@ -24,12 +24,12 @@ public:
 	typedef typename impl_type::key_compare key_compare;
 	typedef typename impl_type::allocator_type allocator_type;
 
-	bst_container(){}
-	bst_container(const key_compare& kc,const A& al):basetype(kc,allocator_type(al)){}
-	bst_container(const bst_container& o):basetype(o){}
+	bst_container() {}
+	bst_container(const key_compare& kc,const A& al):basetype(kc,allocator_type(al)) {}
+	bst_container(const bst_container& o):basetype(o) {}
 
 #ifdef VHWD_C11
-	bst_container(bst_container&& o):basetype(o){}
+	bst_container(bst_container&& o):basetype(o) {}
 #endif
 
 	iterator find(const key_type& v)
@@ -68,8 +68,14 @@ public:
 		return impl.template handle_key<typename impl_type::fp_erase>(v);
 	}
 
-	iterator erase(const_iterator p){return impl.erase(p);}
-	iterator erase(const_iterator p1,const_iterator p2){return impl.erase(p1,p2);}
+	iterator erase(const_iterator p)
+	{
+		return impl.erase(p);
+	}
+	iterator erase(const_iterator p1,const_iterator p2)
+	{
+		return impl.erase(p1,p2);
+	}
 
 	iterator lower_bound(const key_type& v)
 	{
@@ -145,12 +151,12 @@ public:
 	typedef typename impl_type::key_compare key_compare;
 	typedef typename basetype::allocator_type allocator_type;
 
-	bst_multi_container(){}
-	bst_multi_container(const bst_multi_container& o):basetype(o){}
-	bst_multi_container(const key_compare& kc,const A& al):basetype(kc,allocator_type(al)){}
+	bst_multi_container() {}
+	bst_multi_container(const bst_multi_container& o):basetype(o) {}
+	bst_multi_container(const key_compare& kc,const A& al):basetype(kc,allocator_type(al)) {}
 
 #ifdef VHWD_C11
-	bst_multi_container(bst_multi_container&& o):basetype(o){}
+	bst_multi_container(bst_multi_container&& o):basetype(o) {}
 #endif
 
 	iterator insert(const value_type& v)

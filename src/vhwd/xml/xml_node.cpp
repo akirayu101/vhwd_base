@@ -23,14 +23,14 @@ XmlNode::XmlNode(const String& tag,const String& val)
 }
 
 XmlNode::~XmlNode()
-{		
+{
 	DeleteChildren();
 	DeleteAttributes();
 }
 
 void XmlNode::EnsureChildrenParent()
 {
-	for(XmlNode* pnode=GetFirstChild();pnode!=NULL;pnode=pnode->GetNext())
+	for(XmlNode* pnode=GetFirstChild(); pnode!=NULL; pnode=pnode->GetNext())
 	{
 		pnode->SetParent(this);
 	}
@@ -44,7 +44,7 @@ void XmlNode::swap(XmlNode& o)
 	listNodes.swap(o.listNodes);
 	listAttrs.swap(o.listAttrs);
 	EnsureChildrenParent();
-	o.EnsureChildrenParent();	
+	o.EnsureChildrenParent();
 }
 
 bool XmlNode::Serialize(Serializer& ar)
@@ -56,7 +56,7 @@ bool XmlNode::Serialize(Serializer& ar)
 	if(ar.is_reader())
 	{
 		DeleteChildren();
-		for(int32_t i=0;i<nChilds;i++)
+		for(int32_t i=0; i<nChilds; i++)
 		{
 			AutoPtrT<XmlNode> pnode(new XmlNode);
 			if(!pnode->Serialize(ar))
@@ -69,13 +69,13 @@ bool XmlNode::Serialize(Serializer& ar)
 	}
 	else
 	{
-		for(XmlNode* pnode=GetFirstChild();pnode!=NULL;pnode=pnode->GetNext())
+		for(XmlNode* pnode=GetFirstChild(); pnode!=NULL; pnode=pnode->GetNext())
 		{
 			if(!pnode->Serialize(ar))
 			{
 				return false;
 			}
-		}		
+		}
 	}
 
 	int32_t nAttrs=listAttrs.size();
@@ -83,7 +83,7 @@ bool XmlNode::Serialize(Serializer& ar)
 	if(ar.is_reader())
 	{
 		DeleteAttributes();
-		for(int32_t i=0;i<nAttrs;i++)
+		for(int32_t i=0; i<nAttrs; i++)
 		{
 			AutoPtrT<XmlAttribute> pattr(new XmlAttribute);
 			if(!pattr->Serialize(ar))
@@ -95,13 +95,13 @@ bool XmlNode::Serialize(Serializer& ar)
 	}
 	else
 	{
-		for(XmlAttribute* pattr=GetFirstAttribute();pattr!=NULL;pattr=pattr->GetNext())
+		for(XmlAttribute* pattr=GetFirstAttribute(); pattr!=NULL; pattr=pattr->GetNext())
 		{
 			if(!pattr->Serialize(ar))
 			{
 				return false;
 			}
-		}	
+		}
 	}
 
 	return ar.good();

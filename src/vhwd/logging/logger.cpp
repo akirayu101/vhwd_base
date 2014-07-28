@@ -132,7 +132,7 @@ void Logger::DoLogImplV(int lv,const char* msg,va_list vl)
 	if(!impl) return;
 
 	LogRecord rcd(impl->m_nSrc,impl->m_nId,lv);
-	
+
 	for(;;)
 	{
 		try
@@ -268,9 +268,9 @@ bool Logger::Test(int t)
 
 	needsend=needsend && impl->m_refData!=NULL;
 
-	if(needsend)	
+	if(needsend)
 	{
-		for(size_t i=0;i<impl->m_aMsg.size();i++)
+		for(size_t i=0; i<impl->m_aMsg.size(); i++)
 		{
 			impl->m_refData->Handle(impl->m_aMsg[i]);
 		}

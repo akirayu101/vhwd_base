@@ -56,14 +56,29 @@ public:
 
 	bool Eof();
 
-	void swap(impl_type& o){impl.swap(o);}
-	void swap(File& o){impl.swap(o.impl);}
+	void swap(impl_type& o)
+	{
+		impl.swap(o);
+	}
+	void swap(File& o)
+	{
+		impl.swap(o.impl);
+	}
 
-	impl_type::type native_handle(){return impl;}
+	impl_type::type native_handle()
+	{
+		return impl;
+	}
 
-	bool Ok(){return impl.ok();}
+	bool Ok()
+	{
+		return impl.ok();
+	}
 
-	bool Good(){return m_bGood;}
+	bool Good()
+	{
+		return m_bGood;
+	}
 
 private:
 

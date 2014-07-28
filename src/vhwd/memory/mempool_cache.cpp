@@ -66,8 +66,8 @@ MemPageInfo* MemPageCache::search(void* p_)
 
 
 #ifdef _WIN32
-void detect_memory_leaks( bool on_off )  
-{  
+void detect_memory_leaks( bool on_off )
+{
 
 }
 #endif
@@ -81,7 +81,7 @@ void MemPageCache::_init()
 	}
 
 #if defined(_WIN32) && defined(_DEBUG)
-    _CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG)|_CRTDBG_LEAK_CHECK_DF);  
+	_CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG)|_CRTDBG_LEAK_CHECK_DF);
 #endif
 
 	nPageBits=20;
@@ -98,19 +98,19 @@ void MemPageCache::_init()
 		Exception::XBadAlloc();
 	}
 
-	for(size_t i=0;i<nBucketCount;i++)
+	for(size_t i=0; i<nBucketCount; i++)
 	{
 		new(aBuckets+i) Bucket();
 	}
 
 
 	// Define Fix size allocate units.
-	size_t sbit[]={8,16,24,32,48,64,80,96,112,128,192,256,512,768,1024,1536,2048,3072,4096};
+	size_t sbit[]= {8,16,24,32,48,64,80,96,112,128,192,256,512,768,1024,1536,2048,3072,4096};
 
 	// Determine real slot count
 	m_nFixedSizeCount=sizeof(sbit)/sizeof(size_t);
 
-	for(size_t i=3;i<m_nFixedSizeCount;i++)
+	for(size_t i=3; i<m_nFixedSizeCount; i++)
 	{
 		if(MemPageCache::nPageSize/sbit[i]<3)
 		{
@@ -135,14 +135,14 @@ void MemPageCache::_init()
 	}
 
 	// Initializing MemSlots
-	for(size_t i=0;i<m_nFixedSizeCount;i++)
+	for(size_t i=0; i<m_nFixedSizeCount; i++)
 	{
 		new (m_aSlots+i) FixedSizeAllocatorUnit(sbit[i]);
 	}
 
 	// Setting up size mapping, map size to MemSlot
 	size_t j=0;
-	for(size_t i=0;i<=m_nFixedSizeMax;i++)
+	for(size_t i=0; i<=m_nFixedSizeMax; i++)
 	{
 		if(i>sbit[j]) j++;
 		m_pSlots[i]=m_aSlots+j;

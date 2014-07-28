@@ -23,7 +23,7 @@ public:
 	SerializerBuffer();
 
 	// skip data, return true if gptr()==gend();
-	bool skip(); 
+	bool skip();
 
 	// assign external buffer
 	void assign(char* pbuf,size_t size);
@@ -32,10 +32,22 @@ public:
 	void alloc(size_t bufsize);
 
 
-	char* gbeg(){return lbuf.gbeg();} // buffer begin
-	char* gptr(){return lbuf.gptr();} // get position begin
-	char* gend(){return lbuf.gend();} // get position end or put position begin
-	char* last(){return lbuf.last();}
+	char* gbeg()
+	{
+		return lbuf.gbeg();   // buffer begin
+	}
+	char* gptr()
+	{
+		return lbuf.gptr();   // get position begin
+	}
+	char* gend()
+	{
+		return lbuf.gend();   // get position end or put position begin
+	}
+	char* last()
+	{
+		return lbuf.last();
+	}
 
 protected:
 

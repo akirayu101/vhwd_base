@@ -26,14 +26,26 @@ class VHWD_DLLIMPEXP XmlBase : public SmallObject
 {
 public:
 
-	XmlBase(){}
-	XmlBase(const String& name_,const String& value_=""):m_sName(name_),m_sValue(value_){}
+	XmlBase() {}
+	XmlBase(const String& name_,const String& value_=""):m_sName(name_),m_sValue(value_) {}
 
-	const String& GetName() const {return m_sName;}
-	const String& GetValue() const {return m_sValue;}
+	const String& GetName() const
+	{
+		return m_sName;
+	}
+	const String& GetValue() const
+	{
+		return m_sValue;
+	}
 
-	void SetName(const String& s){m_sName=s;}
-	void SetValue(const String& s){m_sValue=s;}
+	void SetName(const String& s)
+	{
+		m_sName=s;
+	}
+	void SetValue(const String& s)
+	{
+		m_sValue=s;
+	}
 
 protected:
 	String m_sName;

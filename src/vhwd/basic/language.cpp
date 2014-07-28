@@ -89,7 +89,7 @@ public:
 		const char* p1=vt.data();
 		String tmp1,tmp2;
 
-		for(size_t i=0;i<sz;)
+		for(size_t i=0; i<sz;)
 		{
 			if(memcmp(p1+i,"msgid",5)!=0)
 			{
@@ -173,7 +173,7 @@ public:
 
 		StringBuffer<unsigned> vp;
 		unsigned j=0;
-		for(unsigned i=0;i<aCont.size();i++)
+		for(unsigned i=0; i<aCont.size(); i++)
 		{
 			if(aCont[i]!='\0')
 			{
@@ -184,7 +184,7 @@ public:
 		}
 
 		mapStrings.rehash(vp.size()/2);
-		for(size_t i=0;i<vp.size();i+=2)
+		for(size_t i=0; i<vp.size(); i+=2)
 		{
 			mapStrings[&aCont[vp[i]]]=&aCont[vp[i+1]];
 		}
@@ -197,7 +197,7 @@ public:
 	{
 		StringBuffer<char> bt;
 		size_t sz=mapStrings.size();
-		for(size_t i=0;i<sz;i++)
+		for(size_t i=0; i<sz; i++)
 		{
 			const char* k=mapStrings.get(i).first;
 			const char* v=mapStrings.get(i).second;

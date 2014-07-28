@@ -1,4 +1,3 @@
-
 #include"vhwd/serialization/serializer_stream.h"
 
 VHWD_ENTER

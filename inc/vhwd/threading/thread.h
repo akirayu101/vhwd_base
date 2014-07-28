@@ -32,7 +32,10 @@ public:
 
 	// Copy construct and assign operator, NOTE these methods do NOT really copy any running threads.
 	Thread(const Thread& o);
-	Thread& operator=(const Thread&){return *this;}
+	Thread& operator=(const Thread&)
+	{
+		return *this;
+	}
 
 	virtual ~Thread();
 
@@ -50,10 +53,10 @@ public:
 	static void set_affinity(int n);
 
 	// Start one thread calling entry point
-	virtual bool activate(); 
+	virtual bool activate();
 
 	// Default entry point
-	virtual void svc(); 
+	virtual void svc();
 
 	// Return true if thread exit flag is set
 	// Block if thread pause flag is set
@@ -74,13 +77,13 @@ public:
 	// Wait until thread terminates.
 	virtual void wait();
 
-	// Wait until thread terminates or timeout. 
+	// Wait until thread terminates or timeout.
 	bool wait_for(int milliseconds);
 
-	// Wait until thread terminates or timeout. 
+	// Wait until thread terminates or timeout.
 	bool wait_for(const TimeSpan& rel_time);
 
-	// Wait until thread terminates or timepoint reached. 
+	// Wait until thread terminates or timepoint reached.
 	bool wait_until(const TimePoint& abs_time);
 
 	// Set the thread exit flag, causing member function test_destroy() return true;
@@ -94,7 +97,7 @@ public:
 
 	// Called while thread throws unhandled exception. can use try{throw;}catch... to rethrow the excetpion.
 	virtual void on_exception();
-	
+
 	enum
 	{
 		STATE_PAUSED	=1<<0,	// thread pause flag
@@ -115,10 +118,16 @@ public:
 
 	// Thread flags, currently only support FLAG_DYNAMIC.
 	// If FLAG_DYNAMIC is set, then new threads can be activated while alive.
-	BitFlags& flags(){return m_nFlags;}
+	BitFlags& flags()
+	{
+		return m_nFlags;
+	}
 
 
-	void bind_cpu(int c1){m_aBindCpu.push_back(c1);}
+	void bind_cpu(int c1)
+	{
+		m_aBindCpu.push_back(c1);
+	}
 
 protected:
 
@@ -155,19 +164,25 @@ class VHWD_DLLIMPEXP ThreadEx : public Thread
 {
 public:
 
-	ThreadEx(){}
+	ThreadEx() {}
 
-	typedef Functor<void()> factor_type;	
+	typedef Functor<void()> factor_type;
 
 	// A group of thread entry point
 	class InvokerGroup
 	{
 	public:
-		
+
 		arr_1t<factor_type> m_aInvokers;
 
-		size_t size(){return m_aInvokers.size();}
-		factor_type& operator[](size_t n){return m_aInvokers[n];}
+		size_t size()
+		{
+			return m_aInvokers.size();
+		}
+		factor_type& operator[](size_t n)
+		{
+			return m_aInvokers[n];
+		}
 
 		void append(factor_type& fac)
 		{
@@ -177,22 +192,25 @@ public:
 		template<typename T>
 		void append(T func)
 		{
-			factor_type fac;fac.bind(func);
+			factor_type fac;
+			fac.bind(func);
 			m_aInvokers.push_back(fac);
 		}
 
 		template<typename T,typename P1>
 		void append(T func,P1 p1)
 		{
-			factor_type fac;fac.bind(func,p1);
-			m_aInvokers.push_back(fac);		
+			factor_type fac;
+			fac.bind(func,p1);
+			m_aInvokers.push_back(fac);
 		}
 	};
 
 	// Start one thread calling fac().
 	bool activate(factor_type& fac)
 	{
-		InvokerGroup g;g.append(fac);
+		InvokerGroup g;
+		g.append(fac);
 		return activate(g);
 	}
 
@@ -202,14 +220,16 @@ public:
 	template<typename T>
 	bool activate(T func)
 	{
-		InvokerGroup g;g.append(func);
+		InvokerGroup g;
+		g.append(func);
 		return activate(g);
 	}
 
 	template<typename T,typename P1>
 	bool activate(T func,P1 p1)
 	{
-		InvokerGroup g;g.append(func,p1);
+		InvokerGroup g;
+		g.append(func,p1);
 		return activate(g);
 	}
 
@@ -219,7 +239,7 @@ class VHWD_DLLIMPEXP ThreadCustom : public ThreadEx
 {
 public:
 	typedef ThreadEx basetype;
-	ThreadCustom(){}
+	ThreadCustom() {}
 
 	// Start a group of threads calling entry points defined in m_aThreads.
 	virtual bool activate();

@@ -18,7 +18,7 @@ void GBKTable_init()
 {
 	if(g_uni_table[0]!=0) return;
 
-	for(size_t i=0;i<gbk_ke1*gbk_ke2;i++)
+	for(size_t i=0; i<gbk_ke1*gbk_ke2; i++)
 	{
 		size_t b1=(i/gbk_ke2)+0x81;
 		size_t b2=(i%gbk_ke2)+0x40;
@@ -37,13 +37,23 @@ bool IConv_unicode_to_gbk(StringBuffer<unsigned char>& aa_,const WC* pw_,size_t 
 	unsigned char* pa_=dst.data();
 	const WC* pw2=pw_+ln_;
 
-	for(;pw_<pw2;pw_++)
+	for(; pw_<pw2; pw_++)
 	{
 		if(pw_[0]<0x81)
 		{
 			*pa_++=pw_[0];
 			continue;
 		}
+
+		if(sizeof(WC)>2&&(pw_[0]&0xFFFF0000)!=0)
+		{
+			System::LogWarning("unkown unicode character %x",(uint32_t)pw_[0]);
+			pa_[0]='?';
+			pa_[1]='?';
+			pa_+=2;
+			continue;
+		}
+
 		WC val=g_uni_table[pw_[0]];
 		if(val!=0)
 		{
@@ -188,7 +198,7 @@ bool IConv_unicode_to_utf8(StringBuffer<unsigned char>& aa_,const WC* pw_,size_t
 	unsigned char* pa_=dst.data();
 	const WC* pw2=pw_+ln_;
 
-	for(;pw_<pw2;pw_++)
+	for(; pw_<pw2; pw_++)
 	{
 		WC code=pw_[0];
 		if (code < 0x80)
@@ -197,22 +207,28 @@ bool IConv_unicode_to_utf8(StringBuffer<unsigned char>& aa_,const WC* pw_,size_t
 		}
 		else if (code < 0x800)
 		{
-			pa_[1] = ((code | 0x80) & 0xBF); code >>= 6;
+			pa_[1] = ((code | 0x80) & 0xBF);
+			code >>= 6;
 			pa_[0] = (code | 0xC0);
 			pa_+=2;
 		}
 		else if (code < 0x10000)
 		{
-			pa_[2] = ((code|0x80) & 0xBF); code >>= 6;
-			pa_[1] = ((code|0x80) & 0xBF); code >>= 6;
+			pa_[2] = ((code|0x80) & 0xBF);
+			code >>= 6;
+			pa_[1] = ((code|0x80) & 0xBF);
+			code >>= 6;
 			pa_[0] = (code|0xE0);
 			pa_+=3;
 		}
 		else if (code < 0x110000)
 		{
-			pa_[3] = ((code | 0x80) & 0xBF); code >>= 6;
-			pa_[2] = ((code | 0x80) & 0xBF); code >>= 6;
-			pa_[1] = ((code | 0x80) & 0xBF); code >>= 6;
+			pa_[3] = ((code | 0x80) & 0xBF);
+			code >>= 6;
+			pa_[2] = ((code | 0x80) & 0xBF);
+			code >>= 6;
+			pa_[1] = ((code | 0x80) & 0xBF);
+			code >>= 6;
 			pa_[0] = (code | 0xF0);
 			pa_+=4;
 		}

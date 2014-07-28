@@ -21,15 +21,23 @@ public:
 	typedef typename impl_type::key_compare key_compare;
 	typedef typename impl_type::allocator_type allocator_type;
 
-	bst_map(){}
-	bst_map(const key_compare& kc,const A& al=A()):basetype(kc,al){}
+	bst_map() {}
+	bst_map(const key_compare& kc,const A& al=A()):basetype(kc,al) {}
 
-	bst_map(const bst_map& o):basetype(o){}
-	bst_map& operator=(const bst_map& o){impl=o.impl;return *this;}
+	bst_map(const bst_map& o):basetype(o) {}
+	bst_map& operator=(const bst_map& o)
+	{
+		impl=o.impl;
+		return *this;
+	}
 
 #ifdef VHWD_C11
-	bst_map(bst_map&& o):basetype(o){}
-	bst_map& operator=(bst_map&& o){swap(o);return *this;}
+	bst_map(bst_map&& o):basetype(o) {}
+	bst_map& operator=(bst_map&& o)
+	{
+		swap(o);
+		return *this;
+	}
 #endif
 
 	mapped_type& operator[](const key_type& k)
@@ -62,15 +70,23 @@ public:
 	typedef typename impl_type::key_compare key_compare;
 	typedef typename impl_type::allocator_type allocator_type;
 
-	bst_multimap(){}
-	bst_multimap(const key_compare& kc,const A& al=A()):basetype(kc,al){}
+	bst_multimap() {}
+	bst_multimap(const key_compare& kc,const A& al=A()):basetype(kc,al) {}
 
-	bst_multimap(const bst_multimap& o):basetype(o){}
-	bst_multimap& operator=(const bst_multimap& o){impl=o.impl;return *this;}
+	bst_multimap(const bst_multimap& o):basetype(o) {}
+	bst_multimap& operator=(const bst_multimap& o)
+	{
+		impl=o.impl;
+		return *this;
+	}
 
 #ifdef VHWD_C11
-	bst_multimap(bst_multimap&& o):basetype(o){}
-	bst_multimap& operator=(bst_multimap&& o){swap(o);return *this;}
+	bst_multimap(bst_multimap&& o):basetype(o) {}
+	bst_multimap& operator=(bst_multimap&& o)
+	{
+		swap(o);
+		return *this;
+	}
 #endif
 
 };

@@ -30,14 +30,14 @@ bool File::Open(const String& filename_,int flag_)
 	Close();
 
 	HANDLE hFile=(HANDLE)CreateFileA(
-		fn.c_str(),
-		FileAccess::makeflag(flag_,GENERIC_READ,GENERIC_WRITE),
-		FileAccess::makeflag(flag_,FILE_SHARE_READ,FILE_SHARE_WRITE),
-		NULL,
-		flag_&FileAccess::FLAG_CR?OPEN_ALWAYS:OPEN_EXISTING,
-		NULL,
-		NULL
-		);
+					 fn.c_str(),
+					 FileAccess::makeflag(flag_,GENERIC_READ,GENERIC_WRITE),
+					 FileAccess::makeflag(flag_,FILE_SHARE_READ,FILE_SHARE_WRITE),
+					 NULL,
+					 flag_&FileAccess::FLAG_CR?OPEN_ALWAYS:OPEN_EXISTING,
+					 NULL,
+					 NULL
+				 );
 
 
 	if (hFile == INVALID_HANDLE_VALUE)
@@ -105,16 +105,16 @@ int64_t File::Seek(int64_t pos,int t)
 	LARGE_INTEGER li;
 	li.QuadPart=pos;
 	li.LowPart = SetFilePointer (impl,
-                                li.LowPart,
-                                &li.HighPart,
-                                t);
+								 li.LowPart,
+								 &li.HighPart,
+								 t);
 
-   if (li.LowPart == INVALID_SET_FILE_POINTER && GetLastError() != NO_ERROR)
-   {
-	   return -1;
-   }
+	if (li.LowPart == INVALID_SET_FILE_POINTER && GetLastError() != NO_ERROR)
+	{
+		return -1;
+	}
 
-   return li.QuadPart;
+	return li.QuadPart;
 }
 
 
@@ -148,14 +148,14 @@ static int shm_fileflag(int flag_)
 
 	if(flag_&FileAccess::FLAG_WR)
 	{
-        if(flag_&FileAccess::FLAG_RD)
-        {
-            acc|=O_RDWR;
-        }
-        else
-        {
-            acc|=O_WRONLY;
-        }
+		if(flag_&FileAccess::FLAG_RD)
+		{
+			acc|=O_RDWR;
+		}
+		else
+		{
+			acc|=O_WRONLY;
+		}
 	}
 
 	return acc;
@@ -248,13 +248,13 @@ void File::Rewind()
 
 void File::Flush()
 {
-    ::fsync(impl);
+	::fsync(impl);
 }
 
 void File::Truncate(size_t size_)
 {
 	Seek(size_,FILEPOS_BEG);
-    ftruncate(impl,size_);
+	ftruncate(impl,size_);
 }
 
 #endif

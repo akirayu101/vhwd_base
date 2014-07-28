@@ -83,7 +83,7 @@ protected:
 
 	// coroutine entry point, this function will be called after this coroutine is yielded to.
 	// you should NOT call this function in your code.
-	virtual void svc(){}
+	virtual void svc() {}
 
 	CoroutineContext* m_pContext;
 	LitePtrT<Coroutine> m_pLastRoutine;
@@ -101,25 +101,46 @@ class VHWD_DLLIMPEXP CoroutineEx : public Coroutine
 {
 public:
 
-	CoroutineEx(size_t stksize_=DEFAULT_STACK_SIZE):Coroutine(stksize_){}
+	CoroutineEx(size_t stksize_=DEFAULT_STACK_SIZE):Coroutine(stksize_) {}
 
-	void reset(Functor<void()> func){m_tEntry=func;}
+	void reset(Functor<void()> func)
+	{
+		m_tEntry=func;
+	}
 
 	template<typename X0>
-	void bind(X0 x0){m_tEntry.bind(x0);}
+	void bind(X0 x0)
+	{
+		m_tEntry.bind(x0);
+	}
 
 	template<typename X0,typename X1>
-	void bind(X0 x0,X1 x1){m_tEntry.bind(x0,x1);}
+	void bind(X0 x0,X1 x1)
+	{
+		m_tEntry.bind(x0,x1);
+	}
 
 	template<typename X0,typename X1,typename X2>
-	void bind(X0 x0,X1 x1,X2 x2){m_tEntry.bind(x0,x1,x2);}
+	void bind(X0 x0,X1 x1,X2 x2)
+	{
+		m_tEntry.bind(x0,x1,x2);
+	}
 
 	template<typename X0,typename X1,typename X2,typename X3>
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3){m_tEntry.bind(x0,x1,x2,x3);}
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3)
+	{
+		m_tEntry.bind(x0,x1,x2,x3);
+	}
 
 protected:
 
-	void svc(){if(m_tEntry){m_tEntry();}}
+	void svc()
+	{
+		if(m_tEntry)
+		{
+			m_tEntry();
+		}
+	}
 	Functor<void()> m_tEntry;
 };
 

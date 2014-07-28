@@ -17,9 +17,12 @@ VHWD_ENTER
 class VHWD_DLLIMPEXP SerializerReaderStream : public SerializerReader
 {
 public:
-	SerializerReaderStream(std::istream& is):fs(is){}
+	SerializerReaderStream(std::istream& is):fs(is) {}
 
-	bool good() const {return fs.good();}
+	bool good() const
+	{
+		return fs.good();
+	}
 
 protected:
 	void recv(char* data,size_t size);
@@ -31,8 +34,11 @@ class VHWD_DLLIMPEXP SerializerWriterStream : public SerializerWriter
 {
 public:
 
-	SerializerWriterStream(std::ostream& is):fs(is){}
-	bool good() const {return fs.good();}
+	SerializerWriterStream(std::ostream& is):fs(is) {}
+	bool good() const
+	{
+		return fs.good();
+	}
 
 protected:
 	void send(char* data,size_t size);
@@ -46,7 +52,7 @@ template<>
 class VHWD_DLLIMPEXP StreamSerializer<SerializerReader> : public SerializerReaderStream
 {
 public:
-	StreamSerializer():SerializerReaderStream(fs){}
+	StreamSerializer():SerializerReaderStream(fs) {}
 
 	bool open(const String &file)
 	{
@@ -68,7 +74,7 @@ class VHWD_DLLIMPEXP StreamSerializer<SerializerWriter> : public SerializerWrite
 {
 public:
 
-	StreamSerializer():SerializerWriterStream(fs){}
+	StreamSerializer():SerializerWriterStream(fs) {}
 	std::ofstream fs;
 
 	bool open(const String &file)

@@ -76,12 +76,12 @@ bool ThreadImpl::activate(Thread& thrd,ThreadEx::InvokerGroup& g)
 	arr_1t<ThreadImpl*> _aThreads;
 	_aThreads.resize(n,NULL);
 
-	for(int i=0;i<n;i++)
+	for(int i=0; i<n; i++)
 	{
 		_aThreads[i]=ThreadImpl::get_thread();
 		if(!_aThreads[i])
 		{
-			for(int j=0;j<i;j++)
+			for(int j=0; j<i; j++)
 			{
 				_aThreads[i]->set_thread(NULL,ThreadEx::factor_type(),-1);
 			}
@@ -125,12 +125,12 @@ bool ThreadImpl::activate(Thread& thrd,int n)
 	arr_1t<ThreadImpl*> _aThreads;
 	_aThreads.resize(n,NULL);
 
-	for(int i=0;i<n;i++)
+	for(int i=0; i<n; i++)
 	{
 		_aThreads[i]=ThreadImpl::get_thread();
 		if(!_aThreads[i])
 		{
-			for(int j=0;j<i;j++)
+			for(int j=0; j<i; j++)
 			{
 				_aThreads[i]->set_thread(NULL,ThreadEx::factor_type(),-1);
 			}

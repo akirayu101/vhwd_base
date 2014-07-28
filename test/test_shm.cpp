@@ -40,7 +40,7 @@ TEST_DEFINE(TEST_Shm)
 	{
 		TEST_ASSERT(p1!=p2);
 		int *p=(int*)p1;
-		for(size_t i=0;i<sm1.size()/sizeof(int);i++)
+		for(size_t i=0; i<sm1.size()/sizeof(int); i++)
 		{
 			p[i]=rand();
 		}

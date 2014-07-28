@@ -19,7 +19,7 @@ class arr_1t : public arr_base<T,A,extra_vec_1t>
 public:
 	typedef arr_base<T,A,extra_vec_1t> basetype;
 
-    typedef typename basetype::size_type size_type;
+	typedef typename basetype::size_type size_type;
 	typedef typename basetype::value_type value_type;
 	typedef typename basetype::pointer pointer;
 	typedef typename basetype::const_pointer const_pointer;
@@ -33,7 +33,7 @@ public:
 	using basetype::swap;
 
 
-	arr_1t(){}
+	arr_1t() {}
 	arr_1t(const A& al);
 	arr_1t(const arr_1t& o);
 	arr_1t& operator=(const arr_1t& o);
@@ -41,8 +41,15 @@ public:
 	~arr_1t();
 
 #if defined(VHWD_C11)
-	arr_1t(arr_1t&& p){swap(p);}
-	arr_1t& operator=(arr_1t&& p){swap(p);return *this;}
+	arr_1t(arr_1t&& p)
+	{
+		swap(p);
+	}
+	arr_1t& operator=(arr_1t&& p)
+	{
+		swap(p);
+		return *this;
+	}
 #endif
 
 	void clear();
@@ -60,24 +67,39 @@ public:
 	void assign(It first_,size_type count_);
 
 	template<typename It>
-	void assign(It first_,It last_){assign(first_,std::distance(first_,last_));}
+	void assign(It first_,It last_)
+	{
+		assign(first_,std::distance(first_,last_));
+	}
 
 
-	iterator insert(const_iterator where_,const T& val_){return insert(where_,&val_,1);}
+	iterator insert(const_iterator where_,const T& val_)
+	{
+		return insert(where_,&val_,1);
+	}
 
 	template<typename It>
 	iterator insert(const_iterator where_,It first_,size_type count_);
 
 	template<typename It>
-	iterator insert(const_iterator where_,It first_,It last_){insert(where_,first_,std::distance(first_,last_));}
+	iterator insert(const_iterator where_,It first_,It last_)
+	{
+		insert(where_,first_,std::distance(first_,last_));
+	}
 
-	void append(const T& val_){append(&val_,1);}
+	void append(const T& val_)
+	{
+		append(&val_,1);
+	}
 
 	template<typename It>
 	void append(It first_,size_type count_);
 
 	template<typename It>
-	void append(It first_,It last_){append(first_,std::distance(first_,last_));}
+	void append(It first_,It last_)
+	{
+		append(first_,std::distance(first_,last_));
+	}
 
 	iterator erase(iterator position_);
 	iterator erase(iterator first_,iterator last_);
@@ -90,26 +112,67 @@ public:
 	const_reference front() const;
 	const_reference back() const;
 
-	void push_back(const T& val_){append(&val_,1);}
+	void push_back(const T& val_)
+	{
+		append(&val_,1);
+	}
 	void pop_back();
 
-	iterator begin(){return m_ptr;}
-	iterator end(){return m_ptr+extra().size;}
+	iterator begin()
+	{
+		return m_ptr;
+	}
+	iterator end()
+	{
+		return m_ptr+extra().size;
+	}
 
-	const_iterator begin() const {return m_ptr;}
-	const_iterator end() const {return m_ptr+extra().size;}
+	const_iterator begin() const
+	{
+		return m_ptr;
+	}
+	const_iterator end() const
+	{
+		return m_ptr+extra().size;
+	}
 
-	reverse_iterator rbegin(){return m_ptr+extra().size-1;}
-	reverse_iterator rend(){return m_ptr-1;}
+	reverse_iterator rbegin()
+	{
+		return m_ptr+extra().size-1;
+	}
+	reverse_iterator rend()
+	{
+		return m_ptr-1;
+	}
 
-	const_reverse_iterator rbegin() const {return m_ptr+extra().size-1;}
-	const_reverse_iterator rend() const {return m_ptr-1;}
+	const_reverse_iterator rbegin() const
+	{
+		return m_ptr+extra().size-1;
+	}
+	const_reverse_iterator rend() const
+	{
+		return m_ptr-1;
+	}
 
-	reference at (size_type n){if(n>=size()) Exception::XInvalidIndex();return m_ptr[n];}
-	const_reference at (size_type n) const{if(n>=size()) Exception::XInvalidIndex();return m_ptr[n];}
+	reference at (size_type n)
+	{
+		if(n>=size()) Exception::XInvalidIndex();
+		return m_ptr[n];
+	}
+	const_reference at (size_type n) const
+	{
+		if(n>=size()) Exception::XInvalidIndex();
+		return m_ptr[n];
+	}
 
-	pointer data() {return m_ptr;}
-	const_pointer data() const {return m_ptr;}
+	pointer data()
+	{
+		return m_ptr;
+	}
+	const_pointer data() const
+	{
+		return m_ptr;
+	}
 
 protected:
 
@@ -122,7 +185,7 @@ template<typename T,typename A1,typename A2>
 bool operator==(const arr_1t<T,A1>& lhs,const arr_1t<T,A2>& rhs)
 {
 	if(lhs.size()!=rhs.size()) return false;
-	for(size_t i=0;i<lhs.size();i++)
+	for(size_t i=0; i<lhs.size(); i++)
 	{
 		if(lhs[i]!=rhs[i]) return false;
 	}
@@ -286,7 +349,7 @@ bool arr_1t<T,A>::empty() const
 template<typename T,typename A>
 void arr_1t<T,A>::reserve(size_type capacity_)
 {
-	if(capacity_<extra().capacity)
+	if(capacity_<=extra().capacity)
 	{
 		return;
 	}
@@ -294,7 +357,10 @@ void arr_1t<T,A>::reserve(size_type capacity_)
 	arr_1t tmp;
 	tmp._xset(capacity_);
 	size_type _oldsize=extra().size;
-	xmem<T>::uninitialized_copy_n(m_ptr,_oldsize,tmp.m_ptr);
+	if(_oldsize>0)
+	{
+		xmem<T>::uninitialized_copy_n(m_ptr,_oldsize,tmp.m_ptr);
+	}
 	tmp.extra().size=_oldsize;
 
 	swap(tmp);
@@ -342,6 +408,8 @@ template<typename T,typename A>
 template<typename It>
 void arr_1t<T,A>::append(It first_,size_type count_)
 {
+	if(count_==0) return;
+
 	size_type _oldsize=extra().size;
 	size_type _newsize=_oldsize+count_;
 
@@ -451,9 +519,14 @@ void arr_1t<T,A>::assign(size_type count_,const T& val_)
 	}
 
 	size_type _oldsize=extra().size;
-
 	if(count_<=_oldsize)
 	{
+		if(count_==0)
+		{
+			clear();
+			return;
+		}
+
 		xmem<T>::fill_n(begin(),count_,val_);
 		xmem<T>::destroy(begin()+count_,end());
 		extra().size=count_;
@@ -470,9 +543,15 @@ template<typename T,typename A>
 template<typename It>
 void arr_1t<T,A>::assign(It first_,size_type count_)
 {
+	if(count_==0)
+	{
+		clear();
+		return;
+	}
+
 	if(count_>extra().capacity||(size_type)(&(*first_)-m_ptr)<size())
 	{
-		arr_1t<T,A> tmp;
+		arr_1t tmp;
 		tmp._xset(count_);
 		xmem<T>::uninitialized_copy_n(first_,count_,tmp.m_ptr);
 		tmp.extra().size=count_;
@@ -515,6 +594,14 @@ typename arr_1t<T,A>::iterator arr_1t<T,A>::erase(iterator first_,iterator last_
 	return first_;
 }
 
+template<typename T,typename A> class hash_t<arr_1t<T,A> >
+{
+public:
+	uint32_t operator()(const arr_1t<T,A>& o)
+	{
+		return hash_array<T>::hash(o.data(),o.size());
+	}
+};
 
 VHWD_LEAVE
 #endif

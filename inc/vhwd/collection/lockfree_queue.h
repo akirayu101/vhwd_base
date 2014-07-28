@@ -27,15 +27,24 @@ public:
 
 	// if getq/putq spin count > timeout, and queue timeout flag is set, current thread will enter.
 	// this is designed to avoid that some thread get the key but failed to give back.
-	static inline size_type timeout(){return 1024*1024*16;}
+	static inline size_type timeout()
+	{
+		return 1024*1024*16;
+	}
 
 	// while Queue is NonBlock, getq return invalid_value() if Queue is empty.
 	// alternative implementation: throw an exception
-	static inline T invalid_value(){return T();}
+	static inline T invalid_value()
+	{
+		return T();
+	}
 
 	// move value from b to a.
 	// alternative implementation: swap(a,b);
-	static inline void move_value(T& a,T& b){a=b;}
+	static inline void move_value(T& a,T& b)
+	{
+		a=b;
+	}
 
 	static inline void copy_n(T* a,T* b,size_t n)
 	{
@@ -48,12 +57,12 @@ public:
 	}
 
 	// if T is not POD, fill/destroy method must be implemented.
-	static inline void fill(T*,size_type){}
-	static inline void destroy(T*,size_type){}
+	static inline void fill(T*,size_type) {}
+	static inline void destroy(T*,size_type) {}
 
 	// called when key is busy or condition not met, such as queue is full while putq.
 	// alternative implementation: Thread::yield()
-	static inline void noop(){}
+	static inline void noop() {}
 
 };
 
@@ -61,14 +70,17 @@ template<typename T>
 class LockFreeQueuePolicyInt : public LockFreeQueuePolicy<T>
 {
 public:
-	static inline T invalid_value(){return T(-1);}
+	static inline T invalid_value()
+	{
+		return T(-1);
+	}
 };
 
 template<typename T>
 class LockFreeQueuePolicyObj : public LockFreeQueuePolicy<T>
 {
 public:
-    typedef typename LockFreeQueuePolicy<T>::size_type size_type;
+	typedef typename LockFreeQueuePolicy<T>::size_type size_type;
 	static inline void fill(T* p,size_type n)
 	{
 		xmem<T>::uninitialized_fill_n(p,n,T());
@@ -121,7 +133,10 @@ public:
 		QUEUE_FREE_BUFFER=1<<5,
 	};
 
-	static T invalid_value(){return P::invalid_value();}
+	static T invalid_value()
+	{
+		return P::invalid_value();
+	}
 
 
 	// initialized?
@@ -162,7 +177,8 @@ public:
 		if(!pHeader)
 		{
 			System::LogTrace("pHeader==NULL while calling LockFreeQueue::flags");
-			static BitFlags f;return f;
+			static BitFlags f;
+			return f;
 		}
 		return pHeader->flags;
 	}
@@ -537,12 +553,18 @@ void LockFreeQueue<T,P>::rewind()
 
 	int32_t tag;
 
-	while((tag=pHeader->kput.fetch_add(1))!=0){P::noop();}
+	while((tag=pHeader->kput.fetch_add(1))!=0)
+	{
+		P::noop();
+	}
 	while((tag=pHeader->kget.fetch_add(1))!=0)
 	{
 		pHeader->kput.store(0);
 		//Thread::yield();
-		while((tag=pHeader->kput.fetch_add(1))!=0){P::noop();}
+		while((tag=pHeader->kput.fetch_add(1))!=0)
+		{
+			P::noop();
+		}
 	}
 
 	pHeader->head.store(0);

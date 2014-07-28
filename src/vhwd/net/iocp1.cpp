@@ -50,14 +50,14 @@ int IOCPPool::Register(Session* pkey)
 #else
 	pkey->tmp_send.reset(NULL);
 	pkey->state.store(Session::STATE_OK);
-    struct epoll_event ev;
-    ev.data.ptr=pkey;
-    ev.events=EPOLLERR|EPOLLHUP;//|EPOLLIN;//|EPOLLONESHOT|EPOLLET;
-    int bRet=epoll_ctl(hIOCPhandler,EPOLL_CTL_ADD,pkey->sk_local.sock,&ev);
+	struct epoll_event ev;
+	ev.data.ptr=pkey;
+	ev.events=EPOLLERR|EPOLLHUP;//|EPOLLIN;//|EPOLLONESHOT|EPOLLET;
+	int bRet=epoll_ctl(hIOCPhandler,EPOLL_CTL_ADD,pkey->sk_local.sock,&ev);
 	if(bRet==-1)
 	{
-        pkey->state.store(Session::STATE_READY);
-        logger.LogError("epoll_ctl failed:%s",strerror(errno));
+		pkey->state.store(Session::STATE_READY);
+		logger.LogError("epoll_ctl failed:%s",strerror(errno));
 		return -1;
 	}
 
@@ -99,7 +99,7 @@ IOCPPool::IOCPPool(const String& name_,int maxconn_):m_sName(name_)
 	m_lkfqSessionAvailable.flags().add(LockFreeQueue<int>::QUEUE_NONBLOCK);
 	m_aSessions.resize(m_nSessionMax);
 
-	for(int i=1;i<m_nSessionMax;i++)
+	for(int i=1; i<m_nSessionMax; i++)
 	{
 		m_lkfqSessionAvailable.putq(i);
 	}
@@ -140,7 +140,7 @@ bool IOCPPool::activate(int n)
 	}
 
 	ThreadEx::InvokerGroup g;
-	for(int i=0;i<n;i++)
+	for(int i=0; i<n; i++)
 	{
 		g.append(&IOCPPool::svc_worker,this);
 	}
@@ -190,7 +190,7 @@ void IOCPPool::ccc_handle_sock()
 	Session::MyOlapPtr q(Session::lkfq_free.getq());
 	if(!q) q.reset(new MyOverLappedEx);
 
-	for(int i=1;i<m_nSessionMax;i++)
+	for(int i=1; i<m_nSessionMax; i++)
 	{
 		Session* pkey=m_aSessions[i].get();
 		if(!pkey) continue;
@@ -262,7 +262,7 @@ void IOCPPool::DisconnectAll()
 	public:
 		void Handle(SessionArray& akey)
 		{
-			for(int i=1;i<(int)akey.size();i++)
+			for(int i=1; i<(int)akey.size(); i++)
 			{
 				if(!akey[i]) continue;
 				akey[i]->Disconnect();
@@ -338,108 +338,108 @@ inline void IOCPPool::ccc_handle_iocp(Session* pkey,MyOverLapped* pdat)
 	switch(idat.type)
 	{
 	case MyOverLapped::ACTION_UDP_SEND:
+	{
+		TempPtrT<MyOverLappedEx> q(static_cast<MyOverLappedEx*>(&idat));
+		if(idat.size<=0)
 		{
-			TempPtrT<MyOverLappedEx> q(static_cast<MyOverLappedEx*>(&idat));
-			if(idat.size<=0)
-			{
-				ikey.Disconnect();
-			}
-			else if(!ikey.IsError())
-			{
-				accounter.nSendBytes.fetch_add(idat.size);
-				accounter.nSendCount++;
-				ikey.OnSendCompleted(q);
-				static_cast<SessionUDP&>(ikey).DoAsyncSend();
-			}
-			--ikey.m_nPendingSend;
+			ikey.Disconnect();
 		}
-		break;
+		else if(!ikey.IsError())
+		{
+			accounter.nSendBytes.fetch_add(idat.size);
+			accounter.nSendCount++;
+			ikey.OnSendCompleted(q);
+			static_cast<SessionUDP&>(ikey).DoAsyncSend();
+		}
+		--ikey.m_nPendingSend;
+	}
+	break;
 	case MyOverLapped::ACTION_TCP_SEND:
+	{
+		TempPtrT<MyOverLappedEx> q(static_cast<MyOverLappedEx*>(&idat));
+		if(idat.size<=0)
 		{
-			TempPtrT<MyOverLappedEx> q(static_cast<MyOverLappedEx*>(&idat));
-			if(idat.size<=0)
-			{
-				ikey.Disconnect();
-			}
-			else if(!ikey.IsError())
-			{
-				accounter.nSendBytes.fetch_add(idat.size);
-				accounter.nSendCount++;
-				ikey.OnSendCompleted(q);
-				static_cast<SessionTCP&>(ikey).DoAsyncSend();
-			}
+			ikey.Disconnect();
+		}
+		else if(!ikey.IsError())
+		{
+			accounter.nSendBytes.fetch_add(idat.size);
+			accounter.nSendCount++;
+			ikey.OnSendCompleted(q);
+			static_cast<SessionTCP&>(ikey).DoAsyncSend();
+		}
 
-			--ikey.m_nPendingSend;
-		}
-		break;
+		--ikey.m_nPendingSend;
+	}
+	break;
 	case MyOverLapped::ACTION_UDP_RECV:
+	{
+		ikey.tpLast=accounter.tTimeStamp;
+		TempPtrT<MyOverLappedEx> q(static_cast<MyOverLappedEx*>(&idat));
+		if(idat.size<=0)
 		{
-			ikey.tpLast=accounter.tTimeStamp;
-			TempPtrT<MyOverLappedEx> q(static_cast<MyOverLappedEx*>(&idat));
-			if(idat.size<=0)
-			{
-				ikey.Disconnect();
-			}
-			else if(!ikey.IsError())
-			{
-				accounter.nRecvBytes.fetch_add(idat.size);
-				accounter.nRecvCount++;
-				ikey.OnRecvCompleted(q);
-				static_cast<SessionUDP&>(ikey).DoAsyncRecv();
-			}
-			--ikey.m_nPendingRecv;
+			ikey.Disconnect();
 		}
-		break;
+		else if(!ikey.IsError())
+		{
+			accounter.nRecvBytes.fetch_add(idat.size);
+			accounter.nRecvCount++;
+			ikey.OnRecvCompleted(q);
+			static_cast<SessionUDP&>(ikey).DoAsyncRecv();
+		}
+		--ikey.m_nPendingRecv;
+	}
+	break;
 	case MyOverLapped::ACTION_TCP_RECV:
+	{
+		ikey.tpLast=accounter.tTimeStamp;
+		TempPtrT<MyOverLappedEx> q(static_cast<MyOverLappedEx*>(&idat));
+		if(idat.size<=0)
 		{
-			ikey.tpLast=accounter.tTimeStamp;
-			TempPtrT<MyOverLappedEx> q(static_cast<MyOverLappedEx*>(&idat));
-			if(idat.size<=0)
-			{
-				ikey.Disconnect();
-			}
-			else if(!ikey.IsError())
-			{
-				accounter.nRecvBytes.fetch_add(idat.size);
-				accounter.nRecvCount++;
-				ikey.OnRecvCompleted(q);
-				static_cast<SessionTCP&>(ikey).DoAsyncRecv();
-			}
-			--ikey.m_nPendingRecv;
+			ikey.Disconnect();
 		}
-		break;
+		else if(!ikey.IsError())
+		{
+			accounter.nRecvBytes.fetch_add(idat.size);
+			accounter.nRecvCount++;
+			ikey.OnRecvCompleted(q);
+			static_cast<SessionTCP&>(ikey).DoAsyncRecv();
+		}
+		--ikey.m_nPendingRecv;
+	}
+	break;
 	case MyOverLapped::ACTION_ACCEPT:
 	case MyOverLapped::ACTION_WAIT_RECV:
+	{
+		ikey.tpLast=accounter.tTimeStamp;
+		if(idat.size<0)
 		{
-			ikey.tpLast=accounter.tTimeStamp;
-			if(idat.size<0)
-			{
-				ikey.Disconnect();
-			}
-			else if(!ikey.IsError())
-			{
-				accounter.nRecvCount++;
-				ikey.OnRecvReady();
-				static_cast<SessionTCP&>(ikey).DoAsyncRecv();
-			}
-			--ikey.m_nPendingRecv;
+			ikey.Disconnect();
 		}
-		break;
+		else if(!ikey.IsError())
+		{
+			accounter.nRecvCount++;
+			ikey.OnRecvReady();
+			static_cast<SessionTCP&>(ikey).DoAsyncRecv();
+		}
+		--ikey.m_nPendingRecv;
+	}
+	break;
 	case MyOverLapped::ACTION_WAIT_SEND:
+	{
+		if(idat.size<0)
 		{
-			if(idat.size<0)
-			{
-				ikey.Disconnect();
-			}
-			else if(!ikey.IsError())
-			{
-				accounter.nSendCount++;
-				ikey.OnSendReady();
-				static_cast<SessionTCP&>(ikey).DoAsyncSend();
-			}
-			--ikey.m_nPendingSend;
+			ikey.Disconnect();
 		}
-		break;
+		else if(!ikey.IsError())
+		{
+			accounter.nSendCount++;
+			ikey.OnSendReady();
+			static_cast<SessionTCP&>(ikey).DoAsyncSend();
+		}
+		--ikey.m_nPendingSend;
+	}
+	break;
 	default:
 		System::LogTrace("Invalid pdat_type %d",idat.type);
 		ikey.Disconnect();
@@ -518,46 +518,46 @@ void IOCPPool::HandleSend(Session& ikey)
 
 	Session::MyOlapPtr q=ikey.tmp_send;
 
-	for(;;q.reset(NULL))
+	for(;; q.reset(NULL))
 	{
-        if(!q)
-        {
-            q=ikey.lkfq_send.getq();
-            if(!q) break;
-            q->size=0;
+		if(!q)
+		{
+			q=ikey.lkfq_send.getq();
+			if(!q) break;
+			q->size=0;
 
-            if(q->type==MyOverLapped::ACTION_WAIT_SEND)
-            {
-                ikey.m_nPendingSend--;
-                ikey.OnSendReady();
-                ikey.lkfq_free.putq(q);
-                continue;
-            }
-        }
+			if(q->type==MyOverLapped::ACTION_WAIT_SEND)
+			{
+				ikey.m_nPendingSend--;
+				ikey.OnSendReady();
+				ikey.lkfq_free.putq(q);
+				continue;
+			}
+		}
 
-        if(q->type==MyOverLapped::ACTION_UDP_SEND)
-        {
-            int bRet=ikey.sk_local.sock.Send(q->dbuf[0].buf,q->dbuf[0].len,q->peer);
-            if(bRet>0)
-            {
-                q->size=bRet;
-                accounter.nSendBytes.fetch_add(q->size);
-                accounter.nSendCount++;
-                ikey.m_nPendingSend--;
-                ikey.OnSendCompleted(q);
-                continue;
-            }
-            else if(bRet==0)
-            {
-                ikey.tmp_send=q;
-                break;
-            }
-            else
-            {
-                ikey.Disconnect();
-                break;
-            }
-        }
+		if(q->type==MyOverLapped::ACTION_UDP_SEND)
+		{
+			int bRet=ikey.sk_local.sock.Send(q->dbuf[0].buf,q->dbuf[0].len,q->peer);
+			if(bRet>0)
+			{
+				q->size=bRet;
+				accounter.nSendBytes.fetch_add(q->size);
+				accounter.nSendCount++;
+				ikey.m_nPendingSend--;
+				ikey.OnSendCompleted(q);
+				continue;
+			}
+			else if(bRet==0)
+			{
+				ikey.tmp_send=q;
+				break;
+			}
+			else
+			{
+				ikey.Disconnect();
+				break;
+			}
+		}
 
 		for(;;)
 		{
@@ -567,7 +567,7 @@ void IOCPPool::HandleSend(Session& ikey)
 			{
 				if(errno==EAGAIN)
 				{
-                    ikey.tmp_send=q;
+					ikey.tmp_send=q;
 					break;
 				}
 				if(errno==EINTR)
@@ -580,20 +580,20 @@ void IOCPPool::HandleSend(Session& ikey)
 			}
 			else if(bRet==0)
 			{
-                ikey.tmp_send=q;
-                return;
+				ikey.tmp_send=q;
+				return;
 			}
 
 			q->size+=bRet;
 
-            if(q->size==q->dbuf[0].len)
-            {
-                accounter.nSendCount++;
-                accounter.nSendBytes.fetch_add(q->size);
-                ikey.m_nPendingSend--;
-                ikey.OnSendCompleted(q);
-                break;
-            }
+			if(q->size==q->dbuf[0].len)
+			{
+				accounter.nSendCount++;
+				accounter.nSendBytes.fetch_add(q->size);
+				ikey.m_nPendingSend--;
+				ikey.OnSendCompleted(q);
+				break;
+			}
 
 		}
 
@@ -615,14 +615,14 @@ void IOCPPool::HandleRecv(Session& ikey)
 
 		if(!q)
 		{
-            break;
+			break;
 		}
 
 		if(q->type==MyOverLapped::ACTION_WAIT_RECV)
 		{
-		    ikey.m_nPendingRecv--;
-            ikey.OnRecvReady();
-            break;
+			ikey.m_nPendingRecv--;
+			ikey.OnRecvReady();
+			break;
 		}
 
 
@@ -631,26 +631,26 @@ void IOCPPool::HandleRecv(Session& ikey)
 			int bRet=ikey.sk_local.sock.Recv(q->dbuf[0].buf,q->dbuf[0].len,q->peer);
 			if(bRet>0)
 			{
-                q->size=bRet;
-                accounter.nRecvBytes.fetch_add(bRet);
-                accounter.nSendCount++;
+				q->size=bRet;
+				accounter.nRecvBytes.fetch_add(bRet);
+				accounter.nSendCount++;
 
-                ikey.m_nPendingRecv--;
-                ikey.OnRecvCompleted(q);
-                break;
+				ikey.m_nPendingRecv--;
+				ikey.OnRecvCompleted(q);
+				break;
 			}
-            else if(bRet<0)
-            {
-                ikey.m_nPendingRecv--;
-                ikey.Disconnect();
-                break;
-            }
-            else
-            {
-                ikey.m_nPendingRecv--;
-                this_logger().LogMessage("recv udp failed");
-            }
-            break;
+			else if(bRet<0)
+			{
+				ikey.m_nPendingRecv--;
+				ikey.Disconnect();
+				break;
+			}
+			else
+			{
+				ikey.m_nPendingRecv--;
+				this_logger().LogMessage("recv udp failed");
+			}
+			break;
 		}
 
 		q->size=0;
@@ -684,9 +684,9 @@ void IOCPPool::HandleRecv(Session& ikey)
 
 		if(q->size>0)
 		{
-            accounter.nRecvCount++;
-            accounter.nRecvBytes.fetch_add(q->size);
-            ikey.m_nPendingRecv--;
+			accounter.nRecvCount++;
+			accounter.nRecvBytes.fetch_add(q->size);
+			ikey.m_nPendingRecv--;
 			ikey.OnRecvCompleted(q);
 		}
 		else
@@ -717,12 +717,12 @@ void IOCPPool::svc_worker()
 		}
 		else if(nfds==0)
 		{
-            continue;
+			continue;
 		}
 
-		for(int i=0;i<nfds;i++)
+		for(int i=0; i<nfds; i++)
 		{
-            int nevt=evts[i].events;
+			int nevt=evts[i].events;
 			Session* pkey=(Session*)evts[i].data.ptr;
 
 			if(!pkey)
@@ -741,18 +741,18 @@ void IOCPPool::svc_worker()
 
 			if(ikey.IsError())
 			{
-                continue;
+				continue;
 			}
-			
+
 			ikey.tpLast=accounter.tTimeStamp;
-            if(nevt&EPOLLIN)
+			if(nevt&EPOLLIN)
 			{
-                HandleRecv(ikey);
+				HandleRecv(ikey);
 			}
 			else if(nevt&EPOLLOUT)
 			{
-                HandleSend(ikey);
-  			}
+				HandleSend(ikey);
+			}
 
 			if(ikey.IsError())
 			{

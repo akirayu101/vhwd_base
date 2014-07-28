@@ -23,10 +23,22 @@
 VHWD_ENTER
 
 template<int N> class char_implN;
-template<> class char_implN<1>{public:typedef unsigned char type;};
-template<> class char_implN<2>{public:typedef uint16_t type;};
-template<> class char_implN<4>{public:typedef uint32_t type;};
-template<typename T> class char_impl : public char_implN<sizeof(T)>{};
+template<> class char_implN<1>
+{
+public:
+	typedef unsigned char type;
+};
+template<> class char_implN<2>
+{
+public:
+	typedef uint16_t type;
+};
+template<> class char_implN<4>
+{
+public:
+	typedef uint32_t type;
+};
+template<typename T> class char_impl : public char_implN<sizeof(T)> {};
 
 
 class VHWD_DLLIMPEXP IConv
@@ -36,19 +48,31 @@ public:
 
 	static bool unicode_to_gbk(StringBuffer<unsigned char>& aa_,const uint16_t* pw_,size_t ln_);
 	static bool unicode_to_gbk(StringBuffer<unsigned char>& aa_,const uint32_t* pw_,size_t ln_);
-	static bool unicode_to_gbk(StringBuffer<unsigned char>& aa_,const unsigned char* pw_,size_t ln_){return false;}
+	static bool unicode_to_gbk(StringBuffer<unsigned char>& aa_,const unsigned char* pw_,size_t ln_)
+	{
+		return false;
+	}
 
 	static bool gbk_to_unicode(StringBuffer<uint16_t>& aw_,const unsigned char* pa_,size_t ln_);
 	static bool gbk_to_unicode(StringBuffer<uint32_t>& aw_,const unsigned char* pa_,size_t ln_);
-	static bool gbk_to_unicode(StringBuffer<unsigned char>& aw_,const unsigned char* pa_,size_t ln_){return false;}
+	static bool gbk_to_unicode(StringBuffer<unsigned char>& aw_,const unsigned char* pa_,size_t ln_)
+	{
+		return false;
+	}
 
 	static bool unicode_to_utf8(StringBuffer<unsigned char>& aa_,const uint16_t* pw_,size_t ln_);
 	static bool unicode_to_utf8(StringBuffer<unsigned char>& aa_,const uint32_t* pw_,size_t ln_);
-	static bool unicode_to_utf8(StringBuffer<unsigned char>& aa_,const unsigned char* pw_,size_t ln_){return false;}
+	static bool unicode_to_utf8(StringBuffer<unsigned char>& aa_,const unsigned char* pw_,size_t ln_)
+	{
+		return false;
+	}
 
 	static bool utf8_to_unicode(StringBuffer<uint16_t>& aw_,const unsigned char* pa_,size_t ln_);
 	static bool utf8_to_unicode(StringBuffer<uint32_t>& aw_,const unsigned char* pa_,size_t ln_);
-	static bool utf8_to_unicode(StringBuffer<unsigned char>& aw_,const unsigned char* pa_,size_t ln_){return false;}
+	static bool utf8_to_unicode(StringBuffer<unsigned char>& aw_,const unsigned char* pa_,size_t ln_)
+	{
+		return false;
+	}
 
 
 	template<typename WC>

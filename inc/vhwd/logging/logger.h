@@ -33,7 +33,10 @@ public:
 
 	~Logger();
 
-	void swap(Logger& logger){std::swap(impl,logger.impl);}
+	void swap(Logger& logger)
+	{
+		std::swap(impl,logger.impl);
+	}
 
 	// set/get the default logtarget.
 	static void def(LogTarget* p);
@@ -62,18 +65,18 @@ public:
 	bool Test(int t=MSG_IF_ANY);
 
 	//return true if no error logrecords.
-	bool Ok(); 
+	bool Ok();
 
 	//clear error
 	void Clear();
 
 	//#define STRING_FORMAT_LEVEL(X,Y) LogRecord rcd(String::Format(X),Src(),Id(),Y);Handle(rcd)
-	#define STRING_FORMAT_LEVEL(X,Y) DoLogImpl(Y,X)
+#define STRING_FORMAT_LEVEL(X,Y) DoLogImpl(Y,X)
 
 #ifndef NDEBUG
 	STRING_FORMAT_FUNCTIONS(void LogDeubg,STRING_FORMAT_LEVEL,LOGLEVEL_DEBUG)
 #else
-	inline void LogDebug(...){}
+	inline void LogDebug(...) {}
 #endif
 
 	STRING_FORMAT_FUNCTIONS(void LogInfo,STRING_FORMAT_LEVEL,LOGLEVEL_INFO)
@@ -83,7 +86,7 @@ public:
 	STRING_FORMAT_FUNCTIONS(void LogWarning,STRING_FORMAT_LEVEL,LOGLEVEL_WARNING)
 	STRING_FORMAT_FUNCTIONS(void LogError,STRING_FORMAT_LEVEL,LOGLEVEL_ERROR)
 	STRING_FORMAT_FUNCTIONS(void LogFetal,STRING_FORMAT_LEVEL,LOGLEVEL_FETAL)
-	#undef STRING_FORMAT_LEVEL
+#undef STRING_FORMAT_LEVEL
 
 
 protected:

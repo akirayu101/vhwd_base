@@ -18,10 +18,19 @@ class StringParamCast
 {
 public:
 	template<typename G>
-	static inline G g(const G& v){return v;}
+	static inline G g(const G& v)
+	{
+		return v;
+	}
 
-	static inline const char* g(const char* v){return v;}
-	static inline const char* g(const std::string& v){return v.c_str();}
+	static inline const char* g(const char* v)
+	{
+		return v;
+	}
+	static inline const char* g(const std::string& v)
+	{
+		return v.c_str();
+	}
 	static const char* g(const String& v);
 
 };
@@ -54,13 +63,13 @@ public:
 #define STRING_FORMAT_PKList9 STRING_FORMAT_PKList8,STRING_FORMAT_PKvar(9)
 
 #define STRING_FORMAT_PTList0 STRING_FORMAT_PTvar(0)
-#define STRING_FORMAT_PTList1 STRING_FORMAT_PTList0,STRING_FORMAT_PTvar(1) 
+#define STRING_FORMAT_PTList1 STRING_FORMAT_PTList0,STRING_FORMAT_PTvar(1)
 #define STRING_FORMAT_PTList2 STRING_FORMAT_PTList1,STRING_FORMAT_PTvar(2)
 #define STRING_FORMAT_PTList3 STRING_FORMAT_PTList2,STRING_FORMAT_PTvar(3)
-#define STRING_FORMAT_PTList4 STRING_FORMAT_PTList3,STRING_FORMAT_PTvar(4) 
+#define STRING_FORMAT_PTList4 STRING_FORMAT_PTList3,STRING_FORMAT_PTvar(4)
 #define STRING_FORMAT_PTList5 STRING_FORMAT_PTList4,STRING_FORMAT_PTvar(5)
 #define STRING_FORMAT_PTList6 STRING_FORMAT_PTList5,STRING_FORMAT_PTvar(6)
-#define STRING_FORMAT_PTList7 STRING_FORMAT_PTList6,STRING_FORMAT_PTvar(7) 
+#define STRING_FORMAT_PTList7 STRING_FORMAT_PTList6,STRING_FORMAT_PTvar(7)
 #define STRING_FORMAT_PTList8 STRING_FORMAT_PTList7,STRING_FORMAT_PTvar(8)
 #define STRING_FORMAT_PTList9 STRING_FORMAT_PTList8,STRING_FORMAT_PTvar(9)
 

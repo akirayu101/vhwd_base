@@ -82,6 +82,13 @@ void Exception::XError()
 	Exception_Throw(_tException);
 }
 
+void Exception::XError(const String& s)
+{
+	Exception _tException(s);
+	Exception_Throw(_tException);
+}
+
+
 void Exception::XError(const char*p, bool del)
 {	
 	Exception _tException(p,del);

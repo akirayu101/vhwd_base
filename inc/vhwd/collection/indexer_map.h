@@ -29,54 +29,14 @@ public:
 	typedef typename impl_type::index_type index_type;
 	typedef typename impl_type::value_type value_type;
 	typedef typename impl_type::size_type size_type;
+	typedef typename impl_type::value_proxy value_proxy;
 
-	indexer_map(){}
-	indexer_map(const indexer_map& o):basetype(o){}
+	indexer_map() {}
+	indexer_map(const indexer_map& o):basetype(o) {}
 
 #ifdef VHWD_C11
-	indexer_map(indexer_map&& o):basetype(o){}
+	indexer_map(indexer_map&& o):basetype(o) {}
 #endif
-
-	class iterator : public impl_type::iterator
-	{
-	public:
-		typedef typename impl_type::iterator basetype;
-		iterator(){}
-		iterator(const basetype& o):basetype(o){}
-
-		typedef std::pair<const key_type,mapped_type> type;
-
-		type* ptr()
-		{
-			typename impl_type::iterator it(*this);
-			return (type*)&(*it);
-		}
-
-		type& operator*(){return *ptr();}
-		type* operator->(){return ptr();}
-	};
-
-	typedef typename impl_type::const_iterator const_iterator;
-
-	iterator begin()
-	{
-		return impl.begin();
-	}
-
-	iterator end()
-	{
-		return impl.end();
-	}
-
-	const_iterator begin() const
-	{
-		return impl.begin();
-	}
-
-	const_iterator end() const
-	{
-		return impl.end();
-	}
 
 	mapped_type& operator[](const key_type& k)
 	{

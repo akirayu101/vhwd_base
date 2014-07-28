@@ -20,8 +20,8 @@ VHWD_ENTER
 class WSABUF
 {
 public:
-    char*buf;
-    int32_t len;
+	char*buf;
+	int32_t len;
 };
 #endif
 
@@ -135,9 +135,15 @@ public:
 
 	typedef unsigned int size_type;
 
-	static inline size_type timeout(){return 1024*1024*16;}
+	static inline size_type timeout()
+	{
+		return 1024*1024*16;
+	}
 
-	static inline T invalid_value(){return T();}
+	static inline T invalid_value()
+	{
+		return T();
+	}
 
 	static inline void move_value(T& a,T& b)
 	{

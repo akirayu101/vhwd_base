@@ -24,7 +24,10 @@ class VHWD_DLLIMPEXP RWLock
 public:
 	RWLock();
 	RWLock(const RWLock&);
-	RWLock& operator=(const RWLock&){return *this;}
+	RWLock& operator=(const RWLock&)
+	{
+		return *this;
+	}
 
 	~RWLock();
 

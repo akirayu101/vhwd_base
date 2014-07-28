@@ -29,7 +29,7 @@ TEST_DEFINE(TEST_Array)
 	hh.shrink_to_fit();
 	TEST_ASSERT(hh.capacity()==0);
 
-	int a[3]={1,2,3};
+	int a[3]= {1,2,3};
 
 	hh.append(a,3);
 	hh.insert(hh.begin()+1,a,2);
@@ -49,7 +49,7 @@ TEST_DEFINE(TEST_Array)
 void test_bst_set()
 {
 	std::vector<int> aInts;
-	for(int i=0;i<1024;++i)
+	for(int i=0; i<1024; ++i)
 	{
 		aInts.push_back(i);
 	}
@@ -79,11 +79,11 @@ void test_bst_set()
 void test_bst_multiset()
 {
 	std::vector<int> aInts;
-	for(int i=0;i<1024;++i)
+	for(int i=0; i<1024; ++i)
 	{
 		aInts.push_back(i);
 	}
-	for(int i=0;i<1024;++i)
+	for(int i=0; i<1024; ++i)
 	{
 		aInts.push_back(i);
 	}
@@ -105,11 +105,11 @@ void test_bst_multiset()
 	TEST_ASSERT(s.count(1)==3);
 
 	std::pair<bst_multiset<int>::iterator,bst_multiset<int>::iterator> eqr(s.equal_range(1));
-	for(bst_multiset<int>::iterator it=eqr.first;it!=eqr.second;++it)
+	for(bst_multiset<int>::iterator it=eqr.first; it!=eqr.second; ++it)
 	{
 		TEST_ASSERT((*it)==1);
 	}
-	
+
 	s.clear();
 	TEST_ASSERT(s.size()==0);
 
@@ -122,6 +122,7 @@ TEST_DEFINE(TEST_Collection)
 	test_bst_multiset();
 
 	indexer_set<String> sh;
+
 	sh.insert("hello");
 	sh.insert("world");
 
@@ -132,12 +133,11 @@ TEST_DEFINE(TEST_Collection)
 	TEST_ASSERT(sh.find("world")==1);
 	TEST_ASSERT(sh.find("adfs")==-1);
 
-
 	indexer_map<String,int> sm;
+
 	sm["a"]=1;
 	sm["b"]=4;
 	sm["c"]=2;
-
 
 	TEST_ASSERT(sm["a"]==1);
 	TEST_ASSERT(sm["b"]==4);
@@ -150,11 +150,11 @@ TEST_DEFINE(TEST_Collection)
 
 	vhwd::arr_xt<double,AllocatorM<double,128> > arr;
 
- 	//TEST_ASSERT_THROW(arr.resize((size_t)(-1)),std::bad_alloc);
+	//TEST_ASSERT_THROW(arr.resize((size_t)(-1)),std::bad_alloc);
 
 	arr.resize(6,5,4,3,2,1);
 	arr(3,3)=3.25;
-	for(size_t i=0;i<6;i++)
+	for(size_t i=0; i<6; i++)
 	{
 		TEST_ASSERT(arr.size(i)==6-i);
 	}

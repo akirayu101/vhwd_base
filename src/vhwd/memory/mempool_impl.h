@@ -66,7 +66,7 @@ protected:
 		AtomicIntT<MemPageInfo*> mi;
 	};
 
-	~MemPageCache(){}
+	~MemPageCache() {}
 
 	Bucket* aBuckets;
 	size_t nBucketCount;

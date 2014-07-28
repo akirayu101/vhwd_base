@@ -14,7 +14,7 @@ class SessionTCPEcho : public SessionClient
 {
 public:
 
-	SessionTCPEcho(){}
+	SessionTCPEcho() {}
 
 	virtual void OnSendCompleted(MyOlapPtr& q)
 	{
@@ -35,7 +35,7 @@ public:
 class SessionServerEcho : public SessionServer
 {
 public:
-	SessionServerEcho(){}
+	SessionServerEcho() {}
 
 	void NewSession(PerIO_socket& sk)
 	{
@@ -55,7 +55,7 @@ public:
 	Q2Packet q2packet;
 	IPacketEx packet;
 
-    Logger logger;
+	Logger logger;
 
 	void StartSend()
 	{
@@ -85,7 +85,7 @@ public:
 		}
 
 		size_t n=q2packet.size();
-		for(size_t i=0;i<n;i++)
+		for(size_t i=0; i<n; i++)
 		{
 			OnPacket(q2packet[i]);
 		}
@@ -111,7 +111,7 @@ public:
 	void Handle(SessionArray& akey)
 	{
 
-		for(size_t i=0;i<akey.size();i++)
+		for(size_t i=0; i<akey.size(); i++)
 		{
 			SessionClientEcho* pEcho=dynamic_cast<SessionClientEcho*>(akey[i].get());
 			if(!pEcho) continue;
@@ -134,7 +134,7 @@ TEST_DEFINE(TEST_IOCP_TCP)
 	Logger logger;
 	logger.LogMessage("testing tcp ----------------");
 
-    DataPtrT<SessionServerEcho> pEchoServer(new SessionServerEcho);
+	DataPtrT<SessionServerEcho> pEchoServer(new SessionServerEcho);
 
 	{
 
@@ -156,9 +156,9 @@ TEST_DEFINE(TEST_IOCP_TCP)
 	int nCount=0;
 
 
-	for(int i=0;i<N_TCP_CLIENT;i++)
+	for(int i=0; i<N_TCP_CLIENT; i++)
 	{
-        DataPtrT<SessionClientEcho> pEcho1(new SessionClientEcho);
+		DataPtrT<SessionClientEcho> pEcho1(new SessionClientEcho);
 		bool f1=pEcho1->Connect("127.0.0.1",10241);
 		if(f1)
 		{
@@ -183,7 +183,7 @@ TEST_DEFINE(TEST_IOCP_TCP)
 	hiocp_client.Execute(new IocpCommandStartSend);
 
 
-	for(int i=0;i<8;i++)
+	for(int i=0; i<8; i++)
 	{
 		Thread::sleep_for(1000);
 	}
@@ -196,9 +196,9 @@ TEST_DEFINE(TEST_IOCP_TCP)
 	}
 
 	logger.LogMessage("wait_session_exit");
-    hiocp_server.wait_for_all_session_exit();
+	hiocp_server.wait_for_all_session_exit();
 	hiocp_client.wait_for_all_session_exit();
-    logger.LogMessage("wait_session_done");
+	logger.LogMessage("wait_session_done");
 
 
 }
@@ -210,7 +210,7 @@ public:
 
 	IPacketEx packet;
 
-	SessionUDPEchoClt(){}
+	SessionUDPEchoClt() {}
 
 	virtual void OnSendCompleted(MyOlapPtr& q)
 	{
@@ -234,7 +234,7 @@ class SessionUDPEchoSvr : public SessionUDP
 {
 public:
 
-	SessionUDPEchoSvr(){}
+	SessionUDPEchoSvr() {}
 
 	virtual void OnSendCompleted(MyOlapPtr& q)
 	{
@@ -272,14 +272,14 @@ TEST_DEFINE(TEST_IOCP_UDP)
 	udp_svr->Bind(svr_addr);
 	hiocp_server.Register(udp_svr.get());
 
-	for(int i=0;i<N_UDP_CLIENT;i++)
+	for(int i=0; i<N_UDP_CLIENT; i++)
 	{
 		DataPtrT<SessionUDPEchoClt> udp_clt(new SessionUDPEchoClt);
 		udp_clt->Connect("127.0.0.1",10211);
 		hiocp_client.Register(udp_clt.get());
 	}
 
-	for(int i=0;i<8;i++)
+	for(int i=0; i<8; i++)
 	{
 		Thread::sleep_for(1000);
 	}
@@ -292,9 +292,9 @@ TEST_DEFINE(TEST_IOCP_UDP)
 	}
 
 	logger.LogMessage("wait_session_exit");
-    hiocp_server.wait_for_all_session_exit();
+	hiocp_server.wait_for_all_session_exit();
 	hiocp_client.wait_for_all_session_exit();
-    logger.LogMessage("wait_session_done");
+	logger.LogMessage("wait_session_done");
 
 
 }

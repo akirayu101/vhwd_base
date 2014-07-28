@@ -45,7 +45,7 @@ public:
 		m_pHead=m_pTail=NULL;
 		m_nSize=0;
 	}
-	
+
 	~intrusive_list()
 	{
 		clear();

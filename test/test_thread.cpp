@@ -1,4 +1,3 @@
-
 #include "vhwd/testing/test.h"
 #include "vhwd/threading.h"
 #include "vhwd/basic.h"
@@ -49,8 +48,8 @@ public:
 
 TEST_DEFINE(TEST_Thread)
 {
-    Logger logger;
-    logger.LogMessage("thread test enter");
+	Logger logger;
+	logger.LogMessage("thread test enter");
 	ThreadA thrd1;
 	thrd1.activate();
 	thrd1.wait();
@@ -67,7 +66,7 @@ TEST_DEFINE(TEST_Thread)
 
 	thrd2.reqexit();
 	thrd2.wait();
-    logger.LogMessage("thrd2 test leave");
+	logger.LogMessage("thrd2 test leave");
 
 	TEST_ASSERT(!thrd2.alive());
 	TEST_ASSERT(thrd2.count()==0);
@@ -90,7 +89,7 @@ TEST_DEFINE(TEST_Thread)
 class Product : public Object
 {
 public:
-	Product(int v=0):value(v){}
+	Product(int v=0):value(v) {}
 	int value;
 };
 
@@ -204,7 +203,7 @@ TEST_DEFINE(TEST_ThreadPool)
 	tpool.activate();
 
 	DataPtrT<MyTask> task(new MyTask);
-	for(int i=0;i<1000;i++)
+	for(int i=0; i<1000; i++)
 	{
 		tpool.putq(task.get(),NULL);
 		Thread::sleep_for(5);
@@ -254,7 +253,7 @@ public:
 	{
 		if(type==1)
 		{
-			for(size_t i=0;i<1024*1024/count;i++)
+			for(size_t i=0; i<1024*1024/count; i++)
 			{
 				hSem.wait();
 				result++;
@@ -263,7 +262,7 @@ public:
 		}
 		else if(type==2)
 		{
-			for(size_t i=0;i<1024*1024/count;i++)
+			for(size_t i=0; i<1024*1024/count; i++)
 			{
 				spin.lock();
 				result++;
@@ -272,7 +271,7 @@ public:
 		}
 		else if(type==3)
 		{
-			for(size_t i=0;i<1024*1024/count;i++)
+			for(size_t i=0; i<1024*1024/count; i++)
 			{
 				atom.lock();
 				result++;
@@ -281,7 +280,7 @@ public:
 		}
 		else if(type==4)
 		{
-			for(size_t i=0;i<1024*1024/count;i++)
+			for(size_t i=0; i<1024*1024/count; i++)
 			{
 				mutex.lock();
 				result++;
@@ -307,5 +306,5 @@ TEST_DEFINE(TEST_ThreadOther)
 
 	thrd.test(4,"mutex");
 	TEST_ASSERT(thrd.result==1024*1024);
-	
+
 }

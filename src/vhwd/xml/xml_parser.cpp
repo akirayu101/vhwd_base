@@ -99,7 +99,7 @@ inline void  XmlParser::string_assign(String& s0,mychar_ptr p1,mychar_ptr p2)
 
 	tempbuf.reserve(p2-p1);
 
-	// &amp; &apos; &quot; &gt; &lt; &#...; 
+	// &amp; &apos; &quot; &gt; &lt; &#...;
 	mychar* dest=tempbuf.data();
 	while(p1!=p2)
 	{
@@ -120,7 +120,8 @@ inline void  XmlParser::string_assign(String& s0,mychar_ptr p1,mychar_ptr p2)
 				}
 				else
 				{
-					pcur=p1;kexpected("&amp; or &apos;");
+					pcur=p1;
+					kexpected("&amp; or &apos;");
 					return;
 				}
 				break;
@@ -132,7 +133,8 @@ inline void  XmlParser::string_assign(String& s0,mychar_ptr p1,mychar_ptr p2)
 				}
 				else
 				{
-					pcur=p1;kexpected("&gt;");
+					pcur=p1;
+					kexpected("&gt;");
 					return;
 				}
 				break;
@@ -144,7 +146,8 @@ inline void  XmlParser::string_assign(String& s0,mychar_ptr p1,mychar_ptr p2)
 				}
 				else
 				{
-					pcur=p1;kexpected("&lt;");
+					pcur=p1;
+					kexpected("&lt;");
 					return;
 				}
 				break;
@@ -156,73 +159,84 @@ inline void  XmlParser::string_assign(String& s0,mychar_ptr p1,mychar_ptr p2)
 				}
 				else
 				{
-					pcur=p1;kexpected("&quot;");
+					pcur=p1;
+					kexpected("&quot;");
 					return;
 				}
 				break;
 			case '#':
+			{
+				uint32_t code = 0;
+				if(p1[2]=='x')
 				{
-					uint32_t code = 0;
-					if(p1[2]=='x')
+					p1+=3;
+					for(;;)
 					{
-						p1+=3;
-						for(;;)
-						{
-							unsigned char digit =lookup_table<lkt_number16b>::test(p1[0]);
-							if (digit == 0xFF) break;
-							code=(code<<4)+digit;p1+=1;
-						}
-					}
-					else
-					{
-						p1+=2;
-						for(;;)
-						{
-							unsigned char digit =lookup_table<lkt_number10b>::test(p1[0]);
-							if (digit == 0xFF) break;
-							code=(code*10)+digit;p1+=1;
-						}
-					}
-					if(p1[0]!=';')
-					{
-						pcur=p1;kexpected(";");
-						return;
-					}
-					p1+=1;
-
-					if (code < 0x80)
-					{
-						dest[0]=code;
-						dest+=1;
-					}
-					else if (code < 0x800)
-					{
-						dest[1] = ((code | 0x80) & 0xBF); code >>= 6;
-						dest[0] = (code | 0xC0);
-						dest+=2;
-					}
-					else if (code < 0x10000)
-					{
-						dest[2] = ((code | 0x80) & 0xBF); code >>= 6;
-						dest[1] = ((code | 0x80) & 0xBF); code >>= 6;
-						dest[0] = (code | 0xE0);
-						dest+=3;
-					}
-					else if (code < 0x110000)
-					{
-						dest[3] = ((code | 0x80) & 0xBF); code >>= 6;
-						dest[2] = ((code | 0x80) & 0xBF); code >>= 6;
-						dest[1] = ((code | 0x80) & 0xBF); code >>= 6;
-						dest[0] = (code | 0xF0);
-						dest+=4;
-					}
-					else
-					{
-						pcur=p1;kerror("invalid unicode number");
-						return;
+						unsigned char digit =lookup_table<lkt_number16b>::test(p1[0]);
+						if (digit == 0xFF) break;
+						code=(code<<4)+digit;
+						p1+=1;
 					}
 				}
-				break;
+				else
+				{
+					p1+=2;
+					for(;;)
+					{
+						unsigned char digit =lookup_table<lkt_number10b>::test(p1[0]);
+						if (digit == 0xFF) break;
+						code=(code*10)+digit;
+						p1+=1;
+					}
+				}
+				if(p1[0]!=';')
+				{
+					pcur=p1;
+					kexpected(";");
+					return;
+				}
+				p1+=1;
+
+				if (code < 0x80)
+				{
+					dest[0]=code;
+					dest+=1;
+				}
+				else if (code < 0x800)
+				{
+					dest[1] = ((code | 0x80) & 0xBF);
+					code >>= 6;
+					dest[0] = (code | 0xC0);
+					dest+=2;
+				}
+				else if (code < 0x10000)
+				{
+					dest[2] = ((code | 0x80) & 0xBF);
+					code >>= 6;
+					dest[1] = ((code | 0x80) & 0xBF);
+					code >>= 6;
+					dest[0] = (code | 0xE0);
+					dest+=3;
+				}
+				else if (code < 0x110000)
+				{
+					dest[3] = ((code | 0x80) & 0xBF);
+					code >>= 6;
+					dest[2] = ((code | 0x80) & 0xBF);
+					code >>= 6;
+					dest[1] = ((code | 0x80) & 0xBF);
+					code >>= 6;
+					dest[0] = (code | 0xF0);
+					dest+=4;
+				}
+				else
+				{
+					pcur=p1;
+					kerror("invalid unicode number");
+					return;
+				}
+			}
+			break;
 			default:
 				*dest++='&';
 				break;
@@ -342,7 +356,8 @@ inline void XmlParser::parse_comment_node()
 
 	if(pcur[-1]!='-'||pcur[-2]!='-')
 	{
-		pcur-=2;kexpected("-->");
+		pcur-=2;
+		kexpected("-->");
 	}
 
 	pcur+=1;
@@ -657,7 +672,7 @@ bool XmlParser::save(const String& s)
 	std::ofstream ofs(s.c_str());
 	if(!ofs.good()) return false;
 
-	for(XmlNode* pnode=xmldoc.GetFirstChild();pnode;pnode=pnode->GetNext())
+	for(XmlNode* pnode=xmldoc.GetFirstChild(); pnode; pnode=pnode->GetNext())
 	{
 		savenode(ofs,pnode,0);
 	}
@@ -704,7 +719,7 @@ void XmlParser::savenode(std::ostream& ofs,XmlNode* pnode,int lv)
 	tabindent(ofs,lv);
 	ofs<< "<" << pnode->GetName();
 
-	for(XmlAttribute* pattr=pnode->GetFirstAttribute();pattr;pattr=pattr->GetNext())
+	for(XmlAttribute* pattr=pnode->GetFirstAttribute(); pattr; pattr=pattr->GetNext())
 	{
 		ofs<<" "<<pattr->GetName()<<"=\"";
 		savestring(ofs,pattr->GetValue());
@@ -731,7 +746,7 @@ void XmlParser::savenode(std::ostream& ofs,XmlNode* pnode,int lv)
 		{
 			ofs<<std::endl;
 		}
-		for(XmlNode* tnode=fnode;tnode;tnode=tnode->GetNext())
+		for(XmlNode* tnode=fnode; tnode; tnode=tnode->GetNext())
 		{
 			savenode(ofs,tnode,lv+1);
 		}

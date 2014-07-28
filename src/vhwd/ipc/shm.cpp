@@ -35,23 +35,23 @@ public:
 			tmp.dval=size_;
 
 			hMapFile = CreateFileMappingA(
-				INVALID_HANDLE_VALUE,   // Use paging file - shared memory
-				NULL,                   // Default security attributes
-				PAGE_READWRITE,         // Allow read and write access
-				tmp.d[1],               // High-order DWORD of file mapping max size
-				tmp.d[0],               // Low-order DWORD of file mapping max size
-				name_.empty()?NULL:name_.c_str()
-				);
+						   INVALID_HANDLE_VALUE,   // Use paging file - shared memory
+						   NULL,                   // Default security attributes
+						   PAGE_READWRITE,         // Allow read and write access
+						   tmp.d[1],               // High-order DWORD of file mapping max size
+						   tmp.d[0],               // Low-order DWORD of file mapping max size
+						   name_.empty()?NULL:name_.c_str()
+					   );
 
 
 		}
 		else
 		{
 			hMapFile = OpenFileMappingA(
-				FileAccess::makeflag(flag_,FILE_MAP_READ,FILE_MAP_WRITE),
-				FALSE,                  // Do not inherit the name
-				name_.c_str()			// File mapping name
-				);
+						   FileAccess::makeflag(flag_,FILE_MAP_READ,FILE_MAP_WRITE),
+						   FALSE,                  // Do not inherit the name
+						   name_.c_str()			// File mapping name
+					   );
 		}
 
 		if (hMapFile == NULL)
@@ -60,12 +60,12 @@ public:
 		}
 
 		char* pView = (char*)MapViewOfFile(
-			hMapFile,               // Handle of the map object
-			FileAccess::makeflag(flag_,FILE_MAP_READ,FILE_MAP_WRITE),					// access
-			0,                      // High-order DWORD of the file offset
-			0,					// Low-order DWORD of the file offset
-			size_               // The number of bytes to map to view
-			);
+						  hMapFile,               // Handle of the map object
+						  FileAccess::makeflag(flag_,FILE_MAP_READ,FILE_MAP_WRITE),					// access
+						  0,                      // High-order DWORD of the file offset
+						  0,					// Low-order DWORD of the file offset
+						  size_               // The number of bytes to map to view
+					  );
 
 		if(!pView)
 		{
@@ -92,14 +92,14 @@ public:
 		}
 
 		HANDLE hFile=(HANDLE)CreateFileA(
-			name_.c_str(),
-			FileAccess::makeflag(flag_,GENERIC_READ,GENERIC_WRITE),
-			FileAccess::makeflag(flag_,FILE_SHARE_READ,FILE_SHARE_WRITE),
-			NULL,
-			(flag_&FileAccess::FLAG_CR)?OPEN_ALWAYS:OPEN_EXISTING,
-			NULL,
-			NULL
-			);
+						 name_.c_str(),
+						 FileAccess::makeflag(flag_,GENERIC_READ,GENERIC_WRITE),
+						 FileAccess::makeflag(flag_,FILE_SHARE_READ,FILE_SHARE_WRITE),
+						 NULL,
+						 (flag_&FileAccess::FLAG_CR)?OPEN_ALWAYS:OPEN_EXISTING,
+						 NULL,
+						 NULL
+					 );
 
 		if (hFile == INVALID_HANDLE_VALUE)
 		{
@@ -124,13 +124,13 @@ public:
 		size_=tmp.dval;
 
 		HANDLE hMapFile = CreateFileMapping(
-			m_pExtraHandle,
-			NULL,                   // Default security attributes
-			flag_&FileAccess::FLAG_WR?PAGE_READWRITE:PAGE_READONLY,
-			tmp.d[1],               // High-order DWORD of file mapping max size
-			tmp.d[0],               // Low-order DWORD of file mapping max size
-			NULL
-			);
+							  m_pExtraHandle,
+							  NULL,                   // Default security attributes
+							  flag_&FileAccess::FLAG_WR?PAGE_READWRITE:PAGE_READONLY,
+							  tmp.d[1],               // High-order DWORD of file mapping max size
+							  tmp.d[0],               // Low-order DWORD of file mapping max size
+							  NULL
+						  );
 
 		if(hMapFile==NULL)
 		{
@@ -138,12 +138,12 @@ public:
 		}
 
 		char* pView = (char*)MapViewOfFile(
-			hMapFile,               // Handle of the map object
-			FileAccess::makeflag(flag_,FILE_MAP_READ,FILE_MAP_WRITE),
-			0,                      // High-order DWORD of the file offset
-			0,						// Low-order DWORD of the file offset
-			size_					// The number of bytes to map to view
-			);
+						  hMapFile,               // Handle of the map object
+						  FileAccess::makeflag(flag_,FILE_MAP_READ,FILE_MAP_WRITE),
+						  0,                      // High-order DWORD of the file offset
+						  0,						// Low-order DWORD of the file offset
+						  size_					// The number of bytes to map to view
+					  );
 
 		if(!pView)
 		{
@@ -193,14 +193,14 @@ public:
 
 		if(flag_&FileAccess::FLAG_WR)
 		{
-            if(flag_&FileAccess::FLAG_RD)
-            {
-                acc|=O_RDWR;
-            }
-            else
-            {
-                acc|=O_WRONLY;
-            }
+			if(flag_&FileAccess::FLAG_RD)
+			{
+				acc|=O_RDWR;
+			}
+			else
+			{
+				acc|=O_WRONLY;
+			}
 		}
 
 		return acc;
@@ -254,10 +254,10 @@ public:
 		void* _mem=mmap(0,size_,FileAccess::makeflag(flag_,PROT_READ,PROT_WRITE),map_type,fd,0);
 		if(_mem==MAP_FAILED)
 		{
-            return false;
+			return false;
 		}
 
-        impl.m_pAddr=(char*)_mem;
+		impl.m_pAddr=(char*)_mem;
 		impl.m_nSize=size_;
 		impl.m_sName=name_;
 
@@ -298,10 +298,10 @@ public:
 		void* _mem=mmap(0,size_,FileAccess::makeflag(flag_,PROT_READ,PROT_WRITE),MAP_SHARED,fd,0);
 		if(_mem==MAP_FAILED)
 		{
-            return false;
+			return false;
 		}
 
-        impl.m_pAddr=(char*)_mem;
+		impl.m_pAddr=(char*)_mem;
 		impl.m_nSize=size_;
 		impl.m_sName=name_;
 

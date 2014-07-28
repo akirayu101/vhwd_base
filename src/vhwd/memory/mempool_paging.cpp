@@ -103,7 +103,7 @@ MemPoolPaging::~MemPoolPaging()
 {
 	if(!m_bCustom) return;
 
-	for(size_t i=0;i<m_nFixedSizeCount;i++)
+	for(size_t i=0; i<m_nFixedSizeCount; i++)
 	{
 		if(m_aSlots[i].pPageList!=NULL)
 		{
@@ -279,7 +279,7 @@ void* SmallObject::operator new(size_t s,void* p)
 	return p;
 }
 
-void SmallObject::operator delete(void*,void*){}
+void SmallObject::operator delete(void*,void*) {}
 
 VHWD_LEAVE
 

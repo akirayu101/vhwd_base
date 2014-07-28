@@ -48,10 +48,10 @@ public:
 		impl.close();
 	}
 
-    static String make_pipename(const String& name_)
-    {
-        return "\\\\.\\pipe\\"+name_;
-    }
+	static String make_pipename(const String& name_)
+	{
+		return "\\\\.\\pipe\\"+name_;
+	}
 
 	static bool create_namedpipe(impl_type& impl,const String& name_)
 	{
@@ -61,8 +61,8 @@ public:
 		int nnum=PIPE_UNLIMITED_INSTANCES;
 
 		HANDLE hPipe = CreateNamedPipeA(name.c_str(), PIPE_ACCESS_DUPLEX,
-				PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
-				nnum, 0, 0, tout, NULL);
+										PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
+										nnum, 0, 0, tout, NULL);
 
 		if(hPipe==INVALID_HANDLE_VALUE)
 		{
@@ -108,7 +108,7 @@ public:
 	{
 		String name=make_pipename(name_);
 		HANDLE hPipe = CreateFileA(name.c_str(), GENERIC_READ | GENERIC_WRITE, 0,
-			NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+								   NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
 		if(hPipe==INVALID_HANDLE_VALUE)
 		{
@@ -189,24 +189,24 @@ public:
 		}
 	}
 
-    static String make_pipename(const String& name_)
-    {
-        return "/var/tmp/pipe_"+name_;
-    }
+	static String make_pipename(const String& name_)
+	{
+		return "/var/tmp/pipe_"+name_;
+	}
 
-    static int unix_sockaddr(struct sockaddr_un& un,const String& name)
-    {
+	static int unix_sockaddr(struct sockaddr_un& un,const String& name)
+	{
 		memset(&un, 0, sizeof(un));
 		un.sun_family = AF_UNIX;
 		strcpy(un.sun_path, name.c_str());
 		return offsetof(struct sockaddr_un, sun_path) + strlen(name.c_str());
-    }
+	}
 
 	static bool create_namedpipe(impl_type& impl,const String& name_)
 	{
 		if(impl.serv) close_pipe(impl);
 
-        String name=make_pipename(name_);
+		String name=make_pipename(name_);
 		int fd;
 		struct sockaddr_un  un;
 
@@ -218,7 +218,7 @@ public:
 		impl.serv.reset(fd);
 		unlink(name.c_str());
 
-        socklen_t nlen=unix_sockaddr(un,name);
+		socklen_t nlen=unix_sockaddr(un,name);
 
 		if (bind(fd, (struct sockaddr *)&un, nlen) < 0)
 		{
@@ -251,7 +251,7 @@ public:
 
 			if ((clifd = accept(impl.serv, (struct sockaddr *)&un, &len)) >= 0)
 			{
-  				break;
+				break;
 			}
 
 			return false;
@@ -266,7 +266,7 @@ public:
 
 	static bool open_namedpipe(impl_type& impl,const String& name_)
 	{
-        String name=make_pipename(name_);
+		String name=make_pipename(name_);
 		int fd;
 		struct sockaddr_un un;
 

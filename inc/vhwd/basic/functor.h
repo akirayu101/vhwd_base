@@ -105,14 +105,18 @@ public:
 		virtual T Invoke()=0;
 	};
 
-	Functor(){}
-	Functor(const Functor& o):invoker(o.invoker){}
+	Functor() {}
+	Functor(const Functor& o):invoker(o.invoker) {}
 	template<typename G>
-	Functor(const G& o){*this=o;}
+	Functor(const G& o)
+	{
+		*this=o;
+	}
 
 	Functor& operator=(const Functor& o)
 	{
-		invoker=o.invoker;return *this;
+		invoker=o.invoker;
+		return *this;
 	}
 
 	template<typename G>
@@ -122,49 +126,89 @@ public:
 		{
 		public:
 			G impl;
-			KInvoker(const G& o):impl(o){}
+			KInvoker(const G& o):impl(o) {}
 			virtual T Invoke()
 			{
 				return impl();
 			}
-		};		
+		};
 		invoker.reset(new KInvoker(o));
 		return *this;
 	}
 
-	void reset(Invoker* p){invoker.reset(p);}
-	void clear(){invoker.reset(NULL);}
+	void reset(Invoker* p)
+	{
+		invoker.reset(p);
+	}
+	void clear()
+	{
+		invoker.reset(NULL);
+	}
 
-	template<typename X0> 
-	void bind(X0 x0){(*this)=hbind<T>::g(x0);}
+	template<typename X0>
+	void bind(X0 x0)
+	{
+		(*this)=hbind<T>::g(x0);
+	}
 
-	template<typename X0,typename X1> 
-	void bind(X0 x0,X1 x1){(*this)=hbind<T>::g(x0,x1);}
+	template<typename X0,typename X1>
+	void bind(X0 x0,X1 x1)
+	{
+		(*this)=hbind<T>::g(x0,x1);
+	}
 
-	template<typename X0,typename X1,typename X2> 
-	void bind(X0 x0,X1 x1,X2 x2){(*this)=hbind<T>::g(x0,x1,x2);}
+	template<typename X0,typename X1,typename X2>
+	void bind(X0 x0,X1 x1,X2 x2)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3){(*this)=hbind<T>::g(x0,x1,x2,x3);}
+	template<typename X0,typename X1,typename X2,typename X3>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3,typename X4> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4){(*this)=hbind<T>::g(x0,x1,x2,x3,x4);}
+	template<typename X0,typename X1,typename X2,typename X3,typename X4>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3,x4);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5){(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5);}
+	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6){(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6);}
+	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6,typename X7> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6,X7 x7){(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6,x7);}
+	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6,typename X7>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6,X7 x7)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6,x7);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6,typename X7,typename X8> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6,X7 x7,X8 x8){(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6,x7,x8);}
-	
+	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6,typename X7,typename X8>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6,X7 x7,X8 x8)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6,x7,x8);
+	}
 
-	inline T operator()(){if(!invoker) Exception::XBadFunctor();return invoker->Invoke();}
-	inline operator bool() const{return invoker.get()!=NULL;}
+
+	inline T operator()()
+	{
+		if(!invoker) Exception::XBadFunctor();
+		return invoker->Invoke();
+	}
+	inline operator bool() const
+	{
+		return invoker.get()!=NULL;
+	}
 
 private:
 	DataPtrT<Invoker> invoker;
@@ -182,44 +226,81 @@ public:
 		virtual T Invoke(X)=0;
 	};
 
-	void reset(Invoker* p){invoker.reset(p);}
-	void clear(){invoker.reset(NULL);}
+	void reset(Invoker* p)
+	{
+		invoker.reset(p);
+	}
+	void clear()
+	{
+		invoker.reset(NULL);
+	}
 
-	template<typename X0> 
-	void bind(X0 x0){(*this)=hbind<T>::g(x0);}
+	template<typename X0>
+	void bind(X0 x0)
+	{
+		(*this)=hbind<T>::g(x0);
+	}
 
-	template<typename X0,typename X1> 
-	void bind(X0 x0,X1 x1){(*this)=hbind<T>::g(x0,x1);}
+	template<typename X0,typename X1>
+	void bind(X0 x0,X1 x1)
+	{
+		(*this)=hbind<T>::g(x0,x1);
+	}
 
-	template<typename X0,typename X1,typename X2> 
-	void bind(X0 x0,X1 x1,X2 x2){(*this)=hbind<T>::g(x0,x1,x2);}
+	template<typename X0,typename X1,typename X2>
+	void bind(X0 x0,X1 x1,X2 x2)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3){(*this)=hbind<T>::g(x0,x1,x2,x3);}
+	template<typename X0,typename X1,typename X2,typename X3>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3,typename X4> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4){(*this)=hbind<T>::g(x0,x1,x2,x3,x4);}
+	template<typename X0,typename X1,typename X2,typename X3,typename X4>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3,x4);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5){(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5);}
+	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6){(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6);}
+	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6,typename X7> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6,X7 x7){(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6,x7);}
+	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6,typename X7>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6,X7 x7)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6,x7);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6,typename X7,typename X8> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6,X7 x7,X8 x8){(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6,x7,x8);}
+	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6,typename X7,typename X8>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6,X7 x7,X8 x8)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6,x7,x8);
+	}
 
-	Functor(){}
-	Functor(const Functor& o):invoker(o.invoker){}
+	Functor() {}
+	Functor(const Functor& o):invoker(o.invoker) {}
 	template<typename G>
-	Functor(const G& o){*this=o;}
+	Functor(const G& o)
+	{
+		*this=o;
+	}
 
 	Functor& operator=(const Functor& o)
 	{
-		invoker=o.invoker;return *this;
+		invoker=o.invoker;
+		return *this;
 	}
 
 	template<typename G>
@@ -229,18 +310,25 @@ public:
 		{
 		public:
 			G impl;
-			KInvoker(const G& o):impl(o){}
+			KInvoker(const G& o):impl(o) {}
 			virtual T Invoke(X x)
 			{
 				return impl(x);
 			}
-		};		
+		};
 		invoker.reset(new KInvoker(o));
 		return *this;
 	}
 
-	inline T operator()(X x){if(!invoker) Exception::XBadFunctor();return invoker->Invoke(x);}
-	inline operator bool() const{return invoker.get()!=NULL;}
+	inline T operator()(X x)
+	{
+		if(!invoker) Exception::XBadFunctor();
+		return invoker->Invoke(x);
+	}
+	inline operator bool() const
+	{
+		return invoker.get()!=NULL;
+	}
 
 private:
 	DataPtrT<Invoker> invoker;
@@ -259,44 +347,81 @@ public:
 		virtual T Invoke(X,Y)=0;
 	};
 
-	void reset(Invoker* p){invoker.reset(p);}
-	void clear(){invoker.reset(NULL);}
+	void reset(Invoker* p)
+	{
+		invoker.reset(p);
+	}
+	void clear()
+	{
+		invoker.reset(NULL);
+	}
 
-	template<typename X0> 
-	void bind(X0 x0){(*this)=hbind<T>::g(x0);}
+	template<typename X0>
+	void bind(X0 x0)
+	{
+		(*this)=hbind<T>::g(x0);
+	}
 
-	template<typename X0,typename X1> 
-	void bind(X0 x0,X1 x1){(*this)=hbind<T>::g(x0,x1);}
+	template<typename X0,typename X1>
+	void bind(X0 x0,X1 x1)
+	{
+		(*this)=hbind<T>::g(x0,x1);
+	}
 
-	template<typename X0,typename X1,typename X2> 
-	void bind(X0 x0,X1 x1,X2 x2){(*this)=hbind<T>::g(x0,x1,x2);}
+	template<typename X0,typename X1,typename X2>
+	void bind(X0 x0,X1 x1,X2 x2)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3){(*this)=hbind<T>::g(x0,x1,x2,x3);}
+	template<typename X0,typename X1,typename X2,typename X3>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3,typename X4> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4){(*this)=hbind<T>::g(x0,x1,x2,x3,x4);}
+	template<typename X0,typename X1,typename X2,typename X3,typename X4>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3,x4);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5){(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5);}
+	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6){(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6);}
+	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6,typename X7> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6,X7 x7){(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6,x7);}
+	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6,typename X7>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6,X7 x7)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6,x7);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6,typename X7,typename X8> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6,X7 x7,X8 x8){(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6,x7,x8);}
+	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6,typename X7,typename X8>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6,X7 x7,X8 x8)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6,x7,x8);
+	}
 
-	Functor(){}
-	Functor(const Functor& o):invoker(o.invoker){}
+	Functor() {}
+	Functor(const Functor& o):invoker(o.invoker) {}
 	template<typename G>
-	Functor(const G& o){*this=o;}
+	Functor(const G& o)
+	{
+		*this=o;
+	}
 
 	Functor& operator=(const Functor& o)
 	{
-		invoker=o.invoker;return *this;
+		invoker=o.invoker;
+		return *this;
 	}
 
 	template<typename G>
@@ -306,18 +431,25 @@ public:
 		{
 		public:
 			G impl;
-			KInvoker(const G& o):impl(o){}
+			KInvoker(const G& o):impl(o) {}
 			virtual T Invoke(X x,Y y)
 			{
 				return impl(x,y);
 			}
-		};		
+		};
 		invoker.reset(new KInvoker(o));
 		return *this;
 	}
 
-	inline T operator()(X x,Y y){if(!invoker) Exception::XBadFunctor();return invoker->Invoke(x,y);}
-	inline operator bool() const{return invoker.get()!=NULL;}
+	inline T operator()(X x,Y y)
+	{
+		if(!invoker) Exception::XBadFunctor();
+		return invoker->Invoke(x,y);
+	}
+	inline operator bool() const
+	{
+		return invoker.get()!=NULL;
+	}
 
 private:
 	DataPtrT<Invoker> invoker;
@@ -336,44 +468,81 @@ public:
 		virtual T Invoke(X,Y,Z)=0;
 	};
 
-	void reset(Invoker* p){invoker.reset(p);}
-	void clear(){invoker.reset(NULL);}
+	void reset(Invoker* p)
+	{
+		invoker.reset(p);
+	}
+	void clear()
+	{
+		invoker.reset(NULL);
+	}
 
-	template<typename X0> 
-	void bind(X0 x0){(*this)=hbind<T>::g(x0);}
+	template<typename X0>
+	void bind(X0 x0)
+	{
+		(*this)=hbind<T>::g(x0);
+	}
 
-	template<typename X0,typename X1> 
-	void bind(X0 x0,X1 x1){(*this)=hbind<T>::g(x0,x1);}
+	template<typename X0,typename X1>
+	void bind(X0 x0,X1 x1)
+	{
+		(*this)=hbind<T>::g(x0,x1);
+	}
 
-	template<typename X0,typename X1,typename X2> 
-	void bind(X0 x0,X1 x1,X2 x2){(*this)=hbind<T>::g(x0,x1,x2);}
+	template<typename X0,typename X1,typename X2>
+	void bind(X0 x0,X1 x1,X2 x2)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3){(*this)=hbind<T>::g(x0,x1,x2,x3);}
+	template<typename X0,typename X1,typename X2,typename X3>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3,typename X4> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4){(*this)=hbind<T>::g(x0,x1,x2,x3,x4);}
+	template<typename X0,typename X1,typename X2,typename X3,typename X4>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3,x4);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5){(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5);}
+	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6){(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6);}
+	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6,typename X7> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6,X7 x7){(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6,x7);}
+	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6,typename X7>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6,X7 x7)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6,x7);
+	}
 
-	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6,typename X7,typename X8> 
-	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6,X7 x7,X8 x8){(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6,x7,x8);}
+	template<typename X0,typename X1,typename X2,typename X3,typename X4,typename X5,typename X6,typename X7,typename X8>
+	void bind(X0 x0,X1 x1,X2 x2,X3 x3,X4 x4,X5 x5,X6 x6,X7 x7,X8 x8)
+	{
+		(*this)=hbind<T>::g(x0,x1,x2,x3,x4,x5,x6,x7,x8);
+	}
 
-	Functor(){}
-	Functor(const Functor& o):invoker(o.invoker){}
+	Functor() {}
+	Functor(const Functor& o):invoker(o.invoker) {}
 	template<typename G>
-	Functor(const G& o){*this=o;}
+	Functor(const G& o)
+	{
+		*this=o;
+	}
 
 	Functor& operator=(const Functor& o)
 	{
-		invoker=o.invoker;return *this;
+		invoker=o.invoker;
+		return *this;
 	}
 
 	template<typename G>
@@ -383,18 +552,25 @@ public:
 		{
 		public:
 			G impl;
-			KInvoker(const G& o):impl(o){}
+			KInvoker(const G& o):impl(o) {}
 			virtual T Invoke(X x,Y y,Z z)
 			{
 				return impl(x,y,z);
 			}
-		};		
+		};
 		invoker.reset(new KInvoker(o));
 		return *this;
 	}
 
-	inline T operator()(X x,Y y,Z z){if(!invoker) Exception::XBadFunctor();return invoker->Invoke(x,y,z);}
-	inline operator bool() const{return invoker.get()!=NULL;}
+	inline T operator()(X x,Y y,Z z)
+	{
+		if(!invoker) Exception::XBadFunctor();
+		return invoker->Invoke(x,y,z);
+	}
+	inline operator bool() const
+	{
+		return invoker.get()!=NULL;
+	}
 
 private:
 	DataPtrT<Invoker> invoker;

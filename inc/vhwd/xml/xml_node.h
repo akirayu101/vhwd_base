@@ -32,41 +32,110 @@ public:
 	};
 
 
-	XmlNode(int t=XMLNODE_ELEMENT):m_nNodeType(t){}
+	XmlNode(int t=XMLNODE_ELEMENT):m_nNodeType(t) {}
 
 	XmlNode(const XmlNode& o);
 	XmlNode(const String& tag,const String& val="");
 
 	~XmlNode();
 
-	int GetType() const {return m_nNodeType;}
-	void SetType(int t){m_nNodeType=t;}
+	int GetType() const
+	{
+		return m_nNodeType;
+	}
+	void SetType(int t)
+	{
+		m_nNodeType=t;
+	}
 
-	XmlNode* GetFirstChild(){return listNodes.head();}
-	XmlNode* GetNext(){return m_pNextSibling.get();}
-	const XmlNode* GetFirstChild() const {return listNodes.head();}
-	const XmlNode* GetNext() const {return m_pNextSibling.get();}
+	XmlNode* GetFirstChild()
+	{
+		return listNodes.head();
+	}
+	XmlNode* GetNext()
+	{
+		return m_pNextSibling.get();
+	}
+	const XmlNode* GetFirstChild() const
+	{
+		return listNodes.head();
+	}
+	const XmlNode* GetNext() const
+	{
+		return m_pNextSibling.get();
+	}
 
-	XmlNode* GetParent(){return m_pParent.get();}
-	const XmlNode* GetParent() const {return m_pParent.get();}
-	void SetParent(XmlNode* p){m_pParent.reset(p);}
+	XmlNode* GetParent()
+	{
+		return m_pParent.get();
+	}
+	const XmlNode* GetParent() const
+	{
+		return m_pParent.get();
+	}
+	void SetParent(XmlNode* p)
+	{
+		m_pParent.reset(p);
+	}
 
-	XmlAttribute* GetFirstAttribute(){return listAttrs.head();}
-	const XmlAttribute* GetFirstAttribute() const {return listAttrs.head();}
+	XmlAttribute* GetFirstAttribute()
+	{
+		return listAttrs.head();
+	}
+	const XmlAttribute* GetFirstAttribute() const
+	{
+		return listAttrs.head();
+	}
 
-	void InsertChild(XmlNode* p){p->SetParent(this);listNodes.insert(p);}
-	void AppendChild(XmlNode* p){p->SetParent(this);listNodes.append(p);}
-	bool RemoveChild(XmlNode* p){return listNodes.remove(p);}
-	bool DetachChild(XmlNode* p){return listNodes.detach(p);}
-	void DeleteChildren(){listNodes.clear();}
+	void InsertChild(XmlNode* p)
+	{
+		p->SetParent(this);
+		listNodes.insert(p);
+	}
+	void AppendChild(XmlNode* p)
+	{
+		p->SetParent(this);
+		listNodes.append(p);
+	}
+	bool RemoveChild(XmlNode* p)
+	{
+		return listNodes.remove(p);
+	}
+	bool DetachChild(XmlNode* p)
+	{
+		return listNodes.detach(p);
+	}
+	void DeleteChildren()
+	{
+		listNodes.clear();
+	}
 
-	void InsertAttribute(XmlAttribute* attr){listAttrs.insert(attr);}
-	void AppendAttribute(XmlAttribute* attr){listAttrs.append(attr);}
-	bool RemoveAttribute(XmlAttribute* attr){return listAttrs.remove(attr);}
-	bool DetachAttribute(XmlAttribute* attr){return listAttrs.detach(attr);}
-	void DeleteAttributes(){listAttrs.clear();}
+	void InsertAttribute(XmlAttribute* attr)
+	{
+		listAttrs.insert(attr);
+	}
+	void AppendAttribute(XmlAttribute* attr)
+	{
+		listAttrs.append(attr);
+	}
+	bool RemoveAttribute(XmlAttribute* attr)
+	{
+		return listAttrs.remove(attr);
+	}
+	bool DetachAttribute(XmlAttribute* attr)
+	{
+		return listAttrs.detach(attr);
+	}
+	void DeleteAttributes()
+	{
+		listAttrs.clear();
+	}
 
-	void Clear(){DeleteChildren();DeleteAttributes();}
+	void Clear()
+	{
+		DeleteChildren();
+		DeleteAttributes();
+	}
 
 	bool Serialize(Serializer& ar);
 

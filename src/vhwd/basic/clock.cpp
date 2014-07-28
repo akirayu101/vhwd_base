@@ -24,7 +24,7 @@ TimePoint Clock::now()
 	{
 		int64_t  ns100; /*time since 1 Jan 1601 in 100ns units */
 		FILETIME ft;
-	}_tnow;
+	} _tnow;
 
 	GetSystemTimeAsFileTime(&_tnow.ft);
 	return TimePoint((int64_t)((_tnow.ns100 - _W32_FT_OFFSET)/10));

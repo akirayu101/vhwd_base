@@ -26,7 +26,10 @@ class KO_Policy_handle
 public:
 	typedef void* type;
 	typedef type const_reference;
-	static type invalid_value(){return NULL;}
+	static type invalid_value()
+	{
+		return NULL;
+	}
 	static void destroy(type& o);
 };
 #else
@@ -35,7 +38,10 @@ class KO_Policy_handle
 public:
 	typedef int type;
 	typedef type const_reference;
-	static type invalid_value(){return -1;}
+	static type invalid_value()
+	{
+		return -1;
+	}
 	static void destroy(type& o);
 };
 #endif

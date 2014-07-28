@@ -22,15 +22,21 @@ class VHWD_DLLIMPEXP TimePoint
 {
 public:
 
-	TimePoint():val(0){}
+	TimePoint():val(0) {}
 
-	explicit TimePoint(int64_t v):val(v){}
+	explicit TimePoint(int64_t v):val(v) {}
 
 	// cast to time_t
-	time_t GetTime() const {return val/1000000;}
+	time_t GetTime() const
+	{
+		return val/1000000;
+	}
 
 	// set from time_t and microseconds
-	void SetTime(time_t v,int microseconds=0){val=(int64_t)v*1000000+(int64_t)microseconds;}
+	void SetTime(time_t v,int microseconds=0)
+	{
+		val=(int64_t)v*1000000+(int64_t)microseconds;
+	}
 
 	// cast to string
 	String Format(const String& f="") const;
@@ -72,7 +78,10 @@ public:
 	bool Parse(const TimePoint& tp_,int t=LOCAL);
 
 	TimePoint GetTimePoint() const;
-	struct tm& GetTm(){return tk;}
+	struct tm& GetTm()
+	{
+		return tk;
+	}
 
 private:
 	struct tm tk;
@@ -83,31 +92,58 @@ private:
 class VHWD_DLLIMPEXP TimeSpan
 {
 public:
-	TimeSpan():val(0){}
-	explicit TimeSpan(int64_t v):val(v){}
+	TimeSpan():val(0) {}
+	explicit TimeSpan(int64_t v):val(v) {}
 
-	int64_t GetSeconds() const {return val/1000000;}
-	int64_t GetMilliSeconds() const {return val/1000;}
-	int64_t GetMicroSeconds() const {return val;}
+	int64_t GetSeconds() const
+	{
+		return val/1000000;
+	}
+	int64_t GetMilliSeconds() const
+	{
+		return val/1000;
+	}
+	int64_t GetMicroSeconds() const
+	{
+		return val;
+	}
 
-	static TimeSpan Day(int64_t v){return Seconds(60*60*24*v);}
-	static TimeSpan Hours(int64_t v){return Seconds(60*60*v);}
-	static TimeSpan Minutes(int64_t v){return Seconds(60*v);}
-	static TimeSpan Seconds(int64_t v){return TimeSpan(1000*1000*v);}
-	static TimeSpan MilliSeconds(int64_t v){return TimeSpan(1000*v);}
-	static TimeSpan MicroSeconds(int64_t v){return TimeSpan(v);}
+	static TimeSpan Day(int64_t v)
+	{
+		return Seconds(60*60*24*v);
+	}
+	static TimeSpan Hours(int64_t v)
+	{
+		return Seconds(60*60*v);
+	}
+	static TimeSpan Minutes(int64_t v)
+	{
+		return Seconds(60*v);
+	}
+	static TimeSpan Seconds(int64_t v)
+	{
+		return TimeSpan(1000*1000*v);
+	}
+	static TimeSpan MilliSeconds(int64_t v)
+	{
+		return TimeSpan(1000*v);
+	}
+	static TimeSpan MicroSeconds(int64_t v)
+	{
+		return TimeSpan(v);
+	}
 
 	int64_t val;
 };
 
 
 #define BOOL_OPERATOR(TYPE,VALUE)\
-inline bool operator <(const TYPE& p1,const TYPE& p2){return p1.VALUE  < p2.VALUE;}\
-inline bool operator<=(const TYPE& p1,const TYPE& p2){return p1.VALUE <= p2.VALUE;}\
-inline bool operator>=(const TYPE& p1,const TYPE& p2){return p1.VALUE >= p2.VALUE;}\
-inline bool operator >(const TYPE& p1,const TYPE& p2){return p1.VALUE  > p2.VALUE;}\
-inline bool operator==(const TYPE& p1,const TYPE& p2){return p1.VALUE == p2.VALUE;}\
-inline bool operator!=(const TYPE& p1,const TYPE& p2){return p1.VALUE != p2.VALUE;}
+	inline bool operator <(const TYPE& p1,const TYPE& p2){return p1.VALUE  < p2.VALUE;}\
+	inline bool operator<=(const TYPE& p1,const TYPE& p2){return p1.VALUE <= p2.VALUE;}\
+	inline bool operator>=(const TYPE& p1,const TYPE& p2){return p1.VALUE >= p2.VALUE;}\
+	inline bool operator >(const TYPE& p1,const TYPE& p2){return p1.VALUE  > p2.VALUE;}\
+	inline bool operator==(const TYPE& p1,const TYPE& p2){return p1.VALUE == p2.VALUE;}\
+	inline bool operator!=(const TYPE& p1,const TYPE& p2){return p1.VALUE != p2.VALUE;}
 
 BOOL_OPERATOR(TimePoint,val)
 BOOL_OPERATOR(TimeSpan,val)

@@ -47,10 +47,18 @@ String LogTarget::Format(const LogRecord& o) const
 		char _nLevel=' ';
 		switch(o.m_nLevel)
 		{
-		case LOGLEVEL_MESSAGE:_nLevel='M';break;
-		case LOGLEVEL_WARNING:_nLevel='W';break;
-		case LOGLEVEL_ERROR:_nLevel='E';break;
-		default: _nLevel='O';break;
+		case LOGLEVEL_MESSAGE:
+			_nLevel='M';
+			break;
+		case LOGLEVEL_WARNING:
+			_nLevel='W';
+			break;
+		case LOGLEVEL_ERROR:
+			_nLevel='E';
+			break;
+		default:
+			_nLevel='O';
+			break;
 		};
 
 		msg<<String::Format("[%c]",_nLevel);
@@ -79,7 +87,7 @@ void LogFile::Handle(const LogRecord& o)
 {
 	if(fp==NULL) return;
 	LockGuard<AtomicSpin> lock1(spin);
-	
+
 	String s;
 	for(;;)
 	{

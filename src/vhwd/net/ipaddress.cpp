@@ -31,7 +31,7 @@ void IPAddress::ensure() const
 
 int IPAddress::v4size() const
 {
-    return nsize;
+	return nsize;
 }
 
 struct sockaddr* IPAddress::sk_addr()
@@ -129,7 +129,7 @@ void IPAddress::service(const String& ip,int port)
 	pimpl->sin_family = AF_INET;
 	if(ip.size()==0)
 	{
-        pimpl->sin_addr.s_addr = htons(INADDR_ANY);
+		pimpl->sin_addr.s_addr = htons(INADDR_ANY);
 	}
 	else
 	{
@@ -142,7 +142,7 @@ String IPAddress::host()
 {
 	if(!pimpl) return "";
 
-    char* ipv4_addr=(char*)&pimpl->sin_addr;
+	char* ipv4_addr=(char*)&pimpl->sin_addr;
 	return String::Format("%d.%d.%d.%d",ipv4_addr[0],ipv4_addr[1],ipv4_addr[2],ipv4_addr[3]);
 }
 

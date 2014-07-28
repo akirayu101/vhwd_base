@@ -220,7 +220,8 @@ void System::Exit(int v)
 
 String GetModulePathImpl()
 {
-	char buf[MAX_PATH];buf[0]=0;
+	char buf[MAX_PATH];
+	buf[0]=0;
 	::GetModuleFileNameA(NULL,buf,MAX_PATH);
 	return buf;
 }
@@ -233,8 +234,8 @@ const String& System::GetModulePath()
 
 bool System::Execute(const String& s)
 {
-	STARTUPINFOA si={sizeof(STARTUPINFO)};
-    PROCESS_INFORMATION pi;
+	STARTUPINFOA si= {sizeof(STARTUPINFO)};
+	PROCESS_INFORMATION pi;
 	StringBuffer<char> sb(s);
 	sb.push_back(0);
 
@@ -296,12 +297,12 @@ char* win_strerror(int ret)
 {
 	char* lpTStr(NULL);
 	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_FROM_SYSTEM,
-		NULL,
-		ret,
-		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		(LPTSTR)&lpTStr,
-		0x100,
-		NULL);
+				  NULL,
+				  ret,
+				  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+				  (LPTSTR)&lpTStr,
+				  0x100,
+				  NULL);
 	return lpTStr;
 }
 
@@ -339,11 +340,16 @@ public:
 	{
 		switch(lv)
 		{
-		case LOGLEVEL_DEBUG: return "debug";
-		case LOGLEVEL_ERROR: return "error";
-		case LOGLEVEL_TRACE: return "trace";
-		case LOGLEVEL_FETAL: return "fetal";
-		default: return "other";
+		case LOGLEVEL_DEBUG:
+			return "debug";
+		case LOGLEVEL_ERROR:
+			return "error";
+		case LOGLEVEL_TRACE:
+			return "trace";
+		case LOGLEVEL_FETAL:
+			return "fetal";
+		default:
+			return "other";
 		}
 	}
 
@@ -388,7 +394,7 @@ public:
 
 	FILE* fp_logfile;
 	AtomicSpin spin;
-}gSystelLoggerData;
+} gSystelLoggerData;
 
 
 bool System::SetLogFile(const String& fn,bool app)

@@ -11,8 +11,8 @@
 
 
 #ifndef _WIN32
-    #include <sys/socket.h>
-    #include <netinet/in.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 #endif
 
 
@@ -25,10 +25,16 @@ class VHWD_DLLIMPEXP KO_Policy_socket
 public:
 #ifdef _WIN32
 	typedef SOCKET type;
-	static type invalid_value(){return INVALID_SOCKET;}
+	static type invalid_value()
+	{
+		return INVALID_SOCKET;
+	}
 #else
 	typedef int type;
-	static type invalid_value(){return -1;}
+	static type invalid_value()
+	{
+		return -1;
+	}
 #endif
 
 	typedef type const_reference;
@@ -49,7 +55,10 @@ public:
 	class impl_type : public KO_Handle<KO_Policy_socket>
 	{
 	public:
-		impl_type(){protocol=TCP;}
+		impl_type()
+		{
+			protocol=TCP;
+		}
 		int protocol;
 	};
 
@@ -114,7 +123,10 @@ public:
 
 	void Reset();
 
-	impl_type::type native_handle(){return impl;}
+	impl_type::type native_handle()
+	{
+		return impl;
+	}
 
 private:
 	impl_type impl;

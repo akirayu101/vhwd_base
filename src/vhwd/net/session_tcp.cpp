@@ -167,12 +167,12 @@ void SessionTCP::DoAsyncSend()
 	MyOverLappedEx &idat(*q);
 
 	int bRet=WSASend(sk_local.sock,
-			&idat.dbuf[0],
-			idat.dbuf[1].buf?2:1,
-			&idat.size,
-			0,
-			&idat.olap,
-			NULL);
+					 &idat.dbuf[0],
+					 idat.dbuf[1].buf?2:1,
+					 &idat.size,
+					 0,
+					 &idat.olap,
+					 NULL);
 
 	if(bRet!=0 && WSAGetLastError()!=WSA_IO_PENDING)
 	{
@@ -186,7 +186,7 @@ void SessionTCP::DoAsyncSend()
 
 #else
 
-     ep_ctl(EPOLLOUT);
+	ep_ctl(EPOLLOUT);
 
 #endif
 }
@@ -206,12 +206,12 @@ void SessionTCP::DoAsyncRecv()
 	MyOverLappedEx &idat(*q);
 
 	int bRet=WSARecv(sk_local.sock,
-		&idat.dbuf[0],
-		idat.dbuf[1].buf?2:1,
-		&idat.size,
-		&iocp_flag_recv,
-		&idat.olap,
-		NULL);
+					 &idat.dbuf[0],
+					 idat.dbuf[1].buf?2:1,
+					 &idat.size,
+					 &iocp_flag_recv,
+					 &idat.olap,
+					 NULL);
 
 	if(bRet!=0 && WSAGetLastError()!=WSA_IO_PENDING)
 	{
@@ -226,7 +226,7 @@ void SessionTCP::DoAsyncRecv()
 
 #else
 
-    ep_ctl(EPOLLIN);
+	ep_ctl(EPOLLIN);
 
 #endif
 }

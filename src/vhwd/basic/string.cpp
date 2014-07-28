@@ -161,7 +161,7 @@ void String_FormatV_internal(String& ret,const char* s,va_list arglist)
 
 	int _nLen=std::char_traits<char>::length(s);
 	arr_1t<char> _vbuf;
-	for(int _nbuf=1024;_nbuf<=1024*1024*128;_nbuf<<=1)
+	for(int _nbuf=1024; _nbuf<=1024*1024*128; _nbuf<<=1)
 	{
 		if(_nbuf<_nLen) continue;
 
@@ -332,7 +332,7 @@ bool String::ToNumber(float64_t* val) const
 
 std::ostream& operator<<(std::ostream&o,const String& s)
 {
-    std::string stds(s.c_str());
+	std::string stds(s.c_str());
 	o<<stds;
 	return o;
 }
@@ -347,17 +347,23 @@ std::istream& operator>>(std::istream&o,String& s)
 
 String operator+(const String& lhs,const String& rhs)
 {
-	String tmp(lhs);tmp+=rhs;return tmp;
+	String tmp(lhs);
+	tmp+=rhs;
+	return tmp;
 }
 
 String operator+(const char* lhs,const String& rhs)
 {
-	String tmp(lhs);tmp+=rhs;return tmp;
+	String tmp(lhs);
+	tmp+=rhs;
+	return tmp;
 }
 
 String operator+(const String& lhs,const char* rhs)
 {
-	String tmp(lhs);tmp+=rhs;return tmp;
+	String tmp(lhs);
+	tmp+=rhs;
+	return tmp;
 }
 
 String& String::operator<<(char v)
@@ -445,7 +451,7 @@ String String::substr(size_t pos,size_t len) const
 int String::find (char c, int pos) const
 {
 	int n=(int)size();
-	for(int i=pos;i<n;i++)
+	for(int i=pos; i<n; i++)
 	{
 		if(m_pStr[i]==c) return i;
 	}
@@ -456,11 +462,12 @@ int String::replace(char c1,char c2)
 {
 	int n=0;
 	StringBuffer<char> sb(*this);
-	for(size_t i=0;i<sb.size();i++)
+	for(size_t i=0; i<sb.size(); i++)
 	{
 		if(sb[i]==c1)
 		{
-			sb[i]=c2;n++;
+			sb[i]=c2;
+			n++;
 		}
 	}
 
@@ -499,6 +506,6 @@ int String::replace(const String& c1,const String& c2)
 	return n;
 }
 
-const char const_empty_buffer[64]={0};
+const char const_empty_buffer[64]= {0};
 
 VHWD_LEAVE

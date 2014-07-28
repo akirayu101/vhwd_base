@@ -19,11 +19,17 @@ public:
 	friend class XmlParser;
 	friend class XmlNode;
 
-	XmlAttribute(){}
+	XmlAttribute() {}
 	XmlAttribute(const String& n,const String& v=String());
 
-	XmlAttribute* GetNext(){return m_pNextSibling.get();}
-	const XmlAttribute* GetNext() const {return m_pNextSibling.get();}
+	XmlAttribute* GetNext()
+	{
+		return m_pNextSibling.get();
+	}
+	const XmlAttribute* GetNext() const
+	{
+		return m_pNextSibling.get();
+	}
 
 	bool Serialize(Serializer& ar);
 
