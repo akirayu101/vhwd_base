@@ -57,5 +57,25 @@ private:
 };
 
 
+template<typename T>
+class LockState : public NonCopyable
+{
+public:
+	T oldvalue;
+	T& value;
+
+	LockState(T& v,const T n=T()):value(v)
+	{
+		oldvalue=value;
+		value=n;
+	}
+
+	~LockState()
+	{
+		value=oldvalue;
+	}
+
+};
+
 VHWD_LEAVE
 #endif

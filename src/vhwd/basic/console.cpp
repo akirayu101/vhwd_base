@@ -69,13 +69,13 @@ void Console::SetColor(int color)
 void Console::Write(const String& s)
 {
 	LockGuard<AtomicSpin> lock(g_tSpinConsole);
-	std::cout<<s;
+	std::cout<<s.c_str();
 }
 
 void Console::WriteLine(const String& s)
 {
 	LockGuard<AtomicSpin> lock(g_tSpinConsole);
-	std::cout<<s<<std::endl;
+	std::cout<<s.c_str()<<std::endl;
 }
 
 
@@ -84,7 +84,7 @@ void Console::Write(const String& s,int color)
 	LockGuard<AtomicSpin> lock(g_tSpinConsole);
 	int oldcr=g_cConsoleColor;
 	ConsoleDoSetColor(color);
-	std::cout<<s;
+	std::cout<<s.c_str();
 	ConsoleDoSetColor(oldcr);
 }
 
@@ -93,7 +93,7 @@ void Console::WriteLine(const String& s,int color)
 	LockGuard<AtomicSpin> lock(g_tSpinConsole);
 	int oldcr=g_cConsoleColor;
 	ConsoleDoSetColor(color);
-	std::cout<<s<<std::endl;
+	std::cout<<s.c_str()<<std::endl;
 	ConsoleDoSetColor(oldcr);
 }
 

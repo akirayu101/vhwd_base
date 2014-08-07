@@ -47,7 +47,7 @@ public:
 
 	const mapped_type& operator[](const key_type& k) const
 	{
-		typename impl_type::node_type* n=impl.handle_key<impl_type::fp_return_node>(k);
+		typename impl_type::node_type* n=impl.template handle_key<impl_type::fp_return_node>(k);
 		if(!n) Exception::XNotFound();
 		return n->extra;
 	}

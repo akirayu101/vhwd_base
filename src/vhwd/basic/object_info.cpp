@@ -1,4 +1,5 @@
 #include "vhwd/basic/object.h"
+#include "vhwd/basic/object_ex.h"
 #include "vhwd/collection/indexer_map.h"
 
 

@@ -18,6 +18,8 @@
 #include "vhwd/serialization.h"
 #include "vhwd/collection.h"
 #include "vhwd/xml.h"
+#include "vhwd/scripting.h"
+
 #include "vhwd/testing/test.h"
 
 //#ifdef _MSC_VER

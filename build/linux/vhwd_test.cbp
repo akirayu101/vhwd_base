@@ -46,6 +46,7 @@
 		<Unit filename="../../test/test_collection.cpp" />
 		<Unit filename="../../test/test_iocp.cpp" />
 		<Unit filename="../../test/test_memory.cpp" />
+		<Unit filename="../../test/test_scripting.cpp" />
 		<Unit filename="../../test/test_serializer.cpp" />
 		<Unit filename="../../test/test_shm.cpp" />
 		<Unit filename="../../test/test_thread.cpp" />

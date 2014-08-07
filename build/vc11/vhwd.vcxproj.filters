@@ -76,6 +76,12 @@
     <Filter Include="inc\vhwd\collection\detail">
       <UniqueIdentifier>{b44b99a6-7918-4b7d-b53d-c1777a478855}</UniqueIdentifier>
     </Filter>
+    <Filter Include="inc\vhwd\scripting">
+      <UniqueIdentifier>{33f1b148-4cec-4f05-8476-8a5259e9d0c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\vhwd\scripting">
+      <UniqueIdentifier>{cf545b6f-9e28-4a17-879b-dd73e7d7a088}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\vhwd\basic\atomic.cpp">
@@ -245,6 +251,84 @@
     </ClCompile>
     <ClCompile Include="..\..\src\vhwd\memory\mempool_malloc.cpp">
       <Filter>src\vhwd\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\codegen.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\codegen_analyzer.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\codegen_generator.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\codegen_generator_lvalue.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\codegen_generator_rvalue.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\module_array.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\module_io.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\module_math.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\module_os.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\module_type.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\module_type_compound.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\module_type_number.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\module_type_string.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\module_type_table.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\parser.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\parser_visitor.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\scanner.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\variant.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\variant_array.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\variant_class.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\variant_code.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\variant_data.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\variant_op1.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\variant_op2.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\variant_table.cpp">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\scripting\executor.cpp">
+      <Filter>src\vhwd\scripting</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -523,6 +607,63 @@
     </ClInclude>
     <ClInclude Include="..\..\inc\vhwd\collection\detail\collection_base.h">
       <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\object_ex.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\codegen.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\codegen_generator.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\codegen_visitor.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\parser.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\parser_node.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\parser_visitor.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\scanner.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\sub_xt.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\variant.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\variant_code.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\variant_op.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\variant_op1.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\variant_op2.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\variant_table.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\vhwd\scripting\module.h">
+      <Filter>src\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting.h">
+      <Filter>inc\vhwd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\executor.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\instruction.h">
+      <Filter>inc\vhwd\scripting</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

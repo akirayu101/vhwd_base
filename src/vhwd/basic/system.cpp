@@ -278,7 +278,7 @@ bool System::Execute(const String& s)
 	}
 	if(pid==0)
 	{
-		execlp(s.c_str(),NULL,NULL);
+		execlp(s.c_str(),"",NULL);
 		exit(-1);
 	}
 	else

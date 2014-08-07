@@ -50,7 +50,7 @@ public:
 	template<typename X>
 	DataPtrT(const DataPtrT<X>& o)
 	{
-		reset(o.get());
+		reset((X*)o.get());
 	}
 
 	DataPtrT(T *p=NULL):detail::BasePtrT<T,detail::po_data<T> >(p) {}
@@ -61,9 +61,9 @@ public:
 template<typename T>
 class AutoPtrT : public detail::BasePtrT<T,detail::po_auto<T> > , private NonCopyable
 {
-public:
 	using detail::BasePtrT<T,detail::po_auto<T> >::m_ptr;
 
+public:
 	explicit AutoPtrT(T *p=NULL) : detail::BasePtrT<T,detail::po_auto<T> >(p) {}
 
 	inline T *release()

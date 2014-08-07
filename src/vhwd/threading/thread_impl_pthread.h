@@ -220,19 +220,29 @@ public:
 
 	static void sem_init(Semaphore& m)
 	{
-		::sem_init(g(m),0,0);
+		if(::sem_init(g(m),0,0)!=0)
+		{
+			System::LogWarning("sem_init failed");
+		}
 	}
 
 	static void sem_post(Semaphore& m)
 	{
-		::sem_post(g(m));
+		if(::sem_post(g(m))!=0)
+		{
+			System::LogWarning("sem_post failed");
+		}
 	}
 
 	static void sem_post(Semaphore& m,int n)
 	{
 		for(int i=0; i<n; i++)
 		{
-			::sem_post(g(m));
+			if(::sem_post(g(m))!=0)
+			{
+				System::LogWarning("sem_post failed");
+				break;
+			}
 		}
 		//::sem_post_multiple(g(m),n);
 	}

@@ -26,15 +26,16 @@ public:
 	{
 		return v.first;
 	}
+
 	static const mapped_type& value(const value_type& v)
 	{
 		return v.second;
 	}
+
 	static value_type pair(const key_type& k,const mapped_type& v=mapped_type())
 	{
 		return value_type(k,v);
 	}
-
 
 };
 
@@ -53,10 +54,12 @@ public:
 	{
 		return v;
 	}
+
 	static const mapped_type& value(const value_type& v)
 	{
 		return v;
 	}
+
 	static const value_type& pair(const key_type& k)
 	{
 		return k;

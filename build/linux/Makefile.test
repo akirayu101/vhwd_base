@@ -40,9 +40,9 @@ OBJDIR_RELEASE = ../../tmp/Release
 DEP_RELEASE = 
 OUT_RELEASE = ../../bin/vhwd_test
 
-OBJ_DEBUG = $(OBJDIR_DEBUG)/__/__/test/appmain.o $(OBJDIR_DEBUG)/__/__/test/test_basic.o $(OBJDIR_DEBUG)/__/__/test/test_collection.o $(OBJDIR_DEBUG)/__/__/test/test_iocp.o $(OBJDIR_DEBUG)/__/__/test/test_memory.o $(OBJDIR_DEBUG)/__/__/test/test_serializer.o $(OBJDIR_DEBUG)/__/__/test/test_shm.o $(OBJDIR_DEBUG)/__/__/test/test_thread.o
+OBJ_DEBUG = $(OBJDIR_DEBUG)/__/__/test/appmain.o $(OBJDIR_DEBUG)/__/__/test/test_basic.o $(OBJDIR_DEBUG)/__/__/test/test_collection.o $(OBJDIR_DEBUG)/__/__/test/test_iocp.o $(OBJDIR_DEBUG)/__/__/test/test_memory.o $(OBJDIR_DEBUG)/__/__/test/test_scripting.o $(OBJDIR_DEBUG)/__/__/test/test_serializer.o $(OBJDIR_DEBUG)/__/__/test/test_shm.o $(OBJDIR_DEBUG)/__/__/test/test_thread.o
 
-OBJ_RELEASE = $(OBJDIR_RELEASE)/__/__/test/appmain.o $(OBJDIR_RELEASE)/__/__/test/test_basic.o $(OBJDIR_RELEASE)/__/__/test/test_collection.o $(OBJDIR_RELEASE)/__/__/test/test_iocp.o $(OBJDIR_RELEASE)/__/__/test/test_memory.o $(OBJDIR_RELEASE)/__/__/test/test_serializer.o $(OBJDIR_RELEASE)/__/__/test/test_shm.o $(OBJDIR_RELEASE)/__/__/test/test_thread.o
+OBJ_RELEASE = $(OBJDIR_RELEASE)/__/__/test/appmain.o $(OBJDIR_RELEASE)/__/__/test/test_basic.o $(OBJDIR_RELEASE)/__/__/test/test_collection.o $(OBJDIR_RELEASE)/__/__/test/test_iocp.o $(OBJDIR_RELEASE)/__/__/test/test_memory.o $(OBJDIR_RELEASE)/__/__/test/test_scripting.o $(OBJDIR_RELEASE)/__/__/test/test_serializer.o $(OBJDIR_RELEASE)/__/__/test/test_shm.o $(OBJDIR_RELEASE)/__/__/test/test_thread.o
 
 all: debug release
 
@@ -73,6 +73,9 @@ $(OBJDIR_DEBUG)/__/__/test/test_iocp.o: ../../test/test_iocp.cpp
 
 $(OBJDIR_DEBUG)/__/__/test/test_memory.o: ../../test/test_memory.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../test/test_memory.cpp -o $(OBJDIR_DEBUG)/__/__/test/test_memory.o
+
+$(OBJDIR_DEBUG)/__/__/test/test_scripting.o: ../../test/test_scripting.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../test/test_scripting.cpp -o $(OBJDIR_DEBUG)/__/__/test/test_scripting.o
 
 $(OBJDIR_DEBUG)/__/__/test/test_serializer.o: ../../test/test_serializer.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../test/test_serializer.cpp -o $(OBJDIR_DEBUG)/__/__/test/test_serializer.o
@@ -113,6 +116,9 @@ $(OBJDIR_RELEASE)/__/__/test/test_iocp.o: ../../test/test_iocp.cpp
 
 $(OBJDIR_RELEASE)/__/__/test/test_memory.o: ../../test/test_memory.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../test/test_memory.cpp -o $(OBJDIR_RELEASE)/__/__/test/test_memory.o
+
+$(OBJDIR_RELEASE)/__/__/test/test_scripting.o: ../../test/test_scripting.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../test/test_scripting.cpp -o $(OBJDIR_RELEASE)/__/__/test/test_scripting.o
 
 $(OBJDIR_RELEASE)/__/__/test/test_serializer.o: ../../test/test_serializer.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../test/test_serializer.cpp -o $(OBJDIR_RELEASE)/__/__/test/test_serializer.o

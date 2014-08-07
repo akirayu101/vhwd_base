@@ -5,6 +5,8 @@
 #include "vhwd/collection/detail/kv_trait.h"
 #include "vhwd/collection/array.h"
 
+#include "math.h"
+
 VHWD_ENTER
 
 
@@ -52,7 +54,7 @@ public:
 	typedef typename P::value_proxy value_proxy;
 	typedef typename P::chunk_node chunk_node;
 
-	static const size_t g_nInitialBucketCount=32; 
+	static const size_t g_nInitialBucketCount=32;
 
 	indexer_base()
 	{

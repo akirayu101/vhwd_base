@@ -11,5 +11,6 @@ It supports linux and windows platform currently, including following contents:
 * **ipc**
 * **memory**
 * **serialization**
+* **scripting**
 * **xml**
 

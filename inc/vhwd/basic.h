@@ -20,6 +20,7 @@
 #include "vhwd/basic/console.h"
 #include "vhwd/basic/platform.h"
 #include "vhwd/basic/object.h"
+#include "vhwd/basic/object_ex.h"
 #include "vhwd/basic/pointer.h"
 #include "vhwd/basic/file.h"
 #include "vhwd/basic/lockguard.h"

@@ -1,0 +1,7 @@
+#include "vhwd/scripting/variant.h"
+#include "vhwd/scripting/variant_op1.h"
+#include "vhwd/scripting/variant_op2.h"
+#include "vhwd/scripting/scanner.h"
+#include "vhwd/scripting/parser.h"
+#include "vhwd/scripting/codegen.h"
+#include "vhwd/scripting/executor.h"

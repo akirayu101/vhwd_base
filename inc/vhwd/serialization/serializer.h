@@ -9,8 +9,7 @@
 #define __H_VHWD_SERIALIZER__
 
 
-#include "vhwd/basic/object.h"
-#include "vhwd/basic/pointer.h"
+#include "vhwd/basic/object_ex.h"
 #include "vhwd/basic/bitflags.h"
 #include "vhwd/basic/exception.h"
 #include "vhwd/collection/indexer_set.h"
