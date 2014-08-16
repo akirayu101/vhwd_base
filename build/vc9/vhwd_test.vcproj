@@ -222,6 +222,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\test\test_scripting.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\test\test_serializer.cpp"
 				>
 			</File>

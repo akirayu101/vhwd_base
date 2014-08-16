@@ -25,6 +25,11 @@ public:
 		return NULL;
 	}
 
+	static uintptr_t get_id()
+	{
+		return (uintptr_t)pthread_self();
+	}
+
 	static void set_priority(int n)
 	{
 

@@ -1,4 +1,4 @@
-#include "mempool_impl.h"
+#include "mempool_link.h"
 #include "vhwd/basic/lockguard.h"
 #include "vhwd/basic/system.h"
 
@@ -25,5 +25,6 @@ void MemPoolDebug<T>::deallocate(void* p)
 
 template class MemPoolDebug<MemPoolMalloc>;
 template class MemPoolDebug<MemPoolPaging>;
+template class MemPoolDebug<MemPoolCached>;
 
 VHWD_LEAVE

@@ -32,18 +32,18 @@ public:
 
 	static ThreadManager& current();
 
-
 protected:
+
 
 	ThreadManager();
 	~ThreadManager();
 
-	Mutex m_thrd_mutex;
-	BitFlags m_nFlags;
-	int m_nThreadNum;
-	int m_nThreadJob;
 	int m_nThreadMax;
+	BitFlags m_nFlags;
+	AtomicInt32 m_nThreadNum;
+	AtomicInt32 m_nThreadJob;
 
+	Mutex m_thrd_mutex;
 	LitePtrT<ThreadImpl> m_pThreads_free;
 	Condition m_cond_thrd_empty;
 	Condition m_thrd_attached;

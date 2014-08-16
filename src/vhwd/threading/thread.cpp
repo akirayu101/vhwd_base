@@ -3,6 +3,8 @@
 #include "vhwd/threading/thread_pool.h"
 #include "thread_impl.h"
 
+#include <errno.h>
+
 VHWD_ENTER
 
 
@@ -62,14 +64,14 @@ bool Thread::test_destroy()
 {
 	if((m_nState&STATE_ANY)==0)
 	{
-		return ThreadMain::m_bReqExit;
+		return ThreadImpl::m_bReqExit;
 	}
 
 	LockGuard<Mutex> lock1(m_thrd_mutex);
 
 	for(;;)
 	{
-		if((m_nState&STATE_CANCEL)!=0||ThreadMain::m_bReqExit)
+		if((m_nState&STATE_CANCEL)!=0||ThreadImpl::m_bReqExit)
 		{
 			return true;
 		}
@@ -83,20 +85,12 @@ bool Thread::test_destroy()
 		break;
 	}
 
-	return ThreadMain::m_bReqExit;
+	return ThreadImpl::m_bReqExit;
 }
 
 
-Thread& Thread::main_thread()
-{
-	static ThreadMain t;
-	return t;
-}
 
-ThreadImpl& Thread::this_data()
-{
-	return ThreadImpl::data();
-}
+
 
 Thread& Thread::this_thread()
 {
@@ -115,6 +109,11 @@ Logger& this_logger()
 int Thread::rank()
 {
 	return this_data().thrd_rank;
+}
+
+uintptr_t Thread::id()
+{
+	return ThreadImpl_detail::get_id();
 }
 
 
@@ -237,9 +236,9 @@ void Thread::sleep_for(int milliseconds)
 	_sleep(milliseconds);
 #else
 	struct timespec req;
-	req.tv_sec = milliseconds/1000;
-	req.tv_nsec = (milliseconds%1000) * 1000000L;
-	nanosleep (&req, &req);
+	req.tv_sec = milliseconds / 1000;
+	req.tv_nsec = (milliseconds % 1000) * 1000000;
+	while (nanosleep(&req, &req) != 0 && errno == EINTR);
 #endif
 }
 

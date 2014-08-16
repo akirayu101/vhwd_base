@@ -624,7 +624,7 @@ public:
 
 	static int64_t k(int64_t t1,int64_t t2)
 	{
-		return ::pow(t1,t2);
+		return ::pow((double)t1,(double)t2);
 	}
 
 	static double k(double t1,double t2)

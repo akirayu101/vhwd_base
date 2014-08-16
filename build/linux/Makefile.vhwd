@@ -40,9 +40,9 @@ OBJDIR_RELEASE = ../../tmp/Release
 DEP_RELEASE = 
 OUT_RELEASE = ../../lib/Linux/libvhwd.a
 
-OBJ_DEBUG = $(OBJDIR_DEBUG)/__/__/src/vhwd/threading/coroutine_context_gcc_x64.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/variant_array.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/variant.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/scanner.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/parser_visitor.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/parser.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/module_type_table.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/module_type_string.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/module_type_number.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/module_type_compound.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/module_type.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/module_os.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/module_math.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/module_io.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/module_array.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/executor.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/codegen_generator_rvalue.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/codegen_generator_lvalue.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/codegen_generator.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/codegen_analyzer.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/codegen.o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/socket.o $(OBJDIR_DEBUG)/__/__/src/vhwd/xml/xml_parser.o $(OBJDIR_DEBUG)/__/__/src/vhwd/xml/xml_node.o $(OBJDIR_DEBUG)/__/__/src/vhwd/xml/xml_document.o $(OBJDIR_DEBUG)/__/__/src/vhwd/xml/xml_attribute.o $(OBJDIR_DEBUG)/__/__/src/vhwd/threading/thread_pool.o $(OBJDIR_DEBUG)/__/__/src/vhwd/threading/thread_mutex.o $(OBJDIR_DEBUG)/__/__/src/vhwd/threading/thread_manager.o $(OBJDIR_DEBUG)/__/__/src/vhwd/threading/thread_impl.o $(OBJDIR_DEBUG)/__/__/src/vhwd/threading/thread.o $(OBJDIR_DEBUG)/__/__/src/vhwd/threading/coroutine.o $(OBJDIR_DEBUG)/__/__/src/vhwd/testing/test_mgr.o $(OBJDIR_DEBUG)/__/__/src/vhwd/testing/test.o $(OBJDIR_DEBUG)/__/__/src/vhwd/serialization/serializer_stream.o $(OBJDIR_DEBUG)/__/__/src/vhwd/serialization/serializer_socket.o $(OBJDIR_DEBUG)/__/__/src/vhwd/serialization/serializer_buffer.o $(OBJDIR_DEBUG)/__/__/src/vhwd/serialization/serializer.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/variant_table.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/variant_op2.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/variant_op1.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/variant_data.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/variant_code.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/variant_class.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/system.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/stringbuffer.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/string_impl.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/string.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/object_info.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/object_data.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/object.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/language.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/file.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/exception.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/console.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/codecvt_gbktable.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/codecvt.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/clock.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/bitlfags.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/basic.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/atomic.o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/session_udp.o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/session_tcp.o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/session_server.o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/session_client.o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/session.o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/overlapped.o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/ipaddress.o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/iocp1.o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_paging.o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_pageinfo.o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_malloc.o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_link.o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_fixedsize.o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_debug.o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_cache.o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/allocator.o $(OBJDIR_DEBUG)/__/__/src/vhwd/logging/logger.o $(OBJDIR_DEBUG)/__/__/src/vhwd/logging/log_target.o $(OBJDIR_DEBUG)/__/__/src/vhwd/logging/log_console.o $(OBJDIR_DEBUG)/__/__/src/vhwd/ipc/shm.o $(OBJDIR_DEBUG)/__/__/src/vhwd/ipc/pipe.o $(OBJDIR_DEBUG)/__/__/src/vhwd/collection/collection.o
+OBJ_DEBUG = $(OBJDIR_DEBUG)/__/__/src/vhwd/threading/coroutine_context_gcc_x64.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/variant_array.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/variant.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/scanner.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/parser_visitor.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/parser.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/module_type_table.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/module_type_string.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/module_type_number.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/module_type_compound.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/module_type.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/module_os.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/module_math.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/module_io.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/module_array.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/executor.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/codegen_generator_rvalue.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/codegen_generator_lvalue.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/codegen_generator.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/codegen_analyzer.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/codegen.o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/socket.o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/session_udp.o $(OBJDIR_DEBUG)/__/__/src/vhwd/xml/xml_parser.o $(OBJDIR_DEBUG)/__/__/src/vhwd/xml/xml_node.o $(OBJDIR_DEBUG)/__/__/src/vhwd/xml/xml_document.o $(OBJDIR_DEBUG)/__/__/src/vhwd/xml/xml_attribute.o $(OBJDIR_DEBUG)/__/__/src/vhwd/threading/thread_pool.o $(OBJDIR_DEBUG)/__/__/src/vhwd/threading/thread_mutex.o $(OBJDIR_DEBUG)/__/__/src/vhwd/threading/thread_manager.o $(OBJDIR_DEBUG)/__/__/src/vhwd/threading/thread_impl.o $(OBJDIR_DEBUG)/__/__/src/vhwd/threading/thread.o $(OBJDIR_DEBUG)/__/__/src/vhwd/threading/coroutine.o $(OBJDIR_DEBUG)/__/__/src/vhwd/testing/test_mgr.o $(OBJDIR_DEBUG)/__/__/src/vhwd/testing/test.o $(OBJDIR_DEBUG)/__/__/src/vhwd/serialization/serializer_stream.o $(OBJDIR_DEBUG)/__/__/src/vhwd/serialization/serializer_socket.o $(OBJDIR_DEBUG)/__/__/src/vhwd/serialization/serializer_buffer.o $(OBJDIR_DEBUG)/__/__/src/vhwd/serialization/serializer.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/variant_table.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/variant_op2.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/variant_op1.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/variant_data.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/variant_code.o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/variant_class.o $(OBJDIR_DEBUG)/__/__/src/vhwd/collection/collection.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/system.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/stringbuffer.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/string_impl.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/string.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/object_info.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/object_data.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/object.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/language.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/file.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/exception.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/console.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/codecvt_gbktable.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/codecvt.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/clock.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/bitlfags.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/basic.o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/atomic.o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/session_tcp.o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/session_server.o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/session_client.o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/session.o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/overlapped.o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/ipaddress.o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/iocp1.o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_slot.o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_pgmap.o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_paging.o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_malloc.o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_link.o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_debug.o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_cached.o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool.o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/allocator.o $(OBJDIR_DEBUG)/__/__/src/vhwd/logging/logger.o $(OBJDIR_DEBUG)/__/__/src/vhwd/logging/log_target.o $(OBJDIR_DEBUG)/__/__/src/vhwd/logging/log_console.o $(OBJDIR_DEBUG)/__/__/src/vhwd/ipc/shm.o $(OBJDIR_DEBUG)/__/__/src/vhwd/ipc/pipe.o
 
-OBJ_RELEASE = $(OBJDIR_RELEASE)/__/__/src/vhwd/threading/coroutine_context_gcc_x64.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/variant_array.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/variant.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/scanner.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/parser_visitor.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/parser.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/module_type_table.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/module_type_string.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/module_type_number.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/module_type_compound.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/module_type.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/module_os.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/module_math.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/module_io.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/module_array.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/executor.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/codegen_generator_rvalue.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/codegen_generator_lvalue.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/codegen_generator.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/codegen_analyzer.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/codegen.o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/socket.o $(OBJDIR_RELEASE)/__/__/src/vhwd/xml/xml_parser.o $(OBJDIR_RELEASE)/__/__/src/vhwd/xml/xml_node.o $(OBJDIR_RELEASE)/__/__/src/vhwd/xml/xml_document.o $(OBJDIR_RELEASE)/__/__/src/vhwd/xml/xml_attribute.o $(OBJDIR_RELEASE)/__/__/src/vhwd/threading/thread_pool.o $(OBJDIR_RELEASE)/__/__/src/vhwd/threading/thread_mutex.o $(OBJDIR_RELEASE)/__/__/src/vhwd/threading/thread_manager.o $(OBJDIR_RELEASE)/__/__/src/vhwd/threading/thread_impl.o $(OBJDIR_RELEASE)/__/__/src/vhwd/threading/thread.o $(OBJDIR_RELEASE)/__/__/src/vhwd/threading/coroutine.o $(OBJDIR_RELEASE)/__/__/src/vhwd/testing/test_mgr.o $(OBJDIR_RELEASE)/__/__/src/vhwd/testing/test.o $(OBJDIR_RELEASE)/__/__/src/vhwd/serialization/serializer_stream.o $(OBJDIR_RELEASE)/__/__/src/vhwd/serialization/serializer_socket.o $(OBJDIR_RELEASE)/__/__/src/vhwd/serialization/serializer_buffer.o $(OBJDIR_RELEASE)/__/__/src/vhwd/serialization/serializer.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/variant_table.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/variant_op2.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/variant_op1.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/variant_data.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/variant_code.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/variant_class.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/system.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/stringbuffer.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/string_impl.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/string.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/object_info.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/object_data.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/object.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/language.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/file.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/exception.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/console.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/codecvt_gbktable.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/codecvt.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/clock.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/bitlfags.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/basic.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/atomic.o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/session_udp.o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/session_tcp.o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/session_server.o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/session_client.o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/session.o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/overlapped.o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/ipaddress.o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/iocp1.o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_paging.o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_pageinfo.o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_malloc.o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_link.o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_fixedsize.o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_debug.o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_cache.o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/allocator.o $(OBJDIR_RELEASE)/__/__/src/vhwd/logging/logger.o $(OBJDIR_RELEASE)/__/__/src/vhwd/logging/log_target.o $(OBJDIR_RELEASE)/__/__/src/vhwd/logging/log_console.o $(OBJDIR_RELEASE)/__/__/src/vhwd/ipc/shm.o $(OBJDIR_RELEASE)/__/__/src/vhwd/ipc/pipe.o $(OBJDIR_RELEASE)/__/__/src/vhwd/collection/collection.o
+OBJ_RELEASE = $(OBJDIR_RELEASE)/__/__/src/vhwd/threading/coroutine_context_gcc_x64.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/variant_array.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/variant.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/scanner.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/parser_visitor.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/parser.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/module_type_table.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/module_type_string.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/module_type_number.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/module_type_compound.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/module_type.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/module_os.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/module_math.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/module_io.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/module_array.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/executor.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/codegen_generator_rvalue.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/codegen_generator_lvalue.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/codegen_generator.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/codegen_analyzer.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/codegen.o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/socket.o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/session_udp.o $(OBJDIR_RELEASE)/__/__/src/vhwd/xml/xml_parser.o $(OBJDIR_RELEASE)/__/__/src/vhwd/xml/xml_node.o $(OBJDIR_RELEASE)/__/__/src/vhwd/xml/xml_document.o $(OBJDIR_RELEASE)/__/__/src/vhwd/xml/xml_attribute.o $(OBJDIR_RELEASE)/__/__/src/vhwd/threading/thread_pool.o $(OBJDIR_RELEASE)/__/__/src/vhwd/threading/thread_mutex.o $(OBJDIR_RELEASE)/__/__/src/vhwd/threading/thread_manager.o $(OBJDIR_RELEASE)/__/__/src/vhwd/threading/thread_impl.o $(OBJDIR_RELEASE)/__/__/src/vhwd/threading/thread.o $(OBJDIR_RELEASE)/__/__/src/vhwd/threading/coroutine.o $(OBJDIR_RELEASE)/__/__/src/vhwd/testing/test_mgr.o $(OBJDIR_RELEASE)/__/__/src/vhwd/testing/test.o $(OBJDIR_RELEASE)/__/__/src/vhwd/serialization/serializer_stream.o $(OBJDIR_RELEASE)/__/__/src/vhwd/serialization/serializer_socket.o $(OBJDIR_RELEASE)/__/__/src/vhwd/serialization/serializer_buffer.o $(OBJDIR_RELEASE)/__/__/src/vhwd/serialization/serializer.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/variant_table.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/variant_op2.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/variant_op1.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/variant_data.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/variant_code.o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/variant_class.o $(OBJDIR_RELEASE)/__/__/src/vhwd/collection/collection.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/system.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/stringbuffer.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/string_impl.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/string.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/object_info.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/object_data.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/object.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/language.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/file.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/exception.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/console.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/codecvt_gbktable.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/codecvt.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/clock.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/bitlfags.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/basic.o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/atomic.o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/session_tcp.o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/session_server.o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/session_client.o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/session.o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/overlapped.o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/ipaddress.o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/iocp1.o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_slot.o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_pgmap.o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_paging.o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_malloc.o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_link.o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_debug.o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_cached.o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool.o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/allocator.o $(OBJDIR_RELEASE)/__/__/src/vhwd/logging/logger.o $(OBJDIR_RELEASE)/__/__/src/vhwd/logging/log_target.o $(OBJDIR_RELEASE)/__/__/src/vhwd/logging/log_console.o $(OBJDIR_RELEASE)/__/__/src/vhwd/ipc/shm.o $(OBJDIR_RELEASE)/__/__/src/vhwd/ipc/pipe.o
 
 all: debug release
 
@@ -56,11 +56,11 @@ before_debug:
 	test -d $(OBJDIR_DEBUG)/__/__/src/vhwd/threading || mkdir -p $(OBJDIR_DEBUG)/__/__/src/vhwd/threading
 	test -d $(OBJDIR_DEBUG)/__/__/src/vhwd/testing || mkdir -p $(OBJDIR_DEBUG)/__/__/src/vhwd/testing
 	test -d $(OBJDIR_DEBUG)/__/__/src/vhwd/serialization || mkdir -p $(OBJDIR_DEBUG)/__/__/src/vhwd/serialization
+	test -d $(OBJDIR_DEBUG)/__/__/src/vhwd/collection || mkdir -p $(OBJDIR_DEBUG)/__/__/src/vhwd/collection
 	test -d $(OBJDIR_DEBUG)/__/__/src/vhwd/basic || mkdir -p $(OBJDIR_DEBUG)/__/__/src/vhwd/basic
 	test -d $(OBJDIR_DEBUG)/__/__/src/vhwd/memory || mkdir -p $(OBJDIR_DEBUG)/__/__/src/vhwd/memory
 	test -d $(OBJDIR_DEBUG)/__/__/src/vhwd/logging || mkdir -p $(OBJDIR_DEBUG)/__/__/src/vhwd/logging
 	test -d $(OBJDIR_DEBUG)/__/__/src/vhwd/ipc || mkdir -p $(OBJDIR_DEBUG)/__/__/src/vhwd/ipc
-	test -d $(OBJDIR_DEBUG)/__/__/src/vhwd/collection || mkdir -p $(OBJDIR_DEBUG)/__/__/src/vhwd/collection
 
 after_debug: 
 
@@ -135,6 +135,9 @@ $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/codegen.o: ../../src/vhwd/scripting/cod
 $(OBJDIR_DEBUG)/__/__/src/vhwd/net/socket.o: ../../src/vhwd/net/socket.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/net/socket.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/socket.o
 
+$(OBJDIR_DEBUG)/__/__/src/vhwd/net/session_udp.o: ../../src/vhwd/net/session_udp.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/net/session_udp.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/session_udp.o
+
 $(OBJDIR_DEBUG)/__/__/src/vhwd/xml/xml_parser.o: ../../src/vhwd/xml/xml_parser.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/xml/xml_parser.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/xml/xml_parser.o
 
@@ -201,6 +204,9 @@ $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/variant_code.o: ../../src/vhwd/scriptin
 $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/variant_class.o: ../../src/vhwd/scripting/variant_class.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/scripting/variant_class.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/scripting/variant_class.o
 
+$(OBJDIR_DEBUG)/__/__/src/vhwd/collection/collection.o: ../../src/vhwd/collection/collection.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/collection/collection.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/collection/collection.o
+
 $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/system.o: ../../src/vhwd/basic/system.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/basic/system.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/system.o
 
@@ -252,9 +258,6 @@ $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/basic.o: ../../src/vhwd/basic/basic.cpp
 $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/atomic.o: ../../src/vhwd/basic/atomic.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/basic/atomic.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/basic/atomic.o
 
-$(OBJDIR_DEBUG)/__/__/src/vhwd/net/session_udp.o: ../../src/vhwd/net/session_udp.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/net/session_udp.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/session_udp.o
-
 $(OBJDIR_DEBUG)/__/__/src/vhwd/net/session_tcp.o: ../../src/vhwd/net/session_tcp.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/net/session_tcp.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/session_tcp.o
 
@@ -276,11 +279,14 @@ $(OBJDIR_DEBUG)/__/__/src/vhwd/net/ipaddress.o: ../../src/vhwd/net/ipaddress.cpp
 $(OBJDIR_DEBUG)/__/__/src/vhwd/net/iocp1.o: ../../src/vhwd/net/iocp1.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/net/iocp1.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/net/iocp1.o
 
+$(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_slot.o: ../../src/vhwd/memory/mempool_slot.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/memory/mempool_slot.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_slot.o
+
+$(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_pgmap.o: ../../src/vhwd/memory/mempool_pgmap.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/memory/mempool_pgmap.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_pgmap.o
+
 $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_paging.o: ../../src/vhwd/memory/mempool_paging.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/memory/mempool_paging.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_paging.o
-
-$(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_pageinfo.o: ../../src/vhwd/memory/mempool_pageinfo.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/memory/mempool_pageinfo.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_pageinfo.o
 
 $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_malloc.o: ../../src/vhwd/memory/mempool_malloc.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/memory/mempool_malloc.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_malloc.o
@@ -288,14 +294,14 @@ $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_malloc.o: ../../src/vhwd/memory/me
 $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_link.o: ../../src/vhwd/memory/mempool_link.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/memory/mempool_link.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_link.o
 
-$(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_fixedsize.o: ../../src/vhwd/memory/mempool_fixedsize.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/memory/mempool_fixedsize.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_fixedsize.o
-
 $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_debug.o: ../../src/vhwd/memory/mempool_debug.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/memory/mempool_debug.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_debug.o
 
-$(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_cache.o: ../../src/vhwd/memory/mempool_cache.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/memory/mempool_cache.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_cache.o
+$(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_cached.o: ../../src/vhwd/memory/mempool_cached.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/memory/mempool_cached.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool_cached.o
+
+$(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool.o: ../../src/vhwd/memory/mempool.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/memory/mempool.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/mempool.o
 
 $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/allocator.o: ../../src/vhwd/memory/allocator.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/memory/allocator.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/memory/allocator.o
@@ -315,9 +321,6 @@ $(OBJDIR_DEBUG)/__/__/src/vhwd/ipc/shm.o: ../../src/vhwd/ipc/shm.cpp
 $(OBJDIR_DEBUG)/__/__/src/vhwd/ipc/pipe.o: ../../src/vhwd/ipc/pipe.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/ipc/pipe.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/ipc/pipe.o
 
-$(OBJDIR_DEBUG)/__/__/src/vhwd/collection/collection.o: ../../src/vhwd/collection/collection.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c ../../src/vhwd/collection/collection.cpp -o $(OBJDIR_DEBUG)/__/__/src/vhwd/collection/collection.o
-
 clean_debug: 
 	rm -f $(OBJ_DEBUG) $(OUT_DEBUG)
 	rm -rf ../../lib/Linux
@@ -327,11 +330,11 @@ clean_debug:
 	rm -rf $(OBJDIR_DEBUG)/__/__/src/vhwd/threading
 	rm -rf $(OBJDIR_DEBUG)/__/__/src/vhwd/testing
 	rm -rf $(OBJDIR_DEBUG)/__/__/src/vhwd/serialization
+	rm -rf $(OBJDIR_DEBUG)/__/__/src/vhwd/collection
 	rm -rf $(OBJDIR_DEBUG)/__/__/src/vhwd/basic
 	rm -rf $(OBJDIR_DEBUG)/__/__/src/vhwd/memory
 	rm -rf $(OBJDIR_DEBUG)/__/__/src/vhwd/logging
 	rm -rf $(OBJDIR_DEBUG)/__/__/src/vhwd/ipc
-	rm -rf $(OBJDIR_DEBUG)/__/__/src/vhwd/collection
 
 before_release: 
 	test -d ../../lib/Linux || mkdir -p ../../lib/Linux
@@ -341,11 +344,11 @@ before_release:
 	test -d $(OBJDIR_RELEASE)/__/__/src/vhwd/threading || mkdir -p $(OBJDIR_RELEASE)/__/__/src/vhwd/threading
 	test -d $(OBJDIR_RELEASE)/__/__/src/vhwd/testing || mkdir -p $(OBJDIR_RELEASE)/__/__/src/vhwd/testing
 	test -d $(OBJDIR_RELEASE)/__/__/src/vhwd/serialization || mkdir -p $(OBJDIR_RELEASE)/__/__/src/vhwd/serialization
+	test -d $(OBJDIR_RELEASE)/__/__/src/vhwd/collection || mkdir -p $(OBJDIR_RELEASE)/__/__/src/vhwd/collection
 	test -d $(OBJDIR_RELEASE)/__/__/src/vhwd/basic || mkdir -p $(OBJDIR_RELEASE)/__/__/src/vhwd/basic
 	test -d $(OBJDIR_RELEASE)/__/__/src/vhwd/memory || mkdir -p $(OBJDIR_RELEASE)/__/__/src/vhwd/memory
 	test -d $(OBJDIR_RELEASE)/__/__/src/vhwd/logging || mkdir -p $(OBJDIR_RELEASE)/__/__/src/vhwd/logging
 	test -d $(OBJDIR_RELEASE)/__/__/src/vhwd/ipc || mkdir -p $(OBJDIR_RELEASE)/__/__/src/vhwd/ipc
-	test -d $(OBJDIR_RELEASE)/__/__/src/vhwd/collection || mkdir -p $(OBJDIR_RELEASE)/__/__/src/vhwd/collection
 
 after_release: 
 
@@ -354,9 +357,9 @@ release: before_release out_release after_release
 out_release: before_release $(OBJ_RELEASE) $(DEP_RELEASE)
 	$(AR) rcs $(OUT_RELEASE) $(OBJ_RELEASE)
 
+
 $(OBJDIR_RELEASE)/__/__/src/vhwd/threading/coroutine_context_gcc_x64.o: ../../src/vhwd/threading/coroutine_context_gcc_x64.S
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/threading/coroutine_context_gcc_x64.S -o $(OBJDIR_RELEASE)/__/__/src/vhwd/threading/coroutine_context_gcc_x64.o
-
 
 $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/variant_array.o: ../../src/vhwd/scripting/variant_array.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/scripting/variant_array.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/variant_array.o
@@ -420,6 +423,9 @@ $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/codegen.o: ../../src/vhwd/scripting/c
 
 $(OBJDIR_RELEASE)/__/__/src/vhwd/net/socket.o: ../../src/vhwd/net/socket.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/net/socket.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/socket.o
+
+$(OBJDIR_RELEASE)/__/__/src/vhwd/net/session_udp.o: ../../src/vhwd/net/session_udp.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/net/session_udp.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/session_udp.o
 
 $(OBJDIR_RELEASE)/__/__/src/vhwd/xml/xml_parser.o: ../../src/vhwd/xml/xml_parser.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/xml/xml_parser.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/xml/xml_parser.o
@@ -487,6 +493,9 @@ $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/variant_code.o: ../../src/vhwd/script
 $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/variant_class.o: ../../src/vhwd/scripting/variant_class.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/scripting/variant_class.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/scripting/variant_class.o
 
+$(OBJDIR_RELEASE)/__/__/src/vhwd/collection/collection.o: ../../src/vhwd/collection/collection.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/collection/collection.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/collection/collection.o
+
 $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/system.o: ../../src/vhwd/basic/system.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/basic/system.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/system.o
 
@@ -538,9 +547,6 @@ $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/basic.o: ../../src/vhwd/basic/basic.cpp
 $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/atomic.o: ../../src/vhwd/basic/atomic.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/basic/atomic.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/basic/atomic.o
 
-$(OBJDIR_RELEASE)/__/__/src/vhwd/net/session_udp.o: ../../src/vhwd/net/session_udp.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/net/session_udp.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/session_udp.o
-
 $(OBJDIR_RELEASE)/__/__/src/vhwd/net/session_tcp.o: ../../src/vhwd/net/session_tcp.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/net/session_tcp.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/session_tcp.o
 
@@ -562,11 +568,14 @@ $(OBJDIR_RELEASE)/__/__/src/vhwd/net/ipaddress.o: ../../src/vhwd/net/ipaddress.c
 $(OBJDIR_RELEASE)/__/__/src/vhwd/net/iocp1.o: ../../src/vhwd/net/iocp1.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/net/iocp1.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/net/iocp1.o
 
+$(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_slot.o: ../../src/vhwd/memory/mempool_slot.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/memory/mempool_slot.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_slot.o
+
+$(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_pgmap.o: ../../src/vhwd/memory/mempool_pgmap.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/memory/mempool_pgmap.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_pgmap.o
+
 $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_paging.o: ../../src/vhwd/memory/mempool_paging.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/memory/mempool_paging.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_paging.o
-
-$(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_pageinfo.o: ../../src/vhwd/memory/mempool_pageinfo.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/memory/mempool_pageinfo.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_pageinfo.o
 
 $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_malloc.o: ../../src/vhwd/memory/mempool_malloc.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/memory/mempool_malloc.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_malloc.o
@@ -574,14 +583,14 @@ $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_malloc.o: ../../src/vhwd/memory/
 $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_link.o: ../../src/vhwd/memory/mempool_link.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/memory/mempool_link.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_link.o
 
-$(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_fixedsize.o: ../../src/vhwd/memory/mempool_fixedsize.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/memory/mempool_fixedsize.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_fixedsize.o
-
 $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_debug.o: ../../src/vhwd/memory/mempool_debug.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/memory/mempool_debug.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_debug.o
 
-$(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_cache.o: ../../src/vhwd/memory/mempool_cache.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/memory/mempool_cache.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_cache.o
+$(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_cached.o: ../../src/vhwd/memory/mempool_cached.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/memory/mempool_cached.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool_cached.o
+
+$(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool.o: ../../src/vhwd/memory/mempool.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/memory/mempool.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/mempool.o
 
 $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/allocator.o: ../../src/vhwd/memory/allocator.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/memory/allocator.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/memory/allocator.o
@@ -601,9 +610,6 @@ $(OBJDIR_RELEASE)/__/__/src/vhwd/ipc/shm.o: ../../src/vhwd/ipc/shm.cpp
 $(OBJDIR_RELEASE)/__/__/src/vhwd/ipc/pipe.o: ../../src/vhwd/ipc/pipe.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/ipc/pipe.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/ipc/pipe.o
 
-$(OBJDIR_RELEASE)/__/__/src/vhwd/collection/collection.o: ../../src/vhwd/collection/collection.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c ../../src/vhwd/collection/collection.cpp -o $(OBJDIR_RELEASE)/__/__/src/vhwd/collection/collection.o
-
 clean_release: 
 	rm -f $(OBJ_RELEASE) $(OUT_RELEASE)
 	rm -rf ../../lib/Linux
@@ -613,11 +619,11 @@ clean_release:
 	rm -rf $(OBJDIR_RELEASE)/__/__/src/vhwd/threading
 	rm -rf $(OBJDIR_RELEASE)/__/__/src/vhwd/testing
 	rm -rf $(OBJDIR_RELEASE)/__/__/src/vhwd/serialization
+	rm -rf $(OBJDIR_RELEASE)/__/__/src/vhwd/collection
 	rm -rf $(OBJDIR_RELEASE)/__/__/src/vhwd/basic
 	rm -rf $(OBJDIR_RELEASE)/__/__/src/vhwd/memory
 	rm -rf $(OBJDIR_RELEASE)/__/__/src/vhwd/logging
 	rm -rf $(OBJDIR_RELEASE)/__/__/src/vhwd/ipc
-	rm -rf $(OBJDIR_RELEASE)/__/__/src/vhwd/collection
 
 .PHONY: before_debug after_debug clean_debug before_release after_release clean_release
 

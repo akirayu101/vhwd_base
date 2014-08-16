@@ -150,19 +150,10 @@
     <ClCompile Include="..\..\src\vhwd\memory\allocator.cpp">
       <Filter>src\vhwd\memory</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\vhwd\memory\mempool_cache.cpp">
-      <Filter>src\vhwd\memory</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\vhwd\memory\mempool_debug.cpp">
       <Filter>src\vhwd\memory</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\vhwd\memory\mempool_fixedsize.cpp">
-      <Filter>src\vhwd\memory</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\vhwd\memory\mempool_link.cpp">
-      <Filter>src\vhwd\memory</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\vhwd\memory\mempool_pageinfo.cpp">
       <Filter>src\vhwd\memory</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\vhwd\memory\mempool_paging.cpp">
@@ -329,6 +320,18 @@
     </ClCompile>
     <ClCompile Include="..\..\src\vhwd\scripting\executor.cpp">
       <Filter>src\vhwd\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\memory\mempool_pgmap.cpp">
+      <Filter>src\vhwd\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\memory\mempool_slot.cpp">
+      <Filter>src\vhwd\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\memory\mempool.cpp">
+      <Filter>src\vhwd\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\memory\mempool_cached.cpp">
+      <Filter>src\vhwd\memory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -664,6 +667,9 @@
     </ClInclude>
     <ClInclude Include="..\..\inc\vhwd\scripting\instruction.h">
       <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\vhwd\memory\mempool_link.h">
+      <Filter>src\vhwd\memory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -30,6 +30,12 @@
 #define MACRO2STR(x) MACRO2STR_ESC(x)
 #define MACRO2STR_ESC(x) #x
 
+#ifdef _MSC_VER
+#define VWHD_ATTRIBUTE(X) __declspec(X)
+#else
+#define VWHD_ATTRIBUTE(X) __attribute__((X))
+#endif
+
 #ifdef VHWD_DLL
 #ifdef _MSC_VER
 #define VHWD_EXPORT __declspec(dllexport)
@@ -67,7 +73,19 @@ typedef unsigned int uint32_t;
 typedef __int64 int64_t;
 typedef unsigned __int64 uint64_t;
 
-typedef tl::meta_if<sizeof(void*)==4,int32_t,int64_t>::type intptr_t;
+
+#ifndef _UINTPTR_T_DEFINED
+#ifdef  _WIN64
+typedef uint64_t uintptr_t;
+typedef int64_t intptr_t;
+#else
+typedef uint32_t uintptr_t;
+typedef int32_t intptr_t;
+#endif
+#define _UINTPTR_T_DEFINED
+#endif
+
+
 
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
@@ -218,7 +236,7 @@ public:
 	static const int count=N;
 
 	typedef T type1;
-	typedef typename tl::meta_if<sizeof(T)==8,uint64_t,uint32_t>::type type2;
+	typedef uintptr_t type2;
 	static inline uint32_t hash(const void* p)
 	{
 		const type1 *pdata  = (const type1*)p;

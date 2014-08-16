@@ -17,7 +17,6 @@ extern uint16_t g_uni_table[1024*64];
 void GBKTable_init()
 {
 	if(g_uni_table[0]!=0) return;
-
 	for(size_t i=0; i<gbk_ke1*gbk_ke2; i++)
 	{
 		size_t b1=(i/gbk_ke2)+0x81;
@@ -32,6 +31,8 @@ void GBKTable_init()
 template<typename WC>
 bool IConv_unicode_to_gbk(StringBuffer<unsigned char>& aa_,const WC* pw_,size_t ln_)
 {
+	GBKTable_init();
+
 	StringBuffer<unsigned char> dst;
 	dst.resize(ln_*sizeof(WC));
 	unsigned char* pa_=dst.data();

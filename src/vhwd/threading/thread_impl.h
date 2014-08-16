@@ -9,6 +9,7 @@
 
 VHWD_ENTER
 
+class VHWD_DLLIMPEXP MpAllocCachedNoLock;
 
 class VHWD_DLLIMPEXP ThreadImpl : public NonCopyable
 {
@@ -23,13 +24,14 @@ public:
 	static ThreadImpl* get_thread();
 	static bool put_thread(ThreadImpl* impl);
 
-	static ThreadImpl& data();
+	//static ThreadImpl& data();
 
 	static bool activate(Thread& thrd,int n);
 	static bool activate(Thread& thrd,ThreadEx::InvokerGroup& g);
 
 
 	ThreadImpl();
+	ThreadImpl(ThreadManager& tm);
 	~ThreadImpl();
 
 	void set_thread(Thread* p,ThreadEx::factor_type v,int i);
@@ -42,10 +44,11 @@ public:
 	void set_priority(int n);
 	void set_affinity(int n);
 
-	int thrd_rank;
+
 	Thread* thrd_ptr;
 	Logger thrd_logger;
 
+	int thrd_rank;
 	int thrd_priority;
 	int thrd_affinity;
 
@@ -63,34 +66,10 @@ public:
 	LitePtrT<ThreadImpl> pNext;
 	LitePtrT<ThreadImpl> pPrev;
 
-};
-
-class ThreadMain : public Thread
-{
-public:
 	static bool m_bReqExit;
 
-	ThreadMain() {}
-	ThreadMain(const ThreadMain&);
-
-	bool test_destroy()
-	{
-		return m_bReqExit;
-	}
-
-	void reqexit()
-	{
-		m_bReqExit=true;
-	}
-
-	void wait();
-
-	bool activate()
-	{
-		return false;
-	}
-
 };
+
 
 
 VHWD_LEAVE

@@ -25,8 +25,8 @@ public:
 	{
 		val=0;
 	}
-	AtomicIntT(T v):val(v) {}
 
+	AtomicIntT(T v):val(v) {}
 
 	// fetch_add performs value=value+v and return original value
 	type fetch_add(type v);
@@ -84,25 +84,27 @@ public:
 
 	typedef T* type;
 
-	type exchange(type v)
+	inline type exchange(type v)
 	{
 		return (type)impl.exchange((diff_type)v);
 	}
 
-	bool compare_exchange(type& expected,type v)
+	inline bool compare_exchange(type& expected,type v)
 	{
 		return impl.compare_exchange(*(diff_type*)&expected,(diff_type)v);
 	}
 
-	type get()
+	inline type get()
 	{
 		return (type)impl.get();
 	}
-	type load()
+
+	inline type load()
 	{
 		return (type)impl.load();
 	}
-	void store(type v)
+
+	inline void store(type v)
 	{
 		impl.store((diff_type)v);
 	}
@@ -118,7 +120,7 @@ public:
 
 	static const int32_t nSpinCount=1024*1024*32;
 
-	void lock()
+	inline void lock()
 	{
 		while(val.exchange(1)!=0)
 		{
@@ -126,19 +128,19 @@ public:
 		}
 	}
 
-	static void noop();
-
-	bool try_lock()
+	inline bool try_lock()
 	{
 		return val.exchange(1)==0;
 	}
 
-	void unlock()
+	inline void unlock()
 	{
 		int32_t old=val.exchange(0);
 		wassert(old==1);
 		(void)&old;
 	}
+
+	static void noop();
 
 protected:
 	AtomicInt32 val;

@@ -14,7 +14,7 @@ class kvar_stack
 public:
 
 	arr_1t<Variant> tbl;
-	arr_1t<size_t> vbp;
+	arr_1t<intptr_t> vbp;
 	intptr_t nsp;
 
 	kvar_stack();

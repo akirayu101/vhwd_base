@@ -1,6 +1,7 @@
 #include "mempool_impl.h"
+#include "vhwd/threading/thread_manager.h"
+#include "vhwd/threading/thread.h"
 #include "vhwd/basic/lockguard.h"
-#include "vhwd/threading/thread_spin.h"
 #include "vhwd/basic/system.h"
 
 
@@ -9,344 +10,508 @@
 #else
 #include <sys/mman.h>
 #include <cstring>
-#include <cerrno>
-#endif
-
-#ifdef new
-#undef new
 #endif
 
 
 VHWD_ENTER
 
-#ifdef _WIN32
 
-
-void* heap_alloc(size_t nSize_)
+void MpAllocGlobal::init()
 {
-	void* pMem_ = ::VirtualAlloc(NULL, nSize_, MEM_COMMIT, PAGE_READWRITE );
-	if(pMem_)
+	spanalloc.alloc_batch();
+
+	size_t k1=0;
+	size_t k2=0;
+	for(size_t i=0;i<sl_size;i++)
 	{
-		return pMem_;
+		size_t sz=FixAllocUnits[i];
+		aSlots[i].init(sz);
+
+		if(sz<=sz_slot1)
+		{
+			size_t kn=sz>>sz_bits1;
+			for(size_t k=k1;k<=kn;k++)
+			{
+				pSlot1[k]=&aSlots[i];
+			}
+			k1=kn+1;
+		}
+		else if(sz<=sz_slot2)
+		{
+			size_t kn=sz>>sz_bits2;
+			for(size_t k=k2;k<=kn;k++)
+			{
+				pSlot2[k]=&aSlots[i];
+			}
+			k2=kn+1;
+		}
+	}
+}
+
+
+MpAllocNode* MpAllocGlobal::dealloc_batch_nolock(MpAllocSlot& sl,MpAllocNode* fp,size_t sz)
+{
+
+	while(fp)
+	{
+		if(sz==0)
+		{
+			return fp;
+		}
+		sz--;
+
+		MpAllocNode* fn=fp;fp=fp->nd_next;
+		MpAllocBucket* pbk=pgmap.find_bucket(fn);
+
+		if(!pbk||pbk->get()->sl_slot!=&sl)
+		{
+			System::LogError("dealloc_batch failed");
+			// drop link;
+			return NULL;
+		}
+
+		MpAllocSpan* sp=pbk->get();
+		fn->nd_next=sp->nd_free;
+		sp->nd_free=fn;
+
+		if(!fn->nd_next)
+		{
+			sp->sl_next=sl.sp_head;
+			sp->sl_prev=NULL;
+			sl.sp_head=sp;
+			if(sp->sl_next)
+			{
+				sp->sl_next->sl_prev=sp;
+			}
+		}
+
+		if(--sp->nd_nnum!=0||sp->sl_next==NULL)
+		{
+			continue;
+		}
+
+		if(sl.sp_head==sp)
+		{
+			sl.sp_head=sp->sl_next;
+			sp->sl_next->sl_prev=NULL;
+		}
+		else
+		{
+			sp->sl_next->sl_prev=sp->sl_prev;
+			sp->sl_prev->sl_next=sp->sl_next;
+		}		
+
+
+		pbk->set(NULL);
+
+		if(sp->sp_flag.get_fly())
+		{
+			page_free(reinterpret_cast<void*>(sp->sp_base),sp->sp_size);
+			MpAllocConfig::lock_type lock1(span_spin);
+			spanalloc.dealloc(sp);
+		}
+		else
+		{
+			page_free(reinterpret_cast<void*>(sp->sp_base),sp->sp_size);
+		}
 	}
 
-	int ret=::GetLastError();
-	System::LogTrace("VirtualAlloc failed: ret=%d",ret);
 	return NULL;
 }
 
-void heap_free(void* pMem_,size_t)
+
+MpAllocNode* MpAllocGlobal::alloc_small_batch(MpAllocSlot& sl,size_t& sz)
 {
-	if(::VirtualFree(pMem_, 0, MEM_RELEASE)==0)
+	MpAllocConfig::lock_type lock1(sl.sl_spin);
+	if(!sl.sp_head)
 	{
-		System::LogTrace("VirtualFree failed: ptr=%p",pMem_);
+		sl.sp_head=create_span_nolock(sl);
+		if(!sl.sp_head)
+		{
+			return NULL;
+		}
 	}
+	
+	sz=sl.nd_nall-sl.sp_head->nd_nnum;
+
+	MpAllocNode* nd=sl.sp_head->nd_free;
+	sl.sp_head->nd_free=NULL;
+	sl.sp_head->nd_nnum=sl.nd_nall;
+	
+	sl.sp_head=sl.sp_head->sl_next;
+	if(sl.sp_head)
+	{
+		sl.sp_head->sl_prev=NULL;
+	}
+
+	return nd;
 }
 
-void heap_protect(void* pMem_,size_t nSize_,bool f)
+
+
+void* MpAllocGlobal::realloc_real(void* p,size_t n,MpAllocBucket& bk)
 {
-	DWORD old;
-	VirtualProtect(pMem_,nSize_,f?PAGE_READONLY:PAGE_READWRITE,&old);
-}
+	MpAllocSpan* sp=bk.get();
+	size_t n0=0;
+	if(sp->sl_slot)
+	{
+		n0=sp->sl_slot->nd_size;
+	}
+	else if(sp->sp_flag.get_fly())
+	{
+		n0=sp->sp_size-sizeof(MpAllocSpan);
+	}
+	else
+	{
+		n0=sp->sp_size;
+	}
 
-#else
-
-void* heap_alloc(size_t nSize)
-{
-
-	void* p=mmap(NULL,nSize,PROT_READ|PROT_WRITE,MAP_PRIVATE|MAP_ANONYMOUS,-1,0);
-
-	if(p!=MAP_FAILED)
+	if(n<=n0)
 	{
 		return p;
 	}
 
-	int ret=errno;
-	System::LogTrace("mmap failed: %s",strerror(ret));
-	return NULL;
-}
+	void* m=alloc(n);
 
-void heap_protect(void* pMem_,size_t nSize_,bool f)
-{
-	mprotect (pMem_, nSize_, f?PROT_READ:(PROT_READ|PROT_WRITE));
-}
-
-void heap_free(void* p,size_t s)
-{
-	munmap(p,s);
-}
-#endif
-
-
-
-void MemPoolPaging::_init()
-{
-	if(m_nFixedSizeMax!=0) return;
-
-	MemPageCache& mpc(MemPageCache::current());
-	mpc._init();
-
-	m_bCustom=false;
-	m_nFixedSizeCount=mpc.m_nFixedSizeCount;
-	m_nFixedSizeMax=mpc.m_nFixedSizeMax;
-	m_pSlots=mpc.m_pSlots;
-	m_aSlots=mpc.m_aSlots;
-}
-
-MemPoolPaging::MemPoolPaging()
-{
-	m_nFixedSizeMax=0;
-	_init();
-}
-
-MemPoolPaging::~MemPoolPaging()
-{
-	if(!m_bCustom) return;
-
-	for(size_t i=0; i<m_nFixedSizeCount; i++)
+	if(!m)
 	{
-		if(m_aSlots[i].pPageList!=NULL)
-		{
-			System::LogTrace("MemPool not empty in destructor");
-		}
-		else
-		{
-			m_aSlots[i].~FixedSizeAllocatorUnit();
-		}
+		return NULL;
 	}
-	::free(m_pSlots);
-	::free(m_aSlots);
+
+	memcpy(m,p,n0);
+	dealloc_real(p,bk);
+	return m;
 }
 
 
 
-void* MemPoolPaging::allocate(size_t nSize)
+void MpAllocGlobal::dealloc_real(void* p,MpAllocBucket& bk)
 {
-
-	if(nSize>m_nFixedSizeMax)
+	MpAllocSpan* sp=bk.get();
+	if(sp->sl_slot)
 	{
-		if(m_nFixedSizeMax==0)
+		MpAllocSlot& sl(*sp->sl_slot);
+		MpAllocConfig::lock_type lock1(sl.sl_spin);
+
+		MpAllocNode* fn=(MpAllocNode*)p;
+		fn->nd_next=sp->nd_free;
+		sp->nd_free=fn;
+
+		if(!fn->nd_next)
 		{
-			_init();
-			if(nSize>m_nFixedSizeMax)
+			sp->sl_next=sl.sp_head;
+			sp->sl_prev=NULL;
+			sl.sp_head=sp;
+			if(sp->sl_next)
 			{
-				return MemPoolMalloc::allocate(nSize);
+				sp->sl_next->sl_prev=sp;
 			}
 		}
+
+		if(--sp->nd_nnum!=0||sp->sl_next==NULL)
+		{
+			return;
+		}
+
+		if(sl.sp_head==sp)
+		{
+			sl.sp_head=sp->sl_next;
+			sp->sl_next->sl_prev=NULL;
+		}
 		else
 		{
-			return MemPoolMalloc::allocate(nSize);
+			sp->sl_next->sl_prev=sp->sl_prev;
+			sp->sl_prev->sl_next=sp->sl_next;
 		}
 	}
 
-	FixedSizeAllocatorUnit& sl(*m_pSlots[nSize]);
-	FixedSizeAllocatorUnit::LockType lock1(sl.tSpin);
-
-	if(!sl.pPageList)
+	bk.set(NULL);
+	if(sp->sp_flag.get_fly())
 	{
-		MemPageInfo* mi=MemPageInfo::CreatePage(sl);
-		MemPageCache::current().append(mi);
-		sl.pPageList=mi;
+		page_free(reinterpret_cast<void*>(sp->sp_base),sp->sp_size);
+		MpAllocConfig::lock_type lock1(span_spin);
+		spanalloc.dealloc(sp);
+	}
+	else
+	{
+		page_free(reinterpret_cast<void*>(sp->sp_base),sp->sp_size);
 	}
 
-	MemPageInfo* mi=sl.pPageList;
-	void* p=mi->pFreeList;
-	mi->pFreeList=mi->pFreeList->pNext;
-	mi->nUsedCount++;
+}
 
-	if(!mi->pFreeList)
+
+void* MpAllocGlobal::alloc_small(size_t n,MpAllocSlot& sl)
+{
+	wassert(n<=sl.nd_size);
+	MpAllocConfig::lock_type lock1(sl.sl_spin);
+	if(!sl.sp_head)
 	{
-		sl.pPageList=sl.pPageList->pNext;
-		if(sl.pPageList)
+		sl.sp_head=create_span_nolock(sl);
+		if(!sl.sp_head)
 		{
-			sl.pPageList->pPrev=NULL;
+			return NULL;
 		}
+	}
+		
+	MpAllocNode* nd=sl.sp_head->nd_free;
+	sl.sp_head->nd_free=nd->nd_next;
+	sl.sp_head->nd_nnum++;
+
+	if(!sl.sp_head->nd_free)
+	{
+		sl.sp_head=sl.sp_head->sl_next;
+		if(sl.sp_head)
+		{
+			sl.sp_head->sl_prev=NULL;
+		}
+	}
+
+	return nd;
+}
+
+void* MpAllocGlobal::alloc_large(size_t n)
+{
+	size_t sz=(n+MpAllocConfig::pg_mask)&(~MpAllocConfig::pg_mask);
+	char* p1=(char*)page_alloc(sz);
+
+	if(sz-n>=sizeof(MpAllocSpan))
+	{
+		MpAllocSpan* sp=(MpAllocSpan*)(p1+sz-sizeof(MpAllocSpan));
+		sp->sp_base=reinterpret_cast<uintptr_t>(p1);
+		sp->sp_size=sz-sizeof(MpAllocSpan);
+		sp->sp_flag.set_fly(false);
+		sp->sl_slot=NULL;
+
+		pgmap.insert_span_nolock(sp);
+		return p1;
+	}
+	else
+	{
+		MpAllocSpan* sp;
+		{
+			MpAllocConfig::lock_type lock1(span_spin);
+			sp=spanalloc.alloc();
+		}
+
+		if(!sp)
+		{
+			page_free(p1,sz);
+			return NULL;
+		}
+
+		sp->sp_base=reinterpret_cast<uintptr_t>(p1);
+		sp->sp_size=sz;
+		sp->sl_slot=NULL;
+		sp->sp_flag.set_fly(true);
+
+		pgmap.insert_span_nolock(sp);
+		return p1;
+	}
+}
+
+
+MpAllocSpan* MpAllocGlobal::create_span_nolock(MpAllocSlot& sl)
+{
+	size_t sz=MpAllocConfig::sp_size;
+
+	MpAllocNode* p1=(MpAllocNode*)page_alloc(sz);
+
+	if(!p1)
+	{
+		return NULL;
+	}
+
+	MpAllocSpan* sp;
+	if(sl.sp_flag.get_fly())
+	{
+		MpAllocConfig::lock_type lock1(span_spin);
+		sp=spanalloc.alloc();
+		if(!sp)
+		{
+			page_free(p1,sz);
+			return NULL;
+		}
+		sp->sp_flag.set_fly(true);
+	}
+	else
+	{
+		sp=(MpAllocSpan*)(((char*)p1)+sz-sizeof(MpAllocSpan));
+		sp->sp_flag.set_fly(false);
+	}
+
+	sp->sp_base=reinterpret_cast<uintptr_t>(p1);
+	sp->sp_size=sz;
+	sp->nd_nnum=0;
+	sp->nd_free=p1;
+	sp->sl_slot=&sl;
+	sp->sl_next=NULL;
+	sp->sl_prev=NULL;
+
+	MpAllocNode::link(p1,sl.nd_nall*sl.nd_size,sl.nd_size,NULL);
+
+	pgmap.insert_span_nolock(sp);
+	return sp;
+}
+
+void tc_gc();
+
+void MpAllocGlobal::gc()
+{
+
+	tc_gc();
+
+	for(size_t i=0;i<sl_size;i++)
+	{
+		MpAllocSlot& sl(aSlots[i]);
+		if(!sl.sl_spin.try_lock())
+		{
+			continue;
+		}
+
+		MpAllocSpan* sp=sl.sp_head;
+		while(sp)
+		{
+			if(sp->nd_nnum!=0)
+			{
+				sp=sp->sl_next;
+				continue;
+			}
+
+			MpAllocSpan* kk=sp;
+			sp=sp->sl_next;
+
+			if(sp) sp->sl_prev=kk->sl_prev;
+			if(kk->sl_prev)
+			{
+				kk->sl_prev->sl_next=sp;
+			}
+			else
+			{
+				sl.sp_head=sp;
+			}
+
+			MpAllocBucket* pbk=g_myalloc_impl->pgmap.find_bucket(reinterpret_cast<void*>(kk->sp_base));
+
+			if(pbk)
+			{
+				wassert(pbk->get()==kk);
+				pbk->set(NULL);
+			}
+			else
+			{
+				System::LogError("MpAllocSpan not in pgmap");
+			}
+
+			if(kk->sp_flag.get_fly())
+			{
+				page_free(reinterpret_cast<void*>(kk->sp_base),kk->sp_size);
+				MpAllocConfig::lock_type lock1(span_spin);
+				spanalloc.dealloc(kk);
+			}
+			else
+			{
+				page_free(reinterpret_cast<void*>(kk->sp_base),kk->sp_size);
+			}
+		}
+		sl.sl_spin.unlock();
+	}
+
+}
+
+
+
+MpAllocGlobal *g_myalloc_impl=NULL;
+AtomicSpin g_myalloc_spin;
+
+void tc_init();
+
+void mp_init()
+{
+	if(!g_myalloc_impl)
+	{
+
+		LockGuard<AtomicSpin> lock1(g_myalloc_spin);
+		if(g_myalloc_impl) return;
+
+#if defined(_WIN32) && defined(_DEBUG)
+		_CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG)|_CRTDBG_LEAK_CHECK_DF);
+#endif
+		g_myalloc_impl=(MpAllocGlobal*)page_alloc(sizeof(MpAllocGlobal));
+		if(!g_myalloc_impl)
+		{
+			System::LogFetal("Cannot initialize MpAllocGlobal");
+		}
+		g_myalloc_impl->init();
+
+		tc_init();
+	}
+}
+
+VHWD_DLLIMPEXP void* mp_alloc(size_t n)
+{
+	if(!g_myalloc_impl)
+	{
+		mp_init();
+	}
+	void* m=g_myalloc_impl->alloc(n);
+	if(!m)
+	{
+		errno=ENOMEM;
+	}
+	return m;
+}
+
+VHWD_DLLIMPEXP void mp_free(void* p)
+{
+	if(!g_myalloc_impl)
+	{
+		mp_init();
+	}
+	g_myalloc_impl->dealloc(p);
+}
+
+VHWD_DLLIMPEXP void* mp_realloc(void* p,size_t n)
+{
+	if(!g_myalloc_impl)
+	{
+		mp_init();
+	}
+	void* m=g_myalloc_impl->realloc(p,n);
+	if(!m&&n>0)
+	{
+		errno=ENOMEM;
+	}
+	return m;
+}
+
+void mp_init();
+
+void* MemPoolPaging::allocate(size_t n)
+{
+	if(!g_myalloc_impl)
+	{
+		mp_init();
+	}
+
+	void* p=g_myalloc_impl->alloc(n);
+	if(!p)
+	{
+		Exception::XBadAlloc();
 	}
 	return p;
 }
 
 void MemPoolPaging::deallocate(void* p)
 {
-
-
-	if(!p) return;
-
-
-	static MemPageCache& mpc(MemPageCache::current());
-
-	MemPageInfo* mi=mpc.search(p);
-	if(!mi)
+	if(!g_myalloc_impl)
 	{
 		::free(p);
 		return;
 	}
 
-	{
-		FixedSizeAllocatorUnit& sl(*mi->m_pSlot);
-		MemPageNode* pn=(MemPageNode*)p;
-		FixedSizeAllocatorUnit::LockType lock1(sl.tSpin);
-
-		if(!mi->pFreeList)
-		{
-			if(sl.pPageList)
-			{
-				sl.pPageList->pPrev=mi;
-			}
-			wassert(mi->pPrev==NULL);
-			mi->pNext=sl.pPageList;
-			sl.pPageList=mi;
-		}
-
-		pn->pNext=mi->pFreeList;
-		mi->pFreeList=pn;
-
-		if(--mi->nUsedCount!=0||!sl.pPageList->pNext)
-		{
-			return;
-		}
-
-		if(mi->pPrev)
-		{
-			mi->pPrev->pNext=mi->pNext;
-		}
-		else
-		{
-			sl.pPageList=mi->pNext;
-		}
-
-		if(mi->pNext)
-		{
-			mi->pNext->pPrev=mi->pPrev;
-		}
-
-	}
-
-	mpc.remove(mi);
-	MemPageInfo::DestroyPage(mi);
-
+	g_myalloc_impl->dealloc(p);
 }
 
 
-char gInstance_mempoolpaging[sizeof(MemPoolPaging)];
-
-MemPoolPaging& MemPoolPaging::current()
-{
-	return *(MemPoolPaging*)gInstance_mempoolpaging;
-}
-
-
-void* SmallObject::operator new[](size_t nSize)
-{
-	return vhwd::MemPoolPaging::current().allocate(nSize,NULL,-1);
-}
-
-void* SmallObject::operator new(size_t nSize,const char* sFile,int nLine)
-{
-	return vhwd::MemPoolPaging::current().allocate(nSize,sFile,nLine);
-}
-
-void* SmallObject::operator new[](size_t nSize,const char* sFile,int nLine)
-{
-	return vhwd::MemPoolPaging::current().allocate(nSize,sFile,nLine);
-}
-
-void SmallObject::operator delete(void* p,const char*,int)
-{
-	vhwd::MemPoolPaging::current().deallocate(p);
-}
-void SmallObject::operator delete[](void* p,const char*,int)
-{
-	vhwd::MemPoolPaging::current().deallocate(p);
-}
-void* SmallObject::operator new(size_t nSize)
-{
-	return vhwd::MemPoolPaging::current().allocate(nSize,NULL,-1);
-}
-
-void SmallObject::operator delete(void* p)
-{
-	vhwd::MemPoolPaging::current().deallocate(p);
-}
-
-void SmallObject::operator delete[](void* p)
-{
-	vhwd::MemPoolPaging::current().deallocate(p);
-}
-
-void* SmallObject::operator new(size_t s,void* p)
-{
-	(void)&s;
-	return p;
-}
-
-void SmallObject::operator delete(void*,void*) {}
 
 VHWD_LEAVE
-
-#if defined(VHWD_MEMDEBUG) || defined(VHWD_MEMUSEPOOL)
-
-
-
-void* operator new(size_t nSize)
-{
-	return vhwd::MemPool::current().allocate(nSize);
-}
-
-void operator delete(void* p)
-{
-	vhwd::MemPool::current().deallocate(p);
-}
-
-void* operator new(size_t nSize,const char* sFile,int nLine)
-{
-	return vhwd::MemPool::current().allocate(nSize,sFile,nLine);
-}
-
-void operator delete(void* p,const char*,int)
-{
-	vhwd::MemPool::current().deallocate(p);
-}
-
-void* operator new(size_t nSize,int,const char* sFile,int nLine)
-{
-	return vhwd::MemPool::current().allocate(nSize,sFile,nLine);
-}
-
-void operator delete(void* p,int,const char*,int)
-{
-	vhwd::MemPool::current().deallocate(p);
-}
-
-void* operator new[](size_t nSize)
-{
-	return vhwd::MemPool::current().allocate(nSize);
-}
-
-void operator delete[](void* p)
-{
-	vhwd::MemPool::current().deallocate(p);
-}
-
-void* operator new[](size_t nSize,const char* sFile,int nLine)
-{
-	return vhwd::MemPool::current().allocate(nSize,sFile,nLine);
-}
-
-void operator delete[](void* p,const char*,int)
-{
-	vhwd::MemPool::current().deallocate(p);
-}
-
-void* operator new[](size_t nSize,int,const char* sFile,int nLine)
-{
-	return vhwd::MemPool::current().allocate(nSize,sFile,nLine);
-}
-
-void operator delete[](void* p,int,const char*,int)
-{
-	vhwd::MemPool::current().deallocate(p);
-}
-
-#endif
-
-

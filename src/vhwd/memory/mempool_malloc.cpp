@@ -14,4 +14,9 @@ void* MemPoolMalloc::allocate(size_t size)
 	return pMem;
 }
 
+void MemPoolMalloc::deallocate(void* p)
+{
+	::free(p);
+}
+
 VHWD_LEAVE

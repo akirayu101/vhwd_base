@@ -34,7 +34,7 @@ public:
 	template<typename A2>
 	AllocatorE(const A2& o):A(o) {}
 
-	static const int shiftElem=(sizeof(E)+sizeof(value_type)-1)&~(sizeof(value_type)-1);
+	static const int shiftElem=(sizeof(E)+sizeof(value_type)-1)/(sizeof(value_type));
 
 	inline pointer allocate(size_type n)
 	{

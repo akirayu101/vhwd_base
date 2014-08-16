@@ -13,55 +13,83 @@
 
 VHWD_ENTER
 
+VHWD_DLLIMPEXP void* page_alloc(size_t n);
+VHWD_DLLIMPEXP void page_free(void* p,size_t n);
+
+VHWD_DLLIMPEXP void* mp_alloc(size_t n);
+VHWD_DLLIMPEXP void mp_free(void* p);
+VHWD_DLLIMPEXP void* mp_realloc(void* p,size_t n);
+
+VHWD_DLLIMPEXP void* tc_alloc(size_t n);
+VHWD_DLLIMPEXP void tc_free(void* p);
+VHWD_DLLIMPEXP void* tc_realloc(void* p,size_t n);
+
+
 class VHWD_DLLIMPEXP MemPoolBase
 {
 public:
-	static void set_break_alloc(unsigned n);
+	static void set_break_alloc(unsigned n);	
 };
 
 
-// Forward declaration
-class VHWD_DLLIMPEXP FixedSizeAllocatorUnit;
-
+VHWD_DLLIMPEXP extern const char const_empty_buffer[64];
 
 // MemPoolPaging is a thread-safe and hight-efficient MemPool, it uses several fixed-size-allocator units internally.
-// Memory allocated by MemPoolPaging can be deallocated by another MemPoolPaging.
 // Memory allocated by malloc can be deallocated by MemPoolPaging.
-class VHWD_DLLIMPEXP MemPoolPaging : public MemPoolBase, private NonCopyable
+class VHWD_DLLIMPEXP MemPoolPaging : public MemPoolBase
 {
 public:
 
-	MemPoolPaging();
-	~MemPoolPaging();
-
 	// Allocate memory with given size, if the given size exceed the max fixed-size, mempoll will use malloc to allocate.
-	void* allocate(size_t size);
+	static void* allocate(size_t size);
 
 	// Deallocate memory. if p is NOT allocated by this mempool, mempool will use free to deallocate.
 	static void deallocate(void* p);
 
 	// Same as above, drop the extra parameters.
-	void* allocate(size_t size,const char*,int)
+	static void* allocate(size_t size,const char*,int)
 	{
 		return allocate(size);
 	}
+
 	static void deallocate(void* p,size_t)
 	{
 		deallocate(p);
 	}
 
-	// Default MemPoolPaging object, usually we don't need to define MemPool objects.
-	static MemPoolPaging& current();
+	static MemPoolPaging& current()
+	{
+		return *(MemPoolPaging*)const_empty_buffer;
+	}
 
+};
 
-protected:
-	void _init();
+class VHWD_DLLIMPEXP MemPoolCached : public MemPoolBase
+{
+public:
 
-	FixedSizeAllocatorUnit* m_aSlots;
-	FixedSizeAllocatorUnit** m_pSlots;
-	size_t m_nFixedSizeMax;
-	size_t m_nFixedSizeCount;
-	bool m_bCustom;
+	// Allocate memory with given size, if the given size exceed the max fixed-size, mempoll will use malloc to allocate.
+	static void* allocate(size_t size);
+
+	// Deallocate memory. if p is NOT allocated by this mempool, mempool will use free to deallocate.
+	static void deallocate(void* p);
+
+	// Same as above, drop the extra parameters.
+	static void* allocate(size_t size,const char*,int)
+	{
+		return allocate(size);
+	}
+
+	static void deallocate(void* p,size_t)
+	{
+		deallocate(p);
+	}
+
+	static MemPoolCached& current()
+	{
+		return *(MemPoolCached*)const_empty_buffer;
+	}
+
 };
 
 
@@ -76,18 +104,17 @@ public:
 	{
 		return allocate(size);
 	}
-	static void deallocate(void* p)
-	{
-		if(p) ::free(p);
-	}
+
+	static void deallocate(void* p);
+
 	static void deallocate(void* p,size_t)
 	{
 		deallocate(p);
 	}
 
-	static MemPoolMalloc current()
+	static MemPoolMalloc& current()
 	{
-		return MemPoolMalloc();
+		return *(MemPoolMalloc*)const_empty_buffer;
 	}
 };
 
@@ -98,18 +125,11 @@ class VHWD_DLLIMPEXP MemPoolDebug : public MemPoolBase
 {
 public:
 
-
-	MemPoolDebug() {}
-
-	static MemPoolDebug current()
-	{
-		return MemPoolDebug();
-	}
-
 	static void* allocate(size_t size)
 	{
 		return allocate(size,NULL,-1);
 	}
+
 	// Allocate memory and insert to the MemLinking.
 	static void* allocate(size_t size,const char* file,int line);
 
@@ -121,6 +141,10 @@ public:
 		deallocate(p);
 	}
 
+	static MemPoolDebug& current()
+	{
+		return *(MemPoolDebug*)const_empty_buffer;
+	}
 };
 
 
@@ -128,7 +152,7 @@ public:
 #if defined(VHWD_MEMDEBUG)
 typedef MemPoolDebug<MemPoolPaging> MemPool;
 #else
-typedef MemPoolPaging MemPool;
+typedef MemPoolCached MemPool;
 #endif
 
 

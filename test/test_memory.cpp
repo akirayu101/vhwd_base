@@ -13,15 +13,8 @@ public:
 
 	Logger logger;
 
-	ThreadTestMemPool()
-	{
-		MemPoolPaging::current();
-	}
-
 	void svc()
 	{
-
-		MemPoolPaging& pool(MemPoolPaging::current());
 
 		arr_1t<void*> h;
 
@@ -35,7 +28,7 @@ public:
 		for(size_t i=0; i<n*4; i++)
 		{
 			size_t sz=((size_t)::rand())%memmax;
-			h.push_back(pool.allocate(sz));
+			h.push_back(MemPoolPaging::current().allocate(sz));
 		}
 
 		logger.LogMessage("thread rank[%d] allocate/deallocate memory randomly",rank());
@@ -45,7 +38,7 @@ public:
 			if(rand()%2==0)
 			{
 				size_t sz=((size_t)::rand()%memmax);
-				h.push_back(pool.allocate(sz));
+				h.push_back(MemPoolPaging::current().allocate(sz));
 			}
 			else if(!h.empty())
 			{
@@ -53,7 +46,7 @@ public:
 				void *p=h[kk];
 				h[kk]=h.back();
 				h.pop_back();
-				pool.deallocate(p);
+				MemPoolPaging::current().deallocate(p);
 			}
 		}
 
@@ -61,7 +54,7 @@ public:
 
 		for(size_t i=0; i<h.size(); i++)
 		{
-			pool.deallocate(h[i]);
+			MemPoolPaging::current().deallocate(h[i]);
 		}
 	}
 };

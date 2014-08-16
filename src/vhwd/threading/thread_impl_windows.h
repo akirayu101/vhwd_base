@@ -33,6 +33,11 @@ public:
 		return T();
 	}
 
+	static uintptr_t get_id()
+	{
+		return (uintptr_t)::GetCurrentThreadId();
+	}
+
 	static void set_priority(int n_)
 	{
 		int n=(n_*6)/100;

@@ -129,10 +129,12 @@ public:
 		m_aBindCpu.push_back(c1);
 	}
 
+	static uintptr_t id();
+
 protected:
 
-	int m_nState;
-	int m_nAlive;
+	volatile int m_nState;
+	volatile int m_nAlive;
 
 	Mutex m_thrd_mutex;
 	Condition m_cond_state_changed;

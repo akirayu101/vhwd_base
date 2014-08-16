@@ -226,7 +226,7 @@
       <AdditionalIncludeDirectories>..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>VHWD_BUILDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <PrecompiledHeaderFile>
@@ -400,6 +400,8 @@
     <ClCompile Include="..\..\src\vhwd\collection\collection.cpp" />
     <ClCompile Include="..\..\src\vhwd\ipc\pipe.cpp" />
     <ClCompile Include="..\..\src\vhwd\ipc\shm.cpp" />
+    <ClCompile Include="..\..\src\vhwd\memory\mempool.cpp" />
+    <ClCompile Include="..\..\src\vhwd\memory\mempool_cached.cpp" />
     <ClCompile Include="..\..\src\vhwd\memory\mempool_malloc.cpp" />
     <ClCompile Include="..\..\src\vhwd\net\overlapped.cpp" />
     <ClCompile Include="..\..\src\vhwd\net\iocp1.cpp" />
@@ -411,11 +413,10 @@
     <ClCompile Include="..\..\src\vhwd\net\session_server.cpp" />
     <ClCompile Include="..\..\src\vhwd\net\socket.cpp" />
     <ClCompile Include="..\..\src\vhwd\memory\allocator.cpp" />
-    <ClCompile Include="..\..\src\vhwd\memory\mempool_cache.cpp" />
+    <ClCompile Include="..\..\src\vhwd\memory\mempool_pgmap.cpp" />
     <ClCompile Include="..\..\src\vhwd\memory\mempool_debug.cpp" />
-    <ClCompile Include="..\..\src\vhwd\memory\mempool_fixedsize.cpp" />
+    <ClCompile Include="..\..\src\vhwd\memory\mempool_slot.cpp" />
     <ClCompile Include="..\..\src\vhwd\memory\mempool_link.cpp" />
-    <ClCompile Include="..\..\src\vhwd\memory\mempool_pageinfo.cpp" />
     <ClCompile Include="..\..\src\vhwd\memory\mempool_paging.cpp" />
     <ClCompile Include="..\..\src\vhwd\logging\log_console.cpp" />
     <ClCompile Include="..\..\src\vhwd\logging\log_target.cpp" />
@@ -509,6 +510,7 @@
     <ClInclude Include="..\..\inc\vhwd\threading\thread_manager.h" />
     <ClInclude Include="..\..\inc\vhwd\xml\xml_base.h" />
     <ClInclude Include="..\..\src\vhwd\basic\string_impl.h" />
+    <ClInclude Include="..\..\src\vhwd\memory\mempool_link.h" />
     <ClInclude Include="..\..\src\vhwd\net\socket_impl_detail.h" />
     <ClInclude Include="..\..\src\vhwd\net\socket_impl_linux.h" />
     <ClInclude Include="..\..\src\vhwd\net\socket_impl_windows.h" />

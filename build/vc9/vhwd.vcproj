@@ -342,15 +342,15 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\vhwd\memory\mempool_cache.cpp"
+						RelativePath="..\..\src\vhwd\memory\mempool.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\memory\mempool_cached.cpp"
 						>
 					</File>
 					<File
 						RelativePath="..\..\src\vhwd\memory\mempool_debug.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\vhwd\memory\mempool_fixedsize.cpp"
 						>
 					</File>
 					<File
@@ -366,11 +366,15 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\vhwd\memory\mempool_pageinfo.cpp"
+						RelativePath="..\..\src\vhwd\memory\mempool_paging.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\vhwd\memory\mempool_paging.cpp"
+						RelativePath="..\..\src\vhwd\memory\mempool_pgmap.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\memory\mempool_slot.cpp"
 						>
 					</File>
 				</Filter>
@@ -399,6 +403,10 @@
 					</File>
 					<File
 						RelativePath="..\..\src\vhwd\threading\coroutine_context_msvc_x64.asm"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\memory\mempool_link.h"
 						>
 					</File>
 					<File
@@ -499,6 +507,118 @@
 					>
 					<File
 						RelativePath="..\..\src\vhwd\collection\collection.cpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="scripting"
+					>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\codegen.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\codegen_analyzer.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\codegen_generator.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\codegen_generator_lvalue.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\codegen_generator_rvalue.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\executor.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\module.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\module_array.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\module_io.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\module_math.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\module_os.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\module_type.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\module_type_compound.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\module_type_number.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\module_type_string.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\module_type_table.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\parser.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\parser_visitor.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\scanner.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\variant.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\variant_array.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\variant_class.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\variant_code.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\variant_data.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\variant_op1.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\variant_op2.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\vhwd\scripting\variant_table.cpp"
 						>
 					</File>
 				</Filter>
@@ -861,6 +981,74 @@
 							>
 						</File>
 					</Filter>
+				</Filter>
+				<Filter
+					Name="scripting"
+					>
+					<File
+						RelativePath="..\..\inc\vhwd\scripting\codegen.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\inc\vhwd\scripting\codegen_generator.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\inc\vhwd\scripting\codegen_visitor.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\inc\vhwd\scripting\executor.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\inc\vhwd\scripting\instruction.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\inc\vhwd\scripting\parser.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\inc\vhwd\scripting\parser_node.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\inc\vhwd\scripting\parser_visitor.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\inc\vhwd\scripting\scanner.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\inc\vhwd\scripting\sub_xt.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\inc\vhwd\scripting\variant.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\inc\vhwd\scripting\variant_code.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\inc\vhwd\scripting\variant_op.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\inc\vhwd\scripting\variant_op1.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\inc\vhwd\scripting\variant_op2.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\inc\vhwd\scripting\variant_table.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 		</Filter>

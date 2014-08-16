@@ -434,7 +434,7 @@ public:
 	template<typename T>
 	static typename rebind<T>::type k(T v)
 	{
-		return ::sqrt(v);
+		return ::sqrt((double)v);
 	}
 
 	template<typename T>

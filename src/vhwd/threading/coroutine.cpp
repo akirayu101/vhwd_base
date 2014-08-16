@@ -56,9 +56,9 @@ CoroutineMain& Coroutine::main_coroutine()
 }
 
 
-void* heap_alloc(size_t nSize);
-void heap_free(void* pMem,size_t);
-void heap_protect(void* pMem_,size_t nSize_,bool f);
+void* page_alloc(size_t n);
+void page_free(void* p,size_t);
+void heap_protect(void* p,size_t n,bool f);
 
 
 void CoroutineContext::init()
@@ -120,7 +120,7 @@ CoroutineContext::CoroutineContext(size_t stksize_)
 	{
 		int pagesize=System::GetPageSize();
 		stksize_=sz_helper::adj(stksize_,pagesize)+pagesize;
-		m_pStackPointer=(char*)heap_alloc(stksize_);
+		m_pStackPointer=(char*)page_alloc(stksize_);
 		if(!m_pStackPointer)
 		{
 			Exception::XBadAlloc();
@@ -142,7 +142,7 @@ CoroutineContext::CoroutineContext(size_t stksize_)
 
 CoroutineContext::~CoroutineContext()
 {
-	if(m_pStackPointer)	heap_free(m_pStackPointer,m_nStackSize);
+	if(m_pStackPointer)	page_free(m_pStackPointer,m_nStackSize);
 }
 
 

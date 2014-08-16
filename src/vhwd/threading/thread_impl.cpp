@@ -3,29 +3,12 @@
 #include "vhwd/threading/thread_pool.h"
 VHWD_ENTER
 
+extern ThreadImpl_detail::key_t threaddata_buffer_key;
 
-ThreadImpl_detail::key_t threaddata_buffer_key;
+void tc_cleanup();
+void tc_init();
 
-void ThreadMain::wait()
-{
-	ThreadManager::current().wait();
-}
-
-bool ThreadMain::m_bReqExit=false;
-
-ThreadImpl& ThreadImpl::data()
-{
-	ThreadImpl* p=(ThreadImpl*)ThreadImpl_detail::key_get(threaddata_buffer_key);
-	if(!p)
-	{
-		static ThreadImpl d;
-		d.thrd_rank=0;
-		d.thrd_ptr=&Thread::main_thread();
-		return d;
-	}
-	return *p;
-}
-
+bool ThreadImpl::m_bReqExit=false;
 
 void ThreadImpl::set_priority(int n)
 {
@@ -37,7 +20,6 @@ void ThreadImpl::set_priority(int n)
 
 void ThreadImpl::set_affinity(int n)
 {
-	//if(n<0) n=0;
 	thrd_affinity=n;
 	ThreadImpl_detail::set_affinity(n);
 }
@@ -203,16 +185,17 @@ bool ThreadImpl::put_thread(ThreadImpl* impl)
 	}
 }
 
+ThreadImpl::ThreadImpl(ThreadManager& tm):tmgr(tm)
+{
+	thrd_rank=-1;
+	thrd_ptr=NULL;
+	thrd_affinity=0;
+	thrd_priority=50;
+}
+
 ThreadImpl::ThreadImpl():tmgr(ThreadManager::current())
 {
-
-	static bool first=true;
-	if(first)
-	{
-		first=false;
-		ThreadImpl_detail::key_create(threaddata_buffer_key);
-	}
-
+	
 	thrd_rank=-1;
 	thrd_ptr=NULL;
 	thrd_affinity=0;
@@ -243,6 +226,9 @@ void ThreadImpl::set_thread(Thread* p,ThreadEx::factor_type v,int i)
 }
 
 
+void tc_init();
+void tc_gc();
+void tc_cleanup();
 
 bool ThreadImpl::svc_enter()
 {
@@ -261,10 +247,13 @@ bool ThreadImpl::svc_enter()
 	}
 
 	ThreadImpl_detail::key_set(threaddata_buffer_key,this);
+	tc_init();
 	return true;
 }
+
 void ThreadImpl::svc_leave()
 {
+	tc_cleanup();
 	ThreadImpl_detail::key_set(threaddata_buffer_key,NULL);
 	ThreadManager& mypool(tmgr);
 
@@ -293,7 +282,6 @@ void ThreadImpl::svc()
 				{
 					if(pPrev) pPrev->pNext=pNext;
 					if(pNext) pNext->pPrev=pPrev;
-
 					return;
 				}
 				tmgr.m_thrd_attached.wait(lock1);
@@ -323,6 +311,8 @@ void ThreadImpl::svc()
 			{
 				thrd_ptr->on_exception();
 			}
+
+			tc_gc();
 		}
 
 		{

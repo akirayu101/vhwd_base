@@ -1,3 +1,4 @@
+#include "mempool_link.h"
 #include "mempool_impl.h"
 #include "vhwd/basic/lockguard.h"
 #include "vhwd/basic/console.h"
@@ -191,9 +192,102 @@ public:
 	}
 };
 
+
+
+template <typename T>
+class AllocatorC
+{
+public:
+	typedef T value_type;
+	typedef std::size_t size_type;
+	typedef std::ptrdiff_t difference_type;
+
+	typedef T *pointer;
+	typedef const T *const_pointer;
+
+	typedef T &reference;
+	typedef const T &const_reference;
+
+public:
+
+	AllocatorC() throw() {}
+
+	AllocatorC(const AllocatorC&) {}
+
+	template <typename T2>
+	AllocatorC(const AllocatorC<T2> &) throw() {}
+
+	~AllocatorC() throw() {}
+
+	inline pointer address(reference r)
+	{
+		return &r;
+	}
+
+	inline const_pointer address(const_reference r) const
+	{
+		return &r;
+	}
+
+	MpObjectPool<T> cached;
+
+	inline pointer allocate(size_type n)
+	{
+		wassert(n==1);
+		if(n!=1)
+		{
+			Exception::XBadAlloc();
+		}
+		return cached.alloc();
+	}
+
+	inline void deallocate(pointer p, size_type)
+	{		
+		cached.dealloc(p);
+	}
+
+
+	inline void construct(pointer p, const value_type &o)
+	{
+		new(p) value_type(o);
+	}
+
+	inline void destroy(pointer p)
+	{
+		(void)&p;
+		p->~value_type();
+	}
+
+	inline size_type max_size() const throw()
+	{
+		return size_type(-1) / sizeof(value_type);
+	}
+
+	template <typename T2>
+	struct rebind
+	{
+		typedef AllocatorC<T2> other;
+	};
+
+	bool operator!=(const AllocatorC &other) const
+	{
+		return !(*this == other);
+	}
+
+	// Returns true if and only if storage allocated from *this
+	// can be deallocated from other, and vice versa.
+	// Always returns true for stateless allocators.
+	bool operator==(const AllocatorC &other) const
+	{
+		(void)&other;
+		return true;
+	}
+};
+
+
 void MemLinking::report()
 {
-	typedef bst_map<IMemAllocInfo,IMemAllocCount,MemAllocInfoCompare,AllocatorM<int> > map_type;
+	typedef bst_map<IMemAllocInfo,IMemAllocCount,MemAllocInfoCompare,AllocatorC<int> > map_type;
 	map_type alinfo;
 
 	{
