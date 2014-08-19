@@ -288,7 +288,8 @@ bool StringBuffer<T>::load(const String& file,int type)
 		// 11 62;
 		// BD 70
 
-		unsigned short tag=*(unsigned short*)bom;
+		//unsigned short tag=*(unsigned short*)bom;
+		unsigned short tag=*reinterpret_cast<unsigned short*>(bom);
 		if(tag==0xFFFE) //BE
 		{
 			char *pc=(char*)kb.data();

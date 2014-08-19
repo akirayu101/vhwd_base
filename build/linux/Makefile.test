@@ -12,7 +12,7 @@ LD = g++
 WINDRES = windres
 
 INC = -I../../inc
-CFLAGS = -Wall -pthread -DVHWD_LIB
+CFLAGS = -Wall -pthread -fno-strict-aliasing -DVHWD_LIB
 RESINC = 
 LIBDIR = -L../../lib/Linux
 LIB = 

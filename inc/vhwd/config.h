@@ -23,9 +23,6 @@
 
 //#define VHWD_NO64BIT_ATOMIC 1
 
-#if !defined(_WIN32) || defined(_MSC_VER)
-#define VHWD_USE_COROUTINE
-#endif
 
 #define MACRO2STR(x) MACRO2STR_ESC(x)
 #define MACRO2STR_ESC(x) #x
@@ -199,24 +196,6 @@ public:
 
 };
 
-template<typename T>
-class StaticObjectWithoutDeletorT : public NonCopyable
-{
-	char buf[sizeof(T)];
-	static void* operator new(size_t);
-public:
-
-	StaticObjectWithoutDeletorT()
-	{
-		new(this) T();
-	}
-	~StaticObjectWithoutDeletorT() {}
-
-	operator T&()
-	{
-		return *reinterpret_cast<T*>(this);
-	}
-};
 #pragma pop_macro("new")
 
 
@@ -284,7 +263,7 @@ template<int N> class hash_base<N,4> : public hash_impl<uint32_t,N/4>{};
 template<int N> class hash_base<N,6> : public hash_impl<uint16_t,N/2>{};
 
 
-template<typename T> 
+template<typename T>
 class hash_pod : public hash_base<sizeof(T),sizeof(T)%8>
 {
 public:
@@ -295,7 +274,7 @@ public:
 	}
 };
 
-template<typename T> 
+template<typename T>
 class hash_origin
 {
 public:

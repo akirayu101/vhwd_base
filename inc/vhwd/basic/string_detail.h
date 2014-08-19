@@ -8,7 +8,9 @@
 #ifndef __H_VHWD_STRING_ARGS_H__
 #define __H_VHWD_STRING_ARGS_H__
 
+
 #include <string>
+
 
 VHWD_ENTER
 

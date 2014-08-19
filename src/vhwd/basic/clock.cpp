@@ -57,7 +57,7 @@ TimePoint& TimePoint::operator+=(const TimeSpan& span)
 
 static AtomicSpin& get_time_mutex()
 {
-	static StaticObjectWithoutDeletorT<AtomicSpin> m;
+	static AtomicSpin m;
 	return m;
 }
 

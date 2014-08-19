@@ -22,7 +22,6 @@ class VHWD_DLLIMPEXP ThreadManager : private NonCopyable
 {
 public:
 	friend class ThreadImpl;
-	friend class StaticObjectWithoutDeletorT<ThreadManager>;
 
 	void wait();
 	void close();

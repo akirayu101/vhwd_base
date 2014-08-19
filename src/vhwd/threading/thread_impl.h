@@ -1,11 +1,8 @@
 #include "vhwd/threading/thread.h"
 #include "vhwd/logging/logger.h"
 #include "thread_impl_detail.h"
-
-
-#ifdef VHWD_USE_COROUTINE
 #include "vhwd/threading/coroutine.h"
-#endif
+
 
 VHWD_ENTER
 
@@ -59,9 +56,7 @@ public:
 
 	ThreadManager& tmgr;
 
-#ifdef VHWD_USE_COROUTINE
 	CoroutineMain cort_main;
-#endif
 
 	LitePtrT<ThreadImpl> pNext;
 	LitePtrT<ThreadImpl> pPrev;

@@ -85,30 +85,22 @@ bool MemLinking::report_when_exit()
 }
 
 
+
 MemLinking& MemLinking::current()
 {
-	static class TmpMemPool : public StaticObjectWithoutDeletorT<MemLinking>
-	{
-	public:
-
-		~TmpMemPool()
-		{
-			MemLinking& pool(*this);
-			if(!pool.report_when_exit()) return;
-
-#ifdef VHWD_MEMDEBUG
-			pool.report();
-#endif
-		}
-
-	} mp;
-	return mp;
+	static MemLinking gInstance;
+	return gInstance;
 }
 
 
 MemLinking::~MemLinking()
 {
 
+	if(!report_when_exit()) return;
+
+#ifdef VHWD_MEMDEBUG
+	report();
+#endif
 }
 
 

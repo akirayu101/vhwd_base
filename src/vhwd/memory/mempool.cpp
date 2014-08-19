@@ -1,6 +1,6 @@
 #include "mempool_impl.h"
 #include "vhwd/basic/system.h"
-
+#include "vhwd/basic/platform.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -26,7 +26,7 @@ void* page_alloc(size_t n)
 	{
 		return p;
 	}
-	
+
 	if(g_myalloc_impl)
 	{
 		System::LogTrace("page_alloc failed, call gc() and retry");
@@ -53,10 +53,46 @@ void page_free(void* p,size_t)
 	}
 }
 
-void heap_protect(void* p,size_t n,bool f)
+VHWD_DLLIMPEXP int page_protect(void* p,size_t n,int f)
 {
-	DWORD old;
-	VirtualProtect(p,n,f?PAGE_READONLY:PAGE_READWRITE,&old);
+	DWORD flag_old;
+	DWORD flag_new=0;
+	if(f&FileAccess::FLAG_WR)
+	{
+		flag_new=PAGE_READWRITE;
+	}
+	else if(f&FileAccess::FLAG_RD)
+	{
+		flag_new=PAGE_READONLY;
+	}
+	else
+	{
+		flag_new=PAGE_NOACCESS;
+	}
+
+	if(f&FileAccess::FLAG_EX)
+	{
+		flag_new=flag_new<<4;
+	}
+
+	VirtualProtect(p,n,flag_new,&flag_old);
+	f=0;
+	if(flag_old&0xF0)
+	{
+		f|=FileAccess::FLAG_EX;
+		flag_old>>=4;
+	}
+	if(flag_old==PAGE_READWRITE)
+	{
+		f|=FileAccess::FLAG_RW;
+	}
+	else if(flag_old==PAGE_READONLY)
+	{
+		f|=FileAccess::FLAG_RD;
+	}
+
+	return f;
+
 }
 
 #else
@@ -89,9 +125,43 @@ void* page_alloc(size_t nSize)
 	return NULL;
 }
 
-void heap_protect(void* p,size_t n,bool f)
+VHWD_DLLIMPEXP int page_protect(void* p,size_t n,int f)
 {
-	mprotect (p, n, f?PROT_READ:(PROT_READ|PROT_WRITE));
+	int flag_old;
+	int flag_new=0;
+
+	if(f&FileAccess::FLAG_WR)
+	{
+		flag_new|=PROT_WRITE;
+	}
+	if(f&FileAccess::FLAG_RD)
+	{
+		flag_new|=PROT_READ;
+	}
+	if(f&FileAccess::FLAG_EX)
+	{
+		flag_new|=PROT_EXEC;
+	}
+
+	flag_old=mprotect (p, n, flag_new);
+
+	f=0;
+
+	if(flag_old&PROT_WRITE)
+	{
+		f|=FileAccess::FLAG_RW;
+	}
+	if(flag_old&PROT_READ)
+	{
+		f|=FileAccess::FLAG_RD;
+	}
+	if(flag_old&PROT_EXEC)
+	{
+		f|=FileAccess::FLAG_EX;
+	}
+	return f;
+
+
 }
 
 void page_free(void* p,size_t s)

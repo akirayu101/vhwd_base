@@ -99,7 +99,6 @@ String::String(const wchar_t* p)
 	StringBuffer<char> sb;
 	IConv::unicode_to_ansi(sb,p,std::char_traits<wchar_t>::length(p));
 	(*this)=sb;
-	//(*this)=CodeCvt<wchar_t>::ws2s(p);
 }
 
 String::String(const wchar_t* p,uint32_t n)
@@ -108,13 +107,11 @@ String::String(const wchar_t* p,uint32_t n)
 	StringBuffer<char> sb;
 	IConv::unicode_to_ansi(sb,p,n);
 	(*this)=sb;
-	//(*this)=CodeCvt<wchar_t>::ws2s(p,n);
 }
 
 String::String(const wchar_t* p1,const wchar_t* p2)
 {
 	m_pStr=StringPool::current().str_empty();
-	//(*this)=CodeCvt<wchar_t>::ws2s(p1,p2);
 	StringBuffer<char> sb;
 	IConv::unicode_to_ansi(sb,p1,p2-p1);
 	(*this)=sb;

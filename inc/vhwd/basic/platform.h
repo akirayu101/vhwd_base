@@ -162,6 +162,7 @@ public:
 		FLAG_RW=FLAG_RD|FLAG_WR,
 		FLAG_CR=1<<3,
 		FLAG_APPEND=1<<4,
+		FLAG_EX=1<<5,
 	};
 
 	static int makeflag(int flag_,int fr,int fw)

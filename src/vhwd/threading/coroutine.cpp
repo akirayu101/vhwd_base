@@ -1,38 +1,207 @@
 #include "vhwd/threading/coroutine.h"
-
-#ifdef VHWD_USE_COROUTINE
-
+#include "vhwd/basic/platform.h"
 
 #include "thread_impl.h"
 
 extern "C" void asm_swap_context(void* callee,void* caller);
 
-
 VHWD_ENTER
 
+class VHWD_DLLIMPEXP CoroutineContext;
 
-class VHWD_DLLIMPEXP CoroutineContext : private NonCopyable
+
+void (*raw_coroutine_swap)(CoroutineContext*,CoroutineContext*)=NULL;
+
+
+#ifdef _X86_
+
+const unsigned char asm_swap_context_code[]=
+{
+// mov parameters from stack to ncx,ndx
+0x8B,0x4C,0x24,0x04,
+0x8B,0x54,0x24,0x08,
+
+// push nbp,nbx,nsi,ndi
+0x55,
+0x53,
+0x56,
+0x57,
+#ifdef _WIN32
+
+// push fs:[0],fs:[4],fs:[8];
+0x64,0xA1,0x00,0x00,0x00,0x00,
+0x50,
+0x64,0xA1,0x04,0x00,0x00,0x00,
+0x50,
+0x64,0xA1,0x08,0x00,0x00,0x00,
+0x50,
+#endif
+
+// swap nsp
+0x89,0x22,
+0x8B,0x21,
+#ifdef _WIN32
+
+// pop fs:[8],fs:[4],fs:[0];
+0x58,
+0x64,0xA3,0x08,0x00,0x00,0x00,
+0x58,
+0x64,0xA3,0x04,0x00,0x00,0x00,
+0x58,
+0x64,0xA3,0x00,0x00,0x00,0x00,
+#endif
+
+// pop ndi,nsi,nbx,nbp
+0x5F,
+0x5E,
+0x5B,
+0x5D,
+
+// ret
+0xC3
+};
+
+#else
+
+const unsigned char asm_swap_context_code[]=
+{
+// push nbp,nbx,nsi,ndi
+0x55,
+0x53,
+0x56,
+0x57,
+
+#ifdef _WIN32
+// push gs:[0],gs[8],gs:[16]
+0x65, 0x48, 0x8B, 0x04, 0x25, 0x00, 0x00, 0x00, 0x00,
+0x50,
+0x65, 0x48, 0x8B, 0x04, 0x25, 0x08, 0x00, 0x00, 0x00,
+0x50,
+0x65, 0x48, 0x8B, 0x04, 0x25, 0x10, 0x00, 0x00, 0x00,
+0x50,
+#endif
+
+
+#ifdef _WIN32
+// swap nsp
+0x48, 0x89, 0x22,
+0x48, 0x8B, 0x21,
+
+#else
+// swap nsp
+0x48,0x89,0x26,
+0x48,0x8B,0x27,
+
+#endif
+
+#ifdef _WIN32
+// pop gs:[16],gs:[8],gs:[0]
+0x58,
+0x65, 0x48, 0x89, 0x04, 0x25, 0x10, 0x00, 0x00, 0x00,
+0x58,
+0x65, 0x48, 0x89, 0x04, 0x25, 0x08, 0x00, 0x00, 0x00,
+0x58,
+0x65, 0x48, 0x89, 0x04, 0x25, 0x00, 0x00, 0x00, 0x00,
+#endif
+
+// pop ndi,nsi,nbx,nbp
+0x5F,
+0x5E,
+0x5B,
+0x5D,
+
+// ret
+0xC3,
+};
+#endif
+
+class VHWD_DLLIMPEXP CoroutineContext
 {
 public:
 
-	CoroutineContext(size_t stksize_);
-	~CoroutineContext();
+	static void raw_coroutine_spawn(CoroutineContext* cx0);
 
-	//Coroutine entry point
-	static void raw_proc_spawn(CoroutineContext* rc);
-
-	void init();
-
-	void push(void* dat)
+	CoroutineContext(size_t n=1024*1024)
 	{
-		*(--nsp)=dat;
+		m_pRoutine=NULL;
+		base=NULL;nsp=NULL;size=0;
+		size_t pagesize=System::GetPageSize();
+		size=sz_helper::adj(n,pagesize)+pagesize;
+		m_nState.store(Coroutine::STATE_STOPPED);
 	}
 
-	void** nsp;
+	~CoroutineContext()
+	{
+		if(base)
+		{
+			page_free(base,size);
+		}
+	}
 
-	LitePtrT<Coroutine> m_pRoutine;
-	char* m_pStackPointer;
-	size_t m_nStackSize;
+
+	void** nsp;
+	void** nbp;
+	void *base;
+	size_t size;
+
+	Coroutine* m_pRoutine;
+	DataPtrT<ObjectData> m_pExtraParam;
+
+	AtomicInt32 m_nState;
+
+
+	bool init()
+	{
+		if(nsp)
+		{
+			return true;
+		}
+
+		if(!raw_coroutine_swap)
+		{
+			void*p=(void*)asm_swap_context_code;
+			raw_coroutine_swap=(void (*)(CoroutineContext*,CoroutineContext*))p;
+			page_protect(p,4096,FileAccess::FLAG_RD|FileAccess::FLAG_EX);
+		}
+
+		if(size==0)
+		{
+			return false;
+		}
+
+		base=page_alloc(size);
+		if(!base)
+		{
+			return false;
+		}
+
+		// protect first page to detect stack overflow
+		page_protect(base,4096,0);
+
+
+		nbp=(void**)((char*)base+size);
+		nsp=nbp-16;
+
+
+		push(NULL);
+		push(this);		// arg0 from X86
+		push(NULL);		// frame pointer
+		push((void*)raw_coroutine_spawn);	// ret address
+		push(NULL);		// nbp
+		push(NULL);		// nbx
+		push(this);		// nsi, arg for X64 linux
+		push(this);		// ndi, arg for X64 linux
+
+#ifdef _WIN32
+		push((void*)(sizeof(void*)==4?-1:0));	// fs:[0] exception handler
+		push(nbp);								// fs:[4] stack hi
+		push(base);								// fs:[8] stack lo
+#endif
+
+		return true;
+	}
+
+	void push(void* d){*--nsp=d;}
 
 };
 
@@ -40,8 +209,10 @@ public:
 
 CoroutineMain::CoroutineMain():Coroutine(0)
 {
-	m_nState.store(Coroutine::STATE_RUNNING);
-	m_pThisRoutine.reset(this);
+	m_pContext->m_nState.store(Coroutine::STATE_RUNNING);
+	m_pThisRoutine=this;
+	m_pLastRoutine=NULL;
+	m_pVoidRoutine=NULL;
 }
 
 
@@ -56,95 +227,6 @@ CoroutineMain& Coroutine::main_coroutine()
 }
 
 
-void* page_alloc(size_t n);
-void page_free(void* p,size_t);
-void heap_protect(void* p,size_t n,bool f);
-
-
-void CoroutineContext::init()
-{
-
-	if(!m_pStackPointer)
-	{
-		return;
-	}
-
-	void** nbp=(void**)(m_pStackPointer+m_nStackSize);
-
-	nsp=nbp;
-	push(0); //padding
-	push(0);
-	push((void*)CoroutineContext::raw_proc_spawn);// coroutine entry point
-	push(NULL); // return address <-- [nsp]
-
-#ifdef _X86_
-
-	push(nbp-5);  // nbp <-- [nbp]
-	push(0); // nbx
-	push(0); // nsi;
-	push(0); // ndi;
-
-	push((void*)(-1));		// fs:[0]
-	push(nbp);				// fs:[4], stack hi
-	push(m_pStackPointer);  // fs:[8], stack lo
-
-	nsp=nbp-4;
-
-#else
-
-	push(nbp-5);	// nbp
-	push(0);	// nbx
-	push(0);	// nsi;
-	push(0);	// ndi;
-
-	push(0);	// r12
-	push(0);	// r13
-	push(0);	// r14
-	push(0);	// r15;
-
-	push((void*)(NULL));	// fs:[0]
-	push(nbp);				// fs:[4], stack hi
-	push(m_pStackPointer);  // fs:[8], stack lo
-
-	//xmm6 to xmm15¡£
-
-	nsp=nbp-4;
-
-#endif
-
-}
-
-CoroutineContext::CoroutineContext(size_t stksize_)
-{
-	if(stksize_>0)
-	{
-		int pagesize=System::GetPageSize();
-		stksize_=sz_helper::adj(stksize_,pagesize)+pagesize;
-		m_pStackPointer=(char*)page_alloc(stksize_);
-		if(!m_pStackPointer)
-		{
-			Exception::XBadAlloc();
-		}
-
-		// protect first page to detect stack overflow
-		heap_protect(m_pStackPointer,pagesize,true);
-
-	}
-	else
-	{
-		m_pStackPointer=NULL;
-		nsp=0;
-	}
-
-	m_nStackSize=stksize_;
-
-}
-
-CoroutineContext::~CoroutineContext()
-{
-	if(m_pStackPointer)	page_free(m_pStackPointer,m_nStackSize);
-}
-
 
 Coroutine::~Coroutine()
 {
@@ -153,27 +235,30 @@ Coroutine::~Coroutine()
 
 int Coroutine::state() const
 {
-	return m_nState.get();
+	return m_pContext->m_nState.get();
 }
 
 size_t Coroutine::stack_size() const
 {
-	return m_pContext->m_nStackSize;
+	return m_pContext->size;
 }
 
 bool Coroutine::spawn(Coroutine* pcortctx_)
 {
 	if(!pcortctx_) return false;
-	Coroutine& callee(*pcortctx_);
-	int32_t val=STATE_STOPPED;
 
-	if(!callee.m_nState.compare_exchange(val,STATE_PENDING))
+	CoroutineContext& ctx(*pcortctx_->m_pContext);
+
+	if(!ctx.init())
 	{
 		return false;
 	}
 
-	callee.m_pContext->init();
-	callee.m_nState.store(STATE_PAUSED);
+	int32_t val=STATE_STOPPED;
+	if(!ctx.m_nState.compare_exchange(val,STATE_PAUSED))
+	{
+		return false;
+	}
 
 	return true;
 }
@@ -181,223 +266,150 @@ bool Coroutine::spawn(Coroutine* pcortctx_)
 
 Coroutine::Coroutine(size_t stksize_)
 {
-	m_pContext=NULL;
 	m_pContext=new CoroutineContext(stksize_);
-	m_pContext->m_pRoutine.reset(this);
-	m_nState.store(STATE_STOPPED);
+	m_pContext->m_pRoutine=this;
 }
 
-bool Coroutine::yield_main()
+bool Coroutine::yield_main(ObjectData* extra_)
 {
-	return yield(&main_coroutine());
+	return yield(&main_coroutine(),extra_);
 }
 
-bool Coroutine::yield_last()
+bool Coroutine::yield_last(ObjectData* extra_)
 {
-	return yield(this_coroutine().m_pLastRoutine);
+	return yield(main_coroutine().m_pLastRoutine,extra_);
 }
 
-bool Coroutine::yield(Coroutine* pcortctx_)
-{
-	if(!pcortctx_) return false;
 
-	Coroutine& caller(this_coroutine());
-	Coroutine& callee(*pcortctx_);
+ObjectData* Coroutine::extra()
+{
+	return m_pContext->m_pExtraParam.get();
+}
+
+void Coroutine::_yield_phase2(CoroutineContext& caller)
+{
+	CoroutineMain& comain(main_coroutine());
+	comain.m_pThisRoutine=caller.m_pRoutine;
+
+	if(comain.m_pLastRoutine)
+	{
+		wassert(!comain.m_pVoidRoutine);
+		comain.m_pLastRoutine->m_pContext->m_nState.store(Coroutine::STATE_PAUSED);
+	}
+	else if(comain.m_pVoidRoutine)
+	{
+		comain.m_pVoidRoutine->m_pContext->m_nState.store(Coroutine::STATE_STOPPED);
+		comain.m_pVoidRoutine=NULL;
+	}
+	else
+	{
+		System::LogError("which coroutine yiled to me???");
+	}
+
+}
+
+bool Coroutine::_yield_phase1(CoroutineContext& callee,CoroutineContext& caller)
+{
+
+	wassert(caller.m_nState.get()==Coroutine::STATE_RUNNING);
+
+	CoroutineMain& comain(main_coroutine());
 
 	if(&caller==&callee) return false;
 
-	int32_t val;
+	int32_t val=Coroutine::STATE_PAUSED;
+	if(!callee.m_nState.compare_exchange(val,Coroutine::STATE_RUNNING))
+	{
+		if(val==Coroutine::STATE_RUNNING)
+		{
+			System::LogTrace("try yielding to running coroutine");
+		}
+		else
+		{
+			System::LogTrace("try yielding to stopped coroutine");
+		}
+		return false;
+	}
 
-	val=STATE_RUNNING;
-	if(!caller.m_nState.compare_exchange(val,STATE_PENDING))
+	comain.m_pLastRoutine=caller.m_pRoutine;
+
+	return true;
+
+}
+
+bool Coroutine::yield(Coroutine* pcortctx_,ObjectData* extra_)
+{
+	if(!pcortctx_)
+	{
+		System::LogTrace("try yielding to NULL coroutine");
+		return false;
+	}
+
+	CoroutineContext& caller(*this_coroutine().m_pContext);
+	CoroutineContext& callee(*pcortctx_->m_pContext);
+
+	if(!_yield_phase1(callee,caller))
 	{
 		return false;
 	}
 
-	val=STATE_PAUSED;
-	if(!callee.m_nState.compare_exchange(val,STATE_PENDING))
-	{
-		caller.m_nState.store(STATE_RUNNING);
-		return false;
-	}
+	callee.m_pExtraParam.reset(extra_);
 
-	callee.m_pLastRoutine.reset(&caller);
-	callee.m_pExtraParam.swap(caller.m_pExtraParam);
+	raw_coroutine_swap(&callee,&caller);
 
-	asm_swap_context(callee.m_pContext,caller.m_pContext);
-
-
-	main_coroutine().m_pThisRoutine.reset(&caller);
-	caller.m_nState.store(STATE_RUNNING);
-
-	// Coroutine::svc return and yield to main, in this case, m_pLastRoutine will be NULL
-	if(caller.m_pLastRoutine)
-	{
-		caller.m_pLastRoutine->m_nState.store(STATE_PAUSED);
-	}
+	_yield_phase2(caller);
 
 	return true;
 }
 
-
-void CoroutineContext::raw_proc_spawn(CoroutineContext* pcortctx_)
+void CoroutineContext::raw_coroutine_spawn(CoroutineContext* cx0)
 {
-
-	Coroutine& caller(*pcortctx_->m_pRoutine);
+	CoroutineContext& caller(*cx0);
 
 	for(;;)
 	{
-
-		Coroutine::main_coroutine().m_pThisRoutine.reset(&caller);
-		caller.m_nState.store(Coroutine::STATE_RUNNING);
-
-		// Coroutine::svc return and yield to main, in this case, m_pLastRoutine will be NULL
-		if(caller.m_pLastRoutine)
 		{
-			caller.m_pLastRoutine->m_nState.store(Coroutine::STATE_PAUSED);
+			Coroutine::_yield_phase2(caller);
+
+			try
+			{
+				caller.m_pRoutine->svc();
+			}
+			catch(std::exception& e)
+			{
+				System::LogError("Unhandled exception in Coroutine::svc",e.what());
+			}
+
+			//::printf("%p leave\n",&caller);
 		}
 
-		try
 		{
-			caller.svc();
+			CoroutineMain& comain(Coroutine::main_coroutine());
+
+			CoroutineContext& callee(*comain.m_pContext);
+
+			if(!Coroutine::_yield_phase1(callee,caller))
+			{
+				System::LogError("yield main_coroutine failed, why???");
+				while(!Coroutine::_yield_phase1(callee,caller))
+				{
+					Thread::yield();
+				}
+			}
+
+			comain.m_pLastRoutine=NULL;
+			comain.m_pVoidRoutine=caller.m_pRoutine;
+			comain.m_pContext->m_pExtraParam.reset(NULL);
+
+			raw_coroutine_swap(comain.m_pContext,&caller);
+
 		}
-		catch(std::exception& e)
-		{
-			System::LogError("Unhandled exception in Coroutine::svc",e.what());
-		}
-
-		Coroutine& callee(Coroutine::main_coroutine());
-
-		if(&caller==&callee)
-		{
-			System::LogFetal("Coroutine::main_coroutine enter CoroutineContext::raw_proc_spawn???");
-		}
-
-		int32_t val=Coroutine::STATE_PAUSED;
-		if(!callee.m_nState.compare_exchange(val,Coroutine::STATE_PENDING))
-		{
-			System::LogFetal("MainCoroutine is busy???");
-		}
-
-		caller.m_nState.store(Coroutine::STATE_STOPPED);
-		callee.m_pLastRoutine.reset(NULL);
-
-		asm_swap_context(callee.m_pContext,caller.m_pContext);
-
 	}
-
-
 }
+
 
 VHWD_LEAVE
 
-
-
-#if !defined(_WIN32)
-
-// move to external asm  file
-/*
-extern "C" void asm_swap_context(void* callee,void* caller)
-{
-__asm__ __volatile__ (
-	"mov %rdi,%rcx;"
-	"mov %rsi,%rdx;"
-	"mov %rbp,-0x08(%rsp);"
-	"mov %rbx,-0x10(%rsp);"
-	"mov %rsi,-0x18(%rsp);"
-	"mov %rdi,-0x20(%rsp);"
-	"mov %r12,-0x28(%rsp);"
-	"mov %r13,-0x30(%rsp);"
-	"mov %r14,-0x38(%rsp);"
-	"mov %r15,-0x40(%rsp);"
-
-	"mov %rsp,(%rdx);"
-	"mov (%rcx),%rsp;"
-
-	"mov -0x08(%rsp),%rbp;"
-	"mov -0x10(%rsp),%rbx;"
-	"mov -0x18(%rsp),%rsi;"
-	"mov -0x20(%rsp),%rdi;"
-	"mov -0x28(%rsp),%r12;"
-	"mov -0x30(%rsp),%r13;"
-	"mov -0x38(%rsp),%r14;"
-	"mov -0x40(%rsp),%r15;"
-
-	"mov (%rsp),%rdx;"
-	"cmpq $0,%rdx;"
-	"jne .L1;"
-	"mov %rcx,%rdi;"
-	"call 0x8(%rsp);"
-	".L1:"
-	)
-	;
-}
-*/
-
-#elif defined(_X86_) && defined(_MSC_VER)
-
-#pragma warning(disable:4731 4733)
-
-extern "C" void asm_swap_context(void* callee,void* caller)
-{
-	__asm
-	{
-		mov ecx,dword ptr[callee];
-		mov edx,dword ptr[caller];
-
-		// ebp,ebx,esi,edi already in stack,
-		// modify esp and make esp->return address
-		add esp,10h;
-		//mov dword ptr[esp-04h],ebp;
-		//mov dword ptr[esp-08h],ebx;
-		//mov dword ptr[esp-0Ch],esi;
-		//mov dword ptr[esp-10h],edi;
-
-		mov eax,fs:[0];
-		mov dword ptr[esp-14h],eax;
-		mov eax,fs:[4];
-		mov dword ptr[esp-18h],eax;
-		mov eax,fs:[8];
-		mov dword ptr[esp-1Ch],eax;
-
-		// switch stack
-		mov dword ptr[edx],esp;
-		mov esp,dword ptr[ecx];
-
-		// restore stack
-		mov eax,dword ptr[esp-1Ch];
-		mov fs:[8],eax;
-		mov eax,dword ptr[esp-18h];
-		mov fs:[4],eax;
-		mov eax,dword ptr[esp-14h];
-		mov fs:[0],eax;
-
-		mov edi,dword ptr[esp-10h];
-		mov esi,dword ptr[esp-0Ch];
-		mov ebx,dword ptr[esp-08h];
-		mov ebp,dword ptr[esp-04h];
-
-		// [esp] is return address
-		mov edx,dword ptr[esp];
-		cmp edx,0;
-		jne lb_exit;
-
-		// [esp] is zero means starting a new coroutine, call entry point at [esp+4]
-		// this function call will never return;
-		mov edx,dword ptr[esp+4h];
-		push ecx;
-		call edx;
-
-		lb_exit:
-		// esp already modified, return directly.
-		ret;
-
-	}
-}
-#endif
-
-
-#endif // VHWD_USE_COROUTINE
 
 
 

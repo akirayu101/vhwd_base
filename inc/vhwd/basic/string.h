@@ -8,13 +8,16 @@
 #ifndef __H_VHWD_STRING__
 #define __H_VHWD_STRING__
 
-#include <cstring>
-#include <cstdarg>
+
 
 #include "vhwd/config.h"
 #include "vhwd/basic/language.h"
 #include "vhwd/basic/system.h"
 #include "vhwd/basic/string_detail.h"
+
+#include <cstring>
+#include <cstdarg>
+
 
 VHWD_ENTER
 

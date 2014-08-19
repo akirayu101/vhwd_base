@@ -34,6 +34,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-pthread" />
+			<Add option="-fno-strict-aliasing" />
 			<Add option="-DVHWD_BUILDING" />
 			<Add option="-DVHWD_LIB" />
 			<Add directory="../../inc" />
@@ -123,7 +124,6 @@
 		<Unit filename="../../src/vhwd/testing/test.cpp" />
 		<Unit filename="../../src/vhwd/testing/test_mgr.cpp" />
 		<Unit filename="../../src/vhwd/threading/coroutine.cpp" />
-		<Unit filename="../../src/vhwd/threading/coroutine_context_gcc_x64.S" />
 		<Unit filename="../../src/vhwd/threading/thread.cpp" />
 		<Unit filename="../../src/vhwd/threading/thread_impl.cpp" />
 		<Unit filename="../../src/vhwd/threading/thread_manager.cpp" />

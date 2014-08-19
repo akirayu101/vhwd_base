@@ -32,6 +32,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-pthread" />
+			<Add option="-fno-strict-aliasing" />
 			<Add option="-DVHWD_LIB" />
 			<Add directory="../../inc" />
 		</Compiler>

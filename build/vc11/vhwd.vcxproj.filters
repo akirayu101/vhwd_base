@@ -672,9 +672,4 @@
       <Filter>src\vhwd\memory</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="..\..\src\vhwd\threading\coroutine_context_msvc_x64.asm">
-      <Filter>src\vhwd\threading</Filter>
-    </CustomBuild>
-  </ItemGroup>
 </Project>

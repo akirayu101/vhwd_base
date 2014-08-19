@@ -14,9 +14,8 @@
 
 VHWD_ENTER
 
-#ifdef VHWD_USE_COROUTINE
 
-class VHWD_DLLIMPEXP ThreadImpl;
+
 class VHWD_DLLIMPEXP Coroutine;
 class VHWD_DLLIMPEXP CoroutineEx;
 class VHWD_DLLIMPEXP CoroutineMain;
@@ -33,13 +32,11 @@ public:
 	// STATE_STOPPED: not spawned, cannot be a yield target, can be a spawn target.
 	// STATE_RUNNING: spawned and running, can call yield* to yield to other coroutines.
 	// STATE_PAUSED: spawned but not running, can be a yield target.
-	// STATE_PENDING: pending state, cannot do anything until state is reset after.
 	enum enum_COROUTINE_STATE
 	{
 		STATE_STOPPED,
 		STATE_RUNNING,
 		STATE_PAUSED,
-		STATE_PENDING,
 	};
 
 	// default stack size
@@ -50,15 +47,18 @@ public:
 	~Coroutine();
 
 	// yield to coroutine that yielded to this
-	static bool yield_last();
+	static bool yield_last(ObjectData* extra_=NULL);
 
 	// yield to coroutine main
-	static bool yield_main();
+	static bool yield_main(ObjectData* extra_=NULL);
 
-	// yield to another coroutine
+	// yield to another coroutine with extra data
 	// require: pcort_->state()==STATE_PAUSED
 	// ensure: paused this_coroutine and yield to pcort_
-	static bool yield(Coroutine* pcort_);
+	static bool yield(Coroutine* pcort_,ObjectData* extra_=NULL);
+
+	// get extra data that last coroutine yileded with
+	ObjectData* extra();
 
 	// spawn a coroutine
 	// require: pcort_->state()==STATE_STOPPED
@@ -66,13 +66,13 @@ public:
 	static bool spawn(Coroutine* pcort_);
 
 	// get state of coroutine.
-	// state can be STATE_STOPPED, STATE_RUNNING, STATE_PAUSED and STATE_PENDING.
+	// state can be STATE_STOPPED, STATE_RUNNING, STATE_PAUSED.
 	int state() const;
 
 	// get stack size of coroutine
 	size_t stack_size() const;
 
-	// return activate coroutine
+	// return active coroutine
 	static Coroutine& this_coroutine();
 
 	// return main coroutine
@@ -81,14 +81,15 @@ public:
 
 protected:
 
+	static bool _yield_phase1(CoroutineContext& callee,CoroutineContext& caller);
+	static void _yield_phase2(CoroutineContext& caller);
+
 	// coroutine entry point, this function will be called after this coroutine is yielded to.
 	// you should NOT call this function in your code.
 	virtual void svc() {}
 
 	CoroutineContext* m_pContext;
-	LitePtrT<Coroutine> m_pLastRoutine;
-	AutoPtrT<Object> m_pExtraParam;
-	AtomicInt32 m_nState;
+
 
 };
 
@@ -153,11 +154,12 @@ public:
 
 protected:
 	CoroutineMain();
-	LitePtrT<Coroutine> m_pThisRoutine;
+	Coroutine* m_pThisRoutine;	// current coroutine
+	Coroutine* m_pLastRoutine;	// last coroutine that yield to current
+	Coroutine* m_pVoidRoutine;	// coroutine return from svc
 
 };
 
-#endif //VHWD_USE_COROUTINE
 
 VHWD_LEAVE
 #endif

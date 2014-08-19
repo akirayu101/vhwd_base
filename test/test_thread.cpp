@@ -85,15 +85,13 @@ TEST_DEFINE(TEST_Thread)
 }
 
 
-
-class Product : public Object
+class Product : public ObjectData
 {
 public:
 	Product(int v=0):value(v) {}
 	int value;
 };
 
-#ifdef VHWD_USE_COROUTINE
 
 class RoutineProducer : public Coroutine
 {
@@ -103,9 +101,10 @@ public:
 
 	void sink(int val)
 	{
-		::printf("produce %d, yielding to consumer\n",val);
-		m_pExtraParam.reset(new Product(val));
-		yield(Consumer);
+		this_logger().LogMessage("produce %d, yielding to consumer",val);
+		Product* p=new Product(val);
+		TEST_ASSERT(yield(Consumer,p));
+		TEST_ASSERT(p->value==val*2);
 	}
 
 	int val;
@@ -124,9 +123,9 @@ public:
 		sink(val++);
 		sink(val++);
 		sink(val++);
-		sink(0);
+		sink(val++);
+		sink(val++);
 
-		// return from entry point, yield to main;
 		return;
 	}
 
@@ -142,12 +141,21 @@ public:
 	{
 		for(;;)
 		{
-			Product* p=dynamic_cast<Product*>(m_pExtraParam.get());
+			Product* p=dynamic_cast<Product*>(extra());
 			if(p)
 			{
-				::printf("consume %d\n",p->value);
+				this_logger().LogMessage("consume %d",p->value);
+				p->value*=2;
+
+				yield_last(p);
 			}
-			yield_last();
+			else
+			{
+				this_logger().LogMessage("consumer exit");
+				return;
+			}
+
+
 		}
 	}
 
@@ -167,25 +175,34 @@ TEST_DEFINE(TEST_Coroutine)
 
 	producer.Consumer=&consumer;
 
+	this_logger().LogMessage("spawn producer");
 	Coroutine::spawn(&producer);
+
+	this_logger().LogMessage("spawn consumer");
 	Coroutine::spawn(&consumer);
 
 	TEST_ASSERT(producer.state()==Coroutine::STATE_PAUSED);
 	TEST_ASSERT(consumer.state()==Coroutine::STATE_PAUSED);
 
+	this_logger().LogMessage("yielding to producer");
 	Coroutine::yield(&producer);
+
 
 	TEST_ASSERT(consumer.state()==Coroutine::STATE_PAUSED);
 	TEST_ASSERT(producer.state()==Coroutine::STATE_STOPPED);
 
 	TEST_ASSERT(!Coroutine::yield(&producer));
 
+	this_logger().LogMessage("spawn producer again");
 	Coroutine::spawn(&producer);
+
+	this_logger().LogMessage("yielding to producer again");
 	TEST_ASSERT(Coroutine::yield(&producer));
 
+	this_logger().LogMessage("sink NULL to consumer");
+	Coroutine::yield(&consumer,NULL);
+	TEST_ASSERT(consumer.state()==Coroutine::STATE_STOPPED);
 }
-#endif
-
 
 class MyTask : public ITask
 {
@@ -209,7 +226,7 @@ TEST_DEFINE(TEST_ThreadPool)
 		Thread::sleep_for(5);
 	}
 
-	Thread::sleep_for(2000);
+	Thread::sleep_for(1000);
 	tpool.reqexit();
 	tpool.wait();
 

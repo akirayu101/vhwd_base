@@ -15,6 +15,7 @@ VHWD_ENTER
 
 VHWD_DLLIMPEXP void* page_alloc(size_t n);
 VHWD_DLLIMPEXP void page_free(void* p,size_t n);
+VHWD_DLLIMPEXP int page_protect(void* p,size_t n,int f);
 
 VHWD_DLLIMPEXP void* mp_alloc(size_t n);
 VHWD_DLLIMPEXP void mp_free(void* p);
@@ -59,7 +60,8 @@ public:
 
 	static MemPoolPaging& current()
 	{
-		return *(MemPoolPaging*)const_empty_buffer;
+		static MemPoolPaging pool;
+		return pool;
 	}
 
 };
@@ -87,7 +89,8 @@ public:
 
 	static MemPoolCached& current()
 	{
-		return *(MemPoolCached*)const_empty_buffer;
+		static MemPoolCached pool;
+		return pool;
 	}
 
 };
@@ -114,7 +117,8 @@ public:
 
 	static MemPoolMalloc& current()
 	{
-		return *(MemPoolMalloc*)const_empty_buffer;
+		static MemPoolMalloc pool;
+		return pool;
 	}
 };
 
