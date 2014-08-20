@@ -153,6 +153,12 @@ ThreadMulti::ThreadMulti()
 
 }
 
+bool ThreadEx::activate(factor_type& fac)
+{
+	InvokerGroup g;
+	g.append(fac);
+	return activate(g);
+}
 
 bool ThreadEx::activate(InvokerGroup& g)
 {

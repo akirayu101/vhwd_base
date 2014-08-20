@@ -44,16 +44,9 @@ CallableIterator* CallableValueT<arr_xt<T> >::GetIterator(int n)
 	return new CallableIterator_Array1<T>(value);
 }
 
-
-
-
 template<typename T>
 int CallableValueT<arr_xt<T> >::__getindex(Executor& ks,const String& s)
 {
-	//int nbp=ks.stack.vbp.back();
-	//int nsp=ks.stack.nsp;
-	//int pmc=nsp-nbp;
-
 
 
 	return -1;

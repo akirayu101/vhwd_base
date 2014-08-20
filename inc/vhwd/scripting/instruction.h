@@ -34,6 +34,8 @@ enum
 	XOP2_EQ,
 	XOP2_NE,
 
+	XOP2_CAT,
+
 	XOP1_INV,
 	XOP1_SIN,
 	XOP1_COS,

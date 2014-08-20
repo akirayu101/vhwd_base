@@ -336,6 +336,20 @@ class SystemLoggerData
 {
 public:
 
+	SystemLoggerData()
+	{
+		bDisabled=false;
+	}
+
+	~SystemLoggerData()
+	{
+		if(fp_logfile)
+		{
+			::fclose(fp_logfile);
+			fp_logfile=NULL;
+		}
+	}
+
 	static const char* GetMsgLevel(int lv)
 	{
 		switch(lv)
@@ -388,26 +402,44 @@ public:
 			::fclose(fp_logfile);
 			fp_logfile=NULL;
 		}
+
+		if(fn=="")
+		{
+			return true;
+		}
+
 		fp_logfile=::fopen(fn.c_str(),app?"a":"w");
 		return fp_logfile!=NULL;
 	}
 
 	FILE* fp_logfile;
 	AtomicSpin spin;
-} gSystelLoggerData;
+
+	bool bDisabled;
+
+} gSystemLoggerData;
 
 
 bool System::SetLogFile(const String& fn,bool app)
 {
-	return gSystelLoggerData.SetLogFile(fn,app);
+	return gSystemLoggerData.SetLogFile(fn,app);
 }
 
+void System::SetLogEnable(bool f)
+{
+	gSystemLoggerData.bDisabled=!f;
+}
 
 void System::DoLogImpl(int lv,const char* msg,...)
 {
+	if(gSystemLoggerData.bDisabled)
+	{
+		return;
+	}
+
 	va_list arglist;
 	va_start(arglist,msg);
-	gSystelLoggerData.LogImplV(lv,msg,arglist);
+	gSystemLoggerData.LogImplV(lv,msg,arglist);
 	va_end(arglist);
 }
 

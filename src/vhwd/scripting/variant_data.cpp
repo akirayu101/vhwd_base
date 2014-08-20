@@ -5,6 +5,47 @@
 VHWD_ENTER
 
 
+bool CallableData::ToValue(String& s) const
+{
+	s="callable_data";
+	return true;
+}
+
+bool CallableData::ToValue(int64_t&) const
+{
+	return false;
+}
+
+bool CallableData::ToValue(double&) const
+{
+	return false;
+}
+
+bool CallableData::ToValue(int32_t& v) const
+{
+	int64_t n;
+	if(!ToValue(n)) return false;
+	v=n;
+	return true;
+}
+
+bool CallableData::ToValue(float& v) const
+{
+	double n;
+	if(!ToValue(n)) return false;
+	v=n;
+	return true;
+}
+
+bool CallableData::ToValue(size_t& v) const
+{
+	int64_t n;
+	if(!ToValue(n)) return false;
+	v=(size_t)n;
+	return true;
+}
+
+
 bool CallableFunction::CheckParamCount(Executor& ks,int pm)
 {
 	if(ks.stack.nsp-ks.stack.vbp.back()==pm)

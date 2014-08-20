@@ -209,12 +209,7 @@ public:
 	};
 
 	// Start one thread calling fac().
-	bool activate(factor_type& fac)
-	{
-		InvokerGroup g;
-		g.append(fac);
-		return activate(g);
-	}
+	bool activate(factor_type& fac);
 
 	// Start a group of threads.
 	bool activate(InvokerGroup& g);

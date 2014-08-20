@@ -672,69 +672,70 @@ class arr_base : public containerS< typename AllocatorE<A,E>::template rebind<T>
 
 
 	arr_base():m_ptr(NULL) {}
-arr_base(const A& al):basetype(allocator_type(al)),m_ptr(NULL) {}
-arr_base(const allocator_type& al):basetype(al),m_ptr(NULL) {}
+	arr_base(const A& al):basetype(allocator_type(al)),m_ptr(NULL) {}
+	arr_base(const allocator_type& al):basetype(al),m_ptr(NULL) {}
 
-~arr_base()
-{
-	if(m_ptr!=NULL)
+	~arr_base()
 	{
-		this->get_allocator().deallocate(m_ptr,extra().capacity);
-	}
-}
-
-void _xgen(size_type count_)
-{
-	if(count_>7)
-	{
-		count_=(count_+(count_>>2)+7)&~7;
+		if(m_ptr!=NULL)
+		{
+			this->get_allocator().deallocate(m_ptr,extra().capacity);
+		}
 	}
 
-	_xset(count_);
-}
-
-void _xset(size_type count_)
-{
-	if(m_ptr!=NULL)
+	void _xgen(size_type count_)
 	{
-		this->get_allocator().deallocate(m_ptr,extra().capacity);
-		m_ptr=NULL;
+		if(count_>7)
+		{
+			count_=(count_+(count_>>2)+7)&~7;
+		}
+
+		_xset(count_);
 	}
 
-	if(count_>0)
+	void _xset(size_type count_)
 	{
-		m_ptr=this->get_allocator().allocate(count_);
-		extra().capacity=count_;
+		if(m_ptr!=NULL)
+		{
+			this->get_allocator().deallocate(m_ptr,extra().capacity);
+			m_ptr=NULL;
+		}
+
+		if(count_>0)
+		{
+			m_ptr=this->get_allocator().allocate(count_);
+			extra().capacity=count_;
+		}
 	}
 
-}
+	E& extra()
+	{
+		return allocator_type::extra(m_ptr);
+	}
 
-E& extra()
-{
-	return allocator_type::extra(m_ptr);
-}
-const E& extra() const
-{
-	return allocator_type::extra(m_ptr);
-}
+	const E& extra() const
+	{
+		return allocator_type::extra(m_ptr);
+	}
 
-void swap(arr_base& o)
-{
-	if(this==&o) return;
-	std::swap(m_ptr,o.m_ptr);
-}
+	void swap(arr_base& o)
+	{
+		if(this==&o) return;
+		std::swap(m_ptr,o.m_ptr);
+	}
 
-T& operator[](size_type n)
-{
-	return m_ptr[n];
-}
-const T& operator[](size_type n) const
-{
-	return m_ptr[n];
-}
+	T& operator[](size_type n)
+	{
+		return m_ptr[n];
+	}
+
+	const T& operator[](size_type n) const
+	{
+		return m_ptr[n];
+	}
 
 protected:
-T* m_ptr;
+	T* m_ptr;
 
 };
 

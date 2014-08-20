@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\..\test\appmain.cpp" />
-    <ClCompile Include="..\..\test\test_thread.cpp">
+    <ClCompile Include="..\..\test\test_scripting.cpp">
       <Filter>tests</Filter>
     </ClCompile>
     <ClCompile Include="..\..\test\test_basic.cpp">
@@ -17,13 +17,13 @@
     <ClCompile Include="..\..\test\test_memory.cpp">
       <Filter>tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\test\test_scripting.cpp">
-      <Filter>tests</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\test\test_serializer.cpp">
       <Filter>tests</Filter>
     </ClCompile>
     <ClCompile Include="..\..\test\test_shm.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\test\test_thread.cpp">
       <Filter>tests</Filter>
     </ClCompile>
   </ItemGroup>

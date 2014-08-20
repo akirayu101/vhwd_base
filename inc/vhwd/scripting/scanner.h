@@ -114,6 +114,8 @@ protected:
 
 	void read_op2_b();
 
+	void read_op2_c();
+
 	void read_dot();
 
 	// comment // ...

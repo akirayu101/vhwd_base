@@ -372,6 +372,19 @@ public:
 	class rebind : public PL1_rebind_no_complex<X>{};
 };
 
+class PL1_conj
+{
+public:
+	template<typename X>
+	class rebind{public:typedef X type;};
+
+	template<typename T>
+	static T g(const T& x){return x;}
+
+	template<typename T>
+	static std::complex<T> g(const std::complex<T>& x){return std::complex<T>(x.real(),-x.imag());}
+
+};
 
 class PL1_real : public PL1_scr
 {

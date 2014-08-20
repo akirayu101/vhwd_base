@@ -12,8 +12,29 @@ CallableMetatableTypeT<Variant::V_STRING>::CallableMetatableTypeT()
 template<>
 int CallableMetatableTypeT<Variant::V_STRING>::__fun_call(Executor& ks)
 {
+	typedef String type;
+
 	int nbp=ks.stack.vbp.back();
-	ks.stack[nbp+1].reset<String>();
+	int pmc=ks.stack.nsp-nbp;
+	if(pmc==0)
+	{
+		ks.stack[nbp+1].reset<type>();
+	}
+	else if(pmc==1)
+	{
+		ks.stack[nbp+1].reset<type>(PLCast<type>::g(ks.stack[nbp+1]));
+	}
+	else
+	{
+		arr_xt<type> xt;
+		xt.resize(pmc);
+		for(int i=0;i<pmc;i++)
+		{
+			xt(i)=PLCast<type>::g(ks.stack[nbp+i+1]);
+		}
+
+		ks.stack[nbp+1].reset<arr_xt<type> >(xt);
+	}
 	return 1;
 }
 

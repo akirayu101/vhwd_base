@@ -223,6 +223,24 @@ void Scanner::read_op2_b()
 	gen_item(TOK_OP,p1,p2);		
 }
 
+void Scanner::read_op2_c()
+{
+	mychar_ptr p1=stok.pcur;
+	stok.inc();
+
+	if(stok.pcur[-1]==stok.pcur[0])
+	{
+		stok.inc();
+	}
+
+	if(stok.pcur[0]=='=')
+	{
+		stok.inc();
+	}
+
+	mychar_ptr p2=stok.pcur;
+	gen_item(TOK_OP,p1,p2);		
+}
 
 // comment /* ... */
 void Scanner::read_comment2()
@@ -401,7 +419,6 @@ bool Scanner::parse(const String& s)
 			}
 		case '*':
 		case '%':
-		case '^':
 		case '>':
 		case '<':
 		case '!':
@@ -428,9 +445,12 @@ bool Scanner::parse(const String& s)
 				break;
 			}
 		case '+':
+			read_op2_b();
+			break;
 		case '|':
 		case '&':
-			read_op2_b();
+		case '^':
+			read_op2_c();
 			break;
 		case '~':
 			new_item(TOK_OP);

@@ -75,7 +75,7 @@ VHWD_ENTER
 //  ...
 //}
 
-class TestMgr;
+class VHWD_DLLIMPEXP TestMgr;
 
 class VHWD_DLLIMPEXP Test : private NonCopyable
 {
@@ -111,7 +111,7 @@ public:
 
 	void Tested(bool v,const char* msg,const char* file,int line);
 
-	vhwd::Logger logger;
+	Logger logger;
 
 	int argc;
 	char** argv;

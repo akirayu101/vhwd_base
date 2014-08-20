@@ -34,6 +34,7 @@ public:
 	{	
 		if(!CheckParamCount(ks,2))
 		{
+			ks.kerror("param count should be 2");
 			return -1;
 		}
 
@@ -53,6 +54,7 @@ public:
 	{	
 		if(!CheckParamCount(ks,1))
 		{
+			ks.kerror("param count should be 1");
 			return -1;
 		}
 
@@ -136,6 +138,7 @@ void init_scripting_module_math()
 	ggtbl["sqrt"].kptr(new CallableHandler1<PL1_sqrt>);
 	ggtbl["real"].kptr(new CallableHandler1<PL1_real>);
 	ggtbl["imag"].kptr(new CallableHandler1<PL1_imag>);
+	ggtbl["conj"].kptr(new CallableHandler1<PL1_conj>);
 	ggtbl["complex"].kptr(new CallableFunctionComplex);
 
 	ggvar["complex"]=ggtbl["complex"];

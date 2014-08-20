@@ -368,42 +368,36 @@ void CoroutineContext::raw_coroutine_spawn(CoroutineContext* cx0)
 
 	for(;;)
 	{
+
+		Coroutine::_yield_phase2(caller);
+
+		try
 		{
-			Coroutine::_yield_phase2(caller);
+			caller.m_pRoutine->svc();
+		}
+		catch(std::exception& e)
+		{
+			System::LogError("Unhandled exception in Coroutine::svc : %s",e.what());
+		}
+		
+		CoroutineMain& comain(Coroutine::main_coroutine());
+		CoroutineContext& callee(*comain.m_pContext);
 
-			try
+		if(!Coroutine::_yield_phase1(callee,caller))
+		{
+			System::LogError("yield main_coroutine failed, why???");
+			while(!Coroutine::_yield_phase1(callee,caller))
 			{
-				caller.m_pRoutine->svc();
+				Thread::yield();
 			}
-			catch(std::exception& e)
-			{
-				System::LogError("Unhandled exception in Coroutine::svc",e.what());
-			}
-
-			//::printf("%p leave\n",&caller);
 		}
 
-		{
-			CoroutineMain& comain(Coroutine::main_coroutine());
+		comain.m_pLastRoutine=NULL;
+		comain.m_pVoidRoutine=caller.m_pRoutine;
+		comain.m_pContext->m_pExtraParam.reset(NULL);
 
-			CoroutineContext& callee(*comain.m_pContext);
-
-			if(!Coroutine::_yield_phase1(callee,caller))
-			{
-				System::LogError("yield main_coroutine failed, why???");
-				while(!Coroutine::_yield_phase1(callee,caller))
-				{
-					Thread::yield();
-				}
-			}
-
-			comain.m_pLastRoutine=NULL;
-			comain.m_pVoidRoutine=caller.m_pRoutine;
-			comain.m_pContext->m_pExtraParam.reset(NULL);
-
-			raw_coroutine_swap(comain.m_pContext,&caller);
-
-		}
+		raw_coroutine_swap(&callee,&caller);
+		
 	}
 }
 

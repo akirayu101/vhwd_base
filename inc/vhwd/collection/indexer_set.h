@@ -8,7 +8,6 @@
 #ifndef __H_VHWD_INDEXER_SET__
 #define __H_VHWD_INDEXER_SET__
 
-
 #include "vhwd/collection/detail/indexer_container.h"
 
 VHWD_ENTER

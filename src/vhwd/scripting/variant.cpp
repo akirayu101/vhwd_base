@@ -5,6 +5,7 @@
 
 VHWD_ENTER
 
+
 CallableIterator* CallableData::GetIterator(int)
 {
 	return new CallableIterator;

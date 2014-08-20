@@ -233,5 +233,8 @@ private:
 	TimePoint p2;
 };
 
+template<> class hash_t<TimePoint> : public hash_pod<TimePoint> {};
+template<> class hash_t<TimeSpan> : public hash_pod<TimeSpan> {};
+
 VHWD_LEAVE
 #endif

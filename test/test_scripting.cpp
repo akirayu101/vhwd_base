@@ -59,8 +59,72 @@ TEST_DEFINE(TEST_Scripting_Executor)
 	TEST_ASSERT(PLCast<double>::g(ks.table["ans"])==::sin(1.23));
 	TEST_ASSERT(ks.stack.nsp==nsp);
 
-	TEST_ASSERT(ks.eval<int>("-1+2*3-8/(1+3)")==-1+2*3-8/(1+3));
+// string cat operator..
+	ks.execute("a=\"hello\";b=\"world\";c=a..b;");
+	TEST_ASSERT(PLCast<String>::g(ks.table["c"])==String("helloworld"));
 
+
+#define EVAL_ASSERT(T,X) TEST_ASSERT(ks.eval<T>(#X)==(X));
+
+// add sub mul div mod
+	EVAL_ASSERT(int,2+3);
+	EVAL_ASSERT(int,2-3);
+	EVAL_ASSERT(int,2*3);
+	EVAL_ASSERT(int,4/2);
+	EVAL_ASSERT(int,6%4);
+
+// bitwise
+	EVAL_ASSERT(int,6|2);
+	EVAL_ASSERT(int,6^2);
+	EVAL_ASSERT(int,6&2);
+	EVAL_ASSERT(int,~6);
+
+// relation
+	EVAL_ASSERT(bool,6!=2);
+	EVAL_ASSERT(bool,6==2);
+	EVAL_ASSERT(bool,6>2);
+	EVAL_ASSERT(bool,6>=2);
+	EVAL_ASSERT(bool,6<2);
+	EVAL_ASSERT(bool,6<=2);
+
+// logical
+	EVAL_ASSERT(bool,true&&true);
+	EVAL_ASSERT(bool,true&&false);
+	EVAL_ASSERT(bool,false&&true);
+	EVAL_ASSERT(bool,false&&false);
+
+	EVAL_ASSERT(bool,true||true);
+	EVAL_ASSERT(bool,true||false);
+	EVAL_ASSERT(bool,false||true);
+	EVAL_ASSERT(bool,false||false);
+
+	TEST_ASSERT(ks.eval<bool>("true^^true")==false);
+	TEST_ASSERT(ks.eval<bool>("true^^false")==true);
+	TEST_ASSERT(ks.eval<bool>("false^^true")==true);
+	TEST_ASSERT(ks.eval<bool>("false^^false")==false);
+
+	EVAL_ASSERT(bool,!false);
+	EVAL_ASSERT(bool,!true);
+
+// complex
+	TEST_ASSERT(ks.eval<std::complex<double> >("complex(1.2,2.3)")==std::complex<double>(1.2,2.3));
+	TEST_ASSERT(ks.eval<double>("math.real(complex(1.2,2.3))")==1.2);
+	TEST_ASSERT(ks.eval<double>("math.imag(complex(1.2,2.3))")==2.3);
+	TEST_ASSERT(ks.eval<double>("math.abs(complex(3,4))")==std::abs(std::complex<double>(3,4)));
+
+	TEST_ASSERT(ks.eval<std::complex<double> >("math.conj(complex(1.2,2.3))")==std::complex<double>(1.2,-2.3));
+	TEST_ASSERT(ks.eval<std::complex<double> >("math.sqrt(complex(3,4))")==std::sqrt(std::complex<double>(3,4)));
+	TEST_ASSERT(ks.eval<std::complex<double> >("math.pow(complex(3,4),2)")==std::pow(std::complex<double>(3,4),2));
+	TEST_ASSERT(ks.eval<std::complex<double> >("math.sin(complex(3,4))")==std::sin(std::complex<double>(3,4)));
+	TEST_ASSERT(ks.eval<std::complex<double> >("math.cos(complex(3,4))")==std::cos(std::complex<double>(3,4)));
+	TEST_ASSERT(ks.eval<std::complex<double> >("math.tan(complex(3,4))")==std::tan(std::complex<double>(3,4)));
+
+// casting
+
+	TEST_ASSERT(ks.eval<String>("123")==String("123"));
+	TEST_ASSERT(ks.eval<String>("1.25")==String("1.25"));
+	TEST_ASSERT(ks.eval<double>("\"1.25\"")==1.25);
+	TEST_ASSERT(ks.eval<int64_t>("\"123\"")==123);
 
 }
 
@@ -118,12 +182,19 @@ TEST_DEFINE(TEST_Scripting_Executor2)
 
 // class 
 	ks.execute(
-"class Rect{"
-"member.x=0;"
-"member.y=0;"
-"static.area=function(){return this.x*this.y;};"
+"class Rect"
+"{"
+"	member.x=0;"
+"	member.y=0;"
+"	static.area=function()"
+"	{"
+"		return this.x*this.y;"
+"	};"
 "};"
-"a=Rect();a.x=10;a.y=20;s=a.area();"
+"a=Rect();"
+"a.x=10;"
+"a.y=20;"
+"s=a.area();"
 );
 	TEST_ASSERT(PLCast<int>::g(ks.table["s"])==10*20);
 

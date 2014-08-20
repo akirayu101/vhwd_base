@@ -682,7 +682,7 @@ bool XmlParser::save(const String& s)
 
 void XmlParser::savestring(std::ostream& ofs,const String& v)
 {
-	//size_t ln=v.size();
+
 	const char* p1=v.c_str();
 	const char px[]="&quot;";
 	for(;;)
@@ -730,7 +730,7 @@ void XmlParser::savenode(std::ostream& ofs,XmlNode* pnode,int lv)
 
 	if(fnode==NULL)
 	{
-		ofs<<"/>"<<std::endl;
+		ofs<<" />"<<std::endl;
 		return;
 	}
 

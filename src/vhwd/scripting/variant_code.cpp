@@ -98,6 +98,13 @@ int CallableCode::__fun_call(Executor& ks)
 		case XOP2_BITWISE_XOR:
 			ks.call2<XOP2_BITWISE_XOR>();
 			break;
+		case XOP2_CAT:
+			ks.call2<XOP2_CAT>();
+			break;
+
+		case XOP1_NOT:
+			ks.call1<XOP1_NOT>();
+			break;
 		case XOP1_INV:
 			ks.call1<XOP1_INV>();
 			break;

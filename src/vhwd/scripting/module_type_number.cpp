@@ -11,8 +11,29 @@ CallableMetatableTypeT<Variant::V_DOUBLE>::CallableMetatableTypeT()
 template<>
 int CallableMetatableTypeT<Variant::V_DOUBLE>::__fun_call(Executor& ks)
 {
+	typedef double type;
+
 	int nbp=ks.stack.vbp.back();
-	ks.stack[nbp+1].reset<double>();
+	int pmc=ks.stack.nsp-nbp;
+	if(pmc==0)
+	{
+		ks.stack[nbp+1].reset<type>();
+	}
+	else if(pmc==1)
+	{
+		ks.stack[nbp+1].reset<type>(PLCast<type>::g(ks.stack[nbp+1]));
+	}
+	else
+	{
+		arr_xt<type> xt;
+		xt.resize(pmc);
+		for(int i=0;i<pmc;i++)
+		{
+			xt(i)=PLCast<type>::g(ks.stack[nbp+i+1]);
+		}
+
+		ks.stack[nbp+1].reset<arr_xt<type> >(xt);
+	}
 	return 1;
 }
 
@@ -35,8 +56,29 @@ CallableMetatableTypeT<Variant::V_INT>::CallableMetatableTypeT()
 template<>
 int CallableMetatableTypeT<Variant::V_INT>::__fun_call(Executor& ks)
 {
+	typedef int64_t type;
+
 	int nbp=ks.stack.vbp.back();
-	ks.stack[nbp+1].reset<int64_t>();
+	int pmc=ks.stack.nsp-nbp;
+	if(pmc==0)
+	{
+		ks.stack[nbp+1].reset<type>();
+	}
+	else if(pmc==1)
+	{
+		ks.stack[nbp+1].reset<type>(PLCast<type>::g(ks.stack[nbp+1]));
+	}
+	else
+	{
+		arr_xt<type> xt;
+		xt.resize(pmc);
+		for(int i=0;i<pmc;i++)
+		{
+			xt(i)=PLCast<type>::g(ks.stack[nbp+i+1]);
+		}
+
+		ks.stack[nbp+1].reset<arr_xt<type> >(xt);
+	}
 	return 1;
 }
 
@@ -49,9 +91,6 @@ void CallableMetatableTypeT<Variant::V_INT>::init()
 	gVariantMetaTable[Variant::V_INT].reset(new CallableMetatableTypeT<Variant::V_INT>);
 	ggvar["type"].ref<kvar_table>()["integer"].kptr(gVariantMetaTable[Variant::V_INT]);
 }
-
-
-
 
 
 template<>

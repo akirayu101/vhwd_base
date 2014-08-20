@@ -64,6 +64,9 @@ public:
 
 	static bool SetLogFile(const String& fn,bool app=true);
 
+	// default is enabled
+	static void SetLogEnable(bool f);
+
 private:
 	static void DoLogImpl(int v,const char* msg,...);
 };

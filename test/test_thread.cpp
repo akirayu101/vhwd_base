@@ -199,8 +199,9 @@ TEST_DEFINE(TEST_Coroutine)
 	this_logger().LogMessage("yielding to producer again");
 	TEST_ASSERT(Coroutine::yield(&producer));
 
-	this_logger().LogMessage("sink NULL to consumer");
+	this_logger().LogMessage("yielding to consumer with NULL");
 	Coroutine::yield(&consumer,NULL);
+
 	TEST_ASSERT(consumer.state()==Coroutine::STATE_STOPPED);
 }
 
@@ -210,6 +211,7 @@ public:
 
 	void svc(void* p)
 	{
+		// just sleep for a moment
 		Thread::sleep_for(12);
 	}
 };
@@ -233,11 +235,9 @@ TEST_DEFINE(TEST_ThreadPool)
 }
 
 
-
 class ThreadSync : public ThreadMulti
 {
 public:
-
 
 	Semaphore hSem;
 	SpinLock spin;
@@ -250,7 +250,6 @@ public:
 
 	ThreadSync()
 	{
-
 		hSem.post();
 		count=4;
 	}
@@ -263,7 +262,7 @@ public:
 		activate(count);
 		wait();
 		TimePoint tp2=Clock::now();
-		Console::WriteLine(String::Format("test:%s:%g",s,(tp2-tp1)/TimeSpan::MilliSeconds(1)));
+		Console::WriteLine(String::Format("test:%s:%g ms",s,(tp2-tp1)/TimeSpan::MilliSeconds(1)));
 	}
 
 	void svc()

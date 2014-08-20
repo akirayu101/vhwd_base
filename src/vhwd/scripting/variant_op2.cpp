@@ -3,6 +3,7 @@
 #include "vhwd/scripting/variant_op2.h"
 
 VHWD_ENTER
+
 template<>
 void kvar_helper<XOP2_ADD>::g2(Executor& ks)
 {
@@ -28,6 +29,7 @@ void kvar_helper<XOP2_MOD>::g2(Executor& ks)
 {
 	kvar_handler2<PL2_opx_num<PL2_mod> >::g1(ks,f2(ks));
 }
+
 template<>
 void kvar_helper<XOP2_POW>::g2(Executor& ks)
 {
@@ -105,5 +107,14 @@ void kvar_helper<XOP2_BITWISE_XOR>::g2(Executor& ks)
 {
 	kvar_handler2<PL2_opx_num<PL2_bw_xor> >::g1(ks,f2(ks));
 }
+
+template<>
+void kvar_helper<XOP2_CAT>::g2(Executor& ks)
+{
+	String s1=PLCast<String>::g(ks.get(-1));
+	String s2=PLCast<String>::g(ks.get(0));
+	ks.get(-1).reset<String>(s1+s2);
+}
+
 
 VHWD_LEAVE

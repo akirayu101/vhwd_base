@@ -624,7 +624,7 @@ public:
 
 	static int64_t k(int64_t t1,int64_t t2)
 	{
-		return ::pow((double)t1,(double)t2);
+		return ::pow((double)t1,(int)t2);
 	}
 
 	static double k(double t1,double t2)
@@ -632,10 +632,16 @@ public:
 		return ::pow(t1,t2);
 	}
 
-	static std::complex<double> k(std::complex<double> t1,std::complex<double> t2)
+
+	static std::complex<double> k(const std::complex<double>& t1,int64_t t2)
 	{
-		Exception::XBadCast();
-		return 0;
+		return std::pow(t1,(int)t2);
+	}
+
+	template<typename X>
+	static std::complex<double> k(const std::complex<double>& t1,X t2)
+	{
+		return std::pow(t1,t2);
 	}
 
 
@@ -644,6 +650,12 @@ public:
 	{
 		typedef typename rebind<T1,T2>::type type;
 		return k((type)t1,(type)t2);
+	}
+
+	template<typename T1,typename T2>
+	static std::complex<double> g(const std::complex<T1>& t1,const T2& t2)
+	{
+		return k((std::complex<double>)t1,t2);
 	}
 };
 

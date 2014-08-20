@@ -158,12 +158,20 @@ public:
 
 	virtual CallableValueT<kvar_table>* ToTable() {return NULL;}
 	virtual CallableClass* ToClass() {return NULL;}
-	virtual String ToString() const {return "[unknown]";}
 	virtual CallableMetatable* GetMetaTable(){return NULL;}
-
 	virtual CallableIterator* GetIterator(int);
 
 	virtual String GetType() const {return "object";}
+
+
+	virtual bool ToValue(String& s) const;
+	virtual bool ToValue(int64_t&) const;
+	virtual bool ToValue(double&) const;
+
+	bool ToValue(int32_t& v) const;
+	bool ToValue(float& v) const;
+	bool ToValue(size_t& v) const;
+
 
 };
 
@@ -178,7 +186,9 @@ class VHWD_DLLIMPEXP CallableFunction : public CallableData
 public:
 
 	virtual String GetType() const {return "function";}
-	String ToString() const {return m_sName;}
+
+	virtual bool ToValue(String& s) const {s=m_sName;return true;}
+
 
 	bool CheckParamCount(Executor& ks,int pm);
 
@@ -749,10 +759,29 @@ public:
 	static type g(float v){return (type)v;}
 	static type g(double v){return (type)v;}
 
+	static type g(CallableData* v)
+	{
+		type n(0);
+		if(!v) return n;
+		if(!v->ToValue(n))
+		{
+			Exception::XBadCast();
+		}
+		return n;
+	}
+
 	static type g(const String& v)
 	{
-		int64_t k;if(v.ToNumber(&k)) return (type)k;
-		Exception::XBadCast();return type();
+		if(tl::is_same_type<type,double>::value||tl::is_same_type<type,float>::value)
+		{
+			double k;if(v.ToNumber(&k)) return (type)k;
+			Exception::XBadCast();return type();
+		}
+		else
+		{
+			int64_t k;if(v.ToNumber(&k)) return (type)k;
+			Exception::XBadCast();return type();
+		}
 	}
 
 	template<typename O>
@@ -853,7 +882,14 @@ public:
 	static type g(int64_t v){type t;t<<v;return t;}
 	static type g(float v){type t;t<<v;return t;}
 	static type g(double v){type t;t<<v;return t;}
-	static type g(CallableData* v){return v?v->ToString():"nil";}
+
+	static type g(CallableData* v)
+	{
+		type s;if(!v) return "nil";
+		v->ToValue(s);
+		return s;
+	}
+
 	template<typename O>
 	static type g(const arr_xt<O>& v)
 	{

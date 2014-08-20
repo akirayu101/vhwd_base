@@ -224,11 +224,13 @@ void TNodeVisitorCG_GeneratorRValue::visit(TNode_expression_op2* node)
 
 		mp_op2["&&"]=XOP2_AND;
 		mp_op2["||"]=XOP2_OR;
-		mp_op2["^^"]=XOP2_AND;
+		mp_op2["^^"]=XOP2_XOR;
 
 		mp_op2["&"]=XOP2_BITWISE_AND;
 		mp_op2["|"]=XOP2_BITWISE_OR;
-		mp_op2["^"]=XOP2_BITWISE_AND;
+		mp_op2["^"]=XOP2_BITWISE_XOR;
+
+		mp_op2[".."]=XOP2_CAT;
 	}
 
 	int op=mp_op2[node->m_sOpName];
