@@ -161,7 +161,7 @@ public:
 		{
 			void*p=(void*)asm_swap_context_code;
 			raw_coroutine_swap=(void (*)(CoroutineContext*,CoroutineContext*))p;
-			page_protect(p,4096,FileAccess::FLAG_RD|FileAccess::FLAG_EX);
+			page_protect(p,4096,FileAccess::FLAG_RD|FileAccess::FLAG_EXEC);
 		}
 
 		if(size==0)

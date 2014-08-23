@@ -22,6 +22,7 @@ public:
 	typedef typename impl_type::index_type index_type;
 	typedef typename impl_type::size_type size_type;
 	typedef typename impl_type::value_array value_array;
+
 	indexer_container() {}
 	indexer_container(const indexer_container& o):impl(o.impl) {}
 
@@ -97,9 +98,9 @@ public:
 		impl.max_load_factor(z);
 	}
 
-	value_proxy& get(index_type n)
+	value_type& get(index_type n)
 	{
-		return (value_proxy&)impl.get_by_id(n);
+		return (value_type&)impl.get_by_id(n);
 	}
 
 	const value_type& get(index_type n) const

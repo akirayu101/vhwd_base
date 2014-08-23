@@ -61,7 +61,7 @@ bool MyOverLappedRb::init_send(RingBufferBase& buff_send)
 
 	MyOverLapped& olap_send(*this);
 
-	int32_t mask=buff_send.pHeader->mask;
+	int32_t mask=buff_send.pHeader->rb_mask;
 	int32_t rd=buff_send.pHeader->rd_pos;
 	int32_t wr=buff_send.pHeader->wr_pos;
 	int32_t sz=(wr-rd)&mask;
@@ -98,7 +98,7 @@ bool MyOverLappedRb::init_recv(RingBufferBase& buff_recv)
 
 	MyOverLapped& olap_recv(*this);
 
-	int32_t mask=buff_recv.pHeader->mask;
+	int32_t mask=buff_recv.pHeader->rb_mask;
 	int32_t rd=buff_recv.pHeader->rd_pos;
 	int32_t wr=buff_recv.pHeader->wr_pos;
 	int32_t sz=(rd-wr-1)&mask;

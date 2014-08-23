@@ -25,7 +25,7 @@ public:
 	}
 
 protected:
-	void recv(char* data,size_t size);
+	size_t recv(char* data,size_t size);
 	std::istream& fs;
 };
 
@@ -41,7 +41,7 @@ public:
 	}
 
 protected:
-	void send(char* data,size_t size);
+	size_t send(const char* data,size_t size);
 	std::ostream& fs;
 };
 

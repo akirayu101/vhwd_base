@@ -20,59 +20,59 @@ VHWD_ENTER
 
 String::String()
 {
-	m_pStr=StringPool::current().str_empty();
+	m_ptr=StringPool::current().str_empty();
 }
 
 String::String(const StringBuffer<char>& o)
 {
-	m_pStr=StringPool::current().str_dup(o.data(),o.size());
+	m_ptr=StringPool::current().str_dup(o.data(),o.size());
 }
 
 String::String(const StringBuffer<unsigned char>& o)
 {
-	m_pStr=StringPool::current().str_dup((char*)o.data(),o.size());
+	m_ptr=StringPool::current().str_dup((char*)o.data(),o.size());
 }
 
 String::String(const String& o)
 {
-	m_pStr=StringPool::current().str_dup(o.c_str());
+	m_ptr=StringPool::current().str_dup(o.c_str());
 }
 
 String::String(const char* p)
 {
-	m_pStr=StringPool::current().str_dup(p);
+	m_ptr=StringPool::current().str_dup(p);
 }
 
 String::String(const char* p1,uint32_t n)
 {
-	m_pStr=StringPool::current().str_dup(p1,n);
+	m_ptr=StringPool::current().str_dup(p1,n);
 }
 
 String::String(const char* p1,const char* p2)
 {
-	m_pStr=StringPool::current().str_dup(p1,safe_distance(p1,p2));
+	m_ptr=StringPool::current().str_dup(p1,safe_distance(p1,p2));
 }
 
 String::String(const unsigned char* p)
 {
-	m_pStr=StringPool::current().str_dup((char*)p);
+	m_ptr=StringPool::current().str_dup((char*)p);
 }
 
 String::String(const unsigned char* p1,uint32_t n)
 {
-	m_pStr=StringPool::current().str_dup((char*)p1,n);
+	m_ptr=StringPool::current().str_dup((char*)p1,n);
 }
 
 String::String(const unsigned char* p1,unsigned const char* p2)
 {
-	m_pStr=StringPool::current().str_dup((char*)p1,safe_distance(p1,p2));
+	m_ptr=StringPool::current().str_dup((char*)p1,safe_distance(p1,p2));
 }
 
 void String::assign(const char* p1,uint32_t n)
 {
 	char* _pnewstr=StringPool::current().str_dup(p1,n);
-	StringPool::current().str_free(m_pStr);
-	m_pStr=_pnewstr;
+	StringPool::current().str_free(m_ptr);
+	m_ptr=_pnewstr;
 }
 
 void String::assign(const char* p1,const char* p2)
@@ -83,8 +83,8 @@ void String::assign(const char* p1,const char* p2)
 void String::assign(const unsigned char* p1,uint32_t n)
 {
 	char* _pnewstr=StringPool::current().str_dup((char*)p1,n);
-	StringPool::current().str_free(m_pStr);
-	m_pStr=_pnewstr;
+	StringPool::current().str_free(m_ptr);
+	m_ptr=_pnewstr;
 }
 
 void String::assign(const unsigned char* p1,const unsigned char* p2)
@@ -95,7 +95,7 @@ void String::assign(const unsigned char* p1,const unsigned char* p2)
 
 String::String(const wchar_t* p)
 {
-	m_pStr=StringPool::current().str_empty();
+	m_ptr=StringPool::current().str_empty();
 	StringBuffer<char> sb;
 	IConv::unicode_to_ansi(sb,p,std::char_traits<wchar_t>::length(p));
 	(*this)=sb;
@@ -103,7 +103,7 @@ String::String(const wchar_t* p)
 
 String::String(const wchar_t* p,uint32_t n)
 {
-	m_pStr=StringPool::current().str_empty();
+	m_ptr=StringPool::current().str_empty();
 	StringBuffer<char> sb;
 	IConv::unicode_to_ansi(sb,p,n);
 	(*this)=sb;
@@ -111,7 +111,7 @@ String::String(const wchar_t* p,uint32_t n)
 
 String::String(const wchar_t* p1,const wchar_t* p2)
 {
-	m_pStr=StringPool::current().str_empty();
+	m_ptr=StringPool::current().str_empty();
 	StringBuffer<char> sb;
 	IConv::unicode_to_ansi(sb,p1,p2-p1);
 	(*this)=sb;
@@ -119,22 +119,22 @@ String::String(const wchar_t* p1,const wchar_t* p2)
 
 String::~String()
 {
-	StringPool::current().str_free(m_pStr);
+	StringPool::current().str_free(m_ptr);
 }
 
 const char* String::c_str() const
 {
-	return m_pStr;
+	return m_ptr;
 }
 
 size_t String::size() const
 {
-	return ::strlen(m_pStr);
+	return ::strlen(m_ptr);
 }
 
 size_t String::length() const
 {
-	return ::strlen(m_pStr);
+	return ::strlen(m_ptr);
 }
 
 
@@ -232,31 +232,31 @@ String String::FormatImpl(const char* s,...)
 void String::append(const char* p,uint32_t n)
 {
 	char* _pnewstr=StringPool::current().str_cat(c_str(),size(),p,n);
-	StringPool::current().str_free(m_pStr);
-	m_pStr=_pnewstr;
+	StringPool::current().str_free(m_ptr);
+	m_ptr=_pnewstr;
 }
 
 void String::append(const char* p1,const char* p2)
 {
 	char* _pnewstr=StringPool::current().str_cat(c_str(),size(),p1,safe_distance(p1,p2));
-	StringPool::current().str_free(m_pStr);
-	m_pStr=_pnewstr;
+	StringPool::current().str_free(m_ptr);
+	m_ptr=_pnewstr;
 }
 
 
 String& String::operator=(const char* p)
 {
 	char* _pnewstr=StringPool::current().str_dup(p);
-	StringPool::current().str_free(m_pStr);
-	m_pStr=_pnewstr;
+	StringPool::current().str_free(m_ptr);
+	m_ptr=_pnewstr;
 	return *this;
 }
 
 String& String::operator=(const String& p)
 {
 	char* _pnewstr=StringPool::current().str_dup(p.c_str());
-	StringPool::current().str_free(m_pStr);
-	m_pStr=_pnewstr;
+	StringPool::current().str_free(m_ptr);
+	m_ptr=_pnewstr;
 	return *this;
 }
 
@@ -271,17 +271,17 @@ String& String::operator=(const wchar_t* p)
 
 String& String::operator+=(const char* p)
 {
-	char* _pnewstr=StringPool::current().str_cat(m_pStr,p);
-	StringPool::current().str_free(m_pStr);
-	m_pStr=_pnewstr;
+	char* _pnewstr=StringPool::current().str_cat(m_ptr,p);
+	StringPool::current().str_free(m_ptr);
+	m_ptr=_pnewstr;
 	return *this;
 }
 
 String& String::operator+=(const String& p)
 {
-	char* _pnewstr=StringPool::current().str_cat(m_pStr,p.c_str());
-	StringPool::current().str_free(m_pStr);
-	m_pStr=_pnewstr;
+	char* _pnewstr=StringPool::current().str_cat(m_ptr,p.c_str());
+	StringPool::current().str_free(m_ptr);
+	m_ptr=_pnewstr;
 	return *this;
 }
 
@@ -441,7 +441,7 @@ String& String::operator<<(const StringBuffer<unsigned char>& o)
 String String::substr(size_t pos,size_t len) const
 {
 	wassert(pos<size());
-	String s(m_pStr+pos,std::min(len,size()-pos));
+	String s(m_ptr+pos,std::min(len,size()-pos));
 	return s;
 }
 
@@ -450,7 +450,7 @@ int String::find (char c, int pos) const
 	int n=(int)size();
 	for(int i=pos; i<n; i++)
 	{
-		if(m_pStr[i]==c) return i;
+		if(m_ptr[i]==c) return i;
 	}
 	return -1;
 }
@@ -484,8 +484,8 @@ int String::replace(const String& c1,const String& c2)
 	const char* _pNew=c2.c_str();
 	size_t _nNew=c2.size();
 
-	const char* p1=m_pStr;
-	const char* p2=m_pStr+size();
+	const char* p1=m_ptr;
+	const char* p2=m_ptr+size();
 	for(;;)
 	{
 		const char* pt=::strstr(p1,_pOld);

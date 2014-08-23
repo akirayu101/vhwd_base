@@ -14,10 +14,10 @@
 VHWD_ENTER
 
 template<typename T,typename A>
-class arr_1t : public arr_base<T,A,extra_vec_1t>
+class arr_1t : public arr_base2<T,A,extra_vec_1t>
 {
 public:
-	typedef arr_base<T,A,extra_vec_1t> basetype;
+	typedef arr_base2<T,A,extra_vec_1t> basetype;
 
 	typedef typename basetype::size_type size_type;
 	typedef typename basetype::value_type value_type;
@@ -84,7 +84,7 @@ public:
 	template<typename It>
 	iterator insert(const_iterator where_,It first_,It last_)
 	{
-		insert(where_,first_,std::distance(first_,last_));
+		return insert(where_,first_,std::distance(first_,last_));
 	}
 
 	void append(const T& val_)

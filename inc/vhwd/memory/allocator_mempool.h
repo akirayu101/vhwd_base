@@ -58,6 +58,7 @@ public:
 
 	inline pointer allocate(size_type n)
 	{
+		if(n>max_size()) Exception::XBadAlloc();
 		return (T*)P::current().allocate((n)*sizeof(T));
 	}
 

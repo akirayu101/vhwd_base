@@ -15,8 +15,8 @@ public:
 
 	typedef K key_type;
 	typedef V mapped_type;
-	typedef std::pair<key_type,mapped_type> value_type;
-	typedef std::pair<const key_type,mapped_type> value_proxy;
+	typedef std::pair<const key_type,mapped_type> value_type;
+	typedef std::pair<key_type,mapped_type> value_proxy;
 
 	static const key_type& key(const key_type& v)
 	{
@@ -37,6 +37,11 @@ public:
 		return value_type(k,v);
 	}
 
+	static const value_type& pair(const value_type& k)
+	{
+		return k;
+	}
+
 };
 
 
@@ -47,8 +52,8 @@ public:
 
 	typedef K key_type;
 	typedef K mapped_type;
-	typedef K value_type;
-	typedef const value_type value_proxy;
+	typedef const K value_type;
+	typedef K value_proxy;
 
 	static const key_type& key(const value_type& v)
 	{

@@ -2,7 +2,6 @@
 #ifndef __H_VHWD_COLLECTION_BST_TREE_NODE__
 #define __H_VHWD_COLLECTION_BST_TREE_NODE__
 
-//#include "vhwd/memory/mempool.h"
 #include "vhwd/collection/detail/collection_base.h"
 
 VHWD_ENTER
@@ -26,13 +25,12 @@ public:
 	typedef bst_node node_type;
 	typedef K key_type;
 	typedef V mapped_type;
-	typedef std::pair<const key_type,mapped_type> value_type;
+	typedef typename kv_trait<K,V>::value_type value_type;
 
 	node_type* parent;
 	node_type* child1;
 	node_type* child2;
-	key_type value;
-	mapped_type extra;
+	value_type value;
 	color_type color;
 
 	bst_node()
@@ -40,68 +38,21 @@ public:
 		parent=child1=child2=NULL;
 		color=COLOR_RED;
 	}
-	bst_node(const key_type& k):value(k)
+
+	template<typename X>
+	bst_node(const X& p):value(kv_trait<K,V>::pair(p))
 	{
 		parent=child1=child2=NULL;
 		color=COLOR_RED;
-	}
-	bst_node(const value_type& p):value(p.first),extra(p.second)
-	{
-		parent=child1=child2=NULL;
-		color=COLOR_RED;
-	}
-	bst_node(const bst_node& n):value(n.value),extra(n.extra),color(n.color)
-	{
-		parent=child1=child2=NULL;
 	}
 
-#ifdef VHWD_C11
-	bst_node(key_type&& k):value(k)
-	{
-		parent=child1=child2=NULL;
-		color=COLOR_RED;
-	}
-	bst_node(value_type&& v):value(v.first),extra(v.second)
-	{
-		parent=child1=child2=NULL;
-		color=COLOR_RED;
-	}
-#endif
-
-};
-
-template<typename K>
-class bst_node<K,void> : public bst_base
-{
-public:
-	typedef bst_node node_type;
-	typedef K key_type;
-	typedef K mapped_type;
-	typedef const K value_type;
-
-	node_type* parent;
-	node_type* child1;
-	node_type* child2;
-	key_type value;
-	color_type color;
-
-	bst_node()
-	{
-		parent=child1=child2=NULL;
-		color=COLOR_RED;
-	}
-	bst_node(const key_type& k):value(k)
-	{
-		parent=child1=child2=NULL;
-		color=COLOR_RED;
-	}
 	bst_node(const bst_node& n):value(n.value),color(n.color)
 	{
 		parent=child1=child2=NULL;
 	}
 
 #ifdef VHWD_C11
-	bst_node(key_type&& k):value(k)
+	bst_node(value_type&& v):value(v)
 	{
 		parent=child1=child2=NULL;
 		color=COLOR_RED;
@@ -109,8 +60,6 @@ public:
 #endif
 
 };
-
-
 
 template<typename K,typename V,typename C>
 class bst_trait_base : public bst_base
@@ -247,7 +196,7 @@ public:
 	static const key_type& key(node_type* node)
 	{
 		wassert(node!=NULL);
-		return node->value;
+		return key(node->value);
 	}
 
 };

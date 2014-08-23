@@ -72,8 +72,8 @@ public:
 #if defined(VHWD_C11)
 	String(String&& p)
 	{
-		m_pStr=p.m_pStr;
-		p.m_pStr=NULL;
+		m_ptr=p.m_ptr;
+		p.m_ptr=NULL;
 	}
 	const String& operator=(String&& p)
 	{
@@ -86,7 +86,7 @@ public:
 
 	void swap(String& s1)
 	{
-		std::swap(m_pStr,s1.m_pStr);
+		std::swap(m_ptr,s1.m_ptr);
 	}
 
 	const char* c_str() const;
@@ -169,7 +169,7 @@ private:
 	static String FormatImpl(const char* s,...);
 	const String& PrintfImpl(const char* s,...);
 
-	char* m_pStr;
+	char* m_ptr;
 };
 
 
@@ -177,7 +177,7 @@ VHWD_DLLIMPEXP std::ostream& operator<<(std::ostream&o,const String& s);
 VHWD_DLLIMPEXP std::istream& operator>>(std::istream&o,String& s);
 
 template<typename T>
-String::String(const std::basic_string<T>& o):m_pStr(NULL)
+String::String(const std::basic_string<T>& o):m_ptr(NULL)
 {
 	(*this)=o.c_str();
 }

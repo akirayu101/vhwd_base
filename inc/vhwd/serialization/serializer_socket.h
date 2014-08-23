@@ -79,8 +79,8 @@ protected:
 	LinearBuffer<char> lbuf_rd;
 	LinearBuffer<char> lbuf_wr;
 
-	void recv(char* data,size_t size_);
-	void send(char* data,size_t size_);
+	size_t recv(char* data,size_t size_);
+	size_t send(const char* data,size_t size_);
 
 };
 

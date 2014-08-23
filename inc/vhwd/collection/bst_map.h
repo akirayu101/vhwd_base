@@ -42,14 +42,14 @@ public:
 
 	mapped_type& operator[](const key_type& k)
 	{
-		return impl.template handle_key<typename impl_type::fp_insert_node>(k)->extra;
+		return impl.template handle_key<typename impl_type::fp_insert_node>(k)->value.second;
 	}
 
 	const mapped_type& operator[](const key_type& k) const
 	{
 		typename impl_type::node_type* n=impl.template handle_key<impl_type::fp_return_node>(k);
 		if(!n) Exception::XNotFound();
-		return n->extra;
+		return n->value.second;
 	}
 
 };

@@ -203,7 +203,17 @@ class VHWD_DLLIMPEXP SerializerReader : public SerializerEx
 public:
 	SerializerReader():SerializerEx(READER) {}
 
-	virtual void recv(char* data,size_t size)=0;
+	void checked_recv(char* data,size_t size)
+	{
+		size_t n=recv(data,size);
+		if(n!=size)
+		{
+			errstr("invalid received size");
+		}
+	}
+
+	virtual size_t recv(char* data,size_t size)=0;
+
 	virtual void close() {}
 
 	virtual SerializerReader& tag(char ch);
@@ -218,7 +228,17 @@ public:
 
 	SerializerWriter():SerializerEx(WRITER) {}
 
-	virtual void send(char* data,size_t size)=0;
+	virtual size_t send(const char* data,size_t size)=0;
+
+	void checked_send(const char* data,size_t size)
+	{
+		size_t n=send(data,size);
+		if(n!=size)
+		{
+			errstr("invalid received size");
+		}
+	}
+
 	virtual void close() {}
 
 	virtual SerializerWriter& tag(char ch);
@@ -319,11 +339,11 @@ public:
 	static const int value=tl::is_pod<T>::value;
 	static void g(SerializerReader& ar,T& val)
 	{
-		ar.recv((char*)&val,sizeof(T));
+		ar.checked_recv((char*)&val,sizeof(T));
 	}
 	static void g(SerializerWriter& ar,T& val)
 	{
-		ar.send((char*)&val,sizeof(T));
+		ar.checked_send((char*)&val,sizeof(T));
 	}
 };
 

@@ -36,23 +36,27 @@ public:
 	{
 		return lbuf.gbeg();   // buffer begin
 	}
+
 	char* gptr()
 	{
 		return lbuf.gptr();   // get position begin
 	}
+
 	char* gend()
 	{
 		return lbuf.gend();   // get position end or put position begin
 	}
+
 	char* last()
 	{
 		return lbuf.last();
 	}
 
+
 protected:
 
-	void send(char* data,size_t size);
-	void recv(char* data,size_t size);
+	size_t send(const char* data,size_t size);
+	size_t recv(char* data,size_t size);
 
 	LinearBuffer<char> lbuf;
 

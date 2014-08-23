@@ -26,20 +26,14 @@ void SerializerBuffer::alloc(size_t bufsize)
 }
 
 
-void SerializerBuffer::send(char* data,size_t size)
+size_t SerializerBuffer::send(const char* data,size_t size)
 {
-	if(lbuf.send(data,size)!=size)
-	{
-		writer().errstr("no_buffer");
-	}
+	return lbuf.send(data,size);
 }
 
-void SerializerBuffer::recv(char* data,size_t size)
+size_t SerializerBuffer::recv(char* data,size_t size)
 {
-	if(lbuf.recv(data,size)!=size)
-	{
-		reader().errstr("eof");
-	}
+	return lbuf.recv(data,size);
 }
 
 VHWD_LEAVE

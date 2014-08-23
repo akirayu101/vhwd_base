@@ -15,10 +15,10 @@ VHWD_ENTER
 
 
 template<typename T,typename A>
-class arr_xt : public arr_base<T,A,extra_arr_xt>
+class arr_xt : public arr_base2<T,A,extra_arr_xt>
 {
 public:
-	typedef arr_base<T,A,extra_arr_xt> basetype;
+	typedef arr_base2<T,A,extra_arr_xt> basetype;
 
 private:
 	using basetype::m_ptr;
@@ -170,13 +170,12 @@ bool operator==(const arr_xt<T,A1>& lhs,const arr_xt<T,A2>& rhs)
 	return true;
 }
 
-
-
 template<typename T,typename A1,typename A2>
 bool operator!=(const arr_xt<T,A1>& lhs,const arr_xt<T,A2>& rhs)
 {
 	return !(lhs==rhs);
 }
+
 template<typename T,typename A>
 arr_xt<T,A>::arr_xt(const arr_xt& o):basetype(o.get_allocator())
 {

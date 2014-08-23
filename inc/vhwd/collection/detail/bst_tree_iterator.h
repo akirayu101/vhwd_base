@@ -103,7 +103,8 @@ protected:
 	node_type** m_ppRoot;
 };
 
-
+// template parameter D, direction, D=false reverse_iterator, else iterator
+// template parameter C, is_const
 template<typename P,bool D,bool C>
 class bst_iterator;
 

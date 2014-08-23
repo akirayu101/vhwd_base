@@ -434,7 +434,7 @@ public:
 
 	value_type& get_by_id(index_type k)
 	{
-		return values[k];
+		return (value_type&)values[k];
 	}
 
 	void check_loadfactor()
@@ -506,7 +506,7 @@ public:
 
 	value_array& get_values()
 	{
-		return values;
+		return (value_array&)values;
 	}
 
 	proxy_array& get_proxys()
@@ -565,7 +565,7 @@ public:
 
 protected:
 
-	value_array values;
+	proxy_array values;
 	chunk_array buckets;
 
 	size_t m_nBucketCount;

@@ -70,7 +70,7 @@ VHWD_DLLIMPEXP int page_protect(void* p,size_t n,int f)
 		flag_new=PAGE_NOACCESS;
 	}
 
-	if(f&FileAccess::FLAG_EX)
+	if(f&FileAccess::FLAG_EXEC)
 	{
 		flag_new=flag_new<<4;
 	}
@@ -79,7 +79,7 @@ VHWD_DLLIMPEXP int page_protect(void* p,size_t n,int f)
 	f=0;
 	if(flag_old&0xF0)
 	{
-		f|=FileAccess::FLAG_EX;
+		f|=FileAccess::FLAG_EXEC;
 		flag_old>>=4;
 	}
 	if(flag_old==PAGE_READWRITE)
@@ -138,7 +138,7 @@ VHWD_DLLIMPEXP int page_protect(void* p,size_t n,int f)
 	{
 		flag_new|=PROT_READ;
 	}
-	if(f&FileAccess::FLAG_EX)
+	if(f&FileAccess::FLAG_EXEC)
 	{
 		flag_new|=PROT_EXEC;
 	}
@@ -157,7 +157,7 @@ VHWD_DLLIMPEXP int page_protect(void* p,size_t n,int f)
 	}
 	if(flag_old&PROT_EXEC)
 	{
-		f|=FileAccess::FLAG_EX;
+		f|=FileAccess::FLAG_EXEC;
 	}
 	return f;
 

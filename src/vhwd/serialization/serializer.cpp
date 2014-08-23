@@ -13,7 +13,7 @@ void serial_helper_func<A,String>::g(SerializerReader &ar,type &val)
 	arr_1t<char> vect;
 	vect.resize(n);
 
-	ar.recv(vect.data(),n);
+	ar.checked_recv(vect.data(),n);
 
 	if(ar.flags.get(Serializer::STRCVT_UTF8))
 	{
@@ -57,7 +57,7 @@ void serial_helper_func<A,String>::g(SerializerWriter &ar,type &val)
 	serial_pod<A,intarr_t>::g(ar,n);
 	if(n>0)
 	{
-		ar.send((char *)p,n);
+		ar.checked_send((char *)p,n);
 	}
 
 }
@@ -130,7 +130,7 @@ void serializer_cached_objects::clear()
 SerializerReader &SerializerReader::tag(char ch)
 {
 	char tmp;
-	recv(&tmp,1);
+	checked_recv(&tmp,1);
 	if(tmp==ch)
 	{
 		errstr("invalid_tag");
@@ -143,7 +143,7 @@ SerializerReader &SerializerReader::tag(const char *msg)
 	int n=::strlen(msg);
 	std::vector<char> tmp;
 	tmp.resize(n+1);
-	recv(&tmp[0],n+1);
+	checked_recv(&tmp[0],n+1);
 	if(tmp[n]!='\0'||strcmp(msg,&tmp[0])!=0)
 	{
 		errstr("invalid_tag");
@@ -154,7 +154,7 @@ SerializerReader &SerializerReader::tag(const char *msg)
 int SerializerReader::local_version(int v)
 {
 	int32_t vh(-1);
-	recv((char *)&vh,sizeof(int32_t));
+	checked_recv((char *)&vh,sizeof(int32_t));
 	if(vh<0||vh>v)
 	{
 		errstr("invalid_version");
@@ -165,21 +165,21 @@ int SerializerReader::local_version(int v)
 
 SerializerWriter &SerializerWriter::tag(char ch)
 {
-	send(&ch,1);
+	checked_send(&ch,1);
 	return *this;
 }
 
 SerializerWriter &SerializerWriter::tag(const char *msg)
 {
 	int n=::strlen(msg);
-	send((char *)msg,n+1);
+	checked_send((char *)msg,n+1);
 	return *this;
 }
 
 int SerializerWriter::local_version(int v)
 {
 	int32_t vh(v);
-	send((char *)&vh,sizeof(int32_t));
+	checked_send((char *)&vh,sizeof(int32_t));
 	return v;
 }
 

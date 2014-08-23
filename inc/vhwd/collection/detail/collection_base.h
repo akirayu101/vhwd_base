@@ -348,77 +348,77 @@ class rac_iterator<T,D,true>	: public std::iterator<std::random_access_iterator_
 public:
 	typedef T* pointer;
 
-	rac_iterator(const pointer x=pointer()) :_pAddress(x) {}
+	rac_iterator(const pointer x=pointer()) :m_ptr(x) {}
 	rac_iterator& operator++()
 	{
-		_pAddress=IteratorDirection<T,D>::add(_pAddress,1);
+		m_ptr=IteratorDirection<T,D>::add(m_ptr,1);
 		return *this;
 	}
 	rac_iterator operator++(int)
 	{
 		rac_iterator tmp(*this);
-		_pAddress=IteratorDirection<T,D>::add(_pAddress,1);
+		m_ptr=IteratorDirection<T,D>::add(m_ptr,1);
 		return tmp;
 	}
 	rac_iterator& operator--()
 	{
-		_pAddress=IteratorDirection<T,D>::sub(_pAddress,1);
+		m_ptr=IteratorDirection<T,D>::sub(m_ptr,1);
 		return *this;
 	}
 	rac_iterator operator--(int)
 	{
 		rac_iterator tmp(*this);
-		_pAddress=IteratorDirection<T,D>::sub(_pAddress,1);
+		m_ptr=IteratorDirection<T,D>::sub(m_ptr,1);
 		return tmp;
 	}
 
 	bool operator==(const rac_iterator& rhs)
 	{
-		return _pAddress==rhs._pAddress;
+		return m_ptr==rhs.m_ptr;
 	}
 	bool operator!=(const rac_iterator& rhs)
 	{
-		return _pAddress!=rhs._pAddress;
+		return m_ptr!=rhs.m_ptr;
 	}
 	bool operator<(const rac_iterator& rhs)
 	{
-		return IteratorDirection<T,D>::sub(_pAddress,rhs._pAddress)<0;
+		return IteratorDirection<T,D>::sub(m_ptr,rhs.m_ptr)<0;
 	}
 	bool operator<=(const rac_iterator& rhs)
 	{
-		return IteratorDirection<T,D>::sub(_pAddress,rhs._pAddress)<=0;
+		return IteratorDirection<T,D>::sub(m_ptr,rhs.m_ptr)<=0;
 	}
 	bool operator>(const rac_iterator& rhs)
 	{
-		return IteratorDirection<T,D>::sub(_pAddress,rhs._pAddress)>0;
+		return IteratorDirection<T,D>::sub(m_ptr,rhs.m_ptr)>0;
 	}
 	bool operator>=(const rac_iterator& rhs)
 	{
-		return IteratorDirection<T,D>::sub(_pAddress,rhs._pAddress)>=0;
+		return IteratorDirection<T,D>::sub(m_ptr,rhs.m_ptr)>=0;
 	}
 
 	const T& operator*()
 	{
-		return *_pAddress;
+		return *m_ptr;
 	}
 	T* get()
 	{
-		return _pAddress;
+		return m_ptr;
 	}
 	const T* operator->()
 	{
-		return _pAddress;
+		return m_ptr;
 	}
 
 protected:
-	pointer _pAddress;
+	pointer m_ptr;
 };
 
 template<typename T,bool D>
 class rac_iterator<T,D,false> : public rac_iterator<T,D,true>
 {
 protected:
-	using rac_iterator<T,D,true>::_pAddress;
+	using rac_iterator<T,D,true>::m_ptr;
 public:
 	typedef T* pointer;
 
@@ -426,38 +426,38 @@ public:
 
 	rac_iterator& operator++()
 	{
-		_pAddress=IteratorDirection<T,D>::add(_pAddress,1);
+		m_ptr=IteratorDirection<T,D>::add(m_ptr,1);
 		return *this;
 	}
 	rac_iterator operator++(int)
 	{
 		rac_iterator tmp(*this);
-		_pAddress=IteratorDirection<T,D>::add(_pAddress,1);
+		m_ptr=IteratorDirection<T,D>::add(m_ptr,1);
 		return tmp;
 	}
 	rac_iterator& operator--()
 	{
-		_pAddress=IteratorDirection<T,D>::sub(_pAddress,1);
+		m_ptr=IteratorDirection<T,D>::sub(m_ptr,1);
 		return *this;
 	}
 	rac_iterator operator--(int)
 	{
 		rac_iterator tmp(*this);
-		_pAddress=IteratorDirection<T,D>::sub(_pAddress,1);
+		m_ptr=IteratorDirection<T,D>::sub(m_ptr,1);
 		return tmp;
 	}
 
 	T& operator*()
 	{
-		return *_pAddress;
+		return *m_ptr;
 	}
 	T* get()
 	{
-		return _pAddress;
+		return m_ptr;
 	}
 	T* operator->()
 	{
-		return _pAddress;
+		return m_ptr;
 	}
 };
 
@@ -658,10 +658,10 @@ public:
 };
 
 template<typename T,typename A,typename E>
-class arr_base : public containerS< typename AllocatorE<A,E>::template rebind<T>::other >
+class arr_base1 : public containerS< typename AllocatorE<A,E>::template rebind<T>::other >
 {
-	arr_base(const arr_base&);
-	const arr_base& operator=(const arr_base&);
+	arr_base1(const arr_base1&);
+	const arr_base1& operator=(const arr_base1&);
 	public:
 
 	typedef containerS< typename AllocatorE<A,E>::template rebind<T>::other > basetype;
@@ -671,11 +671,11 @@ class arr_base : public containerS< typename AllocatorE<A,E>::template rebind<T>
 	typedef typename basetype::allocator_type allocator_type;
 
 
-	arr_base():m_ptr(NULL) {}
-	arr_base(const A& al):basetype(allocator_type(al)),m_ptr(NULL) {}
-	arr_base(const allocator_type& al):basetype(al),m_ptr(NULL) {}
+	arr_base1():m_ptr(NULL) {}
+	arr_base1(const A& al):basetype(allocator_type(al)),m_ptr(NULL) {}
+	arr_base1(const allocator_type& al):basetype(al),m_ptr(NULL) {}
 
-	~arr_base()
+	~arr_base1()
 	{
 		if(m_ptr!=NULL)
 		{
@@ -718,7 +718,7 @@ class arr_base : public containerS< typename AllocatorE<A,E>::template rebind<T>
 		return allocator_type::extra(m_ptr);
 	}
 
-	void swap(arr_base& o)
+	void swap(arr_base1& o)
 	{
 		if(this==&o) return;
 		std::swap(m_ptr,o.m_ptr);
@@ -740,6 +740,88 @@ protected:
 };
 
 
+template<typename T,typename A,typename E>
+class arr_base2 : public containerS< typename A::template rebind<T>::other >
+{
+	arr_base2(const arr_base2&);
+	const arr_base2& operator=(const arr_base2&);
+	public:
+
+	typedef containerS< typename A::template rebind<T>::other > basetype;
+	typedef typename basetype::iterator iterator;
+	typedef typename basetype::const_iterator const_iterator;
+	typedef typename basetype::size_type size_type;
+	typedef typename basetype::allocator_type allocator_type;
+
+
+	arr_base2():m_ptr(NULL) {}
+	arr_base2(const allocator_type& al):basetype(al),m_ptr(NULL) {}
+
+	~arr_base2()
+	{
+		if(m_ptr!=NULL)
+		{
+			this->get_allocator().deallocate(m_ptr,extra().capacity);
+		}
+	}
+
+	void _xgen(size_type count_)
+	{
+		if(count_>7)
+		{
+			count_=(count_+(count_>>2)+7)&~7;
+		}
+
+		_xset(count_);
+	}
+
+	void _xset(size_type count_)
+	{
+		if(m_ptr!=NULL)
+		{
+			this->get_allocator().deallocate(m_ptr,extra().capacity);
+			m_ptr=NULL;
+		}
+
+		if(count_>0)
+		{
+			m_ptr=this->get_allocator().allocate(count_);
+			extra().capacity=count_;
+		}
+	}
+
+	E& extra()
+	{
+		return m_extra;
+	}
+
+	const E& extra() const
+	{
+		return m_extra;
+	}
+
+	void swap(arr_base2& o)
+	{
+		if(this==&o) return;
+		std::swap(m_ptr,o.m_ptr);
+		std::swap(m_extra,o.m_extra);
+	}
+
+	T& operator[](size_type n)
+	{
+		return m_ptr[n];
+	}
+
+	const T& operator[](size_type n) const
+	{
+		return m_ptr[n];
+	}
+
+protected:
+	T* m_ptr;
+	E m_extra;
+
+};
 VHWD_LEAVE
 
 

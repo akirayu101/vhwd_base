@@ -95,6 +95,7 @@ public:
 
 	inline pointer allocate(size_type n)
 	{
+		if(n>max_size()) Exception::XBadAlloc();
 		pointer p=(pointer)allocator_detail<N>::allocate(n*sizeof(T),D*sizeof(T));
 		if(!p) Exception::XBadAlloc();
 		return p;

@@ -21,7 +21,7 @@ class VHWD_DLLIMPEXP ringbuffer_header
 public:
 	int32_t rd_pos;
 	int32_t wr_pos;
-	int32_t mask;
+	int32_t rb_mask;
 	int32_t padding;
 };
 
@@ -40,11 +40,11 @@ public:
 
 	void wr_flip(int n)
 	{
-		pHeader->wr_pos=(pHeader->wr_pos+n)&pHeader->mask;
+		pHeader->wr_pos=(pHeader->wr_pos+n)&pHeader->rb_mask;
 	}
 	void rd_flip(int n)
 	{
-		pHeader->rd_pos=(pHeader->rd_pos+n)&pHeader->mask;
+		pHeader->rd_pos=(pHeader->rd_pos+n)&pHeader->rb_mask;
 	}
 
 	bool packet();

@@ -30,7 +30,7 @@ bool RingBufferBase::packet()
 	}
 	int rd=pHeader->rd_pos;
 	int wr=pHeader->wr_pos;
-	int kp=(wr-rd)&pHeader->mask;
+	int kp=(wr-rd)&pHeader->rb_mask;
 
 	return size<=kp;
 }
@@ -45,7 +45,7 @@ int RingBufferBase::packet(void* p_,int n)
 	}
 	int rd=pHeader->rd_pos;
 	int wr=pHeader->wr_pos;
-	int kp=(wr-rd)&pHeader->mask;
+	int kp=(wr-rd)&pHeader->rb_mask;
 
 	if(size>kp)
 	{
@@ -66,7 +66,7 @@ int RingBufferBase::peek(void* p_,int n)
 	char* p=(char*)p_;
 	int rd=pHeader->rd_pos;
 	int wr=pHeader->wr_pos;
-	int kp=(wr-rd)&pHeader->mask;
+	int kp=(wr-rd)&pHeader->rb_mask;
 
 	if(kp>n)
 	{
@@ -77,7 +77,7 @@ int RingBufferBase::peek(void* p_,int n)
 		return 0;
 	}
 
-	int kn=rd+kp-pHeader->mask-1;
+	int kn=rd+kp-pHeader->rb_mask-1;
 	if(kn>0)
 	{
 		memcpy(p,pBuffer+rd,kp-kn);
@@ -95,7 +95,7 @@ int RingBufferBase::rd_free()
 {
 	int rd=pHeader->rd_pos;
 	int wr=pHeader->wr_pos;
-	int kp=(wr-rd)&pHeader->mask;
+	int kp=(wr-rd)&pHeader->rb_mask;
 	return kp;
 }
 
@@ -104,7 +104,7 @@ int RingBufferBase::recv(void* p_,int n)
 	char* p=(char*)p_;
 	int rd=pHeader->rd_pos;
 	int wr=pHeader->wr_pos;
-	int kp=(wr-rd)&pHeader->mask;
+	int kp=(wr-rd)&pHeader->rb_mask;
 
 	if(kp==0)
 	{
@@ -115,7 +115,7 @@ int RingBufferBase::recv(void* p_,int n)
 		kp=n;
 	}
 
-	int kn=rd+kp-pHeader->mask-1;
+	int kn=rd+kp-pHeader->rb_mask-1;
 	if(kn>0)
 	{
 		memcpy(p,pBuffer+rd,kp-kn);
@@ -125,7 +125,7 @@ int RingBufferBase::recv(void* p_,int n)
 	else
 	{
 		memcpy(p,pBuffer+rd,kp);
-		pHeader->rd_pos=kn&pHeader->mask;
+		pHeader->rd_pos=kn&pHeader->rb_mask;
 	}
 
 	return kp;
@@ -135,7 +135,7 @@ int RingBufferBase::wr_free()
 {
 	int rd=pHeader->rd_pos;
 	int wr=pHeader->wr_pos;
-	int kp=(rd-wr-1)&pHeader->mask;
+	int kp=(rd-wr-1)&pHeader->rb_mask;
 	return kp;
 }
 
@@ -145,7 +145,7 @@ int RingBufferBase::send(const void* p_,int n)
 
 	int rd=pHeader->rd_pos;
 	int wr=pHeader->wr_pos;
-	int kp=(rd-wr-1)&pHeader->mask;
+	int kp=(rd-wr-1)&pHeader->rb_mask;
 
 	if(kp>=n)
 	{
@@ -156,7 +156,7 @@ int RingBufferBase::send(const void* p_,int n)
 		return 0;
 	}
 
-	int kn=wr+kp-pHeader->mask-1;
+	int kn=wr+kp-pHeader->rb_mask-1;
 	if(kn>0)
 	{
 		memcpy(pBuffer+wr,p,kp-kn);
@@ -166,7 +166,7 @@ int RingBufferBase::send(const void* p_,int n)
 	else
 	{
 		memcpy(pBuffer+wr,p,kp);
-		pHeader->wr_pos=kn&pHeader->mask;
+		pHeader->wr_pos=kn&pHeader->rb_mask;
 	}
 
 	return kp;
@@ -193,7 +193,7 @@ void RingBuffer::reset(int s)
 	}
 
 	clear();
-	_header.mask=k-1;
+	_header.rb_mask=k-1;
 	_header.rd_pos=0;
 	_header.wr_pos=0;
 

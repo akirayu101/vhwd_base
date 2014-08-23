@@ -38,6 +38,7 @@ public:
 
 	inline pointer allocate(size_type n)
 	{
+		if(n>max_size()) Exception::XBadAlloc();
 		pointer p=basetype::allocate(n+shiftElem);
 		new(p) E();
 		return p+shiftElem;

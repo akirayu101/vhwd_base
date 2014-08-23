@@ -162,19 +162,26 @@ public:
 		FLAG_RW=FLAG_RD|FLAG_WR,
 		FLAG_CR=1<<3,
 		FLAG_APPEND=1<<4,
-		FLAG_EX=1<<5,
+		FLAG_EXEC=1<<5,
+		FLAG_RWX=FLAG_RD|FLAG_WR|FLAG_EXEC,
+		FLAG_WC=FLAG_WR|FLAG_CR,
+		FLAG_WA=FLAG_WR|FLAG_APPEND,
 	};
 
-	static int makeflag(int flag_,int fr,int fw)
+	static int makeflag(int flag,int fr,int fw,int ex=0)
 	{
 		int acc=0;
-		if(flag_&FileAccess::FLAG_RD)
+		if(flag&FLAG_RD)
 		{
 			acc|=fr;
 		}
-		if(flag_&FileAccess::FLAG_WR)
+		if(flag&FLAG_WR)
 		{
 			acc|=fw;
+		}
+		if(flag&FLAG_EXEC)
+		{
+			acc|=ex;
 		}
 		return acc;
 	}

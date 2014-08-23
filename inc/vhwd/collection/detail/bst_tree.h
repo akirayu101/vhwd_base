@@ -28,7 +28,7 @@ class bst_tree : public containerK<typename P::key_compare,typename A::template 
 	typedef typename basetype::size_type size_type;
 	typedef typename basetype::allocator_type allocator_type;
 
-	private:
+private:
 	node_type* m_pRoot;
 	size_t m_nSize;
 
@@ -40,7 +40,7 @@ class bst_tree : public containerK<typename P::key_compare,typename A::template 
 	typedef bst_iterator<P,false,true> const_reverse_iterator;
 
 	iterator begin()
-{
+	{
 		return gen_iterator<iterator>(P::nd_min(m_pRoot));
 	}
 	iterator end()

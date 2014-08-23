@@ -61,20 +61,14 @@ void SerializerSocket::wr_skip()
 	lbuf_wr.rewind();
 }
 
-void SerializerSocket::recv(char* data,size_t size_)
+size_t SerializerSocket::recv(char* data,size_t size_)
 {
-	if(size_!=(size_t)lbuf_rd.recv(data,size_))
-	{
-		writer().errstr("SerializerSocket::recv error");
-	}
+	return lbuf_rd.recv(data,size_);
 }
 
-void SerializerSocket::send(char* data,size_t size_)
+size_t SerializerSocket::send(const char* data,size_t size_)
 {
-	if(size_==(size_t)lbuf_wr.send(data,size_))
-	{
-		reader().errstr("SerializerSocket::send error");
-	}
+	return lbuf_wr.send(data,size_);
 }
 
 VHWD_LEAVE
