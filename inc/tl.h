@@ -64,9 +64,26 @@ namespace tl
 		public:
 			int val;
 		};
+
+		template<typename B,size_t N>
+		class test_empty_n : public value_type<N==0>{};
+
+		template<typename B>
+		class test_empty_n<B,1> : public value_type<sizeof(test_empty<B>)==sizeof(int)> {};
+
+		template<>
+		class test_empty_n<unsigned char,1> : public value_type<false> {};
+
+		template<>
+		class test_empty_n<signed char,1> : public value_type<false> {};
+
+		template<>
+		class test_empty_n<char,1> : public value_type<false> {};
+
+
 	}
 
-	template <typename T>  class is_empty_type : public value_type<sizeof(detail::test_empty<T>)==sizeof(int)> {};
+	template <typename T>  class is_empty_type : public detail::test_empty_n<T,sizeof(T)>{};
 
 	namespace detail
 	{

@@ -97,12 +97,12 @@ public:
 class lf_queue_header
 {
 public:
-	AtomicInt32 head;
-	AtomicInt32 rear;
+	AtomicUint32 head;
+	AtomicUint32 rear;
 	AtomicInt32 kget;
 	AtomicInt32 kput;
 
-	int32_t mask;
+	uint32_t mask;
 	BitFlags flags;
 
 };

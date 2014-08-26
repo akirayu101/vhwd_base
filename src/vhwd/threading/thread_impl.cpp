@@ -185,22 +185,14 @@ bool ThreadImpl::put_thread(ThreadImpl* impl)
 	}
 }
 
-ThreadImpl::ThreadImpl(ThreadManager& tm):tmgr(tm)
-{
+
+
+ThreadImpl::ThreadImpl()
+{	
 	thrd_rank=-1;
 	thrd_ptr=NULL;
 	thrd_affinity=0;
 	thrd_priority=50;
-}
-
-ThreadImpl::ThreadImpl():tmgr(ThreadManager::current())
-{
-	
-	thrd_rank=-1;
-	thrd_ptr=NULL;
-	thrd_affinity=0;
-	thrd_priority=50;
-
 }
 
 ThreadImpl::~ThreadImpl()
@@ -232,7 +224,7 @@ void tc_cleanup();
 
 bool ThreadImpl::svc_enter()
 {
-
+	ThreadManager& tmgr(ThreadManager::current());
 	{
 		LockGuard<Mutex> lock(tmgr.m_thrd_mutex);
 		if(!tmgr.m_nFlags.get(ThreadImpl::THREADMANAGER_DISABLED))
@@ -253,25 +245,26 @@ bool ThreadImpl::svc_enter()
 
 void ThreadImpl::svc_leave()
 {
+	ThreadManager& tmgr(ThreadManager::current());
+
 	tc_cleanup();
 	ThreadImpl_detail::key_set(threaddata_buffer_key,NULL);
-	ThreadManager& mypool(tmgr);
 
 	delete this;
 
 	{
-		LockGuard<Mutex> lock1(mypool.m_thrd_mutex);
-		int nc=--mypool.m_nThreadNum;
+		LockGuard<Mutex> lock1(tmgr.m_thrd_mutex);
+		int nc=--tmgr.m_nThreadNum;
 		if(nc==0)
 		{
-			mypool.m_cond_thrd_empty.notify_all();
+			tmgr.m_cond_thrd_empty.notify_all();
 		}
 	}
 }
 
 void ThreadImpl::svc()
 {
-
+	ThreadManager& tmgr(ThreadManager::current());
 	for(;;)
 	{
 		{

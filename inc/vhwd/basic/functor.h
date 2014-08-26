@@ -14,6 +14,8 @@
 
 VHWD_ENTER
 
+
+
 extern VHWD_DLLIMPEXP tl::int2type<1> _1;
 extern VHWD_DLLIMPEXP tl::int2type<2> _2;
 extern VHWD_DLLIMPEXP tl::int2type<3> _3;
@@ -29,7 +31,7 @@ extern VHWD_DLLIMPEXP tl::int2type<6> _6;
 //auto f1=hbind<double>::g(fma,1.0,_1,3.0); f1(2.0);
 //auto f2=hbind<double>::g(fma,1.0,_2,_1); f2(3.0,2.0);
 //auto f3=hbind<double>::g(fma,_2,_3,_1); f3(3.0,1.0,2.0);
-//auto f4=hbind<void>::g(f2,3.0,2.0); f4();
+//auto f4=hbind<double>::g(f2,3.0,2.0); f4();
 
 // Functor f0 to f4 all call fma(1.0,2.0,3.0);
 
@@ -39,49 +41,49 @@ class hbind
 public:
 
 	template<typename P0>
-	static BindImpl<Rt(P0)> g(P0 p0)
+	static inline BindImpl<Rt(P0)> g(P0 p0)
 	{
 		return BindImpl<Rt(P0)>(p0);
 	}
 
 	template<typename P0,typename P1>
-	static BindImpl<Rt(P0,P1)> g(P0 p0,P1 p1)
+	static inline BindImpl<Rt(P0,P1)> g(P0 p0,P1 p1)
 	{
 		return BindImpl<Rt(P0,P1)>(p0,p1);
 	}
 
 	template<typename P0,typename P1,typename P2>
-	static BindImpl<Rt(P0,P1,P2)> g(P0 p0,P1 p1,P2 p2)
+	static inline BindImpl<Rt(P0,P1,P2)> g(P0 p0,P1 p1,P2 p2)
 	{
 		return BindImpl<Rt(P0,P1,P2)>(p0,p1,p2);
 	}
 
 	template<typename P0,typename P1,typename P2,typename P3>
-	static BindImpl<Rt(P0,P1,P2,P3)> g(P0 p0,P1 p1,P2 p2,P3 p3)
+	static inline BindImpl<Rt(P0,P1,P2,P3)> g(P0 p0,P1 p1,P2 p2,P3 p3)
 	{
 		return BindImpl<Rt(P0,P1,P2,P3)>(p0,p1,p2,p3);
 	}
 
 	template<typename P0,typename P1,typename P2,typename P3,typename P4>
-	static BindImpl<Rt(P0,P1,P2,P3,P4)> g(P0 p0,P1 p1,P2 p2,P3 p3,P4 p4)
+	static inline BindImpl<Rt(P0,P1,P2,P3,P4)> g(P0 p0,P1 p1,P2 p2,P3 p3,P4 p4)
 	{
 		return BindImpl<Rt(P0,P1,P2,P3,P4)>(p0,p1,p2,p3,p4);
 	}
 
 	template<typename P0,typename P1,typename P2,typename P3,typename P4,typename P5>
-	static BindImpl<Rt(P0,P1,P2,P3,P4,P5)> g(P0 p0,P1 p1,P2 p2,P3 p3,P4 p4,P5 p5)
+	static inline BindImpl<Rt(P0,P1,P2,P3,P4,P5)> g(P0 p0,P1 p1,P2 p2,P3 p3,P4 p4,P5 p5)
 	{
 		return BindImpl<Rt(P0,P1,P2,P3,P4,P5)>(p0,p1,p2,p3,p4,p5);
 	}
 
 	template<typename P0,typename P1,typename P2,typename P3,typename P4,typename P5,typename P6>
-	static BindImpl<Rt(P0,P1,P2,P3,P4,P5,P6)> g(P0 p0,P1 p1,P2 p2,P3 p3,P4 p4,P5 p5,P6 p6)
+	static inline BindImpl<Rt(P0,P1,P2,P3,P4,P5,P6)> g(P0 p0,P1 p1,P2 p2,P3 p3,P4 p4,P5 p5,P6 p6)
 	{
 		return BindImpl<Rt(P0,P1,P2,P3,P4,P5,P6)>(p0,p1,p2,p3,p4,p5,p6);
 	}
 
 	template<typename P0,typename P1,typename P2,typename P3,typename P4,typename P5,typename P6,typename P7>
-	static BindImpl<Rt(P0,P1,P2,P3,P4,P5,P6,P7)> g(P0 p0,P1 p1,P2 p2,P3 p3,P4 p4,P5 p5,P6 p6,P7 p7)
+	static inline BindImpl<Rt(P0,P1,P2,P3,P4,P5,P6,P7)> g(P0 p0,P1 p1,P2 p2,P3 p3,P4 p4,P5 p5,P6 p6,P7 p7)
 	{
 		return BindImpl<Rt(P0,P1,P2,P3,P4,P5,P6,P7)>(p0,p1,p2,p3,p4,p5,p6,p7);
 	}

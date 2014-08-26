@@ -19,10 +19,10 @@ VHWD_ENTER
 class VHWD_DLLIMPEXP ringbuffer_header
 {
 public:
-	int32_t rd_pos;
-	int32_t wr_pos;
-	int32_t rb_mask;
-	int32_t padding;
+	uint32_t rd_pos;
+	uint32_t wr_pos;
+	uint32_t rb_mask;
+	uint32_t padding;
 };
 
 // RingBufferBase one thread read/one thread write

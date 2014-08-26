@@ -9,6 +9,8 @@
 
 VHWD_ENTER
 
+typedef tl::nulltype nil_t;
+
 template<typename T>
 class functor_reference
 {
@@ -28,11 +30,11 @@ class functor_pointer : public FakePtrT<T>
 public:
 	functor_pointer(T* p=NULL):FakePtrT<T>(p) {}
 
-	operator T*()
+	inline operator T*()
 	{
 		return this->get();
 	}
-	operator const T*() const
+	inline operator const T*() const
 	{
 		return this->get();
 	}
@@ -83,16 +85,16 @@ public:
 class BindImplBase
 {
 public:
-	typedef tl::nulltype P1;
-	typedef tl::nulltype P2;
-	typedef tl::nulltype P3;
-	typedef tl::nulltype P4;
-	typedef tl::nulltype P5;
-	typedef tl::nulltype P6;
-	typedef tl::nulltype P7;
-	typedef tl::nulltype P8;
+	typedef nil_t P1;
+	typedef nil_t P2;
+	typedef nil_t P3;
+	typedef nil_t P4;
+	typedef nil_t P5;
+	typedef nil_t P6;
+	typedef nil_t P7;
+	typedef nil_t P8;
 
-	static tl::nulltype p1,p2,p3,p4,p5,p6,p7,p8;
+	static nil_t p1,p2,p3,p4,p5,p6,p7,p8;
 
 };
 
@@ -113,48 +115,48 @@ public:
 	}
 
 	template<typename K1,typename K2,typename K3,typename K4,typename K5,typename K6,typename K7>
-	static inline Rt g(Ft ft,K1 k1,K2 k2,K3 k3,K4 k4,K5 k5,K6 k6,K7 k7,tl::nulltype)
+	static inline Rt g(Ft ft,K1 k1,K2 k2,K3 k3,K4 k4,K5 k5,K6 k6,K7 k7,nil_t)
 	{
 		return ft(k1,k2,k3,k4,k5,k6,k7);
 	}
 
 	template<typename K1,typename K2,typename K3,typename K4,typename K5,typename K6>
-	static inline Rt g(Ft ft,K1 k1,K2 k2,K3 k3,K4 k4,K5 k5,K6 k6,tl::nulltype,tl::nulltype)
+	static inline Rt g(Ft ft,K1 k1,K2 k2,K3 k3,K4 k4,K5 k5,K6 k6,nil_t,nil_t)
 	{
 		return ft(k1,k2,k3,k4,k5,k6);
 	}
 
 	template<typename K1,typename K2,typename K3,typename K4,typename K5>
-	static inline Rt g(Ft ft,K1 k1,K2 k2,K3 k3,K4 k4,K5 k5,tl::nulltype,tl::nulltype,tl::nulltype)
+	static inline Rt g(Ft ft,K1 k1,K2 k2,K3 k3,K4 k4,K5 k5,nil_t,nil_t,nil_t)
 	{
 		return ft(k1,k2,k3,k4,k5);
 	}
 
 	template<typename K1,typename K2,typename K3,typename K4>
-	static inline Rt g(Ft ft,K1 k1,K2 k2,K3 k3,K4 k4,tl::nulltype,tl::nulltype,tl::nulltype,tl::nulltype)
+	static inline Rt g(Ft ft,K1 k1,K2 k2,K3 k3,K4 k4,nil_t,nil_t,nil_t,nil_t)
 	{
 		return ft(k1,k2,k3,k4);
 	}
 
 	template<typename K1,typename K2,typename K3>
-	static inline Rt g(Ft ft,K1 k1,K2 k2,K3 k3,tl::nulltype,tl::nulltype,tl::nulltype,tl::nulltype,tl::nulltype)
+	static inline Rt g(Ft ft,K1 k1,K2 k2,K3 k3,nil_t,nil_t,nil_t,nil_t,nil_t)
 	{
 		return ft(k1,k2,k3);
 	}
 
 	template<typename K1,typename K2>
-	static inline Rt g(Ft ft,K1 k1,K2 k2,tl::nulltype,tl::nulltype,tl::nulltype,tl::nulltype,tl::nulltype,tl::nulltype)
+	static inline Rt g(Ft ft,K1 k1,K2 k2,nil_t,nil_t,nil_t,nil_t,nil_t,nil_t)
 	{
 		return ft(k1,k2);
 	}
 
 	template<typename K1>
-	static inline Rt g(Ft ft,K1 k1,tl::nulltype,tl::nulltype,tl::nulltype,tl::nulltype,tl::nulltype,tl::nulltype,tl::nulltype)
+	static inline Rt g(Ft ft,K1 k1,nil_t,nil_t,nil_t,nil_t,nil_t,nil_t,nil_t)
 	{
 		return ft(k1);
 	}
 
-	static inline Rt g(Ft ft,tl::nulltype,tl::nulltype,tl::nulltype,tl::nulltype,tl::nulltype,tl::nulltype,tl::nulltype,tl::nulltype)
+	static inline Rt g(Ft ft,nil_t,nil_t,nil_t,nil_t,nil_t,nil_t,nil_t,nil_t)
 	{
 		return ft();
 	}
@@ -164,14 +166,14 @@ template<typename Rv,typename Rt>
 class FunctorImpl<Rv,Rt(*)()> : public BindImplBase
 {
 public:
-	typedef tl::nulltype K1;
-	typedef tl::nulltype K2;
-	typedef tl::nulltype K3;
-	typedef tl::nulltype K4;
-	typedef tl::nulltype K5;
-	typedef tl::nulltype K6;
-	typedef tl::nulltype K7;
-	typedef tl::nulltype K8;
+	typedef nil_t K1;
+	typedef nil_t K2;
+	typedef nil_t K3;
+	typedef nil_t K4;
+	typedef nil_t K5;
+	typedef nil_t K6;
+	typedef nil_t K7;
+	typedef nil_t K8;
 
 	typedef Rt return_type;
 	typedef Rt(*Ft)();
@@ -195,13 +197,13 @@ class FunctorImpl<Rv,Rt(*)(K1)> : public BindImplBase
 {
 public:
 
-	typedef tl::nulltype K2;
-	typedef tl::nulltype K3;
-	typedef tl::nulltype K4;
-	typedef tl::nulltype K5;
-	typedef tl::nulltype K6;
-	typedef tl::nulltype K7;
-	typedef tl::nulltype K8;
+	typedef nil_t K2;
+	typedef nil_t K3;
+	typedef nil_t K4;
+	typedef nil_t K5;
+	typedef nil_t K6;
+	typedef nil_t K7;
+	typedef nil_t K8;
 
 	typedef Rt return_type;
 	typedef Rt(*Ft)(K1);
@@ -226,13 +228,13 @@ class FunctorImpl<Rv,Rt(Sd::*)()> : public BindImplBase
 public:
 
 	typedef Sd* K1;
-	typedef tl::nulltype K2;
-	typedef tl::nulltype K3;
-	typedef tl::nulltype K4;
-	typedef tl::nulltype K5;
-	typedef tl::nulltype K6;
-	typedef tl::nulltype K7;
-	typedef tl::nulltype K8;
+	typedef nil_t K2;
+	typedef nil_t K3;
+	typedef nil_t K4;
+	typedef nil_t K5;
+	typedef nil_t K6;
+	typedef nil_t K7;
+	typedef nil_t K8;
 
 	typedef Rt return_type;
 	typedef Rt(Sd::*Ft)();
@@ -257,12 +259,12 @@ class FunctorImpl<Rv,Rt(*)(K1,K2)> : public BindImplBase
 {
 public:
 
-	typedef tl::nulltype K3;
-	typedef tl::nulltype K4;
-	typedef tl::nulltype K5;
-	typedef tl::nulltype K6;
-	typedef tl::nulltype K7;
-	typedef tl::nulltype K8;
+	typedef nil_t K3;
+	typedef nil_t K4;
+	typedef nil_t K5;
+	typedef nil_t K6;
+	typedef nil_t K7;
+	typedef nil_t K8;
 
 	typedef Rt return_type;
 	typedef Rt(*Ft)(K1,K2);
@@ -289,12 +291,12 @@ class FunctorImpl<Rv,Rt(Sd::*)(K2)> : public BindImplBase
 public:
 
 	typedef Sd* K1;
-	typedef tl::nulltype K3;
-	typedef tl::nulltype K4;
-	typedef tl::nulltype K5;
-	typedef tl::nulltype K6;
-	typedef tl::nulltype K7;
-	typedef tl::nulltype K8;
+	typedef nil_t K3;
+	typedef nil_t K4;
+	typedef nil_t K5;
+	typedef nil_t K6;
+	typedef nil_t K7;
+	typedef nil_t K8;
 
 	typedef Rt return_type;
 	typedef Rt(Sd::*Ft)(K2);
@@ -318,11 +320,11 @@ class FunctorImpl<Rv,Rt(*)(K1,K2,K3)> : public BindImplBase
 {
 public:
 
-	typedef tl::nulltype K4;
-	typedef tl::nulltype K5;
-	typedef tl::nulltype K6;
-	typedef tl::nulltype K7;
-	typedef tl::nulltype K8;
+	typedef nil_t K4;
+	typedef nil_t K5;
+	typedef nil_t K6;
+	typedef nil_t K7;
+	typedef nil_t K8;
 
 	typedef Rt return_type;
 	typedef Rt(*Ft)(K1,K2,K3);
@@ -349,11 +351,11 @@ class FunctorImpl<Rv,Rt(Sd::*)(K2,K3)> : public BindImplBase
 public:
 
 	typedef Sd* K1;
-	typedef tl::nulltype K4;
-	typedef tl::nulltype K5;
-	typedef tl::nulltype K6;
-	typedef tl::nulltype K7;
-	typedef tl::nulltype K8;
+	typedef nil_t K4;
+	typedef nil_t K5;
+	typedef nil_t K6;
+	typedef nil_t K7;
+	typedef nil_t K8;
 
 	typedef Rt return_type;
 	typedef Rt(Sd::*Ft)(K2,K3);
@@ -381,10 +383,10 @@ class FunctorImpl<Rv,Rt(*)(K1,K2,K3,K4)> : public BindImplBase
 public:
 
 
-	typedef tl::nulltype K5;
-	typedef tl::nulltype K6;
-	typedef tl::nulltype K7;
-	typedef tl::nulltype K8;
+	typedef nil_t K5;
+	typedef nil_t K6;
+	typedef nil_t K7;
+	typedef nil_t K8;
 
 	typedef Rt return_type;
 	typedef Rt(*Ft)(K1,K2,K3,K4);
@@ -413,10 +415,10 @@ public:
 
 	typedef Sd* K1;
 
-	typedef tl::nulltype K5;
-	typedef tl::nulltype K6;
-	typedef tl::nulltype K7;
-	typedef tl::nulltype K8;
+	typedef nil_t K5;
+	typedef nil_t K6;
+	typedef nil_t K7;
+	typedef nil_t K8;
 
 	typedef Rt return_type;
 	typedef Rt(Sd::*Ft)(K2,K3,K4);
@@ -443,9 +445,9 @@ class FunctorImpl<Rv,Rt(*)(K1,K2,K3,K4,K5)> : public BindImplBase
 public:
 
 
-	typedef tl::nulltype K6;
-	typedef tl::nulltype K7;
-	typedef tl::nulltype K8;
+	typedef nil_t K6;
+	typedef nil_t K7;
+	typedef nil_t K8;
 
 	typedef Rt return_type;
 	typedef Rt(*Ft)(K1,K2,K3,K4,K5);
@@ -473,9 +475,9 @@ public:
 
 	typedef Sd* K1;
 
-	typedef tl::nulltype K6;
-	typedef tl::nulltype K7;
-	typedef tl::nulltype K8;
+	typedef nil_t K6;
+	typedef nil_t K7;
+	typedef nil_t K8;
 
 	typedef Rt return_type;
 	typedef Rt(Sd::*Ft)(K2,K3,K4,K5);
@@ -501,8 +503,8 @@ class FunctorImpl<Rv,Rt(*)(K1,K2,K3,K4,K5,K6)> : public BindImplBase
 public:
 
 
-	typedef tl::nulltype K7;
-	typedef tl::nulltype K8;
+	typedef nil_t K7;
+	typedef nil_t K8;
 
 	typedef Rt return_type;
 	typedef Rt(*Ft)(K1,K2,K3,K4,K5,K6);
@@ -530,8 +532,8 @@ public:
 
 	typedef Sd* K1;
 
-	typedef tl::nulltype K7;
-	typedef tl::nulltype K8;
+	typedef nil_t K7;
+	typedef nil_t K8;
 
 	typedef Rt return_type;
 	typedef Rt(Sd::*Ft)(K2,K3,K4,K5,K6);
@@ -558,7 +560,7 @@ class FunctorImpl<Rv,Rt(*)(K1,K2,K3,K4,K5,K6,K7)> : public BindImplBase
 public:
 
 
-	typedef tl::nulltype K8;
+	typedef nil_t K8;
 
 	typedef Rt return_type;
 	typedef Rt(*Ft)(K1,K2,K3,K4,K5,K6,K7);
@@ -586,7 +588,7 @@ public:
 
 	typedef Sd* K1;
 
-	typedef tl::nulltype K8;
+	typedef nil_t K8;
 
 	typedef Rt return_type;
 	typedef Rt(Sd::*Ft)(K2,K3,K4,K5,K6,K7);
@@ -656,7 +658,7 @@ public:
 	}
 };
 
-template<typename K0,typename K1=tl::nulltype,typename K2=tl::nulltype,typename K3=tl::nulltype,typename K4=tl::nulltype,typename K5=tl::nulltype,typename K6=tl::nulltype,typename K7=tl::nulltype,typename K8=tl::nulltype>
+template<typename K0,typename K1=nil_t,typename K2=nil_t,typename K3=nil_t,typename K4=nil_t,typename K5=nil_t,typename K6=nil_t,typename K7=nil_t,typename K8=nil_t>
 class ParamDispatch
 {
 public:

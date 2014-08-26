@@ -28,7 +28,6 @@ public:
 
 
 	ThreadImpl();
-	ThreadImpl(ThreadManager& tm);
 	~ThreadImpl();
 
 	void set_thread(Thread* p,ThreadEx::factor_type v,int i);
@@ -54,7 +53,6 @@ public:
 	ThreadImpl_detail::thread_t thrd_id;
 	ThreadEx::factor_type invoker;
 
-	ThreadManager& tmgr;
 
 	CoroutineMain cort_main;
 
