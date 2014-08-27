@@ -1,7 +1,7 @@
 #include "vhwd/basic/console.h"
 #include "vhwd/basic/string.h"
 #include "vhwd/basic/lockguard.h"
-
+#include "vhwd/basic/atomic.h"
 
 #ifdef _WIN32
 #include "windows.h"

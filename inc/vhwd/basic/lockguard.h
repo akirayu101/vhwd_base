@@ -9,8 +9,6 @@
 #define __H_VHWD_THREAD_LOCKGUARD__
 
 #include "vhwd/config.h"
-#include "vhwd/basic/atomic.h"
-
 
 VHWD_ENTER
 

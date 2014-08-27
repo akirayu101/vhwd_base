@@ -65,7 +65,7 @@ namespace tl
 			int val;
 		};
 
-		template<typename B,size_t N>
+		template<typename B,int N>
 		class test_empty_n : public value_type<N==0>{};
 
 		template<typename B>
@@ -363,6 +363,217 @@ namespace tl
 	{
 		typedef detail::typelist_pair<T1,nulltype> helper;
 		typedef typelist<helper> type;
+	};
+
+
+
+	template<bool E,typename X0,typename BS>
+	class tuple_empty_helper;
+
+	template<typename X0,typename BS>
+	class tuple_empty_helper<true,X0,BS> : public BS
+	{
+	public:
+
+		typedef BS basetype;
+		typedef X0 type0;
+		typedef typename BS::type0 type1;
+		typedef typename BS::type1 type2;
+		typedef typename BS::type2 type3;
+		typedef typename BS::type3 type4;
+		typedef typename BS::type4 type5;
+		typedef typename BS::type5 type6;
+		typedef typename BS::type6 type7;
+		typedef typename BS::type7 type8;
+		typedef typename BS::type8 type9;
+
+
+		tuple_empty_helper(){}
+
+		tuple_empty_helper(
+			const type0& x0,
+			const type1& x1=type1(),
+			const type2& x2=type2(),
+			const type3& x3=type3(),
+			const type4& x4=type4(),
+			const type5& x5=type5(),
+			const type6& x6=type6(),
+			const type7& x7=type7(),
+			const type8& x8=type8(),
+			const type9& x9=type9()
+
+			)
+			:basetype(x1,x2,x3,x4,x5,x6,x7,x8,x9)
+		{
+			(void)&x0;
+		}
+
+		inline operator type0&(){return *(type0*)this;}
+	};
+
+	template<typename X0,typename BS>
+	class tuple_empty_helper<false,X0,BS> : public BS
+	{
+	public:
+		typedef BS basetype;
+		typedef X0 type0;
+		typedef typename BS::type0 type1;
+		typedef typename BS::type1 type2;
+		typedef typename BS::type2 type3;
+		typedef typename BS::type3 type4;
+		typedef typename BS::type4 type5;
+		typedef typename BS::type5 type6;
+		typedef typename BS::type6 type7;
+		typedef typename BS::type7 type8;
+		typedef typename BS::type8 type9;
+
+		X0 val;
+
+		tuple_empty_helper(){}
+
+		tuple_empty_helper(
+			const type0& x0,
+			const type1& x1=type1(),
+			const type2& x2=type2(),
+			const type3& x3=type3(),
+			const type4& x4=type4(),
+			const type5& x5=type5(),
+			const type6& x6=type6(),
+			const type7& x7=type7(),
+			const type8& x8=type8(),
+			const type9& x9=type9()
+
+			)
+			:basetype(x1,x2,x3,x4,x5,x6,x7,x8,x9),val(x0)
+		{
+		
+		}
+
+		inline operator type0&(){return val;}
+	};
+
+
+	template<
+		typename X0=nulltype,typename X1=nulltype,typename X2=nulltype,typename X3=nulltype,typename X4=nulltype,
+		typename X5=nulltype,typename X6=nulltype,typename X7=nulltype,typename X8=nulltype,typename X9=nulltype
+	>
+	class tuple : public tuple_empty_helper<is_empty_type<X0>::value,X0,tuple<X1,X2,X3,X4,X5,X6,X7,X8,nulltype> >
+	{
+	public:
+
+		typedef X0 type0;
+		typedef X1 type1;
+		typedef X2 type2;
+		typedef X3 type3;
+		typedef X4 type4;
+		typedef X5 type5;
+		typedef X6 type6;
+		typedef X7 type7;
+		typedef X8 type8;
+		typedef X9 type9;
+
+		typedef tuple_empty_helper<is_empty_type<X0>::value,X0,tuple<X1,X2,X3,X4,X5,X6,X7,X8,nulltype> > basetype;
+		typedef tuple<X1,X2,X3,X4,X5,X6,X7,X8,nulltype> tupxtype;
+
+	
+		static const int length=1+basetype::length;
+
+		tuple(){}
+
+		tuple(
+			const type0& x0,
+			const type1& x1=type1(),
+			const type2& x2=type2(),
+			const type3& x3=type3(),
+			const type4& x4=type4(),
+			const type5& x5=type5(),
+			const type6& x6=type6(),
+			const type7& x7=type7(),
+			const type8& x8=type8(),
+			const type9& x9=type9()
+
+			)
+			:basetype(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9)
+		{
+		
+		}
+
+	};
+
+	template<>
+	class tuple<>
+	{
+	public:
+
+		typedef tuple basetype;
+		typedef tuple tupxtype;
+
+		typedef nulltype type0;
+		typedef nulltype type1;
+		typedef nulltype type2;
+		typedef nulltype type3;
+		typedef nulltype type4;
+		typedef nulltype type5;
+		typedef nulltype type6;
+		typedef nulltype type7;
+		typedef nulltype type8;
+		typedef nulltype type9;
+
+
+		static const int length=0;
+
+		tuple(){}
+
+		tuple(
+			const type0& x0,
+			const type1& x1=type1(),
+			const type2& x2=type2(),
+			const type3& x3=type3(),
+			const type4& x4=type4(),
+			const type5& x5=type5(),
+			const type6& x6=type6(),
+			const type7& x7=type7(),
+			const type8& x8=type8(),
+			const type9& x9=type9()
+
+			)		
+		{
+			(void)&x0;
+			(void)&x1;
+			(void)&x2;
+			(void)&x3;
+			(void)&x4;
+			(void)&x5;
+			(void)&x6;
+			(void)&x7;
+			(void)&x8;
+			(void)&x9;
+		}
+
+		inline operator type0&() {return *(nulltype*)this;}
+	};
+
+	template<typename T,int N>
+	class tuple_at
+	{
+	public:
+		typedef tuple_at<typename T::tupxtype,N-1> tupxbase;
+		typedef typename tupxbase::type type;
+		static inline type& g(T& t)
+		{
+			return tupxbase::g(t);
+		}
+	};
+
+	template<typename T>
+	class tuple_at<T,0>
+	{
+	public:
+		typedef typename T::type0 type;
+		static inline type& g(T& t)
+		{
+			return t;
+		}
 	};
 
 

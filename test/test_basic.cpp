@@ -144,8 +144,32 @@ TEST_DEFINE(TEST_Clock)
 }
 
 
+int func0()
+{
+	return 0;
+}
 
-int func(int v1,int v2,int v3,int v4,int v5)
+int func1(int v1)
+{
+	return v1*2;
+}
+
+int func2(int v1,int v2)
+{
+	return v1*2+v2*3;
+}
+
+int func3(int v1,int v2,int v3)
+{
+	return v1*2+v2*3+v3*5;
+}
+
+int func4(int v1,int v2,int v3,int v4)
+{
+	return v1*2+v2*3+v3*5+v4*7;
+}
+
+int func5(int v1,int v2,int v3,int v4,int v5)
 {
 	return v1*2+v2*3+v3*5+v4*7+v5*11;
 }
@@ -153,22 +177,27 @@ int func(int v1,int v2,int v3,int v4,int v5)
 
 TEST_DEFINE(TEST_Functor)
 {
-	int ret=vhwd::hbind<int>::g(func,1,2,3,4,5)();
-	TEST_ASSERT(ret==func(1,2,3,4,5));
+
+	TEST_ASSERT(vhwd::hbind<int>::g(func0)()==func0());
+	TEST_ASSERT(vhwd::hbind<int>::g(func1,vhwd::_1)(2)==func1(2));
+	TEST_ASSERT(vhwd::hbind<int>::g(func2,vhwd::_1,3)(2)==func2(2,3));
+	TEST_ASSERT(vhwd::hbind<int>::g(func3,vhwd::_1,3,6)(2)==func3(2,3,6));
+	TEST_ASSERT(vhwd::hbind<int>::g(func4,vhwd::_1,3,_1,4)(2)==func4(2,3,2,4));
+	TEST_ASSERT(vhwd::hbind<int>::g(func5,1,2,3,4,5)()==func5(1,2,3,4,5));
 
 	vhwd::Functor<int()> fac0;
 	vhwd::Functor<int(int)> fac1;
 	vhwd::Functor<int(int,int)> fac2;
-	fac0.bind(&func,1,2,3,4,5);
-	TEST_ASSERT(fac0()==func(1,2,3,4,5));
+	fac0.bind(&func5,1,2,3,4,5);
+	TEST_ASSERT(fac0()==func5(1,2,3,4,5));
 
-	fac1.bind(&func,1,2,3,4,vhwd::_1);
-	TEST_ASSERT(fac1(10)==func(1,2,3,4,10));
-	fac1.bind(&func,vhwd::_1,1,2,3,4);
-	TEST_ASSERT(fac1(10)==func(10,1,2,3,4));
+	fac1.bind(&func5,1,2,3,4,vhwd::_1);
+	TEST_ASSERT(fac1(10)==func5(1,2,3,4,10));
+	fac1.bind(&func5,vhwd::_1,1,2,3,4);
+	TEST_ASSERT(fac1(10)==func5(10,1,2,3,4));
 
-	fac2.bind(&func,vhwd::_1,1,vhwd::_2,3,4);
-	TEST_ASSERT(fac2(10,3)==func(10,1,3,3,4));
+	fac2.bind(&func5,vhwd::_1,1,vhwd::_2,3,4);
+	TEST_ASSERT(fac2(10,3)==func5(10,1,3,3,4));
 
 }
 

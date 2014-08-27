@@ -233,87 +233,44 @@ private:
 class Q2Packet
 {
 public:
-	void reset()
-	{
-		qp=0;
-		ap.clear();
-	}
 
-	bool update(Session::MyOlapPtr& q)
-	{
-		ap.clear();
+	Q2Packet(){q1=q2=0;}
 
-		char  *_pbuf=(char*)q->buffer;
-		int _left=q->size;
+	// process buffer, after update, you can call size() to get the number of cached packets.
+	// NOTE: old cached packets will be drop!
+	bool update(Session::MyOlapPtr& q);
 
-		if(qp!=0)
-		{
-			if(qp<2)
-			{
-				memcpy(((char*)&pk)+qp,_pbuf,2);
-			}
+	// n must less or equal VHWD_MAX_PACKET_SIZE
+	bool update(const char* p,size_t n);
 
-			if(pk.size>4096)
-			{
-				System::LogError("Invalid packet_size:%d",(int)pk.size);
-				return -1;
-			}
-
-			if(pk.size<=qp+_left)
-			{
-				int _size=pk.size-qp;
-				memcpy(((char*)&pk)+qp,_pbuf,_size);
-				_left-=_size;
-				_pbuf+=_size;
-				ap.push_back(&pk);
-				qp=0;
-			}
-			else
-			{
-				memcpy(((char*)&pk)+qp,_pbuf,_left);
-				qp+=_left;
-				_left=0;
-			}
-		}
-
-
-		for(; _left>=2;)
-		{
-			IPacketEx* _packet=(IPacketEx*)_pbuf;
-			if(_packet->size<=_left)
-			{
-				ap.push_back(_packet);
-				_left-=_packet->size;
-				_pbuf+=_packet->size;
-			}
-			else
-			{
-				break;
-			}
-		}
-
-		if(_left>0)
-		{
-			memcpy(((char*)&pk)+qp,_pbuf,_left);
-			qp+=_left;
-		}
-
-		return true;
-	}
-
-	size_t size()
+	// number of cached packets
+	inline size_t size() const
 	{
 		return ap.size();
 	}
-	IPacketEx& operator[](size_t i)
+
+	// get cached packet by index 0~size()-1
+	inline IPacketEx& operator[](size_t i)
 	{
 		return *ap[i];
 	}
 
+	// drop cached packets but keep partial data
+	void done();
+
+	// drop cached packets and partial data
+	void reset()
+	{
+		q1=q2=0;
+		ap.clear();
+	}
+
 private:
-	IPacketEx pk;
-	int qp;
+
+	char pk[VHWD_MAX_PACKET_SIZE*2];
 	arr_1t<IPacketEx*> ap;
+	size_t q1,q2;
+
 };
 
 VHWD_LEAVE

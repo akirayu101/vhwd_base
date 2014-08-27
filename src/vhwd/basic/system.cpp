@@ -1,6 +1,7 @@
 #include "vhwd/basic/system.h"
 #include "vhwd/basic/string.h"
 #include "vhwd/basic/lockguard.h"
+#include "vhwd/basic/atomic.h"
 #include "vhwd/basic/stringbuffer.h"
 
 #include <ctime>

@@ -66,6 +66,7 @@ public:
 	{
 		impl.append(d);
 	}
+
 	template<typename T2>
 	void append(DataPtrT<T2> p)
 	{
@@ -101,7 +102,7 @@ public:
 	const_reverse_iterator rbegin() const {return __proxy().rbegin();}
 	const_reverse_iterator rend() const {return __proxy().rend();}
 
-private:
+protected:
 
 	impl_proxy& __proxy(){return *(impl_proxy*)&impl;}
 	const impl_proxy& __proxy() const {return *(impl_proxy*)&impl;}

@@ -23,11 +23,12 @@ void RingBufferBase::rewind()
 
 bool RingBufferBase::packet()
 {
-	unsigned short size=0;
+	uint16_t size=0;
 	if(peek(&size,2)!=2)
 	{
 		return false;
 	}
+
 	int rd=pHeader->rd_pos;
 	int wr=pHeader->wr_pos;
 	int kp=(wr-rd)&pHeader->rb_mask;
@@ -38,7 +39,7 @@ bool RingBufferBase::packet()
 
 int RingBufferBase::packet(void* p_,int n)
 {
-	unsigned short size=0;
+	uint16_t size=0;
 	if(peek(&size,2)!=2)
 	{
 		return 0;

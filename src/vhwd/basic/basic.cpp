@@ -25,14 +25,14 @@ VHWD_DLLIMPEXP tl::int2type<4> _4;
 VHWD_DLLIMPEXP tl::int2type<5> _5;
 VHWD_DLLIMPEXP tl::int2type<6> _6;
 
-tl::nulltype BindImplBase::p1;
-tl::nulltype BindImplBase::p2;
-tl::nulltype BindImplBase::p3;
-tl::nulltype BindImplBase::p4;
-tl::nulltype BindImplBase::p5;
-tl::nulltype BindImplBase::p6;
-tl::nulltype BindImplBase::p7;
-tl::nulltype BindImplBase::p8;
+//tl::nulltype BindImplBase::p1;
+//tl::nulltype BindImplBase::p2;
+//tl::nulltype BindImplBase::p3;
+//tl::nulltype BindImplBase::p4;
+//tl::nulltype BindImplBase::p5;
+//tl::nulltype BindImplBase::p6;
+//tl::nulltype BindImplBase::p7;
+//tl::nulltype BindImplBase::p8;
 
 #ifdef _WIN32
 void KO_Policy_handle::destroy(type& o)

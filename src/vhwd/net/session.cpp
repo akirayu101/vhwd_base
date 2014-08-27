@@ -187,6 +187,120 @@ void Session::ep_ctl(int f)
 }
 #endif
 
+bool Q2Packet::update(Session::MyOlapPtr& q)
+{
+	return update(q->buffer,q->size);
+}
 
+void Q2Packet::done()
+{
+
+	if(q1==0) return;
+
+	ap.clear();
+	q2-=q1;
+	for(size_t i=0;i<q2;i++)
+	{
+		pk[i]=pk[q1+i];
+	}
+	q1=0;		
+}
+
+bool Q2Packet::update(const char* p1,size_t n)
+{
+	if(n==0)
+	{
+		return true;
+	}
+
+	if(n>VHWD_MAX_PACKET_SIZE)
+	{
+		System::LogTrace("buffer too large");
+		return false;
+	}
+
+	done();
+
+	const char* p2=p1+n;
+	size_t n0=q2-q1;
+
+	if(n0==0)
+	{
+		pk[0]=p1[0];
+		if(p2-p1==1)
+		{
+			q2=1;
+			return true;
+		}
+		pk[1]=p1[1];
+		q2=2;
+		p1+=2;
+	}
+	else if(n0==1)
+	{
+		pk[1]=p1[0];
+		q2=2;
+		p1+=1;
+	}
+
+	while(1)
+	{
+
+		size_t sz_real=*(uint16_t*)(pk+q1);
+		size_t sz_left=q2-q1;
+
+		if(sz_real>sz_left)
+		{
+			if(sz_real>VHWD_MAX_PACKET_SIZE)
+			{
+				System::LogTrace("invalid packet size");
+				return false;
+			}
+
+			size_t sz_more=sz_real-sz_left;
+			size_t n1=p2-p1;
+
+			if(sz_more>n1)
+			{
+				memcpy(pk+q2,p1,n1);
+				q2+=n1;
+				return true;
+			}
+
+			memcpy(pk+q2,p1,sz_more);
+
+			p1+=sz_more;
+			q2+=sz_more;
+		}
+
+		ap.push_back((IPacketEx*)(pk+q1));
+		q2=(q2+sizeof(void*)-1)&~(sizeof(void*)-1); // adjust q1,q2;
+		q1=q2;
+
+		if(p2-p1>2)
+		{
+			pk[q2+0]=p1[0];
+			pk[q2+1]=p1[1];
+
+			q2+=2;
+			p1+=2;
+
+		}
+		else
+		{
+			if(p2-p1==1)
+			{
+				pk[q2]=p1[0];
+				q2=q2+1;
+			}
+			return true;
+		}
+	}
+
+
+	// never goes here
+	return true;
+
+}
 
 VHWD_LEAVE

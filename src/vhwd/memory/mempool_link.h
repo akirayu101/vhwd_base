@@ -1,6 +1,7 @@
 #include "vhwd/config.h"
 #include "vhwd/memory/mempool.h"
 #include "vhwd/basic/lockguard.h"
+#include "vhwd/basic/atomic.h"
 #include "vhwd/basic/system.h"
 
 

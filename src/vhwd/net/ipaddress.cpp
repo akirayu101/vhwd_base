@@ -137,6 +137,7 @@ void IPAddress::service(const String& ip,int port)
 	}
 	else
 	{
+#ifdef _WIN32
 		String pt=String::Format("%d",port);
 		struct addrinfo *result = NULL;
 		struct addrinfo hints;
@@ -150,11 +151,13 @@ void IPAddress::service(const String& ip,int port)
 			nsize=result->ai_addrlen;
 			memcpy(pimpl,result->ai_addr,nsize);
 		}
+#else
 
-		//nsize=sizeof(struct sockaddr_in);
-		//pimpl->sin_family = AF_INET;
-		//pimpl->sin_addr.s_addr= inet_addr(ip.c_str());
-		//pimpl->sin_port = htons(port);
+		nsize=sizeof(struct sockaddr_in);
+		pimpl->sin_family = AF_INET;
+		pimpl->sin_addr.s_addr= inet_addr(ip.c_str());
+		pimpl->sin_port = htons(port);
+#endif
 
 	}
 

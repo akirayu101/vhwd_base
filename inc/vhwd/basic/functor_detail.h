@@ -94,8 +94,6 @@ public:
 	typedef nil_t P7;
 	typedef nil_t P8;
 
-	static nil_t p1,p2,p3,p4,p5,p6,p7,p8;
-
 };
 
 template<typename Rv,typename X0>
@@ -703,11 +701,20 @@ PARM_SELECTION(7)
 PARM_SELECTION(8)
 
 
-
 #define BINDIMPL_OPERATOR0()\
 	inline Rt operator()()\
 	{\
-		return basetype::g(p0,p1,p2,p3,p4,p5,p6,p7,p8);\
+		return basetype::g(\
+			tl::tuple_at<tuple_type,0>::g(data),\
+			tl::tuple_at<tuple_type,1>::g(data),\
+			tl::tuple_at<tuple_type,2>::g(data),\
+			tl::tuple_at<tuple_type,3>::g(data),\
+			tl::tuple_at<tuple_type,4>::g(data),\
+			tl::tuple_at<tuple_type,5>::g(data),\
+			tl::tuple_at<tuple_type,6>::g(data),\
+			tl::tuple_at<tuple_type,7>::g(data),\
+			tl::tuple_at<tuple_type,8>::g(data)\
+		);\
 	}\
 
 
@@ -715,15 +722,15 @@ PARM_SELECTION(8)
 	template<typename K1>\
 	inline Rt operator()(K1 k1)\
 	{\
-		return basetype::g(p0,\
-						   ParamDispatch<P1,K1>::g(p1,k1),\
-						   ParamDispatch<P2,K1>::g(p2,k1),\
-						   ParamDispatch<P3,K1>::g(p3,k1),\
-						   ParamDispatch<P4,K1>::g(p4,k1),\
-						   ParamDispatch<P5,K1>::g(p5,k1),\
-						   ParamDispatch<P6,K1>::g(p6,k1),\
-						   ParamDispatch<P7,K1>::g(p7,k1),\
-						   ParamDispatch<P8,K1>::g(p8,k1)\
+		return basetype::g(tl::tuple_at<tuple_type,0>::g(data),\
+						   ParamDispatch<P1,K1>::g(tl::tuple_at<tuple_type,1>::g(data),k1),\
+						   ParamDispatch<P2,K1>::g(tl::tuple_at<tuple_type,2>::g(data),k1),\
+						   ParamDispatch<P3,K1>::g(tl::tuple_at<tuple_type,3>::g(data),k1),\
+						   ParamDispatch<P4,K1>::g(tl::tuple_at<tuple_type,4>::g(data),k1),\
+						   ParamDispatch<P5,K1>::g(tl::tuple_at<tuple_type,5>::g(data),k1),\
+						   ParamDispatch<P6,K1>::g(tl::tuple_at<tuple_type,6>::g(data),k1),\
+						   ParamDispatch<P7,K1>::g(tl::tuple_at<tuple_type,7>::g(data),k1),\
+						   ParamDispatch<P8,K1>::g(tl::tuple_at<tuple_type,8>::g(data),k1)\
 						  );\
 	}
 
@@ -731,15 +738,15 @@ PARM_SELECTION(8)
 	template<typename K1,typename K2>\
 	inline Rt operator()(K1 k1,K2 k2)\
 	{\
-		return basetype::g(p0,\
-						   ParamDispatch<P1,K1,K2>::g(p1,k1,k2),\
-						   ParamDispatch<P2,K1,K2>::g(p2,k1,k2),\
-						   ParamDispatch<P3,K1,K2>::g(p3,k1,k2),\
-						   ParamDispatch<P4,K1,K2>::g(p4,k1,k2),\
-						   ParamDispatch<P5,K1,K2>::g(p5,k1,k2),\
-						   ParamDispatch<P6,K1,K2>::g(p6,k1,k2),\
-						   ParamDispatch<P7,K1,K2>::g(p7,k1,k2),\
-						   ParamDispatch<P8,K1,K2>::g(p8,k1,k2)\
+		return basetype::g(tl::tuple_at<tuple_type,0>::g(data),\
+						   ParamDispatch<P1,K1,K2>::g(tl::tuple_at<tuple_type,1>::g(data),k1,k2),\
+						   ParamDispatch<P2,K1,K2>::g(tl::tuple_at<tuple_type,2>::g(data),k1,k2),\
+						   ParamDispatch<P3,K1,K2>::g(tl::tuple_at<tuple_type,3>::g(data),k1,k2),\
+						   ParamDispatch<P4,K1,K2>::g(tl::tuple_at<tuple_type,4>::g(data),k1,k2),\
+						   ParamDispatch<P5,K1,K2>::g(tl::tuple_at<tuple_type,5>::g(data),k1,k2),\
+						   ParamDispatch<P6,K1,K2>::g(tl::tuple_at<tuple_type,6>::g(data),k1,k2),\
+						   ParamDispatch<P7,K1,K2>::g(tl::tuple_at<tuple_type,7>::g(data),k1,k2),\
+						   ParamDispatch<P8,K1,K2>::g(tl::tuple_at<tuple_type,8>::g(data),k1,k2)\
 						  );\
 	}
 
@@ -747,15 +754,15 @@ PARM_SELECTION(8)
 	template<typename K1,typename K2,typename K3>\
 	inline Rt operator()(K1 k1,K2 k2,K3 k3)\
 	{\
-		return basetype::g(p0,\
-						   ParamDispatch<P1,K1,K2,K3>::g(p1,k1,k2,k3),\
-						   ParamDispatch<P2,K1,K2,K3>::g(p2,k1,k2,k3),\
-						   ParamDispatch<P3,K1,K2,K3>::g(p3,k1,k2,k3),\
-						   ParamDispatch<P4,K1,K2,K3>::g(p4,k1,k2,k3),\
-						   ParamDispatch<P5,K1,K2,K3>::g(p5,k1,k2,k3),\
-						   ParamDispatch<P6,K1,K2,K3>::g(p6,k1,k2,k3),\
-						   ParamDispatch<P7,K1,K2,K3>::g(p7,k1,k2,k3),\
-						   ParamDispatch<P8,K1,K2,K3>::g(p8,k1,k2,k3)\
+		return basetype::g(tl::tuple_at<tuple_type,0>::g(data),\
+						   ParamDispatch<P1,K1,K2,K3>::g(tl::tuple_at<tuple_type,1>::g(data),k1,k2,k3),\
+						   ParamDispatch<P2,K1,K2,K3>::g(tl::tuple_at<tuple_type,2>::g(data),k1,k2,k3),\
+						   ParamDispatch<P3,K1,K2,K3>::g(tl::tuple_at<tuple_type,3>::g(data),k1,k2,k3),\
+						   ParamDispatch<P4,K1,K2,K3>::g(tl::tuple_at<tuple_type,4>::g(data),k1,k2,k3),\
+						   ParamDispatch<P5,K1,K2,K3>::g(tl::tuple_at<tuple_type,5>::g(data),k1,k2,k3),\
+						   ParamDispatch<P6,K1,K2,K3>::g(tl::tuple_at<tuple_type,6>::g(data),k1,k2,k3),\
+						   ParamDispatch<P7,K1,K2,K3>::g(tl::tuple_at<tuple_type,7>::g(data),k1,k2,k3),\
+						   ParamDispatch<P8,K1,K2,K3>::g(tl::tuple_at<tuple_type,8>::g(data),k1,k2,k3)\
 						  );\
 	}
 
@@ -763,15 +770,15 @@ PARM_SELECTION(8)
 	template<typename K1,typename K2,typename K3,typename K4>\
 	inline Rt operator()(K1 k1,K2 k2,K3 k3,K4 k4)\
 	{\
-		return basetype::g(p0,\
-						   ParamDispatch<P1,K1,K2,K3,K4>::g(p1,k1,k2,k3,k4),\
-						   ParamDispatch<P2,K1,K2,K3,K4>::g(p2,k1,k2,k3,k4),\
-						   ParamDispatch<P3,K1,K2,K3,K4>::g(p3,k1,k2,k3,k4),\
-						   ParamDispatch<P4,K1,K2,K3,K4>::g(p4,k1,k2,k3,k4),\
-						   ParamDispatch<P5,K1,K2,K3,K4>::g(p5,k1,k2,k3,k4),\
-						   ParamDispatch<P6,K1,K2,K3,K4>::g(p6,k1,k2,k3,k4),\
-						   ParamDispatch<P7,K1,K2,K3,K4>::g(p7,k1,k2,k3,k4),\
-						   ParamDispatch<P8,K1,K2,K3,K4>::g(p8,k1,k2,k3,k4)\
+		return basetype::g(tl::tuple_at<tuple_type,0>::g(data),\
+						   ParamDispatch<P1,K1,K2,K3,K4>::g(tl::tuple_at<tuple_type,1>::g(data),k1,k2,k3,k4),\
+						   ParamDispatch<P2,K1,K2,K3,K4>::g(tl::tuple_at<tuple_type,2>::g(data),k1,k2,k3,k4),\
+						   ParamDispatch<P3,K1,K2,K3,K4>::g(tl::tuple_at<tuple_type,3>::g(data),k1,k2,k3,k4),\
+						   ParamDispatch<P4,K1,K2,K3,K4>::g(tl::tuple_at<tuple_type,4>::g(data),k1,k2,k3,k4),\
+						   ParamDispatch<P5,K1,K2,K3,K4>::g(tl::tuple_at<tuple_type,5>::g(data),k1,k2,k3,k4),\
+						   ParamDispatch<P6,K1,K2,K3,K4>::g(tl::tuple_at<tuple_type,6>::g(data),k1,k2,k3,k4),\
+						   ParamDispatch<P7,K1,K2,K3,K4>::g(tl::tuple_at<tuple_type,7>::g(data),k1,k2,k3,k4),\
+						   ParamDispatch<P8,K1,K2,K3,K4>::g(tl::tuple_at<tuple_type,8>::g(data),k1,k2,k3,k4)\
 						  );\
 	}
 
@@ -779,15 +786,15 @@ PARM_SELECTION(8)
 	template<typename K1,typename K2,typename K3,typename K4,typename K5>\
 	inline Rt operator()(K1 k1,K2 k2,K3 k3,K4 k4,K5 k5)\
 	{\
-		return basetype::g(p0,\
-						   ParamDispatch<P1,K1,K2,K3,K4,K5>::g(p1,k1,k2,k3,k4,k5),\
-						   ParamDispatch<P2,K1,K2,K3,K4,K5>::g(p2,k1,k2,k3,k4,k5),\
-						   ParamDispatch<P3,K1,K2,K3,K4,K5>::g(p3,k1,k2,k3,k4,k5),\
-						   ParamDispatch<P4,K1,K2,K3,K4,K5>::g(p4,k1,k2,k3,k4,k5),\
-						   ParamDispatch<P5,K1,K2,K3,K4,K5>::g(p5,k1,k2,k3,k4,k5),\
-						   ParamDispatch<P6,K1,K2,K3,K4,K5>::g(p6,k1,k2,k3,k4,k5),\
-						   ParamDispatch<P7,K1,K2,K3,K4,K5>::g(p7,k1,k2,k3,k4,k5),\
-						   ParamDispatch<P8,K1,K2,K3,K4,K5>::g(p8,k1,k2,k3,k4,k5)\
+		return basetype::g(tl::tuple_at<tuple_type,0>::g(data),\
+						   ParamDispatch<P1,K1,K2,K3,K4,K5>::g(tl::tuple_at<tuple_type,1>::g(data),k1,k2,k3,k4,k5),\
+						   ParamDispatch<P2,K1,K2,K3,K4,K5>::g(tl::tuple_at<tuple_type,2>::g(data),k1,k2,k3,k4,k5),\
+						   ParamDispatch<P3,K1,K2,K3,K4,K5>::g(tl::tuple_at<tuple_type,3>::g(data),k1,k2,k3,k4,k5),\
+						   ParamDispatch<P4,K1,K2,K3,K4,K5>::g(tl::tuple_at<tuple_type,4>::g(data),k1,k2,k3,k4,k5),\
+						   ParamDispatch<P5,K1,K2,K3,K4,K5>::g(tl::tuple_at<tuple_type,5>::g(data),k1,k2,k3,k4,k5),\
+						   ParamDispatch<P6,K1,K2,K3,K4,K5>::g(tl::tuple_at<tuple_type,6>::g(data),k1,k2,k3,k4,k5),\
+						   ParamDispatch<P7,K1,K2,K3,K4,K5>::g(tl::tuple_at<tuple_type,7>::g(data),k1,k2,k3,k4,k5),\
+						   ParamDispatch<P8,K1,K2,K3,K4,K5>::g(tl::tuple_at<tuple_type,8>::g(data),k1,k2,k3,k4,k5)\
 						  );\
 	}
 
@@ -795,15 +802,15 @@ PARM_SELECTION(8)
 	template<typename K1,typename K2,typename K3,typename K4,typename K5,typename K6>\
 	inline Rt operator()(K1 k1,K2 k2,K3 k3,K4 k4,K5 k5,K6 k6)\
 	{\
-		return basetype::g(p0,\
-						   ParamDispatch<P1,K1,K2,K3,K4,K5,K6>::g(p1,k1,k2,k3,k4,k5,k6),\
-						   ParamDispatch<P2,K1,K2,K3,K4,K5,K6>::g(p2,k1,k2,k3,k4,k5,k6),\
-						   ParamDispatch<P3,K1,K2,K3,K4,K5,K6>::g(p3,k1,k2,k3,k4,k5,k6),\
-						   ParamDispatch<P4,K1,K2,K3,K4,K5,K6>::g(p4,k1,k2,k3,k4,k5,k6),\
-						   ParamDispatch<P5,K1,K2,K3,K4,K5,K6>::g(p5,k1,k2,k3,k4,k5,k6),\
-						   ParamDispatch<P6,K1,K2,K3,K4,K5,K6>::g(p6,k1,k2,k3,k4,k5,k6),\
-						   ParamDispatch<P7,K1,K2,K3,K4,K5,K6>::g(p7,k1,k2,k3,k4,k5,k6),\
-						   ParamDispatch<P8,K1,K2,K3,K4,K5,K6>::g(p8,k1,k2,k3,k4,k5,k6)\
+		return basetype::g(tl::tuple_at<tuple_type,0>::g(data),\
+						   ParamDispatch<P1,K1,K2,K3,K4,K5,K6>::g(tl::tuple_at<tuple_type,1>::g(data),k1,k2,k3,k4,k5,k6),\
+						   ParamDispatch<P2,K1,K2,K3,K4,K5,K6>::g(tl::tuple_at<tuple_type,2>::g(data),k1,k2,k3,k4,k5,k6),\
+						   ParamDispatch<P3,K1,K2,K3,K4,K5,K6>::g(tl::tuple_at<tuple_type,3>::g(data),k1,k2,k3,k4,k5,k6),\
+						   ParamDispatch<P4,K1,K2,K3,K4,K5,K6>::g(tl::tuple_at<tuple_type,4>::g(data),k1,k2,k3,k4,k5,k6),\
+						   ParamDispatch<P5,K1,K2,K3,K4,K5,K6>::g(tl::tuple_at<tuple_type,5>::g(data),k1,k2,k3,k4,k5,k6),\
+						   ParamDispatch<P6,K1,K2,K3,K4,K5,K6>::g(tl::tuple_at<tuple_type,6>::g(data),k1,k2,k3,k4,k5,k6),\
+						   ParamDispatch<P7,K1,K2,K3,K4,K5,K6>::g(tl::tuple_at<tuple_type,7>::g(data),k1,k2,k3,k4,k5,k6),\
+						   ParamDispatch<P8,K1,K2,K3,K4,K5,K6>::g(tl::tuple_at<tuple_type,8>::g(data),k1,k2,k3,k4,k5,k6)\
 						  );\
 	}
 
@@ -811,15 +818,15 @@ PARM_SELECTION(8)
 	template<typename K1,typename K2,typename K3,typename K4,typename K5,typename K6,typename K7>\
 	inline Rt operator()(K1 k1,K2 k2,K3 k3,K4 k4,K5 k5,K6 k6,K7 k7)\
 	{\
-		return basetype::g(p0,\
-						   ParamDispatch<P1,K1,K2,K3,K4,K5,K6,K7>::g(p1,k1,k2,k3,k4,k5,k6,k7),\
-						   ParamDispatch<P2,K1,K2,K3,K4,K5,K6,K7>::g(p2,k1,k2,k3,k4,k5,k6,k7),\
-						   ParamDispatch<P3,K1,K2,K3,K4,K5,K6,K7>::g(p3,k1,k2,k3,k4,k5,k6,k7),\
-						   ParamDispatch<P4,K1,K2,K3,K4,K5,K6,K7>::g(p4,k1,k2,k3,k4,k5,k6,k7),\
-						   ParamDispatch<P5,K1,K2,K3,K4,K5,K6,K7>::g(p5,k1,k2,k3,k4,k5,k6,k7),\
-						   ParamDispatch<P6,K1,K2,K3,K4,K5,K6,K7>::g(p6,k1,k2,k3,k4,k5,k6,k7),\
-						   ParamDispatch<P7,K1,K2,K3,K4,K5,K6,K7>::g(p7,k1,k2,k3,k4,k5,k6,k7),\
-						   ParamDispatch<P8,K1,K2,K3,K4,K5,K6,K7>::g(p8,k1,k2,k3,k4,k5,k6,k7)\
+		return basetype::g(tl::tuple_at<tuple_type,0>::g(data),\
+						   ParamDispatch<P1,K1,K2,K3,K4,K5,K6,K7>::g(tl::tuple_at<tuple_type,1>::g(data),k1,k2,k3,k4,k5,k6,k7),\
+						   ParamDispatch<P2,K1,K2,K3,K4,K5,K6,K7>::g(tl::tuple_at<tuple_type,2>::g(data),k1,k2,k3,k4,k5,k6,k7),\
+						   ParamDispatch<P3,K1,K2,K3,K4,K5,K6,K7>::g(tl::tuple_at<tuple_type,3>::g(data),k1,k2,k3,k4,k5,k6,k7),\
+						   ParamDispatch<P4,K1,K2,K3,K4,K5,K6,K7>::g(tl::tuple_at<tuple_type,4>::g(data),k1,k2,k3,k4,k5,k6,k7),\
+						   ParamDispatch<P5,K1,K2,K3,K4,K5,K6,K7>::g(tl::tuple_at<tuple_type,5>::g(data),k1,k2,k3,k4,k5,k6,k7),\
+						   ParamDispatch<P6,K1,K2,K3,K4,K5,K6,K7>::g(tl::tuple_at<tuple_type,6>::g(data),k1,k2,k3,k4,k5,k6,k7),\
+						   ParamDispatch<P7,K1,K2,K3,K4,K5,K6,K7>::g(tl::tuple_at<tuple_type,7>::g(data),k1,k2,k3,k4,k5,k6,k7),\
+						   ParamDispatch<P8,K1,K2,K3,K4,K5,K6,K7>::g(tl::tuple_at<tuple_type,8>::g(data),k1,k2,k3,k4,k5,k6,k7)\
 						  );\
 	}
 
@@ -827,17 +834,19 @@ PARM_SELECTION(8)
 	template<typename K1,typename K2,typename K3,typename K4,typename K5,typename K6,typename K7,typename K8>\
 	inline Rt operator()(K1 k1,K2 k2,K3 k3,K4 k4,K5 k5,K6 k6,K7 k7,K8 k8)\
 	{\
-		return basetype::g(p0,\
-						   ParamDispatch<P1,K1,K2,K3,K4,K5,K6,K7,K8>::g(p1,k1,k2,k3,k4,k5,k6,k7,k8),\
-						   ParamDispatch<P2,K1,K2,K3,K4,K5,K6,K7,K8>::g(p2,k1,k2,k3,k4,k5,k6,k7,k8),\
-						   ParamDispatch<P3,K1,K2,K3,K4,K5,K6,K7,K8>::g(p3,k1,k2,k3,k4,k5,k6,k7,k8),\
-						   ParamDispatch<P4,K1,K2,K3,K4,K5,K6,K7,K8>::g(p4,k1,k2,k3,k4,k5,k6,k7,k8),\
-						   ParamDispatch<P5,K1,K2,K3,K4,K5,K6,K7,K8>::g(p5,k1,k2,k3,k4,k5,k6,k7,k8),\
-						   ParamDispatch<P6,K1,K2,K3,K4,K5,K6,K7,K8>::g(p6,k1,k2,k3,k4,k5,k6,k7,k8),\
-						   ParamDispatch<P7,K1,K2,K3,K4,K5,K6,K7,K8>::g(p7,k1,k2,k3,k4,k5,k6,k7,k8),\
-						   ParamDispatch<P8,K1,K2,K3,K4,K5,K6,K7,K8>::g(p8,k1,k2,k3,k4,k5,k6,k7,k8)\
+		return basetype::g(tl::tuple_at<tuple_type,0>::g(data),\
+						   ParamDispatch<P1,K1,K2,K3,K4,K5,K6,K7,K8>::g(tl::tuple_at<tuple_type,1>::g(data),k1,k2,k3,k4,k5,k6,k7,k8),\
+						   ParamDispatch<P2,K1,K2,K3,K4,K5,K6,K7,K8>::g(tl::tuple_at<tuple_type,2>::g(data),k1,k2,k3,k4,k5,k6,k7,k8),\
+						   ParamDispatch<P3,K1,K2,K3,K4,K5,K6,K7,K8>::g(tl::tuple_at<tuple_type,3>::g(data),k1,k2,k3,k4,k5,k6,k7,k8),\
+						   ParamDispatch<P4,K1,K2,K3,K4,K5,K6,K7,K8>::g(tl::tuple_at<tuple_type,4>::g(data),k1,k2,k3,k4,k5,k6,k7,k8),\
+						   ParamDispatch<P5,K1,K2,K3,K4,K5,K6,K7,K8>::g(tl::tuple_at<tuple_type,5>::g(data),k1,k2,k3,k4,k5,k6,k7,k8),\
+						   ParamDispatch<P6,K1,K2,K3,K4,K5,K6,K7,K8>::g(tl::tuple_at<tuple_type,6>::g(data),k1,k2,k3,k4,k5,k6,k7,k8),\
+						   ParamDispatch<P7,K1,K2,K3,K4,K5,K6,K7,K8>::g(tl::tuple_at<tuple_type,7>::g(data),k1,k2,k3,k4,k5,k6,k7,k8),\
+						   ParamDispatch<P8,K1,K2,K3,K4,K5,K6,K7,K8>::g(tl::tuple_at<tuple_type,8>::g(data),k1,k2,k3,k4,k5,k6,k7,k8)\
 						  );\
 	}
+
+
 
 template<typename Ft>
 class BindImpl;
@@ -861,21 +870,14 @@ public:
 	typedef typename basetype::P7 P7;
 	typedef typename basetype::P8 P8;
 
-	P0 p0;
-	using basetype::p1;
-	using basetype::p2;
-	using basetype::p3;
-	using basetype::p4;
-	using basetype::p5;
-	using basetype::p6;
-	using basetype::p7;
-	using basetype::p8;
+	typedef tl::tuple<P0> tuple_type;
+	tuple_type data;
 
 
 	BindImpl(
 		P0 p0_
 	)
-		:p0(p0_)
+		:data(p0_)
 	{
 	}
 
@@ -902,21 +904,14 @@ public:
 	typedef typename basetype::P7 P7;
 	typedef typename basetype::P8 P8;
 
-	P0 p0;
-	P1 p1;
-	using basetype::p2;
-	using basetype::p3;
-	using basetype::p4;
-	using basetype::p5;
-	using basetype::p6;
-	using basetype::p7;
-	using basetype::p8;
+
+	typedef tl::tuple<P0,P1,P2,P3,P4,P5,P6,P7,P8> tuple_type;
+	tuple_type data;
 
 	BindImpl(
 		P0 p0_,P1 p1_
 	)
-		:p0(p0_)
-		,p1(p1_)
+		:data(p0_,p1_)
 	{
 	}
 
@@ -942,20 +937,14 @@ public:
 	typedef typename basetype::P7 P7;
 	typedef typename basetype::P8 P8;
 
-	P0 p0;
-	P1 p1;
-	P2 p2;
-	using basetype::p3;
-	using basetype::p4;
-	using basetype::p5;
-	using basetype::p6;
-	using basetype::p7;
-	using basetype::p8;
+
+	typedef tl::tuple<P0,P1,P2,P3,P4,P5,P6,P7,P8> tuple_type;
+	tuple_type data;
 
 	BindImpl(
 		P0 p0_,P1 p1_,P2 p2_
 	)
-		:p0(p0_),p1(p1_),p2(p2_)
+		:data(p0_,p1_,p2_)
 	{
 	}
 
@@ -982,20 +971,13 @@ public:
 	typedef typename basetype::P7 P7;
 	typedef typename basetype::P8 P8;
 
-	P0 p0;
-	P1 p1;
-	P2 p2;
-	P3 p3;
-	using basetype::p4;
-	using basetype::p5;
-	using basetype::p6;
-	using basetype::p7;
-	using basetype::p8;
+	typedef tl::tuple<P0,P1,P2,P3,P4,P5,P6,P7,P8> tuple_type;
+	tuple_type data;
 
 	BindImpl(
 		P0 p0_,P1 p1_,P2 p2_,P3 p3_
 	)
-		:p0(p0_),p1(p1_),p2(p2_),p3(p3_)
+		:data(p0_,p1_,p2_,p3_)
 	{
 	}
 
@@ -1022,20 +1004,15 @@ public:
 	typedef typename basetype::P7 P7;
 	typedef typename basetype::P8 P8;
 
-	P0 p0;
-	P1 p1;
-	P2 p2;
-	P3 p3;
-	P4 p4;
-	using basetype::p5;
-	using basetype::p6;
-	using basetype::p7;
-	using basetype::p8;
+
+	typedef tl::tuple<P0,P1,P2,P3,P4,P5,P6,P7,P8> tuple_type;
+	tuple_type data;
+
 
 	BindImpl(
 		P0 p0_,P1 p1_,P2 p2_,P3 p3_,P4 p4_
 	)
-		:p0(p0_),p1(p1_),p2(p2_),p3(p3_),p4(p4_)
+		:data(p0_,p1_,p2_,p3_,p4_)
 	{
 
 	}
@@ -1064,20 +1041,13 @@ public:
 	typedef typename basetype::P7 P7;
 	typedef typename basetype::P8 P8;
 
-	P0 p0;
-	P1 p1;
-	P2 p2;
-	P3 p3;
-	P4 p4;
-	P5 p5;
-	using basetype::p6;
-	using basetype::p7;
-	using basetype::p8;
+	typedef tl::tuple<P0,P1,P2,P3,P4,P5,P6,P7,P8> tuple_type;
+	tuple_type data;
 
 	BindImpl(
 		P0 p0_,P1 p1_,P2 p2_,P3 p3_,P4 p4_,P5 p5_
 	)
-		:p0(p0_),p1(p1_),p2(p2_),p3(p3_),p4(p4_),p5(p5_)
+		:data(p0_,p1_,p2_,p3_,p4_,p5_)
 	{
 
 	}
@@ -1104,20 +1074,14 @@ public:
 	typedef typename basetype::P7 P7;
 	typedef typename basetype::P8 P8;
 
-	P0 p0;
-	P1 p1;
-	P2 p2;
-	P3 p3;
-	P4 p4;
-	P5 p5;
-	P6 p6;
-	using basetype::p7;
-	using basetype::p8;
+
+	typedef tl::tuple<P0,P1,P2,P3,P4,P5,P6,P7,P8> tuple_type;
+	tuple_type data;
 
 	BindImpl(
 		P0 p0_,P1 p1_,P2 p2_,P3 p3_,P4 p4_,P5 p5_,P6 p6_
 	)
-		:p0(p0_),p1(p1_),p2(p2_),p3(p3_),p4(p4_),p5(p5_),p6(p6_)
+		:data(p0_,p1_,p2_,p3_,p4_,p5_,p6_)
 	{
 
 	}
@@ -1145,24 +1109,17 @@ public:
 	typedef typename ParamRealImpl<X7>::type P7;
 	typedef typename basetype::P8 P8;
 
-	P0 p0;
-	P1 p1;
-	P2 p2;
-	P3 p3;
-	P4 p4;
-	P5 p5;
-	P6 p6;
-	P7 p7;
-	using basetype::p8;
+
+	typedef tl::tuple<P0,P1,P2,P3,P4,P5,P6,P7,P8> tuple_type;
+	tuple_type data;
 
 	BindImpl(
 		P0 p0_,P1 p1_,P2 p2_,P3 p3_,P4 p4_,P5 p5_,P6 p6_,P7 p7_
 	)
-		:p0(p0_),p1(p1_),p2(p2_),p3(p3_),p4(p4_),p5(p5_),p6(p6_),p7(p7_)
+		:data(p0_,p1_,p2_,p3_,p4_,p5_,p6_,p7_)
 	{
 
 	}
-
 
 	BINDIMPL_OPERATOR7();
 
@@ -1187,23 +1144,17 @@ public:
 	typedef typename ParamRealImpl<X7>::type P7;
 	typedef typename ParamRealImpl<X8>::type P8;
 
-	P0 p0;
-	P1 p1;
-	P2 p2;
-	P3 p3;
-	P4 p4;
-	P5 p5;
-	P6 p6;
-	P7 p7;
-	P8 p8;
+	typedef tl::tuple<P0,P1,P2,P3,P4,P5,P6,P7,P8> tuple_type;
+	tuple_type data;
 
 	BindImpl(
 		P0 p0_,P1 p1_,P2 p2_,P3 p3_,P4 p4_,P5 p5_,P6 p6_,P7 p7_,P8 p8_
 	)
-		:p0(p0_),p1(p1_),p2(p2_),p3(p3_),p4(p4_),p5(p5_),p6(p6_),p7(p7_),p8(p8_)
+		:data(p0_,p1_,p2_,p3_,p4_,p5_,p6_,p7_,p8_)
 	{
 
 	}
+
 
 	BINDIMPL_OPERATOR8();
 

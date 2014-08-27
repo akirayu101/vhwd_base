@@ -101,14 +101,14 @@ class VHWD_DLLIMPEXP IPacket
 {
 public:
 
-	unsigned short size;
-	unsigned short type;
-	int32_t kcrc;
+	uint16_t size;
+	uint16_t type;
+	uint32_t kcrc;
 	TimePoint stamp;
-	int32_t tag1;
-	int32_t tag2;
-	int32_t arg1;
-	int32_t arg2;
+	uint32_t tag1;
+	uint32_t tag2;
+	uint32_t arg1;
+	uint32_t arg2;
 
 	IPacket()
 	{
