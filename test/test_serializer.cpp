@@ -1,7 +1,7 @@
 
 #include "vhwd/testing/test.h"
 #include "vhwd/threading.h"
-#include "vhwd/collection/array_xt.h"
+#include "vhwd/collection/arr_xt.h"
 #include "vhwd/serialization.h"
 
 

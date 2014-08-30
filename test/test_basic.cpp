@@ -91,6 +91,81 @@ TEST_DEFINE(TEST_String)
 }
 
 
+TEST_DEFINE(TEST_StringBuffer)
+{
+
+	StringBuffer<char> s1;
+	StringBuffer<char> s2("hello");
+	TEST_ASSERT(s1=="");
+	TEST_ASSERT(s1.size()==0);
+	TEST_ASSERT(s1!=s2);
+	TEST_ASSERT(s2.size()==5);
+	s1=s2;
+	TEST_ASSERT(s1==s2);
+
+	StringBuffer<char> s3="world";
+	StringBuffer<char> s4="helloworld";
+
+
+	TEST_ASSERT(s3.size()==5);
+
+	StringBuffer<char> s5(s2);
+	s5+=s3;
+	StringBuffer<char> s6;
+	s6<<s2<<s3;
+
+	StringBuffer<char> s7=String::Format("%s%s",s2,s3);
+
+	TEST_ASSERT(s2+s3==s4);
+	TEST_ASSERT(s5==s4);
+	TEST_ASSERT(s6==s4);
+	TEST_ASSERT(s7==s4);
+
+	StringBuffer<char> s8;
+
+	s8="";
+	s8<<'A';
+	TEST_ASSERT(s8=="A");
+
+	s8="";
+	s8<<"hello";
+	TEST_ASSERT(s8=="hello");
+
+	s8<<"world";
+	TEST_ASSERT(s8=="helloworld");
+
+	int32_t i32=12345678;
+	s8="";
+	s8<<i32;
+	TEST_ASSERT(s8=="12345678");
+
+	int64_t i64=123456890123456890;
+	s8="";
+	s8<<i64;
+	TEST_ASSERT(s8=="123456890123456890");
+
+	uint32_t u32=12345678;
+	s8="";
+	s8<<u32;
+	TEST_ASSERT(s8=="12345678");
+
+	uint64_t u64=123456890123456890;
+	s8="";
+	s8<<u64;
+	TEST_ASSERT(s8=="123456890123456890");
+
+	float32_t f32=1.25;
+	s8="";
+	s8<<f32;
+
+	float64_t f64=2.125;
+	s8="";
+	s8<<f64;
+
+
+}
+
+
 TEST_DEFINE(TEST_BitFlags)
 {
 

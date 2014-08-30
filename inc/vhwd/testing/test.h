@@ -10,7 +10,7 @@
 
 
 #include "vhwd/logging/logger.h"
-#include "vhwd/collection/array.h"
+#include "vhwd/collection/arr_1t.h"
 
 #define TEST_ASSERT_MSG(X,Y) \
 	try\

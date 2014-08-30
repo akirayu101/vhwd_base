@@ -133,7 +133,7 @@ bool SessionServer::WaitForAccept()
 	{
 		return true;
 	}
-#elif defined(_WIN32)
+#elif defined(VHWD_WINDOWS)
 
 #else
 	WaitForRecv();

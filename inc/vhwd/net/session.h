@@ -5,7 +5,7 @@
 #include "vhwd/net/overlapped.h"
 #include "vhwd/threading/thread.h"
 
-#if defined(_WIN32)
+#if defined(VHWD_WINDOWS)
 #include <winsock2.h>
 #include <mswsock.h>
 #include <ws2tcpip.h>
@@ -64,7 +64,7 @@ protected:
 	LitePtrT<IOCPPool> hiocp;
 
 
-#ifndef _WIN32
+#ifndef VHWD_WINDOWS
 	void ep_ctl(int f);
 	int m_nLastEpoll_ctl;
 	int m_nTempEpoll_ctl;
@@ -240,7 +240,7 @@ public:
 	// NOTE: old cached packets will be drop!
 	bool update(Session::MyOlapPtr& q);
 
-	// n must less or equal VHWD_MAX_PACKET_SIZE
+	// n must less or equal IPacket::MAX_PACKET_SIZE
 	bool update(const char* p,size_t n);
 
 	// number of cached packets
@@ -267,7 +267,7 @@ public:
 
 private:
 
-	char pk[VHWD_MAX_PACKET_SIZE*2];
+	char pk[IPacket::MAX_PACKET_SIZE*2];
 	arr_1t<IPacketEx*> ap;
 	size_t q1,q2;
 

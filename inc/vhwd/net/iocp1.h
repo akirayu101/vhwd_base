@@ -68,7 +68,7 @@ protected:
 	void ccc_handle_sock();
 	void ccc_execute_cmd();
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	void ccc_handle_iocp(Session* pkey,MyOverLapped* pdat);
 #endif
 
@@ -92,7 +92,7 @@ protected:
 
 	String m_sName;
 
-#ifndef _WIN32
+#ifndef VHWD_WINDOWS
 	void HandleSend(Session& ikey);
 	void HandleRecv(Session& ikey);
 #endif

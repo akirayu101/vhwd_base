@@ -234,6 +234,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\vhwd\basic\hashing.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\vhwd\basic\language.cpp"
 						>
 					</File>
@@ -898,11 +902,11 @@
 					Name="collection"
 					>
 					<File
-						RelativePath="..\..\inc\vhwd\collection\array.h"
+						RelativePath="..\..\inc\vhwd\collection\arr_1t.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\inc\vhwd\collection\array_xt.h"
+						RelativePath="..\..\inc\vhwd\collection\arr_xt.h"
 						>
 					</File>
 					<File
@@ -935,6 +939,10 @@
 					</File>
 					<File
 						RelativePath="..\..\inc\vhwd\collection\lockfree_queue.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\inc\vhwd\collection\pod_1t.h"
 						>
 					</File>
 					<File

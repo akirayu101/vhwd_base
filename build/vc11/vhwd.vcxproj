@@ -389,6 +389,7 @@
     <ClCompile Include="..\..\src\vhwd\basic\exception.cpp" />
     <ClCompile Include="..\..\src\vhwd\basic\file.cpp" />
     <ClCompile Include="..\..\src\vhwd\basic\codecvt_gbktable.cpp" />
+    <ClCompile Include="..\..\src\vhwd\basic\hashing.cpp" />
     <ClCompile Include="..\..\src\vhwd\basic\language.cpp" />
     <ClCompile Include="..\..\src\vhwd\basic\object.cpp" />
     <ClCompile Include="..\..\src\vhwd\basic\object_data.cpp" />
@@ -466,10 +467,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\inc\vhwd\basic\file.h" />
+    <ClInclude Include="..\..\inc\vhwd\basic\hashing.h" />
     <ClInclude Include="..\..\inc\vhwd\basic\lockguard.h" />
     <ClInclude Include="..\..\inc\vhwd\basic\object_ex.h" />
     <ClInclude Include="..\..\inc\vhwd\collection.h" />
-    <ClInclude Include="..\..\inc\vhwd\collection\array.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\arr_1t.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\bst_map.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\bst_set.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_container.h" />
@@ -482,6 +484,7 @@
     <ClInclude Include="..\..\inc\vhwd\collection\detail\kv_trait.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\linear_buffer.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\lockfree_queue.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\pod_1t.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\ring_buffer.h" />
     <ClInclude Include="..\..\inc\vhwd\memory\allocator.h" />
     <ClInclude Include="..\..\inc\vhwd\memory\allocator_malloc.h" />
@@ -573,7 +576,7 @@
     <ClInclude Include="..\..\inc\vhwd\net\socket.h" />
     <ClInclude Include="..\..\inc\vhwd\memory\mempool.h" />
     <ClInclude Include="..\..\inc\vhwd\testing\test.h" />
-    <ClInclude Include="..\..\inc\vhwd\collection\array_xt.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\arr_xt.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\indexer_map.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\indexer_set.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\intrusive_list.h" />

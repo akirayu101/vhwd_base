@@ -60,6 +60,8 @@ public:
 	void StartSend()
 	{
 		packet.size=1024;
+		packet.update();
+
 		AsyncSend(packet);
 		AsyncRecv();
 	}
@@ -72,7 +74,7 @@ public:
 
 	virtual void OnSendCompleted(MyOlapPtr& q)
 	{
-		lkfq_free.putq(q); // put back to free queue;
+		lkfq_free.putq(q);
 	}
 
 	virtual void OnRecvCompleted(MyOlapPtr& q)
@@ -97,7 +99,9 @@ public:
 
 	void OnPacket(IPacketEx& pk)
 	{
-		AsyncSend(pk); // send packet
+		//pk.check();
+		//pk.update();
+		AsyncSend(pk);
 	}
 
 };

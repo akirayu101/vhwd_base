@@ -333,6 +333,9 @@
     <ClCompile Include="..\..\src\vhwd\memory\mempool_cached.cpp">
       <Filter>src\vhwd\memory</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\basic\hashing.cpp">
+      <Filter>src\vhwd\basic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\vhwd\basic\string_impl.h">
@@ -509,9 +512,6 @@
     <ClInclude Include="..\..\inc\vhwd\testing\test.h">
       <Filter>inc\vhwd\testing</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\inc\vhwd\collection\array_xt.h">
-      <Filter>inc\vhwd\collection</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\inc\vhwd\collection\indexer_map.h">
       <Filter>inc\vhwd\collection</Filter>
     </ClInclude>
@@ -519,9 +519,6 @@
       <Filter>inc\vhwd\collection</Filter>
     </ClInclude>
     <ClInclude Include="..\..\inc\vhwd\collection\intrusive_list.h">
-      <Filter>inc\vhwd\collection</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\inc\vhwd\collection\array.h">
       <Filter>inc\vhwd\collection</Filter>
     </ClInclude>
     <ClInclude Include="..\..\inc\vhwd\collection\lockfree_queue.h">
@@ -670,6 +667,18 @@
     </ClInclude>
     <ClInclude Include="..\..\src\vhwd\memory\mempool_link.h">
       <Filter>src\vhwd\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\hashing.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\arr_1t.h">
+      <Filter>inc\vhwd\collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\arr_xt.h">
+      <Filter>inc\vhwd\collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\pod_1t.h">
+      <Filter>inc\vhwd\collection</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

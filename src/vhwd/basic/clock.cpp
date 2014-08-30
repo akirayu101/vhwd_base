@@ -5,7 +5,7 @@
 #include <ctime>
 
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 #include <windows.h>
 #else
 #include "sys/time.h"
@@ -14,7 +14,7 @@
 VHWD_ENTER
 
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 
 #define _W32_FT_OFFSET (116444736000000000)
 

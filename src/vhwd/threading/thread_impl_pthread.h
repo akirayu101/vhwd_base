@@ -37,7 +37,7 @@ public:
 
 	static void set_affinity(int n)
 	{
-#ifndef _WIN32
+#ifndef VHWD_WINDOWS
 		cpu_set_t cpu_info;
 		CPU_ZERO(&cpu_info);
 		CPU_SET(n+1, &cpu_info);

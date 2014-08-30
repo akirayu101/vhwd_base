@@ -5,7 +5,7 @@
 #include "vhwd/threading/thread_mutex.h"
 #include "vhwd/memory/mempool.h"
 
-#ifndef _WIN32
+#ifndef VHWD_WINDOWS
 #include <cerrno>
 #endif
 
@@ -16,7 +16,7 @@ Session::LKFQueue Session::lkfq_free(2048,Session::LKFQueue::QUEUE_NONBLOCK);
 
 Session::Session()
 {
-#ifndef _WIN32
+#ifndef VHWD_WINDOWS
 	m_nLastEpoll_def.clr(EPOLLERR|EPOLLHUP);
 	m_nTempEpoll_ctl=0;
 #endif
@@ -38,7 +38,7 @@ Session::~Session()
 
 bool Session::HasPending()
 {
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	if(m_nPendingRecv.get()!=0 || m_nPendingSend.get()!=0)
 	{
 		return true;
@@ -114,7 +114,7 @@ void Session::Disconnect()
 		return;
 	}
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	sk_local.sock.Close();
 	m_nPendingRecv.fetch_add(1);
 	PostQueuedCompletionStatus(hiocp->native_handle(),0,(ULONG_PTR)this,NULL);
@@ -141,7 +141,7 @@ void Session::Disconnect()
 
 }
 
-#ifndef _WIN32
+#ifndef VHWD_WINDOWS
 
 void Session::ep_ctl(int f)
 {
@@ -203,17 +203,17 @@ void Q2Packet::done()
 	{
 		pk[i]=pk[q1+i];
 	}
-	q1=0;		
+	q1=0;
 }
 
-bool Q2Packet::update(const char* p1,size_t n)
+bool Q2Packet::update(const char* p1,size_t nz)
 {
-	if(n==0)
+	if(nz==0)
 	{
 		return true;
 	}
 
-	if(n>VHWD_MAX_PACKET_SIZE)
+	if(nz>IPacket::MAX_PACKET_SIZE)
 	{
 		System::LogTrace("buffer too large");
 		return false;
@@ -221,37 +221,38 @@ bool Q2Packet::update(const char* p1,size_t n)
 
 	done();
 
-	const char* p2=p1+n;
-	size_t n0=q2-q1;
+	wassert(q1==0);
 
-	if(n0==0)
+	const char* p2=p1+nz;
+	size_t n0=q2;
+
+	const size_t nh=IPacket::MIN_PACKET_SIZE;
+
+	if(n0<nh)
 	{
-		pk[0]=p1[0];
-		if(p2-p1==1)
+		size_t nl=nh-n0;
+		if(nz<nl)
 		{
-			q2=1;
+			memcpy(pk+q2,p1,nz);
+			q2+=nz;
 			return true;
 		}
-		pk[1]=p1[1];
-		q2=2;
-		p1+=2;
-	}
-	else if(n0==1)
-	{
-		pk[1]=p1[0];
-		q2=2;
-		p1+=1;
+
+		memcpy(pk+q2,p1,nl);
+		q2=nh;
+		p1+=nl;
+
 	}
 
 	while(1)
 	{
 
-		size_t sz_real=*(uint16_t*)(pk+q1);
+		size_t sz_real=(*(IPacket*)(pk+q1)).size;
 		size_t sz_left=q2-q1;
 
 		if(sz_real>sz_left)
 		{
-			if(sz_real>VHWD_MAX_PACKET_SIZE)
+			if(sz_real>IPacket::MAX_PACKET_SIZE)
 			{
 				System::LogTrace("invalid packet size");
 				return false;
@@ -277,22 +278,17 @@ bool Q2Packet::update(const char* p1,size_t n)
 		q2=(q2+sizeof(void*)-1)&~(sizeof(void*)-1); // adjust q1,q2;
 		q1=q2;
 
-		if(p2-p1>2)
+		if((size_t)(p2-p1)>=nh)
 		{
-			pk[q2+0]=p1[0];
-			pk[q2+1]=p1[1];
-
-			q2+=2;
-			p1+=2;
-
+			memcpy(pk+q2,p1,nh);
+			q2+=nh;
+			p1+=nh;
 		}
 		else
 		{
-			if(p2-p1==1)
-			{
-				pk[q2]=p1[0];
-				q2=q2+1;
-			}
+			size_t nl=p2-p1;
+			memcpy(pk+q2,p1,nl);
+			q2+=nl;
 			return true;
 		}
 	}

@@ -4,7 +4,7 @@
 VHWD_ENTER
 
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 static DWORD iocp_flag_recv;
 #endif
 
@@ -125,7 +125,7 @@ bool SessionUDP::AsyncRecv()
 void SessionUDP::DoAsyncSend()
 {
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 
 	TempPtrT<MyOverLappedEx> q=lkfq_send.getq();
 	if(!q)
@@ -165,7 +165,7 @@ void SessionUDP::DoAsyncSend()
 void SessionUDP::DoAsyncRecv()
 {
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 
 
 	TempPtrT<MyOverLappedEx> q=lkfq_recv.getq();

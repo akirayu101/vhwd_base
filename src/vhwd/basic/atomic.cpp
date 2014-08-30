@@ -3,10 +3,11 @@
 #include "vhwd/basic/lockguard.h"
 #include <cstdlib>
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 #include <windows.h>
 #else
 #include <sched.h>
+#include <pthread.h>
 #endif
 
 #ifdef _MSC_VER
@@ -319,10 +320,20 @@ T AtomicIntT<T>::load() const
 
 void AtomicSpin::noop()
 {
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	_sleep(0);
 #else
 	sched_yield();
+#endif
+}
+
+
+uintptr_t AtomicMutex::thread_id()
+{
+#ifdef VHWD_WINDOWS
+	return ::GetCurrentThreadId();
+#else
+	return (uintptr_t)pthread_self();
 #endif
 }
 

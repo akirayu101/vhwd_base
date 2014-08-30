@@ -1,4 +1,4 @@
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 
 #include "socket_impl_windows.h"
 typedef vhwd::SocketImpl_windows socket_detail;

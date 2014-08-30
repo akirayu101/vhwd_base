@@ -113,7 +113,7 @@ protected:
 	impl_type impl;
 };
 
-
+// non-recursive spin
 class VHWD_DLLIMPEXP AtomicSpin
 {
 public:
@@ -146,6 +146,64 @@ protected:
 	AtomicInt32 val;
 };
 
+
+// recursive
+class VHWD_DLLIMPEXP AtomicMutex
+{
+public:
+	AtomicMutex(){num=0;}
+
+	inline void lock()
+	{
+		uintptr_t _id=thread_id();
+		while(val.exchange(1)!=0)
+		{
+			if(_id==tid)
+			{
+				++num;
+				return;
+			}
+		}
+
+		num=1;
+		tid=_id;
+	}
+
+	inline bool try_lock()
+	{
+		uintptr_t _id=thread_id();
+		while(val.exchange(1)!=0)
+		{
+			if(_id==tid)
+			{
+				++num;
+				return true;
+			}
+		}
+
+		num=1;
+		tid=_id;
+		return true;
+	}
+
+	inline void unlock()
+	{
+		wassert(tid==thread_id());
+		if(--num==0)
+		{
+			int32_t old=val.exchange(0);
+			wassert(old==1);
+			(void)&old;
+		}
+	}
+
+	static uintptr_t thread_id();
+
+private:
+	AtomicInt32 val;
+	uint32_t num;
+	uintptr_t tid;
+};
 
 class VHWD_DLLIMPEXP RefCounter
 {

@@ -9,8 +9,9 @@
 #define __H_VHWD_STRINGBUFFER__
 
 #include "vhwd/config.h"
-#include "vhwd/collection/array.h"
-#include "vhwd/collection/array_xt.h"
+#include "vhwd/basic/hashing.h"
+#include "vhwd/basic/string_detail.h"
+#include "vhwd/collection/pod_1t.h"
 #include "vhwd/memory.h"
 
 VHWD_ENTER
@@ -30,10 +31,10 @@ enum
 
 
 template<typename T>
-class VHWD_DLLIMPEXP StringBuffer : public arr_1t<T,AllocatorN<typename def_allocator::rebind<T>::other,1> >
+class VHWD_DLLIMPEXP StringBuffer : public pod_1t<T,1>
 {
 public:
-	typedef arr_1t<T,AllocatorN<typename def_allocator::rebind<T>::other,1> > basetype;
+	typedef pod_1t<T,1> basetype;
 	typedef typename basetype::size_type size_type;
 
 	using basetype::assign;
@@ -70,7 +71,9 @@ public:
 	{
 		(*this)=o;
 	}
+
 	StringBuffer& operator=(const String& o);
+	StringBuffer& operator=(const T* p1);
 
 	StringBuffer& operator+=(const StringBuffer& o)
 	{
@@ -79,44 +82,69 @@ public:
 	}
 	StringBuffer& operator+=(const String& o);
 
-	StringBuffer& operator<<(const String& v)
-	{
-		(*this)+=v;
-		return *this;
-	}
-
 	bool load(const String& file,int t=FILE_TEXT);
 	bool save(const String& file,int t=FILE_TEXT);
 
 	T* c_str();
 	const T* c_str() const;
 
+
+	StringBuffer& operator<<(char v);
+	StringBuffer& operator<<(int32_t v);
+	StringBuffer& operator<<(int64_t v);
+	StringBuffer& operator<<(uint32_t v);
+	StringBuffer& operator<<(uint64_t v);
+	StringBuffer& operator<<(float v);
+	StringBuffer& operator<<(double v);
+	StringBuffer& operator<<(const T* v);
+	StringBuffer& operator<<(const String& v);
+	StringBuffer& operator<<(const StringBuffer& v);
+
+
+	StringBuffer& operator<<(const std::basic_string<T>& v)
+	{
+		return (*this)<<v.c_str();
+	}
+
 protected:
 
 	using basetype::m_ptr;
-	using basetype::extra;
+	using basetype::m_end;
+
 };
 
+template<typename T> class hash_t<StringBuffer<T> >
+{
+public:
+	inline uint32_t operator()(const StringBuffer<T>& v)
+	{
+		return hash_array<T>::hash(v.data(),v.size());
+	}
+};
 
-template<template<unsigned> class P>
+inline const char* StringParamCast::g(const StringBuffer<char>& v)
+{
+	return v.c_str();
+}
+
+template<template<unsigned> class P,typename T=unsigned char>
 class lookup_table
 {
 public:
-	static unsigned char test(unsigned char text)
+	static T test(unsigned char text)
 	{
 		return cmap[text];
 	}
-	unsigned char operator[](unsigned char text) const
+	T operator[](unsigned char text) const
 	{
 		return cmap[text];
 	}
-	unsigned char operator()(unsigned char text) const
+	T operator()(unsigned char text) const
 	{
 		return cmap[text];
 	}
-	static const unsigned char cmap[256];
+	static const T cmap[256];
 };
-
 
 template<unsigned N>
 class lkt2uppercase
@@ -140,8 +168,8 @@ public:
 };
 
 
-template<template<unsigned> class P>
-const unsigned char lookup_table<P>::cmap[256]=
+template<template<unsigned> class P,typename T>
+const T lookup_table<P,T>::cmap[256]=
 {
 	P<0x00>::value,P<0x01>::value,P<0x02>::value,P<0x03>::value,
 	P<0x04>::value,P<0x05>::value,P<0x06>::value,P<0x07>::value,

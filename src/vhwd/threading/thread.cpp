@@ -238,7 +238,7 @@ void Thread::sleep_until(const TimePoint& tp)
 
 void Thread::sleep_for(int milliseconds)
 {
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	_sleep(milliseconds);
 #else
 	struct timespec req;
@@ -250,7 +250,7 @@ void Thread::sleep_for(int milliseconds)
 
 void Thread::yield()
 {
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	_sleep(0);
 #else
 	sched_yield();

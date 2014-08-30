@@ -10,7 +10,7 @@
 
 
 
-#ifndef _WIN32
+#ifndef VHWD_WINDOWS
 #include <sys/socket.h>
 #include <netinet/in.h>
 #endif
@@ -23,7 +23,7 @@ class VHWD_DLLIMPEXP IPAddress;
 class VHWD_DLLIMPEXP KO_Policy_socket
 {
 public:
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	typedef SOCKET type;
 	static type invalid_value()
 	{

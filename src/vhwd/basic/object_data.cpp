@@ -1,6 +1,6 @@
 #include "vhwd/basic/object.h"
 #include "vhwd/basic/object_ex.h"
-#include "vhwd/collection/array.h"
+#include "vhwd/collection/arr_1t.h"
 
 VHWD_ENTER
 

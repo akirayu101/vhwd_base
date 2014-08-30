@@ -5,8 +5,8 @@
 // that can be found in the License file.
 // Author: Wenda Han.
 
-#ifndef __H_VHWD_COLLECTION_ARRAY_XT__
-#define __H_VHWD_COLLECTION_ARRAY_XT__
+#ifndef __H_VHWD_COLLECTION_ARR_XT__
+#define __H_VHWD_COLLECTION_ARR_XT__
 
 
 #include "vhwd/collection/detail/collection_base.h"

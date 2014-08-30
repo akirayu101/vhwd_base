@@ -5,7 +5,7 @@
 #include "vhwd/threading/thread_mutex.h"
 
 
-#ifndef _WIN32
+#ifndef VHWD_WINDOWS
 #include <cerrno>
 #endif
 
@@ -18,9 +18,9 @@ SessionTCP::SessionTCP()
 
 bool SessionTCP::AsyncSend(const char* data,size_t size)
 {
-	if(size>VHWD_MAX_PACKET_SIZE)
+	if(size>IPacket::MAX_PACKET_SIZE)
 	{
-		System::LogTrace("size>VHWD_MAX_PACKET_SIZE in %s",__FUNCTION__);
+		System::LogTrace("size>IPacket::MAX_PACKET_SIZE in %s",__FUNCTION__);
 		return false;
 	}
 
@@ -148,7 +148,7 @@ bool SessionTCP::WaitForRecv()
 
 }
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 static DWORD iocp_flag_recv=0;
 #endif
 
@@ -156,7 +156,7 @@ static DWORD iocp_flag_recv=0;
 void SessionTCP::DoAsyncSend()
 {
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 
 	TempPtrT<MyOverLappedEx> q=lkfq_send.getq();
 	if(!q)
@@ -195,7 +195,7 @@ void SessionTCP::DoAsyncSend()
 void SessionTCP::DoAsyncRecv()
 {
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 
 	TempPtrT<MyOverLappedEx> q=lkfq_recv.getq();
 	if(!q)

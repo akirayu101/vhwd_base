@@ -213,14 +213,14 @@ bool Semaphore::wait_until(const TimePoint& tp)
 
 Event::Event()
 {
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	hEvent=::CreateEvent(NULL,TRUE,FALSE,NULL);
 #endif
 }
 
 Event::Event(const Event&)
 {
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	hEvent=::CreateEvent(NULL,TRUE,FALSE,NULL);
 #endif
 }
@@ -228,7 +228,7 @@ Event::Event(const Event&)
 
 void Event::reset()
 {
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	::ResetEvent(hEvent);
 #else
 	m_nValue.store(0);
@@ -238,7 +238,7 @@ void Event::reset()
 
 void Event::set()
 {
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	::SetEvent(hEvent);
 #else
 
@@ -251,7 +251,7 @@ void Event::set()
 
 void Event::wait()
 {
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	::WaitForSingleObject(hEvent,INFINITE);
 #else
 
@@ -266,7 +266,7 @@ void Event::wait()
 
 bool Event::wait_for(int ms)
 {
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 
 	DWORD rc=::WaitForSingleObject(hEvent,ms);
 	if(rc==WAIT_TIMEOUT)
@@ -289,7 +289,7 @@ bool Event::wait_for(int ms)
 
 bool Event::wait_for(const TimeSpan& ts)
 {
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	return wait_for(ts.GetMilliSeconds());
 #else
 	if(m_nValue.get()!=0) return true;
@@ -304,7 +304,7 @@ bool Event::wait_for(const TimeSpan& ts)
 
 bool Event::wait_until(const TimePoint& tp)
 {
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	return wait_for(tp-Clock::now());
 #else
 	if(m_nValue.get()!=0) return true;
@@ -319,7 +319,7 @@ bool Event::wait_until(const TimePoint& tp)
 
 Event::~Event()
 {
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	CloseHandle(hEvent);
 #endif
 }

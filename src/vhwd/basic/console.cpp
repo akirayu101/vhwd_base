@@ -3,7 +3,7 @@
 #include "vhwd/basic/lockguard.h"
 #include "vhwd/basic/atomic.h"
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 #include "windows.h"
 #endif
 
@@ -19,7 +19,7 @@ void ConsoleDoSetColor(int color)
 {
 	g_cConsoleColor=color;
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	HANDLE hCon=GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hCon,color);
 #else
@@ -107,7 +107,7 @@ String Console::ReadLine()
 
 void Console::Pause()
 {
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	system("pause");
 #else
 	Write("Press ENTER to continue...");

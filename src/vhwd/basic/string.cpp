@@ -7,7 +7,7 @@
 
 #include "stdio.h"
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 #include <windows.h>
 #else
 #include <cerrno>

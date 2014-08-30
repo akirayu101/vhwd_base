@@ -43,7 +43,7 @@ public:
 
 protected:
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	void* hEvent;
 #else
 	Mutex m_tMutex;

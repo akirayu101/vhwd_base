@@ -8,7 +8,7 @@
 #include <cstdlib>
 #include <cstdio>
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 #include <windows.h>
 #else
 #include <cerrno>
@@ -44,7 +44,7 @@ public:
 };
 
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 
 void SystemInfo::update()
 {
@@ -165,7 +165,7 @@ int System::GetCacheLineSize()
 
 int System::GetPid()
 {
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	return ::GetCurrentProcessId();
 #else
 	return getpid();
@@ -174,7 +174,7 @@ int System::GetPid()
 
 double System::GetCpuTime()
 {
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	FILETIME k[4];
 
 	LARGE_INTEGER tbeg;
@@ -203,7 +203,7 @@ double System::GetCpuTime()
 
 void System::DebugBreak()
 {
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	::DebugBreak();
 #else
 	__asm__ volatile("int $0x03");
@@ -217,7 +217,7 @@ void System::Exit(int v)
 }
 
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 
 String GetModulePathImpl()
 {
@@ -292,7 +292,7 @@ bool System::Execute(const String& s)
 #endif
 
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 
 char* win_strerror(int ret)
 {
@@ -311,7 +311,7 @@ char* win_strerror(int ret)
 
 void System::CheckError(const String& msg)
 {
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 
 	int ret=::GetLastError();
 	if(ret!=0)

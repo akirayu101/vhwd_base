@@ -2,7 +2,7 @@
 #include "vhwd/ipc/pipe.h"
 #include "vhwd/threading/thread.h"
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 #include <windows.h>
 #else
 #include <sys/un.h>
@@ -19,7 +19,7 @@
 
 
 VHWD_ENTER
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 class pipe_detail
 {
 public:

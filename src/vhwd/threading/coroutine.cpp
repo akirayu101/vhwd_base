@@ -13,7 +13,7 @@ class VHWD_DLLIMPEXP CoroutineContext;
 void (*raw_coroutine_swap)(CoroutineContext*,CoroutineContext*)=NULL;
 
 
-#ifdef _X86_
+#ifdef VHWD_X86
 
 const unsigned char asm_swap_context_code[]=
 {
@@ -26,7 +26,7 @@ const unsigned char asm_swap_context_code[]=
 0x53,
 0x56,
 0x57,
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 
 // push fs:[0],fs:[4],fs:[8];
 0x64,0xA1,0x00,0x00,0x00,0x00,
@@ -40,7 +40,7 @@ const unsigned char asm_swap_context_code[]=
 // swap nsp
 0x89,0x22,
 0x8B,0x21,
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 
 // pop fs:[8],fs:[4],fs:[0];
 0x58,
@@ -71,7 +71,7 @@ const unsigned char asm_swap_context_code[]=
 0x56,
 0x57,
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 // push gs:[0],gs[8],gs:[16]
 0x65, 0x48, 0x8B, 0x04, 0x25, 0x00, 0x00, 0x00, 0x00,
 0x50,
@@ -82,7 +82,7 @@ const unsigned char asm_swap_context_code[]=
 #endif
 
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 // swap nsp
 0x48, 0x89, 0x22,
 0x48, 0x8B, 0x21,
@@ -94,7 +94,7 @@ const unsigned char asm_swap_context_code[]=
 
 #endif
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 // pop gs:[16],gs:[8],gs:[0]
 0x58,
 0x65, 0x48, 0x89, 0x04, 0x25, 0x10, 0x00, 0x00, 0x00,
@@ -192,7 +192,7 @@ public:
 		push(this);		// nsi, arg for X64 linux
 		push(this);		// ndi, arg for X64 linux
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 		push((void*)(sizeof(void*)==4?-1:0));	// fs:[0] exception handler
 		push(nbp);								// fs:[4] stack hi
 		push(base);								// fs:[8] stack lo

@@ -2,7 +2,7 @@
 #include "vhwd/basic/system.h"
 #include "vhwd/basic/platform.h"
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 #include <windows.h>
 #else
 #include <sys/mman.h>
@@ -17,7 +17,7 @@
 VHWD_ENTER
 
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 
 void* page_alloc(size_t n)
 {

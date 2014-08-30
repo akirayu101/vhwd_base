@@ -9,7 +9,7 @@
 #define __H_VHWD_XML_DOCUMENT__
 
 #include "vhwd/xml/xml_node.h"
-#include "vhwd/collection/array.h"
+#include "vhwd/collection/arr_1t.h"
 
 VHWD_ENTER
 

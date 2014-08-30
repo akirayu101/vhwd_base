@@ -167,7 +167,7 @@ void Socket::Reset()
 	socket_detail::create(impl,impl.protocol);
 }
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 bool InitNetworkObjects()
 {
 	static bool status=false;

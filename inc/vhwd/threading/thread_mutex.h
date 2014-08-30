@@ -38,7 +38,7 @@ public:
 	bool try_lock();
 
 protected:
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	CRITICAL_SECTION impl;
 #else
 	pthread_mutex_t impl;

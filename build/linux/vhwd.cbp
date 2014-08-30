@@ -42,11 +42,6 @@
 		<Linker>
 			<Add option="-pthread" />
 		</Linker>
-		<Unit filename="../../inc/vhwd/net/iocp1.h" />
-		<Unit filename="../../inc/vhwd/net/ipaddress.h" />
-		<Unit filename="../../inc/vhwd/net/overlapped.h" />
-		<Unit filename="../../inc/vhwd/net/session.h" />
-		<Unit filename="../../inc/vhwd/net/socket.h" />
 		<Unit filename="../../src/vhwd/basic/atomic.cpp" />
 		<Unit filename="../../src/vhwd/basic/basic.cpp" />
 		<Unit filename="../../src/vhwd/basic/bitlfags.cpp" />
@@ -56,6 +51,7 @@
 		<Unit filename="../../src/vhwd/basic/console.cpp" />
 		<Unit filename="../../src/vhwd/basic/exception.cpp" />
 		<Unit filename="../../src/vhwd/basic/file.cpp" />
+		<Unit filename="../../src/vhwd/basic/hashing.cpp" />
 		<Unit filename="../../src/vhwd/basic/language.cpp" />
 		<Unit filename="../../src/vhwd/basic/object.cpp" />
 		<Unit filename="../../src/vhwd/basic/object_data.cpp" />
@@ -74,9 +70,7 @@
 		<Unit filename="../../src/vhwd/memory/mempool.cpp" />
 		<Unit filename="../../src/vhwd/memory/mempool_cached.cpp" />
 		<Unit filename="../../src/vhwd/memory/mempool_debug.cpp" />
-		<Unit filename="../../src/vhwd/memory/mempool_impl.h" />
 		<Unit filename="../../src/vhwd/memory/mempool_link.cpp" />
-		<Unit filename="../../src/vhwd/memory/mempool_link.h" />
 		<Unit filename="../../src/vhwd/memory/mempool_malloc.cpp" />
 		<Unit filename="../../src/vhwd/memory/mempool_paging.cpp" />
 		<Unit filename="../../src/vhwd/memory/mempool_pgmap.cpp" />
@@ -96,7 +90,6 @@
 		<Unit filename="../../src/vhwd/scripting/codegen_generator_lvalue.cpp" />
 		<Unit filename="../../src/vhwd/scripting/codegen_generator_rvalue.cpp" />
 		<Unit filename="../../src/vhwd/scripting/executor.cpp" />
-		<Unit filename="../../src/vhwd/scripting/module.h" />
 		<Unit filename="../../src/vhwd/scripting/module_array.cpp" />
 		<Unit filename="../../src/vhwd/scripting/module_io.cpp" />
 		<Unit filename="../../src/vhwd/scripting/module_math.cpp" />

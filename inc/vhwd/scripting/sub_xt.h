@@ -1,7 +1,7 @@
 #ifndef __H_COLLECTION_ARRAY_IDX__
 #define __H_COLLECTION_ARRAY_IDX__
 
-#include "vhwd/collection/array_xt.h"
+#include "vhwd/collection/arr_xt.h"
 
 VHWD_ENTER
 

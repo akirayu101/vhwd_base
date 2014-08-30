@@ -11,7 +11,7 @@
 #include "vhwd/basic/bitflags.h"
 #include "vhwd/threading/thread_mutex.h"
 #include "vhwd/threading/thread_cond.h"
-#include "vhwd/collection/array.h"
+#include "vhwd/collection/arr_1t.h"
 #include "vhwd/threading/thread_manager.h"
 #include "vhwd/collection/lockfree_queue.h"
 #include "vhwd/basic/functor.h"

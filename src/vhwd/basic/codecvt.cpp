@@ -259,7 +259,7 @@ bool IConv::unicode_to_utf8(StringBuffer<unsigned char>& aa_,const uint32_t* pw_
 
 bool IConv::utf8_to_ansi(StringBuffer<char>& aa_,const char* pa_,size_t ln_)
 {
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	StringBuffer<wchar_t> aw;
 	if(!utf8_to_unicode(aw,pa_,ln_))
 	{
@@ -278,7 +278,7 @@ bool IConv::utf8_to_ansi(StringBuffer<char>& aa_,const char* pa_,size_t ln_)
 
 bool IConv::ansi_to_utf8(StringBuffer<char>& aa_,const char* pa_,size_t ln_)
 {
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	StringBuffer<wchar_t> aw;
 	if(!gbk_to_unicode(aw,pa_,ln_)) return false;
 	return unicode_to_utf8(aa_,aw.data(),aw.size());

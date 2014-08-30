@@ -13,7 +13,7 @@ Exception::Exception()
 	m_bDelete=false;
 }
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 const char* Exception::what() const throw()
 {
 	return m_sWhat?m_sWhat:s_exception_desc;
@@ -99,7 +99,7 @@ class ExceptionBadAlloc : public std::bad_alloc
 {
 public:
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	const char* what() const throw()
 #else
 	const char* what() throw()

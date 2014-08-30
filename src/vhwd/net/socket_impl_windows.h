@@ -1,6 +1,6 @@
 #include "vhwd/config.h"
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 #include <WinSock2.h>
 #include <Ws2tcpip.h>
 

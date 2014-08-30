@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 #include <windows.h>
 #endif
 

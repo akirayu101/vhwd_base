@@ -44,7 +44,7 @@ public:
 	static void XBadFunctor();
 	
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	const char* what() const throw();
 #else
 	const char* what() throw();

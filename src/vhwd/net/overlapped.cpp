@@ -1,12 +1,13 @@
 #include "vhwd/net/overlapped.h"
 #include "vhwd/memory/mempool.h"
+#include "vhwd/basic/stringbuffer.h"
 
 
 VHWD_ENTER
 
 MyOverLapped::MyOverLapped(int t):type(t)
 {
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	memset(&olap,0,sizeof(olap));
 #endif
 	dbuf[0].buf=NULL;
@@ -133,7 +134,7 @@ bool MyOverLappedRb::init_recv(RingBufferBase& buff_recv)
 
 MyOverLappedEx::MyOverLappedEx()
 {
-	buffer=(char*)MemPoolPaging::current().allocate(VHWD_MAX_PACKET_SIZE);
+	buffer=(char*)MemPoolPaging::current().allocate(IPacket::MAX_PACKET_SIZE);
 
 	dbuf[0].buf=buffer;
 	dbuf[0].len=0;
@@ -152,6 +153,36 @@ void PerIO_socket::swap(PerIO_socket& sk)
 	sock.swap(sk.sock);
 	peer.swap(sk.peer);
 	addr.swap(sk.addr);
+}
+
+
+
+bool IPacket::update()
+{
+	stamp=Clock::now();
+	if(size>MAX_PACKET_SIZE||size<MIN_PACKET_SIZE)
+	{
+		return false;
+	}
+	kcrc=crc32(((char*)this)+4,size-4);
+	return true;
+}
+
+
+bool IPacket::check()
+{
+	if(size>MAX_PACKET_SIZE||size<MIN_PACKET_SIZE)
+	{
+		return false;
+	}
+	uint32_t n=crc32(((char*)this)+4,size-4);
+	if(n!=kcrc)
+	{
+		return false;
+	}
+
+	return true;
+	
 }
 
 VHWD_LEAVE

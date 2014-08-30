@@ -11,7 +11,7 @@
 #include "vhwd/config.h"
 #include "vhwd/basic/atomic.h"
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 #include "windows.h"
 #endif
 
@@ -20,7 +20,7 @@
 VHWD_ENTER
 
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 class KO_Policy_handle
 {
 public:
@@ -186,7 +186,7 @@ public:
 		return acc;
 	}
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	union LargeInteger
 	{
 		DWORD64 dval;

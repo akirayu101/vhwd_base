@@ -13,7 +13,7 @@
 #include "vhwd/basic/stringbuffer.h"
 //#include <locale>
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 #include "windows.h"
 #else
 #include <iconv.h>
@@ -111,7 +111,7 @@ public:
 	template<typename WC>
 	static bool unicode_to_ansi(StringBuffer<char>& aa_,const WC* pw_,size_t ln_)
 	{
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 		return unicode_to_gbk(aa_,pw_,ln_);
 #else
 		return unicode_to_utf8(aa_,pw_,ln_);
@@ -121,7 +121,7 @@ public:
 	template<typename WC>
 	static bool ansi_to_unicode(StringBuffer<WC>& aw_,const char* pa_,size_t ln_)
 	{
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 		return gbk_to_unicode(aw_,pa_,ln_);
 #else
 		return utf8_to_unicode(aw_,pa_,ln_);

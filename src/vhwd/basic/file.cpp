@@ -1,7 +1,7 @@
 #include "vhwd/basic/file.h"
 #include <cstdio>
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 #include <windows.h>
 #else
 #include <sys/mman.h>
@@ -16,7 +16,7 @@
 VHWD_ENTER
 
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 
 String fn_encode(const String& oldname_)
 {

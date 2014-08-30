@@ -3,7 +3,7 @@
 #define __H_VHWD_COLLECTION_INDEXER_BASE__
 
 #include "vhwd/collection/detail/kv_trait.h"
-#include "vhwd/collection/array.h"
+#include "vhwd/collection/arr_1t.h"
 
 #include "math.h"
 

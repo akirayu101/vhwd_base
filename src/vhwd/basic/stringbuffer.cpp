@@ -5,10 +5,19 @@
 
 VHWD_ENTER
 
+
+
 template<typename T>
 StringBuffer<T>::StringBuffer(const T* p1)
 {
 	assign(p1,std::char_traits<T>::length(p1));
+}
+
+template<typename T>
+StringBuffer<T>& StringBuffer<T>::operator=(const T* p1)
+{
+	assign(p1,std::char_traits<T>::length(p1));
+	return *this;
 }
 
 template<typename T,unsigned N>
@@ -122,7 +131,7 @@ bool StringBuffer<T>::save(const String& file,int type)
 	case FILE_TEXT:
 	case FILE_TEXT_UTF8:
 	{
-#ifndef _WIN32
+#ifndef VHWD_WINDOWS
 		if(sizeof(T)==1)
 		{
 			ofs.Write((char*)data(),size());
@@ -425,7 +434,7 @@ T* StringBuffer<T>::c_str()
 		this->reserve(1);
 	}
 
-	m_ptr[size()]=T();
+	*m_end=T();
 	return m_ptr;
 }
 
@@ -439,10 +448,74 @@ const T* StringBuffer<T>::c_str() const
 		return (const T*)const_empty_buffer;
 	}
 
-	((T*)m_ptr)[size()]=T();
+	*(T*)m_end=T();
 	return m_ptr;
 }
 
+
+template<typename T>
+StringBuffer<T>& StringBuffer<T>::operator<<(char v)
+{
+	(*this)+=String::Format("%c",v);
+	return (*this);
+}
+template<typename T>
+StringBuffer<T>& StringBuffer<T>::operator<<(int32_t v)
+{
+	(*this)+=String::Format("%d",v);
+	return (*this);
+}
+template<typename T>
+StringBuffer<T>& StringBuffer<T>::operator<<(int64_t v)
+{
+	(*this)+=String::Format("%lld",v);
+	return (*this);
+}
+template<typename T>
+StringBuffer<T>& StringBuffer<T>::operator<<(uint32_t v)
+{
+	(*this)+=String::Format("%u",v);
+	return (*this);
+}
+template<typename T>
+StringBuffer<T>& StringBuffer<T>::operator<<(uint64_t v)
+{
+	(*this)+=String::Format("%llu",v);
+	return (*this);
+}
+template<typename T>
+StringBuffer<T>& StringBuffer<T>::operator<<(float v)
+{
+	(*this)+=String::Format("%f",v);
+	return (*this);
+}
+template<typename T>
+StringBuffer<T>& StringBuffer<T>::operator<<(double v)
+{
+	(*this)+=String::Format("%g",v);
+	return (*this);
+}
+
+template<typename T>
+StringBuffer<T>& StringBuffer<T>::operator<<(const String& v)
+{
+	(*this)+=v;
+	return *this;
+}
+
+template<typename T>
+StringBuffer<T>& StringBuffer<T>::operator<<(const T* p)
+{
+	append(p,std::char_traits<T>::length(p));
+	return (*this);
+}
+
+template<typename T>
+StringBuffer<T>& StringBuffer<T>::operator<<(const StringBuffer& v)
+{
+	(*this)+=v;
+	return (*this);
+}
 
 
 template class StringBuffer<char>;

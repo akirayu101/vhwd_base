@@ -23,6 +23,25 @@
 
 //#define VHWD_NO64BIT_ATOMIC 1
 
+#if defined(_WIN64)
+	#define VHWD_WIN64
+	#define VHWD_X64
+	#define VHWD_WINDOWS
+#elif defined(_WIN32)
+	#define VHWD_WIN32
+	#define VHWD_X86
+	#define VHWD_WINDOWS
+#else
+	#ifdef __LP64__
+		#define VHWD_X64
+	#else
+		#define VHWD_X86
+	#endif
+	#define VHWD_LINUX
+#endif
+
+
+
 
 #define MACRO2STR(x) MACRO2STR_ESC(x)
 #define MACRO2STR_ESC(x) #x
@@ -203,142 +222,6 @@ class VHWD_DLLIMPEXP String;
 class VHWD_DLLIMPEXP TimeSpan;
 class VHWD_DLLIMPEXP TimePoint;
 
-
-template<typename T>
-class hash_t;
-
-
-template<typename T,int N=0>
-class hash_impl
-{
-public:
-	static const int count=N;
-
-	typedef T type1;
-	typedef uintptr_t type2;
-	static inline uint32_t hash(const void* p)
-	{
-		const type1 *pdata  = (const type1*)p;
-		type2 seed1 = 0x7FED7FED;
-		type2 seed2 = 0xEEEEEEEE;
-		type2 seed3 = 0x3123EEEE;
-		for(int i=0; i<N; i++)
-		{
-			type2 temp0 = (type2)*pdata++;
-			seed1 = (temp0 * seed3) ^ (seed1 + seed2);
-			seed2 = (temp0 + seed1) + seed2 + (seed2 << 5) + 3;
-		}
-		return (uint32_t)seed1;
-	}
-
-	static inline uint32_t hash(const void* p,int n)
-	{
-		const type1 *pdata  = (const type1*)p;
-		type2 seed1 = 0x7FED7FED;
-		type2 seed2 = 0xEEEEEEEE;
-		type2 seed3 = 0x3123EEEE;
-		for(int i=0; i<n; i++)
-		{
-			type2 temp0 = (type2)*pdata++;
-			seed1 = (temp0 * seed3) ^ (seed1 + seed2);
-			seed2 = (temp0 + seed1) + seed2 + (seed2 << 5) + 3;
-		}
-		return (uint32_t)seed1;
-	}
-
-};
-
-template<int N>
-class hash_raw;
-
-template<> class hash_raw<1> : public hash_impl<uint8_t>{};
-template<> class hash_raw<2> : public hash_impl<uint16_t>{};
-template<> class hash_raw<4> : public hash_impl<uint32_t>{};
-template<> class hash_raw<8> : public hash_impl<uint64_t>{};
-
-template<int N,int D> class hash_base : public hash_impl<uint8_t,N>{};
-template<int N> class hash_base<N,0> : public hash_impl<uint64_t,N/8>{};
-template<int N> class hash_base<N,2> : public hash_impl<uint16_t,N/2>{};
-template<int N> class hash_base<N,4> : public hash_impl<uint32_t,N/4>{};
-template<int N> class hash_base<N,6> : public hash_impl<uint16_t,N/2>{};
-
-
-template<typename T>
-class hash_pod : public hash_base<sizeof(T),sizeof(T)%8>
-{
-public:
-	typedef hash_base<sizeof(T),sizeof(T)%8> basetype;
-	uint32_t operator()(const T& val)
-	{
-		return basetype::hash(&val);
-	}
-};
-
-template<typename T>
-class hash_origin
-{
-public:
-	uint32_t operator()(const T val)
-	{
-		return (T)(val);
-	}
-};
-
-template<> class hash_t<bool> : public hash_origin<bool> {};
-template<> class hash_t<int8_t> : public hash_origin<int8_t> {};
-template<> class hash_t<uint8_t> : public hash_origin<uint8_t> {};
-
-template<> class hash_t<int16_t> : public hash_pod<int16_t> {};
-template<> class hash_t<uint16_t> : public hash_pod<uint16_t> {};
-template<> class hash_t<int32_t> : public hash_pod<int32_t> {};
-template<> class hash_t<uint32_t> : public hash_pod<uint32_t> {};
-template<> class hash_t<float32_t> : public hash_pod<float32_t> {};
-template<> class hash_t<wchar_t> : public hash_pod<wchar_t> {};
-
-template<> class hash_t<int64_t> : public hash_pod<int64_t> {};
-template<> class hash_t<uint64_t> : public hash_pod<uint64_t> {};
-template<> class hash_t<float64_t> : public hash_pod<float64_t> {};
-template<> class hash_t<void*> : public hash_pod<void*> {};
-
-template<typename T> class hash_t<const T> : public hash_t<T>{};
-
-
-template<typename T>
-class hash_array
-{
-public:
-
-	static uint32_t hash(const T* p,size_t n)
-	{
-		if(tl::is_pod<T>::value)
-		{
-			return hash_pod<T>::hash(p,n*hash_pod<T>::count);
-		}
-		else
-		{
-			hash_t<T> h;uint32_t v=0;
-			for(size_t i=0;i<n;i++)
-			{
-				v^=h(p[i]);
-			}
-			return v;
-		}
-	}
-
-	template<typename IT>
-	static uint32_t hash(IT v1,IT v2)
-	{
-		hash_t<T> h;uint32_t v=0;
-		for(IT it=v1;it!=v2;++it)
-		{
-			v^=h(*it);
-		}
-		return v;
-	}
-
-};
-
-
 void VHWD_DLLIMPEXP OnAssertFailure(const char* what,const char* file,long line);
 const String& VHWD_DLLIMPEXP Translate(const String& msg);
 
@@ -357,7 +240,8 @@ enum
 	LOGLEVEL_MAX,
 };
 
-
+template<typename T>
+class hash_t;
 
 VHWD_LEAVE
 

@@ -10,8 +10,8 @@
 
 #include <complex>
 
-#include "vhwd/collection/array.h"
-#include "vhwd/collection/array_xt.h"
+#include "vhwd/collection/arr_1t.h"
+#include "vhwd/collection/arr_xt.h"
 #include "vhwd/basic/atomic.h"
 #include "vhwd/basic/system.h"
 #include "vhwd/basic/stringbuffer.h"

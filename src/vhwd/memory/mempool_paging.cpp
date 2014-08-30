@@ -5,7 +5,7 @@
 #include "vhwd/basic/system.h"
 
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 #include <windows.h>
 #else
 #include <sys/mman.h>
@@ -433,7 +433,7 @@ void mp_init()
 		LockGuard<AtomicSpin> lock1(g_myalloc_spin);
 		if(g_myalloc_impl) return;
 
-#if defined(_WIN32) && defined(_DEBUG)
+#if defined(VHWD_WINDOWS) && defined(_DEBUG)
 		_CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG)|_CRTDBG_LEAK_CHECK_DF);
 #endif
 		g_myalloc_impl=(MpAllocGlobal*)page_alloc(sizeof(MpAllocGlobal));

@@ -2,7 +2,7 @@
 #include "vhwd/basic/system.h"
 #include "vhwd/basic/file.h"
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 #include <windows.h>
 #else
 #include <sys/mman.h>
@@ -17,7 +17,7 @@
 
 VHWD_ENTER
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 class ShareMem_detail : public SharedMem
 {
 public:

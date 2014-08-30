@@ -5,8 +5,8 @@
 // that can be found in the License file.
 // Author: Wenda Han.
 
-#ifndef __H_VHWD_COLLECTION_ARRAY__
-#define __H_VHWD_COLLECTION_ARRAY__
+#ifndef __H_VHWD_COLLECTION_ARR_1t__
+#define __H_VHWD_COLLECTION_ARR_1t__
 
 
 #include "vhwd/collection/detail/collection_base.h"
@@ -116,12 +116,14 @@ public:
 	{
 		append(&val_,1);
 	}
+
 	void pop_back();
 
 	iterator begin()
 	{
 		return m_ptr;
 	}
+
 	iterator end()
 	{
 		return m_ptr+extra().size;
@@ -131,6 +133,7 @@ public:
 	{
 		return m_ptr;
 	}
+
 	const_iterator end() const
 	{
 		return m_ptr+extra().size;

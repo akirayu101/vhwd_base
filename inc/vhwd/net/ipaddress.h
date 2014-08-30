@@ -9,7 +9,7 @@
 #pragma comment(lib, "Ws2_32.lib")
 #endif
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 #include <winsock2.h>
 #include <mswsock.h>
 #else

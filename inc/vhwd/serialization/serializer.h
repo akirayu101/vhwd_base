@@ -13,7 +13,7 @@
 #include "vhwd/basic/bitflags.h"
 #include "vhwd/basic/exception.h"
 #include "vhwd/collection/indexer_set.h"
-#include "vhwd/collection/array.h"
+#include "vhwd/collection/arr_1t.h"
 #include "vhwd/collection/bst_set.h"
 #include "vhwd/collection/bst_map.h"
 

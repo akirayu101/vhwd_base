@@ -11,6 +11,7 @@
 
 
 #include "vhwd/config.h"
+#include "vhwd/basic/hashing.h"
 #include "vhwd/basic/language.h"
 #include "vhwd/basic/system.h"
 #include "vhwd/basic/string_detail.h"
@@ -214,31 +215,22 @@ STRING_REL_OP2(<=)
 STRING_REL_OP2(<)
 STRING_REL_OP2(>)
 
+template<> class hash_t<char*>
+{
+public:
+	inline uint32_t operator()(const char* v)
+	{
+		return hash_raw<1>::hash_string(v);
+	}
+};
+
 
 template<> class hash_t<String>
 {
 public:
 	inline uint32_t operator()(const String& v)
 	{
-		return hash_raw<1>::hash(v.c_str(),v.size());
-	}
-};
-
-template<typename T> class hash_t<StringBuffer<T> >
-{
-public:
-	inline uint32_t operator()(const String& v)
-	{
-		return hash_raw<1>::hash(v.c_str(),sizeof(T)*v.size());
-	}
-};
-
-template<> class hash_t<char*>
-{
-public:
-	inline uint32_t operator()(const char* v)
-	{
-		return hash_raw<1>::hash(v,::strlen(v));
+		return hash_raw<1>::hash_string(v.c_str());
 	}
 };
 

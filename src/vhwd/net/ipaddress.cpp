@@ -5,7 +5,7 @@
 #include "vhwd/basic/system.h"
 
 
-#ifndef _WIN32
+#ifndef VHWD_WINDOWS
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -137,7 +137,7 @@ void IPAddress::service(const String& ip,int port)
 	}
 	else
 	{
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 		String pt=String::Format("%d",port);
 		struct addrinfo *result = NULL;
 		struct addrinfo hints;

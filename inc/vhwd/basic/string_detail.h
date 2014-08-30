@@ -16,6 +16,9 @@ VHWD_ENTER
 
 class VHWD_DLLIMPEXP String;
 
+template<typename T>
+class VHWD_DLLIMPEXP StringBuffer;
+
 class StringParamCast
 {
 public:
@@ -33,8 +36,10 @@ public:
 	{
 		return v.c_str();
 	}
+
 	static const char* g(const String& v);
 
+	static const char* g(const StringBuffer<char>& v);
 };
 
 

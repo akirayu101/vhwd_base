@@ -1,4 +1,4 @@
-#ifndef _WIN32
+#ifndef VHWD_WINDOWS
 
 #include <sys/socket.h>
 #include <netinet/in.h>

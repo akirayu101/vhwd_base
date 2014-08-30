@@ -12,11 +12,10 @@
 #include "vhwd/collection/ring_buffer.h"
 #include "vhwd/collection/lockfree_queue.h"
 
-#define VHWD_MAX_PACKET_SIZE 4096
 
 VHWD_ENTER
 
-#ifndef _WIN32
+#ifndef VHWD_WINDOWS
 class WSABUF
 {
 public:
@@ -55,7 +54,7 @@ public:
 
 	MyOverLapped(int t=ACTION_NOOP);
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	OVERLAPPED olap;
 	DWORD size;
 #else
@@ -101,14 +100,24 @@ class VHWD_DLLIMPEXP IPacket
 {
 public:
 
+	static const size_t MIN_PACKET_SIZE=8;
+	static const size_t MAX_PACKET_SIZE=1024*4;
+
+	uint32_t kcrc;
 	uint16_t size;
 	uint16_t type;
-	uint32_t kcrc;
+
 	TimePoint stamp;
 	uint32_t tag1;
 	uint32_t tag2;
 	uint32_t arg1;
 	uint32_t arg2;
+
+	// check packet size and write stamp and crc32
+	bool update();
+
+	// check packet size and crc32
+	bool check();
 
 	IPacket()
 	{
@@ -122,7 +131,7 @@ public:
 class VHWD_DLLIMPEXP IPacketEx : public IPacket
 {
 public:
-	static const int extra_size=VHWD_MAX_PACKET_SIZE-sizeof(IPacket);
+	static const int extra_size=MAX_PACKET_SIZE-sizeof(IPacket);
 	char data[extra_size];
 };
 

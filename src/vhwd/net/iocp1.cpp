@@ -6,7 +6,7 @@
 #include "vhwd/threading/thread_mutex.h"
 #include "vhwd/basic/pointer.h"
 
-#ifndef _WIN32
+#ifndef VHWD_WINDOWS
 #include <sys/epoll.h>
 #include <cerrno>
 #endif
@@ -44,7 +44,7 @@ int IOCPPool::Register(Session* pkey)
 	pkey->hiocp.reset(this);
 	pkey->tpLast=accounter.tTimeStamp;
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	CreateIoCompletionPort(*(HANDLE*)&pkey->sk_local.sock, hIOCPhandler, (ULONG_PTR)pkey, 0);
 	pkey->state.store(Session::STATE_OK);
 #else
@@ -109,7 +109,7 @@ IOCPPool::IOCPPool(const String& name_,int maxconn_):m_sName(name_)
 
 	m_nCanClose.set();
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 	HANDLE h1 = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
 	if(h1!=NULL)
 	{
@@ -288,7 +288,7 @@ void IOCPPool::svc_del(int n)
 	wassert(pkey!=NULL);
 	wassert(pkey->state.get()==Session::STATE_DISCONNECT);
 
-#ifndef _WIN32
+#ifndef VHWD_WINDOWS
 
 	struct epoll_event ev;
 	epoll_ctl(hIOCPhandler,EPOLL_CTL_DEL,pkey->sk_local.sock,&ev);
@@ -308,7 +308,7 @@ void IOCPPool::svc_del(int n)
 
 }
 
-#ifdef _WIN32
+#ifdef VHWD_WINDOWS
 //
 //void IOCPPool::svc_add(int n)
 //{

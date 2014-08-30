@@ -3,7 +3,7 @@
 #include "vhwd/basic/pointer.h"
 #include <cstdarg>
 
-#ifndef _WIN32
+#ifndef VHWD_WINDOWS
 #include "errno.h"
 #endif
 

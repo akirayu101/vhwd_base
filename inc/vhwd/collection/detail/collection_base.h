@@ -10,6 +10,7 @@
 
 
 #include "vhwd/config.h"
+#include "vhwd/basic/hashing.h"
 #include "vhwd/memory.h"
 #include <memory>
 
@@ -39,6 +40,16 @@ public:
 		while(k<sz) k=k<<1;
 		return k;
 	}
+
+	static size_t gen(size_t sz)
+	{
+		size_t sz2=sz>4?(sz&~3)*2:4;
+		if(sz2<sz)
+		{
+			Exception::XBadAlloc();
+		}
+		return sz2;
+	}
 };
 
 
@@ -47,6 +58,9 @@ class arr_xt;
 
 template<typename T,typename A=def_allocator >
 class arr_1t;
+
+template<typename T,int N=0>
+class pod_1t;
 
 class container_base
 {
@@ -683,14 +697,10 @@ class arr_base1 : public containerS< typename AllocatorE<A,E>::template rebind<T
 		}
 	}
 
-	void _xgen(size_type count_)
+	void _xgen(size_type sz_)
 	{
-		if(count_>7)
-		{
-			count_=(count_+(count_>>2)+7)&~7;
-		}
-
-		_xset(count_);
+		size_t sz2=sz_helper::gen(sz_);
+		_xset(sz2);
 	}
 
 	void _xset(size_type count_)
@@ -745,7 +755,7 @@ class arr_base2 : public containerS< typename A::template rebind<T>::other >
 {
 	arr_base2(const arr_base2&);
 	const arr_base2& operator=(const arr_base2&);
-	public:
+public:
 
 	typedef containerS< typename A::template rebind<T>::other > basetype;
 	typedef typename basetype::iterator iterator;
@@ -762,31 +772,6 @@ class arr_base2 : public containerS< typename A::template rebind<T>::other >
 		if(m_ptr!=NULL)
 		{
 			this->get_allocator().deallocate(m_ptr,extra().capacity);
-		}
-	}
-
-	void _xgen(size_type count_)
-	{
-		if(count_>7)
-		{
-			count_=(count_+(count_>>2)+7)&~7;
-		}
-
-		_xset(count_);
-	}
-
-	void _xset(size_type count_)
-	{
-		if(m_ptr!=NULL)
-		{
-			this->get_allocator().deallocate(m_ptr,extra().capacity);
-			m_ptr=NULL;
-		}
-
-		if(count_>0)
-		{
-			m_ptr=this->get_allocator().allocate(count_);
-			extra().capacity=count_;
 		}
 	}
 
@@ -818,6 +803,27 @@ class arr_base2 : public containerS< typename A::template rebind<T>::other >
 	}
 
 protected:
+	void _xgen(size_type sz_)
+	{
+		size_t sz2=sz_helper::gen(sz_);
+		_xset(sz2);
+	}
+
+	void _xset(size_type sz_)
+	{
+		if(m_ptr!=NULL)
+		{
+			this->get_allocator().deallocate(m_ptr,extra().capacity);
+			m_ptr=NULL;
+		}
+
+		if(sz_>0)
+		{
+			m_ptr=this->get_allocator().allocate(sz_);
+			extra().capacity=sz_;
+		}
+	}
+
 	T* m_ptr;
 	E m_extra;
 
