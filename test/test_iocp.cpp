@@ -16,20 +16,42 @@ public:
 
 	SessionTCPEcho() {}
 
-	virtual void OnSendCompleted(MyOlapPtr& q)
-	{
-		AsyncRecv(q);
-	}
+	Q2Packet<IPacketEx> q2packet;
 
-	virtual void OnRecvCompleted(MyOlapPtr& q)
+
+	virtual void OnRecvCompleted(TempOlapPtr& q)
 	{
 		AsyncSend(q);
+		AsyncRecv();
+		//if(!q2packet.update(q))
+		//{
+		//	Disconnect();
+		//	return;
+		//}
+
+		//size_t n=q2packet.size();
+		//for(size_t i=0; i<n; i++)
+		//{
+		//	OnPacket(q2packet[i]);
+		//}
+
+		//AsyncRecv(q);
+	}
+
+	virtual void OnPacket(IPacketEx& pk)
+	{
+		//wassert(pk.check());
+		//pk.update();
+
+		AsyncSend(pk);
 	}
 
 	void OnConnected()
 	{
 		AsyncRecv();
 	}
+
+
 };
 
 class SessionServerEcho : public SessionServer
@@ -52,32 +74,44 @@ class SessionClientEcho : public SessionClient
 {
 public:
 
-	Q2Packet q2packet;
+	Q2Packet<IPacketEx> q2packet;
 	IPacketEx packet;
 
 	Logger logger;
 
+	uint32_t seq_send;
+	uint32_t seq_recv;
+
 	void StartSend()
 	{
-		packet.size=1024;
-		packet.update();
-
-		AsyncSend(packet);
+		SendPacket();
 		AsyncRecv();
+	}
+
+	void SendPacket()
+	{
+		packet.size=1024;
+		packet.tag1=seq_send;
+		//packet.update();
+
+		seq_send++;
+		AsyncSend(packet);
 	}
 
 	void OnConnected()
 	{
 		q2packet.reset();
+		seq_send=0;
+		seq_recv=0;
 	}
 
 
-	virtual void OnSendCompleted(MyOlapPtr& q)
-	{
-		lkfq_free.putq(q);
-	}
+	//virtual void OnSendCompleted(TempOlapPtr& q)
+	//{
+	//	lkfq_free.putq(q);
+	//}
 
-	virtual void OnRecvCompleted(MyOlapPtr& q)
+	virtual void OnRecvCompleted(TempOlapPtr& q)
 	{
 
 		if(!q2packet.update(q))
@@ -99,14 +133,13 @@ public:
 
 	void OnPacket(IPacketEx& pk)
 	{
-		//pk.check();
-		//pk.update();
-		AsyncSend(pk);
+		wassert(pk.tag1==seq_recv);
+
+		seq_recv++;
+		SendPacket();
 	}
 
 };
-
-
 
 
 class IocpCommandStartSend : public IocpCommand
@@ -114,7 +147,6 @@ class IocpCommandStartSend : public IocpCommand
 public:
 	void Handle(SessionArray& akey)
 	{
-
 		for(size_t i=0; i<akey.size(); i++)
 		{
 			SessionClientEcho* pEcho=dynamic_cast<SessionClientEcho*>(akey[i].get());
@@ -196,7 +228,7 @@ TEST_DEFINE(TEST_IOCP_TCP)
 
 	{
 		hiocp_server.DisconnectAll();
-		hiocp_client.DisconnectAll();
+		//hiocp_client.DisconnectAll();
 	}
 
 	logger.LogMessage("wait_session_exit");
@@ -216,12 +248,12 @@ public:
 
 	SessionUDPEchoClt() {}
 
-	virtual void OnSendCompleted(MyOlapPtr& q)
+	virtual void OnSendCompleted(TempOlapPtr& q)
 	{
 		AsyncRecv(q);
 	}
 
-	virtual void OnRecvCompleted(MyOlapPtr& q)
+	virtual void OnRecvCompleted(TempOlapPtr& q)
 	{
 		AsyncSend(q);
 	}
@@ -240,12 +272,12 @@ public:
 
 	SessionUDPEchoSvr() {}
 
-	virtual void OnSendCompleted(MyOlapPtr& q)
+	virtual void OnSendCompleted(TempOlapPtr& q)
 	{
 		AsyncRecv(q);
 	}
 
-	virtual void OnRecvCompleted(MyOlapPtr& q)
+	virtual void OnRecvCompleted(TempOlapPtr& q)
 	{
 		AsyncSend(q);
 	}

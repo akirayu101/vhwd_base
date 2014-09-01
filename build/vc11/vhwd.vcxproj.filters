@@ -677,8 +677,11 @@
     <ClInclude Include="..\..\inc\vhwd\collection\arr_xt.h">
       <Filter>inc\vhwd\collection</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\inc\vhwd\collection\pod_1t.h">
-      <Filter>inc\vhwd\collection</Filter>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\arr_container.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\net\q2packet.h">
+      <Filter>inc\vhwd\net</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

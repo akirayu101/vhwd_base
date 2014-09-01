@@ -48,17 +48,17 @@
 1409321274 /mnt/GitHub/vhwd_base/inc/vhwd/basic/string_detail.h
 	<string>
 
-1409323577 /mnt/GitHub/vhwd_base/inc/vhwd/basic/stringbuffer.h
+1409551169 /mnt/GitHub/vhwd_base/inc/vhwd/basic/stringbuffer.h
 	"vhwd/config.h"
 	"vhwd/basic/hashing.h"
 	"vhwd/basic/string_detail.h"
-	"vhwd/collection/pod_1t.h"
+	"vhwd/collection/arr_1t.h"
 	"vhwd/memory.h"
 
 1409323615 /mnt/GitHub/vhwd_base/inc/vhwd/collection/pod_1t.h
 	"vhwd/collection/detail/collection_base.h"
 
-1409323664 /mnt/GitHub/vhwd_base/inc/vhwd/collection/detail/collection_base.h
+1409555428 /mnt/GitHub/vhwd_base/inc/vhwd/collection/detail/collection_base.h
 	"vhwd/config.h"
 	"vhwd/basic/hashing.h"
 	"vhwd/memory.h"
@@ -68,7 +68,7 @@
 	"vhwd/memory/allocator.h"
 	"vhwd/memory/mempool.h"
 
-1408685199 /mnt/GitHub/vhwd_base/inc/vhwd/memory/allocator.h
+1409540670 /mnt/GitHub/vhwd_base/inc/vhwd/memory/allocator.h
 	"vhwd/memory/allocator_malloc.h"
 	"vhwd/memory/allocator_mempool.h"
 
@@ -107,8 +107,9 @@
 	"vhwd/config.h"
 	<utility>
 
-1409313352 /mnt/GitHub/vhwd_base/inc/vhwd/collection/arr_1t.h
+1409552101 /mnt/GitHub/vhwd_base/inc/vhwd/collection/arr_1t.h
 	"vhwd/collection/detail/collection_base.h"
+	"vhwd/collection/detail/arr_container.h"
 
 1409313337 /mnt/GitHub/vhwd_base/inc/vhwd/collection/linear_buffer.h
 	<complex>
@@ -119,8 +120,8 @@
 	"vhwd/basic/stringbuffer.h"
 	"vhwd/logging/logger.h"
 
-1409313587 /mnt/GitHub/vhwd_base/inc/vhwd/collection/arr_xt.h
-	"vhwd/collection/detail/collection_base.h"
+1409555428 /mnt/GitHub/vhwd_base/inc/vhwd/collection/arr_xt.h
+	"vhwd/collection/arr_1t.h"
 
 1409312865 /mnt/GitHub/vhwd_base/inc/vhwd/basic/atomic.h
 	"vhwd/config.h"
@@ -1050,4 +1051,7 @@
 	"vhwd/basic/console.h"
 	"vhwd/logging/logger.h"
 	<fstream>
+
+1409560624 /mnt/GitHub/vhwd_base/inc/vhwd/collection/detail/arr_container.h
+	"vhwd/collection/detail/collection_base.h"
 

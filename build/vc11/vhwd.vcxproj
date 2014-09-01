@@ -474,6 +474,7 @@
     <ClInclude Include="..\..\inc\vhwd\collection\arr_1t.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\bst_map.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\bst_set.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\arr_container.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_container.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_tree.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_tree_iterator.h" />
@@ -484,13 +485,13 @@
     <ClInclude Include="..\..\inc\vhwd\collection\detail\kv_trait.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\linear_buffer.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\lockfree_queue.h" />
-    <ClInclude Include="..\..\inc\vhwd\collection\pod_1t.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\ring_buffer.h" />
     <ClInclude Include="..\..\inc\vhwd\memory\allocator.h" />
     <ClInclude Include="..\..\inc\vhwd\memory\allocator_malloc.h" />
     <ClInclude Include="..\..\inc\vhwd\memory\allocator_mempool.h" />
     <ClInclude Include="..\..\inc\vhwd\net\iocp1.h" />
     <ClInclude Include="..\..\inc\vhwd\net\overlapped.h" />
+    <ClInclude Include="..\..\inc\vhwd\net\q2packet.h" />
     <ClInclude Include="..\..\inc\vhwd\scripting.h" />
     <ClInclude Include="..\..\inc\vhwd\scripting\codegen.h" />
     <ClInclude Include="..\..\inc\vhwd\scripting\codegen_generator.h" />

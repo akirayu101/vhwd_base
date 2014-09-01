@@ -53,14 +53,47 @@ public:
 };
 
 
-template<typename T,typename A=def_allocator >
-class arr_xt;
+
 
 template<typename T,typename A=def_allocator >
 class arr_1t;
 
-template<typename T,int N=0>
-class pod_1t;
+
+class arr_xt_dims
+{
+public:
+
+	static const size_t MAX_DIM=6;
+
+	arr_xt_dims()
+	{
+		reset();
+	}
+
+	void reset()
+	{
+		val[0]=0;
+		val[1]=val[2]=val[3]=val[4]=val[5]=1;
+	}
+
+	size_t& operator[](size_t n)
+	{
+		return val[n];
+	}
+
+	const size_t& operator[](size_t n) const
+	{
+		return val[n];
+	}
+
+private:
+	size_t val[MAX_DIM];
+
+};
+
+
+template<typename T,typename A=def_allocator >
+class arr_xt;
 
 class container_base
 {
@@ -184,14 +217,17 @@ public:
 	{
 		return impl.begin();
 	}
+
 	iterator end()
 	{
 		return impl.end();
 	}
+
 	reverse_iterator rbegin()
 	{
 		return impl.rbegin();
 	}
+
 	reverse_iterator rend()
 	{
 		return impl.rend();
@@ -201,14 +237,17 @@ public:
 	{
 		return impl.begin();
 	}
+
 	const_iterator end() const
 	{
 		return impl.end();
 	}
+
 	const_reverse_iterator rbegin() const
 	{
 		return impl.rbegin();
 	}
+
 	const_reverse_iterator rend() const
 	{
 		return impl.rend();
@@ -218,14 +257,17 @@ public:
 	{
 		return impl.begin();
 	}
+
 	const_iterator cend() const
 	{
 		return impl.end();
 	}
+
 	const_reverse_iterator crbegin() const
 	{
 		return impl.rbegin();
 	}
+
 	const_reverse_iterator crend() const
 	{
 		return impl.rend();
@@ -235,14 +277,17 @@ public:
 	{
 		return impl.empty();
 	}
+
 	size_type size() const
 	{
 		return impl.size();
 	}
+
 	size_type max_size() const
 	{
 		return impl.get_allocator().max_size();
 	}
+
 	void clear()
 	{
 		impl.clear();
@@ -642,192 +687,7 @@ public:
 };
 
 
-struct extra_vec_1t
-{
-	typedef size_t size_type;
-	size_type capacity;
-	size_type size;
-	extra_vec_1t()
-	{
-		capacity=0;
-		size=0;
-	}
-};
 
-
-class extra_arr_xt
-{
-public:
-	static const size_t MAX_DIM=6;
-	typedef size_t size_type;
-	size_type capacity;
-	size_type size;
-	size_type dims[6];
-	extra_arr_xt()
-	{
-		capacity=size=0;
-		dims[0]=0;
-		dims[1]=dims[2]=dims[3]=dims[4]=dims[5]=1;
-	}
-};
-
-template<typename T,typename A,typename E>
-class arr_base1 : public containerS< typename AllocatorE<A,E>::template rebind<T>::other >
-{
-	arr_base1(const arr_base1&);
-	const arr_base1& operator=(const arr_base1&);
-	public:
-
-	typedef containerS< typename AllocatorE<A,E>::template rebind<T>::other > basetype;
-	typedef typename basetype::iterator iterator;
-	typedef typename basetype::const_iterator const_iterator;
-	typedef typename basetype::size_type size_type;
-	typedef typename basetype::allocator_type allocator_type;
-
-
-	arr_base1():m_ptr(NULL) {}
-	arr_base1(const A& al):basetype(allocator_type(al)),m_ptr(NULL) {}
-	arr_base1(const allocator_type& al):basetype(al),m_ptr(NULL) {}
-
-	~arr_base1()
-	{
-		if(m_ptr!=NULL)
-		{
-			this->get_allocator().deallocate(m_ptr,extra().capacity);
-		}
-	}
-
-	void _xgen(size_type sz_)
-	{
-		size_t sz2=sz_helper::gen(sz_);
-		_xset(sz2);
-	}
-
-	void _xset(size_type count_)
-	{
-		if(m_ptr!=NULL)
-		{
-			this->get_allocator().deallocate(m_ptr,extra().capacity);
-			m_ptr=NULL;
-		}
-
-		if(count_>0)
-		{
-			m_ptr=this->get_allocator().allocate(count_);
-			extra().capacity=count_;
-		}
-	}
-
-	E& extra()
-	{
-		return allocator_type::extra(m_ptr);
-	}
-
-	const E& extra() const
-	{
-		return allocator_type::extra(m_ptr);
-	}
-
-	void swap(arr_base1& o)
-	{
-		if(this==&o) return;
-		std::swap(m_ptr,o.m_ptr);
-	}
-
-	T& operator[](size_type n)
-	{
-		return m_ptr[n];
-	}
-
-	const T& operator[](size_type n) const
-	{
-		return m_ptr[n];
-	}
-
-protected:
-	T* m_ptr;
-
-};
-
-
-template<typename T,typename A,typename E>
-class arr_base2 : public containerS< typename A::template rebind<T>::other >
-{
-	arr_base2(const arr_base2&);
-	const arr_base2& operator=(const arr_base2&);
-public:
-
-	typedef containerS< typename A::template rebind<T>::other > basetype;
-	typedef typename basetype::iterator iterator;
-	typedef typename basetype::const_iterator const_iterator;
-	typedef typename basetype::size_type size_type;
-	typedef typename basetype::allocator_type allocator_type;
-
-
-	arr_base2():m_ptr(NULL) {}
-	arr_base2(const allocator_type& al):basetype(al),m_ptr(NULL) {}
-
-	~arr_base2()
-	{
-		if(m_ptr!=NULL)
-		{
-			this->get_allocator().deallocate(m_ptr,extra().capacity);
-		}
-	}
-
-	E& extra()
-	{
-		return m_extra;
-	}
-
-	const E& extra() const
-	{
-		return m_extra;
-	}
-
-	void swap(arr_base2& o)
-	{
-		if(this==&o) return;
-		std::swap(m_ptr,o.m_ptr);
-		std::swap(m_extra,o.m_extra);
-	}
-
-	T& operator[](size_type n)
-	{
-		return m_ptr[n];
-	}
-
-	const T& operator[](size_type n) const
-	{
-		return m_ptr[n];
-	}
-
-protected:
-	void _xgen(size_type sz_)
-	{
-		size_t sz2=sz_helper::gen(sz_);
-		_xset(sz2);
-	}
-
-	void _xset(size_type sz_)
-	{
-		if(m_ptr!=NULL)
-		{
-			this->get_allocator().deallocate(m_ptr,extra().capacity);
-			m_ptr=NULL;
-		}
-
-		if(sz_>0)
-		{
-			m_ptr=this->get_allocator().allocate(sz_);
-			extra().capacity=sz_;
-		}
-	}
-
-	T* m_ptr;
-	E m_extra;
-
-};
 VHWD_LEAVE
 
 

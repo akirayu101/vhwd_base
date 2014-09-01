@@ -429,13 +429,13 @@ bool StringBuffer<T>::load(const String& file,int type)
 template<typename T>
 T* StringBuffer<T>::c_str()
 {
-	if(!m_ptr)
+	if(this->empty())
 	{
 		this->reserve(1);
 	}
 
-	*m_end=T();
-	return m_ptr;
+	*this->end()=T();
+	return data();
 }
 
 
@@ -443,13 +443,13 @@ T* StringBuffer<T>::c_str()
 template<typename T>
 const T* StringBuffer<T>::c_str() const
 {
-	if(!m_ptr)
+	if(this->empty())
 	{
 		return (const T*)const_empty_buffer;
 	}
 
-	*(T*)m_end=T();
-	return m_ptr;
+	*(T*)&(*this->end())=T();
+	return data();
 }
 
 

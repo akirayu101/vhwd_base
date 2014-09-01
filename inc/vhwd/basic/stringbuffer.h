@@ -11,7 +11,7 @@
 #include "vhwd/config.h"
 #include "vhwd/basic/hashing.h"
 #include "vhwd/basic/string_detail.h"
-#include "vhwd/collection/pod_1t.h"
+#include "vhwd/collection/arr_1t.h"
 #include "vhwd/memory.h"
 
 VHWD_ENTER
@@ -31,10 +31,10 @@ enum
 
 
 template<typename T>
-class VHWD_DLLIMPEXP StringBuffer : public pod_1t<T,1>
+class VHWD_DLLIMPEXP StringBuffer : public arr_1t<T,AllocatorN<def_allocator,1> >
 {
 public:
-	typedef pod_1t<T,1> basetype;
+	typedef arr_1t<T,AllocatorN<def_allocator,1> > basetype;
 	typedef typename basetype::size_type size_type;
 
 	using basetype::assign;
@@ -108,8 +108,8 @@ public:
 
 protected:
 
-	using basetype::m_ptr;
-	using basetype::m_end;
+	//using basetype::m_ptr;
+	//using basetype::m_end;
 
 };
 

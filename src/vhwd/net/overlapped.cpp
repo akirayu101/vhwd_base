@@ -24,11 +24,11 @@ void MyOverLappedRb::done()
 	}
 }
 
-void MyOverLappedRb::done_send(RingBufferBase& buff_send)
+void MyOverLappedRb::done_send()
 {
 	if(size>=0)
 	{
-		buff_send.rd_flip(size);
+		buff.rd_flip(size);
 	}
 	else
 	{
@@ -38,12 +38,12 @@ void MyOverLappedRb::done_send(RingBufferBase& buff_send)
 	done();
 }
 
-void MyOverLappedRb::done_recv(RingBufferBase& buff_recv)
+void MyOverLappedRb::done_recv()
 {
 		
 	if(size>=0)
 	{
-		buff_recv.wr_flip(size);
+		buff.wr_flip(size);
 	}
 	else
 	{
@@ -53,7 +53,7 @@ void MyOverLappedRb::done_recv(RingBufferBase& buff_recv)
 	done();
 }
 
-bool MyOverLappedRb::init_send(RingBufferBase& buff_send)
+bool MyOverLappedRb::init_send()
 {
 	if(flag.exchange(1)!=0)
 	{
@@ -62,9 +62,9 @@ bool MyOverLappedRb::init_send(RingBufferBase& buff_send)
 
 	MyOverLapped& olap_send(*this);
 
-	int32_t mask=buff_send.pHeader->rb_mask;
-	int32_t rd=buff_send.pHeader->rd_pos;
-	int32_t wr=buff_send.pHeader->wr_pos;
+	int32_t mask=buff.pHeader->rb_mask;
+	int32_t rd=buff.pHeader->rd_pos;
+	int32_t wr=buff.pHeader->wr_pos;
 	int32_t sz=(wr-rd)&mask;
 
 	if(sz==0)
@@ -75,22 +75,24 @@ bool MyOverLappedRb::init_send(RingBufferBase& buff_send)
 
 	if(sz+rd>mask)
 	{
-		olap_send.dbuf[0].buf=buff_send.pBuffer+rd;
+		olap_send.dbuf[0].buf=buff.pBuffer+rd;
 		olap_send.dbuf[0].len=mask+1-rd;
-		olap_send.dbuf[1].buf=buff_send.pBuffer;
+		olap_send.dbuf[1].buf=buff.pBuffer;
 		olap_send.dbuf[1].len=sz+rd-mask-1;
 	}
 	else
 	{
-		olap_send.dbuf[0].buf=buff_send.pBuffer+rd;
+		olap_send.dbuf[0].buf=buff.pBuffer+rd;
 		olap_send.dbuf[0].len=sz;
 		olap_send.dbuf[1].buf=NULL;
 	}
 
+	size=sz;
+
 	return true;
 }
 
-bool MyOverLappedRb::init_recv(RingBufferBase& buff_recv)
+bool MyOverLappedRb::init_recv()
 {
 	if(flag.exchange(1)!=0)
 	{
@@ -99,9 +101,9 @@ bool MyOverLappedRb::init_recv(RingBufferBase& buff_recv)
 
 	MyOverLapped& olap_recv(*this);
 
-	int32_t mask=buff_recv.pHeader->rb_mask;
-	int32_t rd=buff_recv.pHeader->rd_pos;
-	int32_t wr=buff_recv.pHeader->wr_pos;
+	int32_t mask=buff.pHeader->rb_mask;
+	int32_t rd=buff.pHeader->rd_pos;
+	int32_t wr=buff.pHeader->wr_pos;
 	int32_t sz=(rd-wr-1)&mask;
 
 	if(sz==0)
@@ -117,24 +119,25 @@ bool MyOverLappedRb::init_recv(RingBufferBase& buff_recv)
 
 	if(sz+wr>mask)
 	{
-		olap_recv.dbuf[0].buf=buff_recv.pBuffer+wr;
+		olap_recv.dbuf[0].buf=buff.pBuffer+wr;
 		olap_recv.dbuf[0].len=mask+1-wr;
-		olap_recv.dbuf[1].buf=buff_recv.pBuffer;
+		olap_recv.dbuf[1].buf=buff.pBuffer;
 		olap_recv.dbuf[1].len=sz+wr-mask-1;
 	}
 	else
 	{
-		olap_recv.dbuf[0].buf=buff_recv.pBuffer+wr;
+		olap_recv.dbuf[0].buf=buff.pBuffer+wr;
 		olap_recv.dbuf[0].len=sz;
 		olap_recv.dbuf[1].buf=NULL;
 	}
 
+	size=sz;
 	return true;
 }
 
 MyOverLappedEx::MyOverLappedEx()
 {
-	buffer=(char*)MemPoolPaging::current().allocate(IPacket::MAX_PACKET_SIZE);
+	buffer=(char*)MemPoolCached::current().allocate(IPacket::MAX_PACKET_SIZE);
 
 	dbuf[0].buf=buffer;
 	dbuf[0].len=0;
@@ -144,7 +147,7 @@ MyOverLappedEx::MyOverLappedEx()
 
 MyOverLappedEx::~MyOverLappedEx()
 {
-	MemPoolPaging::current().deallocate(buffer);
+	MemPoolCached::current().deallocate(buffer);
 }
 
 
@@ -159,11 +162,12 @@ void PerIO_socket::swap(PerIO_socket& sk)
 
 bool IPacket::update()
 {
-	stamp=Clock::now();
 	if(size>MAX_PACKET_SIZE||size<MIN_PACKET_SIZE)
 	{
 		return false;
 	}
+	stamp=Clock::now();
+
 	kcrc=crc32(((char*)this)+4,size-4);
 	return true;
 }
@@ -184,5 +188,43 @@ bool IPacket::check()
 	return true;
 	
 }
+
+
+bool ISession::InitSend()
+{
+
+	if(state.get()!=STATE_OK)
+	{
+		return false;
+	}
+
+	if(olap_send.init_send())
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+}
+
+bool ISession::InitRecv()
+{
+	if(state.get()!=STATE_OK)
+	{
+		return false;
+	}
+
+	if(olap_recv.init_recv())
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 
 VHWD_LEAVE

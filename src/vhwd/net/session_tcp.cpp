@@ -35,7 +35,7 @@ bool SessionTCP::AsyncSend(const char* data,size_t size)
 	return AsyncSend(q);
 }
 
-bool SessionTCP::AsyncSend(MyOlapPtr& q)
+bool SessionTCP::AsyncSend(TempOlapPtr& q)
 {
 	if(!q)
 	{
@@ -51,7 +51,7 @@ bool SessionTCP::AsyncSend(MyOlapPtr& q)
 
 }
 
-bool SessionTCP::DoAsyncSend(MyOlapPtr& q)
+bool SessionTCP::DoAsyncSend(TempOlapPtr& q)
 {
 
 	if(!lkfq_send.putq(q))
@@ -69,7 +69,7 @@ bool SessionTCP::DoAsyncSend(MyOlapPtr& q)
 	}
 }
 
-bool SessionTCP::DoAsyncRecv(MyOlapPtr& q)
+bool SessionTCP::DoAsyncRecv(TempOlapPtr& q)
 {
 	if(!lkfq_recv.putq(q))
 	{
@@ -86,7 +86,7 @@ bool SessionTCP::DoAsyncRecv(MyOlapPtr& q)
 	}
 }
 
-bool SessionTCP::AsyncRecv(MyOlapPtr& q)
+bool SessionTCP::AsyncRecv(TempOlapPtr& q)
 {
 	if(!q)
 	{
@@ -111,8 +111,6 @@ bool SessionTCP::AsyncRecv()
 	}
 	return AsyncRecv(q);
 }
-
-
 
 
 bool SessionTCP::WaitForSend()
@@ -230,7 +228,6 @@ void SessionTCP::DoAsyncRecv()
 
 #endif
 }
-
 
 
 VHWD_LEAVE

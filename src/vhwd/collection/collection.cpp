@@ -187,13 +187,15 @@ RingBuffer::~RingBuffer()
 void RingBuffer::reset(int s)
 {
 	int k=sz_helper::n2p(s);
-	pBuffer=(char*)malloc(k);
-	if(!pBuffer)
+	char* p=(char*)tc_alloc(k);
+	if(!p)
 	{
 		Exception::XBadAlloc();
 	}
 
 	clear();
+
+	pBuffer=p;
 	_header.rb_mask=k-1;
 	_header.rd_pos=0;
 	_header.wr_pos=0;
@@ -204,7 +206,7 @@ void RingBuffer::clear()
 {
 	if(pBuffer)
 	{
-		::free(pBuffer);
+		tc_free(pBuffer);
 		pBuffer=NULL;
 	}
 }

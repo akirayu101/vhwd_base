@@ -140,7 +140,9 @@ public:
 
 	inline pointer allocate(size_type n)
 	{
-		return basetype::allocate(n+N);
+		size_t sz=n+N;
+		if(sz<n) Exception::XBadAlloc();
+		return basetype::allocate(sz);
 	}
 
 	inline void deallocate(pointer p, size_type n)

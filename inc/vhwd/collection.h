@@ -9,7 +9,6 @@
 #define __H_VHWD_COLLECTION__
 
 #include "vhwd/collection/arr_1t.h"
-#include "vhwd/collection/pod_1t.h"
 #include "vhwd/collection/arr_xt.h"
 #include "vhwd/collection/indexer_set.h"
 #include "vhwd/collection/indexer_map.h"

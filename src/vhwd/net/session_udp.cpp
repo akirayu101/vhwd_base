@@ -45,7 +45,7 @@ bool SessionUDP::AsyncSend(const char* data,size_t size,IPAddress& addr)
 	return AsyncSend(q);
 }
 
-bool SessionUDP::AsyncSend(MyOlapPtr& q)
+bool SessionUDP::AsyncSend(TempOlapPtr& q)
 {
 	if(!q)
 	{
@@ -61,7 +61,7 @@ bool SessionUDP::AsyncSend(MyOlapPtr& q)
 
 }
 
-bool SessionUDP::DoAsyncSend(MyOlapPtr& q)
+bool SessionUDP::DoAsyncSend(TempOlapPtr& q)
 {
 	if(!lkfq_send.putq(q))
 	{
@@ -78,7 +78,7 @@ bool SessionUDP::DoAsyncSend(MyOlapPtr& q)
 	}
 }
 
-bool SessionUDP::DoAsyncRecv(MyOlapPtr& q)
+bool SessionUDP::DoAsyncRecv(TempOlapPtr& q)
 {
 	if(!lkfq_recv.putq(q))
 	{
@@ -95,7 +95,7 @@ bool SessionUDP::DoAsyncRecv(MyOlapPtr& q)
 	}
 }
 
-bool SessionUDP::AsyncRecv(MyOlapPtr& q)
+bool SessionUDP::AsyncRecv(TempOlapPtr& q)
 {
 	if(!q)
 	{

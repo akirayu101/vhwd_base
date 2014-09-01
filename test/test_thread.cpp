@@ -154,8 +154,6 @@ public:
 				this_logger().LogMessage("consumer exit");
 				return;
 			}
-
-
 		}
 	}
 
@@ -176,10 +174,10 @@ TEST_DEFINE(TEST_Coroutine)
 	producer.Consumer=&consumer;
 
 	this_logger().LogMessage("spawn producer");
-	Coroutine::spawn(&producer);
+	TEST_ASSERT(Coroutine::spawn(&producer));
 
 	this_logger().LogMessage("spawn consumer");
-	Coroutine::spawn(&consumer);
+	TEST_ASSERT(Coroutine::spawn(&consumer));
 
 	TEST_ASSERT(producer.state()==Coroutine::STATE_PAUSED);
 	TEST_ASSERT(consumer.state()==Coroutine::STATE_PAUSED);

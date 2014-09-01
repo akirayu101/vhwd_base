@@ -10,15 +10,44 @@ TEST_DEFINE(TEST_arr_1t)
 	arr_1t<int> hh;
 	TEST_ASSERT(hh.empty());
 	TEST_ASSERT(hh.size()==0);
+	TEST_ASSERT(hh.capacity()==0);
+
 
 	hh.push_back(3);
 	TEST_ASSERT(hh.size()==1);
 	TEST_ASSERT(hh[0]==3);
 
+	hh.resize(100,2);
+	TEST_ASSERT(hh.size()==100);
+	TEST_ASSERT(hh[0]==3);
+
+	int ne;
+	
+	ne=0;
+	for(size_t i=1;i<hh.size();i++)
+	{
+		if(hh[i]!=2) ++ne;
+	}
+	TEST_ASSERT(ne==0);
+
+	hh.resize(50);
+	TEST_ASSERT(hh.size()==50);
+	TEST_ASSERT(hh[0]==3);
+
+	ne=0;
+	for(size_t i=1;i<hh.size();i++)
+	{
+		if(hh[i]!=2) ++ne;
+	}
+	TEST_ASSERT(ne==0);
+
 	hh.insert(hh.begin(),2);
-	TEST_ASSERT(hh.size()==2);
+	TEST_ASSERT(hh.size()==51);
 	TEST_ASSERT(hh[0]==2);
 	TEST_ASSERT(hh[1]==3);
+
+	hh.shrink_to_fit();
+	TEST_ASSERT(hh.capacity()==hh.size());
 
 	hh.clear();
 	TEST_ASSERT(hh.size()==0);
@@ -31,45 +60,36 @@ TEST_DEFINE(TEST_arr_1t)
 
 	int a[3]= {1,2,3};
 
-	hh.append(a,3);
-	hh.insert(hh.begin()+1,a,2);
+// assign case 1
+	hh.resize(100,4);
+		
+	hh.assign(a,a+3);
+	TEST_ASSERT(hh.size()==3);
+	TEST_ASSERT(hh[0]==a[0]);
+	TEST_ASSERT(hh[1]==a[1]);
+	TEST_ASSERT(hh[2]==a[2]);
 
-	wassert(hh[0]==1);
-	wassert(hh[1]==1);
-	wassert(hh[2]==2);
-	wassert(hh[3]==2);
-	wassert(hh.back()==3);
-	hh.erase(hh.begin()+2,hh.end());
-	wassert(hh.back()==1);
-}
+// assign case 2
+	hh.clear();
+	hh.assign(a,a+3);
+	TEST_ASSERT(hh.size()==3);
+	TEST_ASSERT(hh[0]==a[0]);
+	TEST_ASSERT(hh[1]==a[1]);
+	TEST_ASSERT(hh[2]==a[2]);
 
-TEST_DEFINE(TEST_pod_1t)
-{
-	pod_1t<int> hh;
-	TEST_ASSERT(hh.empty());
-	TEST_ASSERT(hh.size()==0);
-
-	hh.push_back(3);
-	TEST_ASSERT(hh.size()==1);
-	TEST_ASSERT(hh[0]==3);
-
-	hh.insert(hh.begin(),2);
-	TEST_ASSERT(hh.size()==2);
-	TEST_ASSERT(hh[0]==2);
-	TEST_ASSERT(hh[1]==3);
+// assign case 3
+	hh.clear();
+	hh.reserve(5);
+	hh.push_back(6);
+	hh.assign(a,a+3);
+	TEST_ASSERT(hh.size()==3);
+	TEST_ASSERT(hh[0]==a[0]);
+	TEST_ASSERT(hh[1]==a[1]);
+	TEST_ASSERT(hh[2]==a[2]);	
 
 	hh.clear();
-	TEST_ASSERT(hh.size()==0);
-	//TEST_ASSERT_THROW_ANY(hh.back());
-	//TEST_ASSERT_THROW_ANY(hh.front());
-	//TEST_ASSERT_THROW_ANY(hh.pop_back());
 
-	hh.shrink_to_fit();
-	TEST_ASSERT(hh.capacity()==0);
-
-	int a[3]= {1,2,3};
-
-	hh.append(a,3);
+	hh.insert(hh.begin(),a,3);
 	hh.insert(hh.begin()+1,a,2);
 
 	wassert(hh[0]==1);
@@ -78,10 +98,18 @@ TEST_DEFINE(TEST_pod_1t)
 	wassert(hh[3]==2);
 	wassert(hh.back()==3);
 	hh.erase(hh.begin()+2,hh.end());
+	wassert(hh.size()==2);
 	wassert(hh.back()==1);
 
 
+	arr_1t<String> hs;
+	hs.push_back("hello");
+	hs.push_back("world");
+	hs.insert(hs.begin()+1," ");
+
+
 }
+
 
 void test_bst_set()
 {

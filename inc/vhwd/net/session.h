@@ -3,6 +3,7 @@
 
 
 #include "vhwd/net/overlapped.h"
+#include "vhwd/net/q2packet.h"
 #include "vhwd/threading/thread.h"
 
 #if defined(VHWD_WINDOWS)
@@ -24,14 +25,12 @@ class VHWD_DLLIMPEXP Session : public ObjectData, public ISessionBase
 public:
 	friend class IOCPPool;
 
-	typedef TempPtrT<MyOverLappedEx> MyOlapPtr;
-
 	Session();
 	virtual ~Session();
 
 	// Call when AsyncSend/AsyncRecv is finished
-	virtual void OnSendCompleted(MyOlapPtr& q);
-	virtual void OnRecvCompleted(MyOlapPtr& q);
+	virtual void OnSendCompleted(TempOlapPtr& q);
+	virtual void OnRecvCompleted(TempOlapPtr& q);
 
 	virtual void OnSendReady();
 	virtual void OnRecvReady();
@@ -44,14 +43,14 @@ public:
 
 	virtual void Disconnect();
 
-	virtual bool TestTimeout(TimePoint& tp,MyOlapPtr& q);
+	virtual bool TestTimeout(TimePoint& tp,TempOlapPtr& q);
 
 protected:
 
 	bool HasPending();
 
 
-	typedef LockFreeQueue<MyOlapPtr> LKFQueue;
+	typedef LockFreeQueue<TempOlapPtr> LKFQueue;
 	LKFQueue lkfq_send;
 	LKFQueue lkfq_recv;
 
@@ -70,7 +69,7 @@ protected:
 	int m_nTempEpoll_ctl;
 	BitFlags m_nLastEpoll_def;
 	AtomicInt32 m_nEpCtl;
-	MyOlapPtr tmp_send;
+	TempOlapPtr tmp_send;
 
 #endif
 
@@ -91,23 +90,22 @@ public:
 	bool WaitForRecv();
 
 	bool AsyncSend(const char* data,size_t size);
-	bool AsyncSend(MyOlapPtr& q);
+	bool AsyncSend(TempOlapPtr& q);
 
 	bool AsyncSend(IPacketEx& packet)
 	{
 		return AsyncSend((char*)&packet,packet.size);
 	}
 
-	bool AsyncRecv(MyOlapPtr& q);
+	bool AsyncRecv(TempOlapPtr& q);
 	bool AsyncRecv();
 
 protected:
-	bool DoAsyncSend(MyOlapPtr& q);
-	bool DoAsyncRecv(MyOlapPtr& q);
+	bool DoAsyncSend(TempOlapPtr& q);
+	bool DoAsyncRecv(TempOlapPtr& q);
 
 	void DoAsyncSend();
 	void DoAsyncRecv();
-
 
 };
 
@@ -133,14 +131,14 @@ public:
 
 	bool AsyncSend(const char* data,size_t size,IPAddress& addr);
 	bool AsyncSend(const char* data,size_t size);
-	bool AsyncSend(MyOlapPtr& q);
+	bool AsyncSend(TempOlapPtr& q);
 
-	bool AsyncRecv(MyOlapPtr& q);
+	bool AsyncRecv(TempOlapPtr& q);
 	bool AsyncRecv();
 
 protected:
-	bool DoAsyncSend(MyOlapPtr& q);
-	bool DoAsyncRecv(MyOlapPtr& q);
+	bool DoAsyncSend(TempOlapPtr& q);
+	bool DoAsyncRecv(TempOlapPtr& q);
 
 	void DoAsyncSend();
 	void DoAsyncRecv();
@@ -221,8 +219,8 @@ private:
 	virtual void OnSendReady();
 	virtual void OnRecvReady();
 
-	virtual void OnSendCompleted(MyOlapPtr& q);
-	virtual void OnRecvCompleted(MyOlapPtr& q);
+	virtual void OnSendCompleted(TempOlapPtr& q);
+	virtual void OnRecvCompleted(TempOlapPtr& q);
 
 	arr_1t<char> mybuf;
 	int mypos;
@@ -230,48 +228,6 @@ private:
 };
 
 
-class Q2Packet
-{
-public:
-
-	Q2Packet(){q1=q2=0;}
-
-	// process buffer, after update, you can call size() to get the number of cached packets.
-	// NOTE: old cached packets will be drop!
-	bool update(Session::MyOlapPtr& q);
-
-	// n must less or equal IPacket::MAX_PACKET_SIZE
-	bool update(const char* p,size_t n);
-
-	// number of cached packets
-	inline size_t size() const
-	{
-		return ap.size();
-	}
-
-	// get cached packet by index 0~size()-1
-	inline IPacketEx& operator[](size_t i)
-	{
-		return *ap[i];
-	}
-
-	// drop cached packets but keep partial data
-	void done();
-
-	// drop cached packets and partial data
-	void reset()
-	{
-		q1=q2=0;
-		ap.clear();
-	}
-
-private:
-
-	char pk[IPacket::MAX_PACKET_SIZE*2];
-	arr_1t<IPacketEx*> ap;
-	size_t q1,q2;
-
-};
 
 VHWD_LEAVE
 #endif

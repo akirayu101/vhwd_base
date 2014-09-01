@@ -112,12 +112,12 @@ void SessionEcho::OnDisconnected()
 	
 }
 
-void SessionEcho::OnSendCompleted(MyOlapPtr& q)
+void SessionEcho::OnSendCompleted(TempOlapPtr& q)
 {
 	AsyncRecv(q);
 }
 
-void SessionEcho::OnRecvCompleted(MyOlapPtr& q)
+void SessionEcho::OnRecvCompleted(TempOlapPtr& q)
 {
 	AsyncSend(q);	
 }

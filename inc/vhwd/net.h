@@ -12,9 +12,8 @@
 #include "vhwd/net/ipaddress.h"
 #include "vhwd/net/socket.h"
 #include "vhwd/net/overlapped.h"
+#include "vhwd/net/q2packet.h"
 #include "vhwd/net/session.h"
 #include "vhwd/net/iocp1.h"
-//#include "vhwd/net/iocp2.h"
-
 
 #endif

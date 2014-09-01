@@ -187,7 +187,7 @@ void IOCPPool::ccc_handle_sock()
 {
 	accounter.tTimeStamp=Clock::now();
 
-	Session::MyOlapPtr q(Session::lkfq_free.getq());
+	TempOlapPtr q(Session::lkfq_free.getq());
 	if(!q) q.reset(new MyOverLappedEx);
 
 	for(int i=1; i<m_nSessionMax; i++)
@@ -309,25 +309,6 @@ void IOCPPool::svc_del(int n)
 }
 
 #ifdef VHWD_WINDOWS
-//
-//void IOCPPool::svc_add(int n)
-//{
-//	Session* pkey=m_aSessions[n].get();
-//
-//	pkey->tpLast=accounter.tTimeStamp;
-//
-//	if(accounter.nSessionCount++==0)
-//	{
-//		m_nCanClose.reset();
-//	}
-//
-//	CreateIoCompletionPort(*(HANDLE*)&pkey->sk_local.sock, hIOCPhandler, (ULONG_PTR)pkey, 0);
-//	pkey->state.store(Session::STATE_OK);
-//
-//	pkey->OnConnected();
-//
-//}
-
 
 inline void IOCPPool::ccc_handle_iocp(Session* pkey,MyOverLapped* pdat)
 {
@@ -516,7 +497,7 @@ void IOCPPool::HandleSend(Session& ikey)
 		return;
 	}
 
-	Session::MyOlapPtr q=ikey.tmp_send;
+	TempOlapPtr q=ikey.tmp_send;
 
 	for(;; q.reset(NULL))
 	{
@@ -611,7 +592,7 @@ void IOCPPool::HandleRecv(Session& ikey)
 
 	for(;;)
 	{
-		Session::MyOlapPtr q=ikey.lkfq_recv.getq();
+		TempOlapPtr q=ikey.lkfq_recv.getq();
 
 		if(!q)
 		{

@@ -74,10 +74,12 @@ public:
 	AtomicInt32 flag;
 
 	void done();
-	void done_send(RingBufferBase& buff_send);
-	void done_recv(RingBufferBase& buff_recv);
-	bool init_send(RingBufferBase& buff_send);
-	bool init_recv(RingBufferBase& buff_recv);
+	void done_send();
+	void done_recv();
+	bool init_send();
+	bool init_recv();
+
+	RingBufferBase buff;
 
 };
 
@@ -100,7 +102,7 @@ class VHWD_DLLIMPEXP IPacket
 {
 public:
 
-	static const size_t MIN_PACKET_SIZE=8;
+	static const size_t MIN_PACKET_SIZE=16;
 	static const size_t MAX_PACKET_SIZE=1024*4;
 
 	uint32_t kcrc;
@@ -224,8 +226,20 @@ public:
 		return olap_send.flag.get()!=0 || olap_recv.flag.get()!=0;
 	}
 
-	bool InitSend(RingBufferBase& s);
-	bool InitRecv(RingBufferBase& s);
+	bool InitSend();
+	bool InitRecv();
+
+	void reset(size_t s)
+	{
+		rb_send.reset(s);
+		rb_recv.reset(s);
+
+		olap_send.buff=rb_send;
+		olap_recv.buff=rb_recv;
+	}
+
+	RingBuffer rb_send;
+	RingBuffer rb_recv;
 
 };
 
@@ -247,6 +261,8 @@ public:
 
 	AtomicInt32 nSessionCount;
 };
+
+typedef TempPtrT<MyOverLappedEx> TempOlapPtr;
 
 VHWD_LEAVE
 

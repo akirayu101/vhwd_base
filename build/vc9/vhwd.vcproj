@@ -942,16 +942,16 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\inc\vhwd\collection\pod_1t.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\inc\vhwd\collection\ring_buffer.h"
 						>
 					</File>
 					<Filter
 						Name="detail"
 						>
+						<File
+							RelativePath="..\..\inc\vhwd\collection\detail\arr_container.h"
+							>
+						</File>
 						<File
 							RelativePath="..\..\inc\vhwd\collection\detail\bst_container.h"
 							>
