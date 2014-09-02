@@ -90,7 +90,7 @@ void Exception::XError(const String& s)
 
 
 void Exception::XError(const char*p, bool del)
-{	
+{
 	Exception _tException(p,del);
 	Exception_Throw(_tException);
 }
@@ -98,6 +98,8 @@ void Exception::XError(const char*p, bool del)
 class ExceptionBadAlloc : public std::bad_alloc
 {
 public:
+
+	ExceptionBadAlloc(){}
 
 #ifdef VHWD_WINDOWS
 	const char* what() const throw()

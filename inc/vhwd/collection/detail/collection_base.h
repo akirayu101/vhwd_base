@@ -45,9 +45,9 @@ public:
 		}
 
 		size_t k=1;
-		if(sz>=(k<<16)) sz=k<<16;
-		if(sz>=(k<< 8)) sz=k<< 8;
-		if(sz>=(k<< 4)) sz=k<< 4;
+		if(sz>=(k<<16)) k=k<<16;
+		if(sz>=(k<< 8)) k=k<< 8;
+		if(sz>=(k<< 4)) k=k<< 4;
 		while(k<sz) k=k<<1;
 		return k;
 	}

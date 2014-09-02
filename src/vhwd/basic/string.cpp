@@ -50,7 +50,7 @@ String::String(const char* p1,uint32_t n)
 
 String::String(const char* p1,const char* p2)
 {
-	m_ptr=StringPool::current().str_dup(p1,safe_distance(p1,p2));
+	m_ptr=StringPool::current().str_dup(p1,p2-p1);
 }
 
 String::String(const unsigned char* p)
@@ -65,7 +65,7 @@ String::String(const unsigned char* p1,uint32_t n)
 
 String::String(const unsigned char* p1,unsigned const char* p2)
 {
-	m_ptr=StringPool::current().str_dup((char*)p1,safe_distance(p1,p2));
+	m_ptr=StringPool::current().str_dup((char*)p1,p2-p1);
 }
 
 void String::assign(const char* p1,uint32_t n)
@@ -77,7 +77,7 @@ void String::assign(const char* p1,uint32_t n)
 
 void String::assign(const char* p1,const char* p2)
 {
-	assign(p1,safe_distance(p1,p2));
+	assign(p1,p2-p1);
 }
 
 void String::assign(const unsigned char* p1,uint32_t n)
@@ -89,7 +89,7 @@ void String::assign(const unsigned char* p1,uint32_t n)
 
 void String::assign(const unsigned char* p1,const unsigned char* p2)
 {
-	assign((char*)p1,safe_distance(p1,p2));
+	assign((char*)p1,p2-p1);
 }
 
 
@@ -238,7 +238,7 @@ void String::append(const char* p,uint32_t n)
 
 void String::append(const char* p1,const char* p2)
 {
-	char* _pnewstr=StringPool::current().str_cat(c_str(),size(),p1,safe_distance(p1,p2));
+	char* _pnewstr=StringPool::current().str_cat(c_str(),size(),p1,p2-p1);
 	StringPool::current().str_free(m_ptr);
 	m_ptr=_pnewstr;
 }

@@ -160,7 +160,6 @@ public:
 TEST_DEFINE(TEST_IOCP_TCP)
 {
 
-
 	IOCPPool hiocp_client("clt",1024*6);
 	IOCPPool hiocp_server("svr",1024*6);
 
@@ -198,17 +197,25 @@ TEST_DEFINE(TEST_IOCP_TCP)
 		bool f1=pEcho1->Connect("127.0.0.1",10241);
 		if(f1)
 		{
-			nCount++;
+
 			if(nCount%1000==0)
 			{
 				Console::WriteLine(String::Format("%d connections",nCount));
 			}
-			hiocp_client.Register(pEcho1.get());
+			int ret=hiocp_client.Register(pEcho1.get());
+			if(ret<0)
+			{
+				break;
+			}
+
+			nCount++;
 		}
 		else
 		{
-			break;
+			Console::WriteLine("connection failed");
 			nCount=nCount;
+			break;
+
 		}
 	}
 	TimePoint tk2=Clock::now();

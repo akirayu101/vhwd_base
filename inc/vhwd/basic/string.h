@@ -25,16 +25,16 @@ VHWD_ENTER
 template<typename T>
 class VHWD_DLLIMPEXP StringBuffer;
 
-template<typename T>
-inline ptrdiff_t safe_distance(const T* p1,const T* p2)
-{
-	ptrdiff_t n=p2-p1;
-	if(n<0)
-	{
-		return 0;
-	}
-	return n;
-}
+//template<typename T>
+//inline intptr_t safe_distance(const T* p1,const T* p2)
+//{
+//	intptr_t n=p2-p1;
+//	if(n<0)
+//	{
+//		return 0;
+//	}
+//	return n;
+//}
 
 
 class VHWD_DLLIMPEXP String

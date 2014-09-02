@@ -39,6 +39,7 @@ class intrusive_list : public NonCopyable
 {
 public:
 	typedef T* pointer;
+	typedef const T* const_pointer;
 
 	intrusive_list()
 	{
@@ -182,12 +183,12 @@ public:
 		return m_pTail;
 	}
 
-	const pointer head() const
+	const_pointer head() const
 	{
 		return m_pHead;
 	}
 
-	const pointer tail() const
+	const_pointer tail() const
 	{
 		return m_pTail;
 	}
