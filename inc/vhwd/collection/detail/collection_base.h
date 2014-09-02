@@ -11,6 +11,7 @@
 
 #include "vhwd/config.h"
 #include "vhwd/basic/hashing.h"
+#include "vhwd/basic/system.h"
 #include "vhwd/memory.h"
 #include <memory>
 
@@ -22,34 +23,48 @@ class sz_helper
 public:
 
 	// adjunst alignment
-	static int adj(size_t sz,size_t al)
+	static inline size_t adj(size_t sz,size_t al)
 	{
 		return (sz+al-1)&~(al-1);
 	}
 
 	// adjunst alignment
-	static void* adj(void* sz,size_t al)
+	static inline void* adj(void* sz,size_t al)
 	{
 		return (void*)(((ptrdiff_t)sz+al-1)&~(al-1));
 	}
 
 	// adjust size to 2^n
-	static size_t n2p(size_t sz)
+	static inline size_t n2p(size_t sz)
 	{
-		size_t k=2;
+		size_t mx=1+(size_t(-1)>>1);
+		if(sz>mx)
+		{
+			System::LogError("invalid call of n2p");
+			return mx;
+		}
+
+		size_t k=1;
+		if(sz>=(k<<16)) sz=k<<16;
+		if(sz>=(k<< 8)) sz=k<< 8;
+		if(sz>=(k<< 4)) sz=k<< 4;
 		while(k<sz) k=k<<1;
 		return k;
 	}
 
-	static size_t gen(size_t sz)
+	static inline size_t gen(size_t sz)
 	{
-		size_t sz2=sz>4?(sz&~3)*2:4;
-		if(sz2<sz)
-		{
-			Exception::XBadAlloc();
-		}
-		return sz2;
+
+		if(sz<4) return 4;
+		size_t sz2=sz+(sz>>1);
+		if(sz2>sz) return sz2;
+
+		size_t mk=(1<<16)-1;
+		sz2=(sz+mk)&~mk;
+		if(sz2>sz) return sz2;
+		return sz;
 	}
+
 };
 
 
@@ -202,7 +217,7 @@ public:
 	typedef typename impl_type::const_iterator const_iterator;
 	typedef typename impl_type::const_reverse_iterator const_reverse_iterator;
 
-	containerB() {}
+	inline containerB(){}
 
 	template<typename T1,typename T2>
 	containerB(const T1& kc,const T2& al):impl(kc,al) {}

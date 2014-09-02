@@ -40,32 +40,33 @@ public:
 
 	~arr_container();
 
-	void swap(arr_container& o)
+	inline void swap(arr_container& o)
 	{
-		std::swap(m_ptr,o.m_ptr);
-		std::swap(m_end,o.m_end);
-		std::swap(m_last,o.m_last);
+		std::swap(m_base,o.m_base);
+		std::swap(m_end1,o.m_end1);
+		std::swap(m_end2,o.m_end2);
 	}
 
 	void clear();
 
 	size_type size() const
 	{
-		return m_end-m_ptr;
+		return m_end1-m_base;
 	}
 
 	size_type capacity() const
 	{
-		return m_last-m_ptr;
+		return m_end2-m_base;
 	}
 
 	bool empty() const
 	{
-		return m_ptr==m_end;
+		return m_base==m_end1;
 	}
 
 	void reserve(size_type capacity_);
-	void resize(size_type newsize_,const T& value_=T());
+
+	void resize(size_type count_,const T& val_=T());
 
 	void assign(size_type count_,const T& val_);
 
@@ -97,14 +98,26 @@ public:
 	template<typename It>
 	iterator append(It first_,size_type count_);
 
+
 	template<typename It>
 	iterator append(It first_,It last_)
 	{
 		return append(first_,std::distance(first_,last_));
 	}
 
-	iterator erase(iterator position_);
-	iterator erase(iterator first_,iterator last_);
+
+	iterator erase(iterator first_,size_t count_);
+
+	iterator erase(iterator first_)
+	{
+		return erase(first_,1);
+	}
+
+	template<typename It>
+	iterator erase(It first_,It last_)
+	{
+		return erase(first_,std::distance(first_,last_));
+	}
 
 	void shrink_to_fit();
 
@@ -114,275 +127,346 @@ public:
 	void push_back(const T& val_){append(val_);}
 	void pop_back();
 
-	iterator begin(){return m_ptr;}
-	iterator end(){return m_end;}
-	reverse_iterator rbegin(){return m_end-1;}
-	reverse_iterator rend(){return m_ptr-1;}
+	iterator begin(){return m_base;}
+	iterator end(){return m_end1;}
+	reverse_iterator rbegin(){return m_end1-1;}
+	reverse_iterator rend(){return m_base-1;}
 
-	reference at (size_type n)
+	inline reference at (size_type n)
 	{
-		T* p=m_ptr+n;
-		if(p>=m_end) Exception::XInvalidIndex();
+		T* p=m_base+n;
+		if(p>=m_end1) Exception::XInvalidIndex();
 		return *p;
 	}
 
-	pointer data(){return m_ptr;}
-	T& operator[](size_type n){return m_ptr[n];}
+	pointer data(){return m_base;}
+	T& operator[](size_type n){return m_base[n];}
 
 protected:
 
-	//void _xgen(size_t sz1)
-	//{
-	//	size_t sz2=sz_helper::gen(sz1);
-	//	reserve(sz2);
-	//}
+	template<typename It>
+	iterator _insert_gen(const_iterator where_,It first_,size_type count_);
 
-	T* _alloc(size_t n)
+	template<typename It>
+	iterator _append_gen(It first_,size_type count_);
+
+	void _clear_and_rawset(T* p1,T* p2,T* p3);
+
+
+	T* _alloc_copy(size_t capacity_,const T& val_,size_t count_);
+
+	template<typename IT>
+	T* _alloc_copy(size_t capacity_,IT first_,size_t count_);
+
+	T* _alloc_copy(size_t capacity_,T* first_,T* last_)
 	{
-		return this->get_allocator().allocate(n);
+		return _alloc_copy(capacity_,first_,last_-first_);
 	}
 
-	T* _alloc_copy(size_t n,const T& v,size_t s)
+	void _dealloc_destroy(T* p1,T* p2,T* p3)
 	{
-		T* _tmp=_alloc(n);
-
-		if(pod)
+		if(m_base)
 		{
-			for(size_t i=0;i<s;i++) _tmp[i]=v;
+			xmem<T>::destroy(p1,p2);
+			this->get_allocator().deallocate(p1,p3-p1);
 		}
-		else
-		{
-			try
-			{
-				xmem<T>::uninitialized_fill_n(_tmp,s,v);
-			}
-			catch(...)
-			{
-				_dealloc(_tmp,n);
-				throw;
-			}
-		}
-		return _tmp;
-	}
-
-	T* _alloc_copy(size_t n,T* b1,size_t s)
-	{
-		T* _tmp=_alloc(n);
-
-		if(s==0) return _tmp;
-
-		if(pod)
-		{
-			memcpy(_tmp,b1,sizeof(T)*s);
-		}
-		else
-		{
-			try
-			{
-				xmem<T>::uninitialized_copy_n(b1,s,_tmp);
-			}
-			catch(...)
-			{
-				_dealloc(_tmp,n);
-				throw;
-			}
-		}
-		return _tmp;
-	}
-	T* _alloc_copy(size_t n,T* b1,T* b2)
-	{
-		T* _tmp=_alloc(n);
-
-		if(b1==b2) return _tmp;
-
-		if(pod)
-		{
-			memcpy(_tmp,b1,sizeof(T)*(b2-b1));
-		}
-		else
-		{
-			try
-			{
-				xmem<T>::uninitialized_copy(b1,b2,_tmp);
-			}
-			catch(...)
-			{
-				_dealloc(_tmp,n);
-				throw;
-			}
-		}
-		return _tmp;
-	}
-
-	void _dealloc(T* p,size_t n)
-	{
-		this->get_allocator().deallocate(p,n);
-	}
-
-	void _init()
-	{
-		m_ptr=m_end=m_last=NULL;
 	}
 
 	void _check_not_empty()
 	{
-		if(m_ptr==m_end)
+		if(m_base==m_end1)
 		{
 			Exception::XError("arr_container is empty()",false);
 		}
 	}
 
-	pointer m_ptr;
-	pointer m_end;
-	pointer m_last;
+	template<typename P>
+	inline bool _inside(P x)
+	{
+		const T* p=this->get_allocator().address(*x);
+		return p>=m_base&&p<m_end2;
+	}
+
+	void _append_gen(const T& val_);
+
+	inline size_t _gen_size(size_t n0,size_t n1)
+	{
+		if(this->get_allocator().max_size()-n0<=n1)
+		{
+			Exception::XBadAlloc();
+		}
+		return sz_helper::gen(n0+n1);
+	}
+
+	void _resize_gen(size_type count_,const T& val_);
+
+	pointer m_base;
+	pointer m_end1;
+	pointer m_end2;
 
 };
 
 
-
-
 template<typename T,typename A,bool pod>
-arr_container<T,A,pod>::arr_container():m_ptr(NULL),m_end(NULL),m_last(NULL)
+inline void arr_container<T,A,pod>::_clear_and_rawset(T* p1,T* p2,T* p3)
 {
-
-}
-
-template<typename T,typename A,bool pod>
-arr_container<T,A,pod>::arr_container(const arr_container& o):m_ptr(NULL),m_end(NULL),m_last(NULL)
-{
-	size_t sz=o.size();
-	if(sz>0)
+	if(m_base)
 	{
-		m_ptr=(T*)_alloc_copy(sz,o.m_ptr,o.m_end);
-		m_end=m_last=m_ptr+sz;
+		xmem<T>::destroy(m_base,m_end1);
+		this->get_allocator().deallocate(m_base,m_end2-m_end1);
 	}
+
+	m_base=p1;
+	m_end1=p2;
+	m_end2=p3;
 }
 
 template<typename T,typename A,bool pod>
-arr_container<T,A,pod>& arr_container<T,A,pod>::operator=(const arr_container& o)
+T* arr_container<T,A,pod>::_alloc_copy(size_t capacity_,const T& val_,size_t count_)
+{
+	if(capacity_==0) return NULL;
+
+	T* _tmp=this->get_allocator().allocate(capacity_);
+
+	if(pod)
+	{
+		for(size_t i=0;i<count_;i++) _tmp[i]=val_;
+	}
+	else
+	{
+		try
+		{
+			xmem<T>::uninitialized_fill_n(_tmp,count_,val_);
+		}
+		catch(...)
+		{
+			this->get_allocator().deallocate(_tmp,capacity_);
+			throw;
+		}
+	}
+	return _tmp;
+}
+
+template<typename T,typename A,bool pod>
+template<typename IT>
+T* arr_container<T,A,pod>::_alloc_copy(size_t capacity_,IT first_,size_t count_)
+{
+	if(capacity_==0) return NULL;
+
+	T* _tmp=this->get_allocator().allocate(capacity_);
+	if(count_==0) return _tmp;
+
+	try
+	{
+		xmem<T>::uninitialized_copy_n(first_,count_,_tmp);
+	}
+	catch(...)
+	{
+		this->get_allocator().deallocate(_tmp,capacity_);
+		throw;
+	}
+
+	return _tmp;
+}
+
+template<typename T,typename A,bool pod>
+inline arr_container<T,A,pod>::arr_container():m_base(NULL),m_end1(NULL),m_end2(NULL)
+{
+
+}
+
+template<typename T,typename A,bool pod>
+inline arr_container<T,A,pod>::arr_container(const arr_container& o)
+{
+	size_t n1=o.size();
+	m_base=_alloc_copy(n1,o.m_base,o.m_end1);
+	m_end1=m_end2=m_base+n1;
+}
+
+template<typename T,typename A,bool pod>
+inline arr_container<T,A,pod>& arr_container<T,A,pod>::operator=(const arr_container& o)
 {
 	if(this==&o) return *this;
-	arr_container(o).swap(*this);
+
+	size_t n1=o.size();
+	T* p1=_alloc_copy(n1,o.m_base,o.m_end1);
+	T* p2=p1+n1;
+
+	_clear_and_rawset(p1,p2,p2);
+
 	return *this;
 }
 
 
 template<typename T,typename A,bool pod>
-arr_container<T,A,pod>::~arr_container()
+inline arr_container<T,A,pod>::~arr_container()
 {
-	clear();
+	_clear_and_rawset(NULL,NULL,NULL);
 }
 
 
 template<typename T,typename A,bool pod>
 void arr_container<T,A,pod>::shrink_to_fit()
 {
-	if(m_end==m_last) return;
-	arr_container tmp(*this);
-	swap(tmp);
+	if(m_end1==m_end2) return;
+
+	size_t n0=size();
+	T* p1=_alloc_copy(n0,m_base,m_end1);
+	T* p2=p1+n0;
+
+	_clear_and_rawset(p1,p2,p2);
 }
 
 template<typename T,typename A,bool pod>
-void arr_container<T,A,pod>::pop_back()
+inline void arr_container<T,A,pod>::pop_back()
 {
 	_check_not_empty();
-	--m_end;
-	m_end->~T();
+	this->get_allocator().destroy(--m_end1);
 }
 
 template<typename T,typename A,bool pod>
-typename arr_container<T,A,pod>::reference  arr_container<T,A,pod>::back()
+inline typename arr_container<T,A,pod>::reference  arr_container<T,A,pod>::back()
 {
 	_check_not_empty();
-	return *(m_end-1);
+	return *(m_end1-1);
 }
 
 template<typename T,typename A,bool pod>
-typename arr_container<T,A,pod>::reference arr_container<T,A,pod>::front()
+inline typename arr_container<T,A,pod>::reference arr_container<T,A,pod>::front()
 {
 	_check_not_empty();
-	return *m_ptr;
+	return *m_base;
 }
 
 template<typename T,typename A,bool pod>
-void arr_container<T,A,pod>::clear()
+inline void arr_container<T,A,pod>::clear()
 {
-	if(!m_ptr) return;
-	xmem<T>::destroy(m_ptr,m_end);
-	_dealloc(m_ptr,m_last-m_ptr);
-	m_ptr=m_end=m_last=NULL;
+	if(m_end1!=m_base)
+	{
+		xmem<T>::destroy(m_base,m_end1);
+		m_end1=m_base;
+	}
 }
 
 
 template<typename T,typename A,bool pod>
-void arr_container<T,A,pod>::reserve(size_type capacity_)
+inline void arr_container<T,A,pod>::reserve(size_type capacity_)
 {
 	if(capacity()>=capacity_)
 	{
 		return;
 	}
 
-	arr_container tmp;
-	tmp.m_ptr=_alloc_copy(capacity_,m_ptr,m_end);
-	tmp.m_end=tmp.m_ptr+size();
-	tmp.m_last=tmp.m_ptr+capacity_;
+	size_t n0=size();
+	T* p1=_alloc_copy(capacity_,m_base,n0);
+	T* p2=p1+n0;
+	T* p3=p1+capacity_;
 
-	swap(tmp);
+	_clear_and_rawset(p1,p2,p3);
+
 }
 
 template<typename T,typename A,bool pod>
-void arr_container<T,A,pod>::resize(size_type newsize_,const T& val_)
+void arr_container<T,A,pod>::_resize_gen(size_type count_,const T& val_)
 {
 	size_t n0=size();
-	if(n0>=newsize_)
+
+	T* p1=_alloc_copy(count_,m_base,m_end1);
+	T* p2=p1+n0;
+	T* p3=p1+count_;
+
+	xmem<T>::uninitialized_fill(p2,p3,val_);
+
+	_clear_and_rawset(p1,p3,p3);
+}
+
+template<typename T,typename A,bool pod>
+inline void arr_container<T,A,pod>::resize(size_type count_,const T& val_)
+{
+	size_t n0=size();
+	if(n0>=count_)
 	{
-		T* _end2=m_ptr+newsize_;
-		xmem<T>::destroy(_end2,m_end);
-		m_end=_end2;
+		T* _end2=m_base+count_;
+		xmem<T>::destroy(_end2,m_end1);
+		m_end1=_end2;
 	}
-	else if(capacity()>=newsize_)
+	else if(capacity()>=count_)
 	{
-		T* _end2=m_ptr+newsize_;
-		xmem<T>::uninitialized_fill(m_end,_end2,val_);
-		m_end=_end2;
+		T* _end2=m_base+count_;
+		xmem<T>::uninitialized_fill(m_end1,_end2,val_);
+		m_end1=_end2;
 	}
 	else
 	{
-		arr_container tmp;
-		tmp.m_ptr=_alloc_copy(newsize_,m_ptr,m_end);
-		tmp.m_end=tmp.m_ptr+n0;
-		tmp.m_last=tmp.m_ptr+newsize_;
-		xmem<T>::uninitialized_fill(tmp.m_end,tmp.m_last,val_);
-		tmp.m_end=tmp.m_last;
-		swap(tmp);
+		_resize_gen(count_,val_);
 	}
 }
 
 
 
 template<typename T,typename A,bool pod>
-typename arr_container<T,A,pod>::iterator arr_container<T,A,pod>::append(const T& val_)
+void arr_container<T,A,pod>::_append_gen(const T& val_)
 {
-	if(m_end==m_last)
-	{
-		arr_container tmp;
-		size_t n0=size();
-		size_t sz=sz_helper::gen(n0+1);
-		tmp.m_ptr=_alloc_copy(sz,m_ptr,m_end);
-		tmp.m_last=tmp.m_ptr+sz;
-		tmp.m_end=tmp.m_ptr+n0;
-		new(tmp.m_end) T(val_);
-		++tmp.m_end;
-		swap(tmp);
+	size_t n0=size();
+	size_t sz=_gen_size(n0,1);
 
+	T* p1=_alloc_copy(sz,m_base,m_end1);
+	T* p2=p1+n0;
+	T* p3=p1+sz;
+
+	try
+	{
+		this->get_allocator().construct(p2++,val_);
+	}
+	catch(...)
+	{
+		_dealloc_destroy(p1,p2,p3);
+		throw;
+	}
+
+	_clear_and_rawset(p1,p2,p3);
+}
+
+template<typename T,typename A,bool pod>
+inline typename arr_container<T,A,pod>::iterator  arr_container<T,A,pod>::append(const T& val_)
+{
+	if(m_end1==m_end2)
+	{
+		_append_gen(val_);
 	}
 	else
 	{
-		new(m_end) T(val_);
-		++m_end;
+		this->get_allocator().construct(m_end1++,val_);
 	}
 
-	return m_end;
+	return m_end1;
+}
+
+
+template<typename T,typename A,bool pod>
+template<typename It>
+typename arr_container<T,A,pod>::iterator arr_container<T,A,pod>::_append_gen(It first_,size_type count_)
+{
+	size_t n0=size();
+	size_t sz=_gen_size(n0,count_);
+
+	T* p1=_alloc_copy(sz,m_base,m_end1);
+	T* p2=p1+n0;
+	T* p3=p1+sz;
+
+	try
+	{
+		xmem<T>::uninitialized_copy_n(first_,count_,p2);
+	}
+	catch(...)
+	{
+		_dealloc_destroy(p1,p2,p3);
+		throw;
+	}
+
+	_clear_and_rawset(p1,p2+count_,p3);
+
+	return m_end1;
 
 }
 
@@ -390,28 +474,54 @@ template<typename T,typename A,bool pod>
 template<typename It>
 typename arr_container<T,A,pod>::iterator arr_container<T,A,pod>::append(It first_,size_type count_)
 {
-	T* _end2=m_end+count_;
-	if(_end2>m_last)
+
+	if(size_type(m_end2-m_end1)<count_)
 	{
-		arr_container tmp;
-		size_t n1=size();
-		size_t sz=sz_helper::gen(n1+count_);
-
-		tmp.m_ptr=_alloc_copy(sz,m_ptr,m_end);
-		tmp.m_last=tmp.m_ptr+sz;
-		tmp.m_end=tmp.m_ptr+n1;
-
-		xmem<T>::uninitialized_copy_n(first_,count_,tmp.m_end);
-		tmp.m_end+=count_;
-
-		swap(tmp);
+		_append_gen(first_,count_);
 	}
 	else
 	{
-		xmem<T>::uninitialized_copy_n(first_,count_,m_end);
-		m_end+=count_;
+		xmem<T>::uninitialized_copy_n(first_,count_,m_end1);
+		m_end1+=count_;
 	}
-	return m_end;
+	return m_end1;
+}
+
+
+
+template<typename T,typename A,bool pod>
+template<typename It>
+typename arr_container<T,A,pod>::iterator arr_container<T,A,pod>::_insert_gen(const_iterator where_,It first_,size_type count_)
+{
+
+	size_t n0=size();
+	size_t sz=_gen_size(n0,count_);
+
+	T* px=(T*)&(*where_);
+
+	T* p1=this->get_allocator().allocate(sz);
+	T* p3=p1+sz;
+
+	iterator it=p1;
+
+	T* pp=p1+(px-m_base)+count_;
+
+	try
+	{
+		it=xmem<T>::uninitialized_copy(m_base,px,it);
+		it=xmem<T>::uninitialized_copy_n(first_,count_,it);
+		it=xmem<T>::uninitialized_copy(px,m_end1,it);
+	}
+	catch(...)
+	{
+		_dealloc_destroy(p1,&(*it),p3);
+		throw;
+	}
+
+	_clear_and_rawset(p1,&(*it),p3);
+
+	return pp;
+
 }
 
 template<typename T,typename A,bool pod>
@@ -423,124 +533,126 @@ typename arr_container<T,A,pod>::iterator arr_container<T,A,pod>::insert(const_i
 		return append(first_,count_);
 	}
 
-	arr_container tmp;
-	size_t sz=sz_helper::gen(size()+count_);
+	if(_inside(first_)||size_type(m_end2-m_end1)<count_)
+	{
+		return _insert_gen(where_,first_,count_);
+	}
+
 
 	T* p1=(T*)&(*where_);
-	tmp.reserve(sz);
-	tmp.append(m_ptr,p1);
-	tmp.append(first_,count_);
-	tmp.append(p1,m_end);
+	T* d1=p1+count_;
 
-	T* p2=tmp.m_ptr+((p1-m_ptr)+count_);
-	swap(tmp);
-
-	return p2;
-
-
-	//size_t p=where_-begin();
-	//_xgen(size()+count_);
-
-	//T* p0=m_ptr+p;
-	//T* p1=p0-1;
-	//T* p2=m_end-1;
-
-	//for(T* p=p2;p>p1;--p)
-	//{
-	//	*(p+count_)=*p;
-	//}
-
-	//T* p3=p0+count_;
-	//while(p0<p3)
-	//{
-	//	*p0++=*first_++;
-	//}
-
-	//m_end+=count_;
-	//return p3;
-}
-
-template<typename T,typename A,bool pod>
-void arr_container<T,A,pod>::assign(size_type newsize_,const T& val_)
-{
-	if(size()>=newsize_)
+	intptr_t dd=m_end1-d1;
+	if(dd>=0)
 	{
-		T* _end2=m_ptr+newsize_;
-		xmem<T>::destroy(_end2,m_end);
-		m_end=_end2;
+		T* p2=p1+dd;
+		m_end1=xmem<T>::uninitialized_copy_n(p2,count_,m_end1);
 
-		xmem<T>::fill_n(m_ptr,newsize_,val_);
-	}
-	else if(capacity()>=newsize_)
-	{
-		xmem<T>::fill(m_ptr,m_end,val_);
+		for(T* d2=p2+count_;p2>p1;)
+		{
+			*--d2=*--p2;
+		}
 
-		T* _end2=m_ptr+newsize_;
-		xmem<T>::uninitialized_fill(m_end,_end2,val_);
-		m_end=_end2;
-
+		xmem<T>::copy_n(first_,count_,p1);
 	}
 	else
 	{
-		arr_container tmp;
-		tmp.m_ptr=_alloc_copy(newsize_,val_,newsize_);
-		tmp.m_end=tmp.m_ptr+newsize_;
-		tmp.m_last=tmp.m_ptr+newsize_;
+		T* p2=m_end1;
+		It x2=first_+(count_+dd);
+		m_end1=xmem<T>::uninitialized_copy_n(x2,-dd,m_end1);
+		m_end1=xmem<T>::uninitialized_copy(p1,p2,m_end1);
 
-		swap(tmp);
+		xmem<T>::copy_n(first_,count_+dd,p1);
+	}
+
+	return p1+count_;
+}
+
+
+template<typename T,typename A,bool pod>
+void arr_container<T,A,pod>::assign(size_type count_,const T& val_)
+{
+	if(size()>=count_)
+	{
+		xmem<T>::fill_n(m_base,count_,val_);
+
+		T* _end2=m_base+count_;
+		xmem<T>::destroy(_end2,m_end1);
+		m_end1=_end2;
+
+
+	}
+	else if(capacity()>=count_)
+	{
+		T* _end2=m_base+count_;
+		xmem<T>::uninitialized_fill(m_end1,_end2,val_);
+		xmem<T>::fill(m_base,m_end1,val_);
+		m_end1=_end2;
+	}
+	else
+	{
+
+		T* p1=_alloc_copy(count_,val_,count_);
+		T* p2=p1+count_;
+
+		_clear_and_rawset(p1,p2,p2);
 	}
 }
 
 template<typename T,typename A,bool pod>
 template<typename It>
-void arr_container<T,A,pod>::assign(It first_,size_type newsize_)
+void arr_container<T,A,pod>::assign(It first_,size_type count_)
 {
-	if(size()>=newsize_)
+	if(_inside(first_))
 	{
-		T* _end2=m_ptr+newsize_;
-		xmem<T>::destroy(_end2,m_end);
-		m_end=_end2;
-
-		xmem<T>::copy_n(first_,newsize_,m_ptr);
+		T* p1=_alloc_copy(count_,first_,count_);
+		T* p2=p1+count_;
+		_clear_and_rawset(p1,p2,p2);
 	}
-	else if(capacity()>=newsize_)
+	else if(size()>=count_)
 	{
-		T* p0=m_ptr;
-		T* p1=m_end;
-		T* p2=p0+newsize_;
+		xmem<T>::copy_n(first_,count_,m_base);
+		T* _end2=m_base+count_;
+		xmem<T>::destroy(_end2,m_end1);
+		m_end1=_end2;
 
-		while(p0<p1)
+	}
+	else if(capacity()>=count_)
+	{
+		T* p1=m_base;
+		T* p2=m_end1;
+
+		T* _end2=p1+count_;
+
+		while(p1<p2)
 		{
-			*p0++=*first_++;
+			*p1++=*first_++;
 		}
 
-		xmem<T>::uninitialized_copy_n(first_,p2-p1,p1);
-		m_end=p2;
+		xmem<T>::uninitialized_copy_n(first_,_end2-p2,p2);
+		m_end1=_end2;
 	}
 	else
 	{
-		arr_container tmp;
-		tmp.m_ptr=_alloc_copy(newsize_,(T*)&(*first_),newsize_);
-		tmp.m_end=tmp.m_ptr+newsize_;
-		tmp.m_last=tmp.m_ptr+newsize_;
-
-		swap(tmp);
+		T* p1=_alloc_copy(count_,first_,count_);
+		T* p2=p1+count_;
+		_clear_and_rawset(p1,p2,p2);
 	}
 }
 
-template<typename T,typename A,bool pod>
-typename arr_container<T,A,pod>::iterator  arr_container<T,A,pod>::erase(iterator position_)
-{
-	return erase(position_,position_+1);
-}
 
 template<typename T,typename A,bool pod>
-typename arr_container<T,A,pod>::iterator arr_container<T,A,pod>::erase(iterator first_,iterator last_)
+typename arr_container<T,A,pod>::iterator arr_container<T,A,pod>::erase(iterator first_,size_t count_)
 {
-	T* _end2=m_end-(last_-first_);
-	xmem<T>::copy(last_,end(),first_);
-	xmem<T>::destroy(_end2,m_end);
-	m_end=_end2;
+
+	T* p1=&(*first_);
+	T* p2=p1+count_;
+	T* p3=m_end1;
+	wassert(p1>=m_base && p1<=m_end1 && p2>=m_base && p2<=m_end1);
+
+	m_end1=xmem<T>::copy(p2,p3,p1);
+	xmem<T>::destroy(m_end1,p3);
+
 	return first_;
 }
 

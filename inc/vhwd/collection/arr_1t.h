@@ -40,7 +40,7 @@ public:
 	using basetype::swap;
 
 
-	arr_1t() {}
+	inline arr_1t(){}
 	arr_1t(const A& al):basetype(al){}
 	arr_1t(const arr_1t& o):basetype(o){}
 	arr_1t& operator=(const arr_1t& o){impl=o.impl;return *this;}
@@ -127,7 +127,7 @@ public:
 	const_reference front() const{return impl.front();}
 	const_reference back() const{return impl.back();}
 
-	void push_back(const T& val_){impl.append(val_);}
+	inline void push_back(const T& val_){impl.append(val_);}
 
 	void pop_back(){impl.pop_back();}
 

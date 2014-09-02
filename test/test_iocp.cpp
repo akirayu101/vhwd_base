@@ -228,7 +228,7 @@ TEST_DEFINE(TEST_IOCP_TCP)
 
 	{
 		hiocp_server.DisconnectAll();
-		//hiocp_client.DisconnectAll();
+		hiocp_client.DisconnectAll();
 	}
 
 	logger.LogMessage("wait_session_exit");

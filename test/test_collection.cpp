@@ -22,7 +22,7 @@ TEST_DEFINE(TEST_arr_1t)
 	TEST_ASSERT(hh[0]==3);
 
 	int ne;
-	
+
 	ne=0;
 	for(size_t i=1;i<hh.size();i++)
 	{
@@ -41,13 +41,34 @@ TEST_DEFINE(TEST_arr_1t)
 	}
 	TEST_ASSERT(ne==0);
 
-	hh.insert(hh.begin(),2);
-	TEST_ASSERT(hh.size()==51);
-	TEST_ASSERT(hh[0]==2);
-	TEST_ASSERT(hh[1]==3);
 
+	hh.clear();
+	for(size_t i=2;i<10;i++) hh.push_back(i);
 	hh.shrink_to_fit();
 	TEST_ASSERT(hh.capacity()==hh.size());
+
+	// insert case 1
+	hh.insert(hh.begin(),1);
+	TEST_ASSERT(hh[0]==1);
+
+	// insert case 2
+	hh.insert(hh.begin(),0);
+	TEST_ASSERT(hh[0]==0);
+	TEST_ASSERT(hh[1]==1);
+
+	arr_1t<int> h2(hh);
+
+	hh.resize(5);
+	for(size_t i=0;i<hh.size();i++) hh[i]=i+10;
+	hh.reserve(20);
+
+	// insert case 3
+	hh.insert(hh.begin(),h2.begin(),h2.end());
+	for(size_t i=0;i<hh.size();i++)
+	{
+		TEST_ASSERT(hh[i]==(int)i);
+	}
+
 
 	hh.clear();
 	TEST_ASSERT(hh.size()==0);
@@ -62,7 +83,7 @@ TEST_DEFINE(TEST_arr_1t)
 
 // assign case 1
 	hh.resize(100,4);
-		
+
 	hh.assign(a,a+3);
 	TEST_ASSERT(hh.size()==3);
 	TEST_ASSERT(hh[0]==a[0]);
@@ -85,7 +106,7 @@ TEST_DEFINE(TEST_arr_1t)
 	TEST_ASSERT(hh.size()==3);
 	TEST_ASSERT(hh[0]==a[0]);
 	TEST_ASSERT(hh[1]==a[1]);
-	TEST_ASSERT(hh[2]==a[2]);	
+	TEST_ASSERT(hh[2]==a[2]);
 
 	hh.clear();
 
@@ -107,6 +128,9 @@ TEST_DEFINE(TEST_arr_1t)
 	hs.push_back("world");
 	hs.insert(hs.begin()+1," ");
 
+	TEST_ASSERT(hs[0]=="hello");
+	TEST_ASSERT(hs[1]==" ");
+	TEST_ASSERT(hs[2]=="world");
 
 }
 
