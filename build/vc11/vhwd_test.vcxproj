@@ -162,6 +162,7 @@
       <SubSystem>Console</SubSystem>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>false</SuppressStartupBanner>
@@ -208,6 +209,7 @@
       <SubSystem>Console</SubSystem>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>false</SuppressStartupBanner>
@@ -251,6 +253,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>false</SuppressStartupBanner>
@@ -296,6 +299,7 @@
       <SubSystem>Console</SubSystem>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>false</SuppressStartupBanner>
@@ -340,6 +344,7 @@
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>false</SuppressStartupBanner>
@@ -384,6 +389,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\lib\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>false</SuppressStartupBanner>
@@ -401,12 +407,6 @@
     <ClCompile Include="..\..\test\test_serializer.cpp" />
     <ClCompile Include="..\..\test\test_shm.cpp" />
     <ClCompile Include="..\..\test\test_thread.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="vhwd.vcxproj">
-      <Project>{0e618b92-a4a3-4edf-bb12-be5aa323e76b}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
