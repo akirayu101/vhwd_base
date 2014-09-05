@@ -163,7 +163,13 @@ public:
 				++num;
 				return;
 			}
+			else
+			{
+				AtomicSpin::noop();
+			}
 		}
+
+		wassert(num==0);
 
 		num=1;
 		tid=_id;
@@ -181,6 +187,7 @@ public:
 			}
 		}
 
+		wassert(num==0);
 		num=1;
 		tid=_id;
 		return true;
@@ -191,6 +198,7 @@ public:
 		wassert(tid==thread_id());
 		if(--num==0)
 		{
+			tid=uintptr_t(-1);
 			int32_t old=val.exchange(0);
 			wassert(old==1);
 			(void)&old;

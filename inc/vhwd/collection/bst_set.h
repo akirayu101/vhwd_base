@@ -10,11 +10,14 @@ VHWD_ENTER
 
 
 
-template<typename T,typename C=std::less<T>,typename A=def_allocator>
-class bst_set : public bst_container<bst_trait<T,void,C>,A>
+template<typename T,typename C=std::less<T>,typename A=def_allocator,int P=RBT_IMPL>
+class bst_set
+	: public bst_container<typename tl::meta_if<P==RBT_IMPL,rbt_trait<T,void,C>,avl_trait<T,void,C> >::type,A>
 {
 protected:
-	typedef bst_container<bst_trait<T,void,C>,A> basetype;
+
+	typedef bst_container<typename tl::meta_if<P==RBT_IMPL,rbt_trait<T,void,C>,avl_trait<T,void,C> >::type,A> basetype;
+
 	typedef typename basetype::impl_type impl_type;
 	using basetype::impl;
 
@@ -33,7 +36,10 @@ public:
 	}
 
 #ifdef VHWD_C11
-	bst_set(bst_set&& o):basetype(o) {}
+	bst_set(bst_set&& o)
+	{
+		this->swap(o);
+	}
 	bst_set& operator=(bst_set&& o)
 	{
 		this->swap(o);
@@ -44,11 +50,14 @@ public:
 };
 
 
-template<typename T,typename C=std::less<T>,typename A=def_allocator>
-class bst_multiset : public bst_multi_container<bst_trait<T,void,C>,A>
+template<typename T,typename C=std::less<T>,typename A=def_allocator,int P=RBT_IMPL>
+class bst_multiset
+	: public bst_multi_container<typename tl::meta_if<P==RBT_IMPL,rbt_trait<T,void,C>,avl_trait<T,void,C> >::type,A>
 {
 protected:
-	typedef bst_multi_container<bst_trait<T,void,C>,A> basetype;
+
+	typedef bst_multi_container<typename tl::meta_if<P==RBT_IMPL,rbt_trait<T,void,C>,avl_trait<T,void,C> >::type,A> basetype;
+
 	typedef typename basetype::impl_type impl_type;
 	using basetype::impl;
 
@@ -67,7 +76,10 @@ public:
 	}
 
 #ifdef VHWD_C11
-	bst_multiset(bst_multiset&& o):basetype(o) {}
+	bst_multiset(bst_multiset&& o)
+	{
+		this->swap(o);
+	}
 	bst_multiset& operator=(bst_multiset&& o)
 	{
 		this->swap(o);
@@ -76,6 +88,10 @@ public:
 #endif
 
 };
+
+
+
+
 
 
 VHWD_LEAVE

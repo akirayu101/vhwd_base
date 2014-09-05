@@ -2,6 +2,7 @@
 #define __H_VHWD_SCRIPTING_VARIANT_OP1__
 
 #include "vhwd/scripting/variant_op.h"
+#include "vhwd/scripting/executor.h"
 
 VHWD_ENTER
 
@@ -12,12 +13,12 @@ class kvar_handler1
 public:
 	typedef typename P::type type;
 
-	static type g(const Variant& v)
+	static inline type g(const Variant& v)
 	{
 		return g((Variant&)v);
 	}
 
-	static type g(Variant& v)
+	static inline type g(Variant& v)
 	{
 		switch(v.flag())
 		{
@@ -43,7 +44,7 @@ public:
 
 
 	template<typename T>
-	static type g1(T& v,int f)
+	static inline type g1(T& v,int f)
 	{
 		switch(f)
 		{
@@ -69,7 +70,7 @@ public:
 
 
 	template<typename T1,typename T2>
-	static type g2(T1& v1,T2& v2,int f)
+	static inline type g2(T1& v1,T2& v2,int f)
 	{
 		switch(f)
 		{
@@ -101,19 +102,19 @@ class kvar_policy_cast
 public:
 	typedef T type;
 
-	static type invalid_type()
+	static inline type invalid_type()
 	{
 		Exception::XBadCast();
 		return type();
 	}
 
 	template<typename X>
-	static X& k(X& v)
+	static inline X& k(X& v)
 	{
 		return v;
 	}
 
-	static CallableData* k(const CallableData*& v)
+	static inline CallableData* k(const CallableData*& v)
 	{
 		return v;
 	}
@@ -122,7 +123,7 @@ public:
 	class rebind
 	{
 	public:
-		static type g(Variant& v)
+		static inline type g(Variant& v)
 		{
 			return kvar_cast<type>::g(k(kvar_type<N>::raw((kvar_base&)(v))));
 		}
@@ -138,7 +139,7 @@ public:
 	typedef typename P::type type;
 	using kvar_cast<T>::g;
 
-	static type g(Variant& v)
+	static inline type g(Variant& v)
 	{
 		return kvar_handler1<P>::g(v);
 	}
@@ -152,14 +153,14 @@ class PL1_arr
 public:
 
 	template<typename X>
-	static void g(Variant& z,const X& x)
+	static inline void g(Variant& z,const X& x)
 	{
 		typedef typename P::template rebind<X>::type R;
 		z.reset<R>(P::g(x));
 	}
 
 	template<typename X>
-	static void g(Variant& z,const arr_xt<X>& x)
+	static inline void g(Variant& z,const arr_xt<X>& x)
 	{
 		typedef typename P::template rebind<X>::type R;
 		arr_xt<R> r;r.resize(x.size(0),x.size(1),x.size(2),x.size(3),x.size(4),x.size(5));
@@ -178,7 +179,7 @@ template<typename X,typename P,bool V>
 class PL1_sel
 {
 public:
-	static void g(Executor&)
+	static inline void g(Executor&)
 	{
 		Exception::XBadCast();
 	}
@@ -188,7 +189,7 @@ template<typename X,typename P>
 class PL1_sel<X,P,true>
 {
 public:
-	static void g(Executor& ks)
+	static inline void g(Executor& ks)
 	{
 		Variant& lhs(ks.get(0));
 		PL1_arr<P>::g(lhs,kvar_flag<X>::raw(lhs));
@@ -201,9 +202,10 @@ class PL1_opx_num
 public:
 	typedef void type;
 
-	static type invalid_type()
+	static inline type invalid_type()
 	{
 		Exception::XBadCast();
+		return type();
 	}
 
 	template<int N1>
@@ -214,11 +216,11 @@ public:
 class PL1_sin : public PL1_num2
 {
 public:
-	static double g(double x)
+	static inline double g(double x)
 	{
 		return ::sin(x);
 	}
-	static std::complex<double> g(const std::complex<double>& x)
+	static inline std::complex<double> g(const std::complex<double>& x)
 	{
 		return std::sin(x);
 	}
@@ -227,12 +229,12 @@ public:
 class PL1_cos : public PL1_num2
 {
 public:
-	static double g(double x)
+	static inline double g(double x)
 	{
 		return ::cos(x);
 	}
 
-	static std::complex<double> g(const std::complex<double>& x)
+	static inline std::complex<double> g(const std::complex<double>& x)
 	{
 		return std::cos(x);
 	}
@@ -241,12 +243,12 @@ public:
 class PL1_tan : public PL1_num2
 {
 public:
-	static double g(double x)
+	static inline double g(double x)
 	{
 		return ::tan(x);
 	}
 
-	static std::complex<double> g(const std::complex<double>& x)
+	static inline std::complex<double> g(const std::complex<double>& x)
 	{
 		return std::tan(x);
 	}
@@ -255,12 +257,12 @@ public:
 class PL1_log : public PL1_num2
 {
 public:
-	static double g(double x)
+	static inline double g(double x)
 	{
 		return ::log(x);
 	}
 
-	static std::complex<double> g(const std::complex<double>& x)
+	static inline std::complex<double> g(const std::complex<double>& x)
 	{
 		return std::log(x);
 	}
@@ -270,12 +272,12 @@ public:
 class PL1_log10 : public PL1_num2
 {
 public:
-	static double g(double x)
+	static inline double g(double x)
 	{
 		return ::log10(x);
 	}
 
-	static std::complex<double> g(const std::complex<double>& x)
+	static inline std::complex<double> g(const std::complex<double>& x)
 	{
 		return std::log10(x);
 	}
@@ -286,22 +288,22 @@ class PL1_inv : public PL1_num1
 {
 public:
 
-	static int64_t g(bool x)
+	static inline int64_t g(bool x)
 	{
 		return x?-1:0;
 	}
 
-	static int64_t g(int64_t x)
+	static inline int64_t g(int64_t x)
 	{
 		return -x;
 	}
 
-	static double g(double x)
+	static inline double g(double x)
 	{
 		return -x;
 	}
 
-	static std::complex<double> g(const std::complex<double>& x)
+	static inline std::complex<double> g(const std::complex<double>& x)
 	{
 		return -x;
 	}
@@ -465,7 +467,6 @@ public:
 
 
 
-
 template<typename T>
 T Executor::eval(const String &s)
 {
@@ -488,6 +489,10 @@ bool Executor::eval(const String& s,T& v)
 	}
 }
 
+inline bool Executor::test()
+{
+	return PLCast<bool>::g(stack[stack.nsp--]);
+}
 
 VHWD_LEAVE
 #endif

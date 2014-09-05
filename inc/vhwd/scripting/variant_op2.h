@@ -14,7 +14,7 @@ public:
 
 	static const int M=Variant::V_FLAGMOVE;
 
-	static type g(const Variant& v1,const Variant& v2)
+	static inline type g(const Variant& v1,const Variant& v2)
 	{
 		switch(kvar_helper_base::f2(v1,v2))
 		{
@@ -105,7 +105,7 @@ public:
 	}
 
 	template<typename T1>
-	static type g1(T1& v1,int flag)
+	static inline type g1(T1& v1,int flag)
 	{
 		switch(flag)
 		{
@@ -196,7 +196,7 @@ public:
 	}
 
 	template<typename T1,typename T2>
-	static type g2(T1& v1,T2& v2,int flag)
+	static inline type g2(T1& v1,T2& v2,int flag)
 	{
 		switch(flag)
 		{
@@ -296,14 +296,14 @@ class PL2_arr
 public:
 
 	template<typename X,typename Y>
-	static void g(Variant& z,const X& x,const Y& y)
+	static inline void g(Variant& z,const X& x,const Y& y)
 	{
 		typedef typename P::template rebind<X,Y>::type R;
 		z.reset<R>(P::g(x,y));
 	}
 
 	template<typename X,typename Y>
-	static void g(Variant& z,const arr_xt<X>& x,Y y)
+	static inline void g(Variant& z,const arr_xt<X>& x,Y y)
 	{
 		typedef typename P::template rebind<X,Y>::type R;
 		arr_xt<R> r;r.resize(x.size(0),x.size(1),x.size(2),x.size(3),x.size(4),x.size(5));
@@ -315,7 +315,7 @@ public:
 	}
 
 	template<typename X,typename Y>
-	static void g(Variant& z,X y,const arr_xt<Y>& x)
+	static inline void g(Variant& z,X y,const arr_xt<Y>& x)
 	{
 		typedef typename P::template rebind<X,Y>::type R;
 		arr_xt<R> r;r.resize(x.size(0),x.size(1),x.size(2),x.size(3),x.size(4),x.size(5));
@@ -327,7 +327,7 @@ public:
 	}
 
 	template<typename X,typename Y>
-	static void g(Variant& z,const arr_xt<X>& x,const arr_xt<Y>& y)
+	static inline void g(Variant& z,const arr_xt<X>& x,const arr_xt<Y>& y)
 	{
 		typedef typename P::template rebind<X,Y>::type R;
 		if(x.size()!=y.size())
@@ -349,7 +349,7 @@ template<typename X,typename Y,typename P,bool V>
 class PL2_sel
 {
 public:
-	static void g(Executor&)
+	static inline void g(Executor&)
 	{
 		Exception::XBadCast();
 	}
@@ -359,7 +359,7 @@ template<typename X,typename Y,typename P>
 class PL2_sel<X,Y,P,true>
 {
 public:
-	static void g(Executor& ks)
+	static inline void g(Executor& ks)
 	{
 		Variant& lhs(ks.get(-1));
 		Variant& rhs(ks.get(0));
@@ -376,7 +376,7 @@ class PL2_opx_num
 public:
 	typedef void type;
 
-	static type invalid_type()
+	static inline type invalid_type()
 	{
 		Exception::XBadCast();
 	}
@@ -436,7 +436,7 @@ public:
 	template<typename T>
 	const T& cast(const T& v){return v;}
 
-	double cast(std::complex<double>& v)
+	double inline cast(std::complex<double>& v)
 	{
 		if(v.imag()!=0.0)
 		{
@@ -479,7 +479,7 @@ class PL2_add : public PL2_num1
 {
 public:
 	template<typename T1,typename T2>
-	static typename rebind<T1,T2>::type g(const T1& t1,const T2& t2)
+	static inline typename rebind<T1,T2>::type g(const T1& t1,const T2& t2)
 	{
 		return typename rebind<T1,T2>::type(t1)+typename rebind<T1,T2>::type(t2);
 	}
@@ -489,7 +489,7 @@ class PL2_sub : public PL2_num1
 {
 public:
 	template<typename T1,typename T2>
-	static typename rebind<T1,T2>::type g(const T1& t1,const T2& t2)
+	static inline typename rebind<T1,T2>::type g(const T1& t1,const T2& t2)
 	{
 		return typename rebind<T1,T2>::type(t1)-typename rebind<T1,T2>::type(t2);
 	}
@@ -499,7 +499,7 @@ class PL2_mul : public PL2_num1
 {
 public:
 	template<typename T1,typename T2>
-	static typename rebind<T1,T2>::type g(const T1& t1,const T2& t2)
+	static inline typename rebind<T1,T2>::type g(const T1& t1,const T2& t2)
 	{
 		return typename rebind<T1,T2>::type(t1)* typename rebind<T1,T2>::type(t2);
 	}
@@ -510,7 +510,7 @@ class PL2_div : public PL2_num1
 {
 public:
 	template<typename T1,typename T2>
-	static typename rebind<T1,T2>::type g(const T1& t1,const T2& t2)
+	static inline typename rebind<T1,T2>::type g(const T1& t1,const T2& t2)
 	{
 		return typename rebind<T1,T2>::type(t1)/ typename rebind<T1,T2>::type(t2);
 	}
@@ -528,13 +528,13 @@ public:
 	};
 
 	template<typename T1>
-	static std::complex<double> g(const T1& t1)
+	static inline std::complex<double> g(const T1& t1)
 	{
 		return std::complex<double>(t1);
 	}
 
 	template<typename T1>
-	static std::complex<double> g(const std::complex<T1>& t1)
+	static inline std::complex<double> g(const std::complex<T1>& t1)
 	{
 		return std::complex<double>(t1.real(),t1.imag());
 	}
@@ -553,10 +553,10 @@ public:
 	};
 
 	template<typename T1>
-	static double k(T1 v){return (double)v;}
+	static inline double k(T1 v){return (double)v;}
 
 	template<typename T1>
-	static double k(const std::complex<T1>& v)
+	static inline double k(const std::complex<T1>& v)
 	{
 		if(v.imag()!=T1(0))
 		{
@@ -567,7 +567,7 @@ public:
 
 
 	template<typename T1,typename T2>
-	static std::complex<double> g(const T1& t1,const T2& t2)
+	static inline std::complex<double> g(const T1& t1,const T2& t2)
 	{
 		return std::complex<double>(k(t1),k(t2));
 	}
@@ -579,7 +579,7 @@ class PL2_eq : public PL2_rel
 public:
 
 	template<typename T1,typename T2>
-	static bool g(const T1& t1,const T2& t2)
+	static inline bool g(const T1& t1,const T2& t2)
 	{
 		return typename PL2_num1::rebind<T1,T2>::type(t1)==typename PL2_num1::rebind<T1,T2>::type(t2);
 	}

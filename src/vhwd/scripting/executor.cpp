@@ -16,6 +16,7 @@ void init_scripting_module_modules()
 
 	init_scripting_module_type();
 	init_scripting_module_io();
+	init_scripting_module_os();
 	init_scripting_module_math();
 	init_scripting_module_array();
 
@@ -177,27 +178,7 @@ void Executor::set_index(const String& s)
 }
 
 
-void Executor::get_local(int n)
-{
-	push(stack[n]);
-}
 
-void Executor::set_local(int n)
-{
-	popq(stack[n]);
-}
-
-
-bool Executor::test()
-{
-	return PLCast<bool>::g(stack[stack.nsp--]);
-}
-
-
-Variant& Executor::top()
-{
-	return stack[stack.nsp];
-}
 
 bool Executor::execute(const String& s)
 {

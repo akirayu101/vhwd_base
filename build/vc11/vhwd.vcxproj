@@ -475,6 +475,7 @@
     <ClInclude Include="..\..\inc\vhwd\collection\bst_map.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\bst_set.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\detail\arr_container.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\avl_tree_policy.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_container.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_tree.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_tree_iterator.h" />
@@ -483,6 +484,7 @@
     <ClInclude Include="..\..\inc\vhwd\collection\detail\indexer_base.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\detail\indexer_container.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\detail\kv_trait.h" />
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\rbt_tree_policy.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\linear_buffer.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\lockfree_queue.h" />
     <ClInclude Include="..\..\inc\vhwd\collection\ring_buffer.h" />

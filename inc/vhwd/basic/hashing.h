@@ -92,7 +92,7 @@ class hash_pod : public hash_base<sizeof(T),sizeof(T)%8>
 {
 public:
 	typedef hash_base<sizeof(T),sizeof(T)%8> basetype;
-	uint32_t operator()(const T& val)
+	inline uint32_t operator()(const T& val)
 	{
 		return basetype::hash(&val);
 	}
@@ -102,7 +102,7 @@ template<typename T>
 class hash_origin
 {
 public:
-	uint32_t operator()(const T val)
+	inline uint32_t operator()(const T val)
 	{
 		return (T)(val);
 	}

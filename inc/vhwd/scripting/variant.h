@@ -71,7 +71,7 @@ public:
 
 	};
 
-	Variant(){data.flag=V_OBJECT;data.pVal=NULL;}
+	inline Variant(){data.flag=V_OBJECT;data.pVal=NULL;}
 	Variant(const Variant&o);
 	Variant& operator=(const Variant& o);
 
@@ -114,9 +114,10 @@ public:
 	bool operator==(const Variant& v2) const;
 	bool operator!=(const Variant& v2) const;
 
-protected:
+//protected:
 	kvar_base data;
 };
+
 
 
 class kvar_table : public indexer_map<String,Variant>
@@ -926,6 +927,78 @@ public:
 
 
 
+inline Variant::Variant(const Variant&o):data(o.data)
+{
+	if(bptr() && data.pVal)
+	{
+		data.pVal->IncRef();
+	}
+}
+
+inline Variant& Variant::operator=(const Variant& o)
+{
+	if(o.bptr() && o.data.pVal)
+	{
+		o.data.pVal->IncRef();
+	}
+
+	if(bptr() && data.pVal)
+	{
+		data.pVal->DecRef();
+	}
+
+	data=o.data;
+
+	return *this;
+}
+
+
+inline void Variant::swap(Variant& o)
+{
+	std::swap(o.data,data);
+}
+
+inline void Variant::kptr(CallableData* p)
+{
+	if(p) p->IncRef();
+	clear();
+	data.pVal=p;
+}
+
+
+inline CallableData* Variant::kptr()
+{
+	if(bptr())
+	{
+		return data.pVal;
+	}
+	return NULL;
+}
+
+inline const CallableData* Variant::kptr() const
+{
+	if(bptr())
+	{
+		return data.pVal;
+	}
+	return NULL;
+}
+
+
+inline void kvar_base::clear()
+{
+	if(bptr() && pVal)
+	{
+		pVal->DecRef();
+	}
+	flag=Variant::V_OBJECT;
+	pVal=NULL;
+}
+
+inline void Variant::clear()
+{
+	data.clear();
+}
 
 VHWD_LEAVE
 #endif

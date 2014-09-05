@@ -40,8 +40,7 @@ public:
 		size_t mx=1+(size_t(-1)>>1);
 		if(sz>mx)
 		{
-			System::LogError("invalid call of n2p");
-			return mx;
+			Exception::XInvalidArgument();
 		}
 
 		size_t k=1;
@@ -55,7 +54,7 @@ public:
 	static inline size_t gen(size_t sz)
 	{
 
-		if(sz<4) return 4;
+		if(sz<4) return sz;
 		size_t sz2=sz+(sz>>1);
 		if(sz2>sz) return sz2;
 
@@ -223,10 +222,6 @@ public:
 	containerB(const T1& kc,const T2& al):impl(kc,al) {}
 
 	containerB(const containerB& o):impl(o.impl) {}
-
-#ifdef VHWD_C11
-	containerB(containerB&& o):impl(o.impl) {}
-#endif
 
 	iterator begin()
 	{

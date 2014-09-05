@@ -196,7 +196,33 @@ void TNodeVisitorCG_GeneratorRValue::visit(TNode_expression_op1* node)
 	}
 }
 
-indexer_map<String,int> mp_op2;
+
+class xop2_info : public ObjectData
+{
+public:
+
+
+
+	xop2_info(int c):op_code(c)
+	{
+
+	}
+
+	virtual int code(int t1,int t2)
+	{
+		return op_code;
+	}
+
+	virtual int rett(int t1,int t2)
+	{
+		return Variant::V_OBJECT;
+	}
+
+protected:
+	int op_code;
+};
+
+indexer_map<String,DataPtrT<xop2_info> > mp_op2;
 
 void TNodeVisitorCG_GeneratorRValue::visit(TNode_expression_op2* node)
 {
@@ -206,37 +232,37 @@ void TNodeVisitorCG_GeneratorRValue::visit(TNode_expression_op2* node)
 
 	if(mp_op2.size()==0)
 	{
-		mp_op2["+"]=XOP2_ADD;
-		mp_op2["-"]=XOP2_SUB;
-		mp_op2["*"]=XOP2_MUL;
-		mp_op2["/"]=XOP2_DIV;
-		mp_op2["%"]=XOP2_MOD;
-		mp_op2["^"]=XOP2_POW;
-		mp_op2[".*"]=XOP2_DOT_MUL;
-		mp_op2["./"]=XOP2_DOT_DIV;
+		mp_op2["+"].reset(new xop2_info(XOP2_ADD));
+		mp_op2["-"].reset(new xop2_info(XOP2_SUB));
+		mp_op2["*"].reset(new xop2_info(XOP2_MUL));
+		mp_op2["/"].reset(new xop2_info(XOP2_DIV));
+		mp_op2["%"].reset(new xop2_info(XOP2_MOD));
+		mp_op2["^"].reset(new xop2_info(XOP2_POW));
+		mp_op2[".*"].reset(new xop2_info(XOP2_DOT_MUL));
+		mp_op2["./"].reset(new xop2_info(XOP2_DOT_DIV));
 
-		mp_op2[">"]=XOP2_GT;
-		mp_op2["<"]=XOP2_LT;
-		mp_op2[">="]=XOP2_GE;
-		mp_op2["<="]=XOP2_LE;
-		mp_op2["=="]=XOP2_EQ;
-		mp_op2["!="]=XOP2_NE;
+		mp_op2[">"].reset(new xop2_info(XOP2_GT));
+		mp_op2["<"].reset(new xop2_info(XOP2_LT));
+		mp_op2[">="].reset(new xop2_info(XOP2_GE));
+		mp_op2["<="].reset(new xop2_info(XOP2_LE));
+		mp_op2["=="].reset(new xop2_info(XOP2_EQ));
+		mp_op2["!="].reset(new xop2_info(XOP2_NE));
 
-		mp_op2["&&"]=XOP2_AND;
-		mp_op2["||"]=XOP2_OR;
-		mp_op2["^^"]=XOP2_XOR;
+		mp_op2["&&"].reset(new xop2_info(XOP2_AND));
+		mp_op2["||"].reset(new xop2_info(XOP2_OR));
+		mp_op2["^^"].reset(new xop2_info(XOP2_XOR));
 
-		mp_op2["&"]=XOP2_BITWISE_AND;
-		mp_op2["|"]=XOP2_BITWISE_OR;
-		mp_op2["^"]=XOP2_BITWISE_XOR;
+		mp_op2["&"].reset(new xop2_info(XOP2_BITWISE_AND));
+		mp_op2["|"].reset(new xop2_info(XOP2_BITWISE_OR));
+		mp_op2["^"].reset(new xop2_info(XOP2_BITWISE_XOR));
 
-		mp_op2[".."]=XOP2_CAT;
+		mp_op2[".."].reset(new xop2_info(XOP2_CAT));
 	}
 
-	int op=mp_op2[node->m_sOpName];
-	if(op>0)
+	xop2_info* op=mp_op2[node->m_sOpName].get();
+	if(op)
 	{
-		cgen.emit(op);
+		cgen.emit(op->code(Variant::V_OBJECT,Variant::V_OBJECT));
 	}
 	else
 	{

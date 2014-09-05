@@ -237,88 +237,75 @@ class ThreadSync : public ThreadMulti
 {
 public:
 
-	Semaphore hSem;
-	SpinLock spin;
-	AtomicSpin atom;
-	Mutex mutex;
-
 	size_t count;
 	size_t type;
 	size_t result;
 
 	ThreadSync()
 	{
-		hSem.post();
 		count=4;
 	}
 
-	void test(int n,const String& s)
+	Functor<void()> svc_handler;
+
+	template<typename L>
+	void svc_real(L& thelock)
 	{
+		for(size_t i=0; i<1024*1024/count; i++)
+		{
+			thelock.lock();
+			result++;
+			thelock.unlock();
+		}
+	}
+
+	template<typename L>
+	void test(const String& s)
+	{
+		L thelock;
+		svc_handler.bind(&ThreadSync::svc_real<L>,this,vhwd::mk_ref(thelock));
+
 		TimePoint tp1=Clock::now();
-		type=n;
 		result=0;
 		activate(count);
 		wait();
 		TimePoint tp2=Clock::now();
+
+		svc_handler.clear();
 		Console::WriteLine(String::Format("test:%s:%g ms",s,(tp2-tp1)/TimeSpan::MilliSeconds(1)));
 	}
 
 	void svc()
 	{
-		if(type==1)
-		{
-			for(size_t i=0; i<1024*1024/count; i++)
-			{
-				hSem.wait();
-				result++;
-				hSem.post();
-			}
-		}
-		else if(type==2)
-		{
-			for(size_t i=0; i<1024*1024/count; i++)
-			{
-				spin.lock();
-				result++;
-				spin.unlock();
-			}
-		}
-		else if(type==3)
-		{
-			for(size_t i=0; i<1024*1024/count; i++)
-			{
-				atom.lock();
-				result++;
-				atom.unlock();
-			}
-		}
-		else if(type==4)
-		{
-			for(size_t i=0; i<1024*1024/count; i++)
-			{
-				mutex.lock();
-				result++;
-				mutex.unlock();
-			}
-		}
-
+		svc_handler();
 	}
 };
+
+
 
 TEST_DEFINE(TEST_ThreadOther)
 {
 	ThreadSync thrd;
 
-	thrd.test(1,"sem");
+
+	thrd.test<vhwd::AtomicSpin>("atomic_spin");
 	TEST_ASSERT(thrd.result==1024*1024);
 
-	thrd.test(2,"spin");
+	thrd.test<vhwd::AtomicMutex>("atomic_mutex");
 	TEST_ASSERT(thrd.result==1024*1024);
 
-	thrd.test(3,"atomic");
+	thrd.test<vhwd::SpinLock>("spin");
 	TEST_ASSERT(thrd.result==1024*1024);
 
-	thrd.test(4,"mutex");
+	thrd.test<vhwd::Mutex>("mutex");
 	TEST_ASSERT(thrd.result==1024*1024);
+
+
+
+	//thrd.test(3,"atomic");
+	//TEST_ASSERT(thrd.result==1024*1024);
+
+	//thrd.test(4,"mutex");
+	//TEST_ASSERT(thrd.result==1024*1024);
 
 }

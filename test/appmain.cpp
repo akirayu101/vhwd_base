@@ -1,8 +1,11 @@
 #include "vhwd.h"
 
+#include <iostream>
+
 
 int main(int argc,char** argv)
 {
+
 
 	vhwd::System::SetLogFile("vhwd.log");
 	vhwd::System::LogTrace("----  process enter   -------");

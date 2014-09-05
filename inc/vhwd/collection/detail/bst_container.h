@@ -6,6 +6,12 @@
 
 VHWD_ENTER
 
+enum
+{
+	RBT_IMPL,
+	AVL_IMPL,
+};
+
 template<typename P,typename A>
 class bst_container : public containerB<bst_tree<P,A> >
 {
@@ -28,10 +34,6 @@ public:
 	bst_container(const key_compare& kc,const A& al):basetype(kc,allocator_type(al)) {}
 	bst_container(const bst_container& o):basetype(o) {}
 
-#ifdef VHWD_C11
-	bst_container(bst_container&& o):basetype(o) {}
-#endif
-
 	iterator find(const key_type& v)
 	{
 		return impl.template handle_key<typename impl_type::fp_return_iterator>(v);
@@ -51,6 +53,14 @@ public:
 	{
 		return impl.template handle_value<typename impl_type::fp_insert_pair>(v);
 	}
+
+#ifdef VHWD_C11
+	std::pair<iterator,bool> insert(value_type&& v)
+	{
+		return impl.template handle_value<typename impl_type::fp_insert_pair>(std::move(v));
+	}
+#endif
+
 
 	template <class InputIterator>
 	void insert (InputIterator first, InputIterator last)
@@ -154,10 +164,6 @@ public:
 	bst_multi_container() {}
 	bst_multi_container(const bst_multi_container& o):basetype(o) {}
 	bst_multi_container(const key_compare& kc,const A& al):basetype(kc,allocator_type(al)) {}
-
-#ifdef VHWD_C11
-	bst_multi_container(bst_multi_container&& o):basetype(o) {}
-#endif
 
 	iterator insert(const value_type& v)
 	{

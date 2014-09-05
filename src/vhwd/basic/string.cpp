@@ -122,11 +122,6 @@ String::~String()
 	StringPool::current().str_free(m_ptr);
 }
 
-const char* String::c_str() const
-{
-	return m_ptr;
-}
-
 size_t String::size() const
 {
 	return ::strlen(m_ptr);

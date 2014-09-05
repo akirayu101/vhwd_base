@@ -8,10 +8,17 @@ VHWD_ENTER
 
 class TNodeVisitorCG_Generator;
 
+class syn_variable_info
+{
+public:
+	int type;
+	syn_variable_info(int t=Variant::V_OBJECT):type(t){}
+};
+
 class syn_scope_base : public ObjectData
 {
 public:
-	indexer_set<String> variables;
+	indexer_map<String,syn_variable_info> variables;
 };
 
 class syn_scope_block : public syn_scope_base
@@ -74,7 +81,7 @@ public:
 	void lock_loop2();
 	void unlock_loop2();
 
-	indexer_set<String>& local_variables()
+	indexer_map<String,syn_variable_info>& local_variables()
 	{
 		return m_refData->aBlock.back()->variables;
 	}
@@ -227,6 +234,7 @@ public:
 	int add_param(const String& s);
 
 	indexer_set<Variant> aConst;
+
 	arr_1t<kvar_inst> aInsts;
 
 	void emit(int op,int pm=0);
@@ -252,6 +260,7 @@ public:
 	size_t ggidx(CallableData* s);
 
 	void kerror(const String& s);
+
 };
 
 VHWD_LEAVE

@@ -117,7 +117,8 @@ int TNodeVisitorCG_Generator::addglobal(const String& s)
 
 int TNodeVisitorCG_Generator::add_local(const String& s)
 {
-	return ascope.local_variables().find2(s)+1;
+	int id=ascope.local_variables().find2(s);
+	return id+1;
 }
 
 int TNodeVisitorCG_Generator::add_param(const String& s)
@@ -154,6 +155,7 @@ int TNodeVisitorCG_Generator::find_local(const String& s,int d)
 		{
 			int id=(*it)->variables.find(s);
 			if(id<0) continue;
+
 			return id+(*it)->local_num+1;
 		}
 
@@ -251,17 +253,21 @@ void TNodeVisitorCG_Generator::emit_get_table(const String& s)
 {
 	emit(XOP_GET_TABLE,ggidx(s));
 }
+
 void TNodeVisitorCG_Generator::emit_set_index(const String& s)
 {
 	emit(XOP_SET_INDEX,ggidx(s));
 }
+
 void TNodeVisitorCG_Generator::emit_get_index(const String& s)
 {
 	emit(XOP_GET_INDEX,ggidx(s));
 }
+
 void TNodeVisitorCG_Generator::emit_set_local(int n)
 {
 	emit(XOP_SET_LOCAL,n);
+
 }
 void TNodeVisitorCG_Generator::emit_get_local(int n)
 {

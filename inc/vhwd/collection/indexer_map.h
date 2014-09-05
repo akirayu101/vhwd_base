@@ -38,13 +38,13 @@ public:
 	indexer_map(indexer_map&& o):basetype(o) {}
 #endif
 
-	mapped_type& operator[](const key_type& k)
+	inline mapped_type& operator[](const key_type& k)
 	{
 		index_type id=impl.find2(k);
 		return this->get(id).second;
 	}
 
-	const mapped_type& operator[](const key_type& k) const
+	inline const mapped_type& operator[](const key_type& k) const
 	{
 		index_type id=impl.find(k);
 		if(id==impl_type::invalid_pos) Exception::XNotFound();

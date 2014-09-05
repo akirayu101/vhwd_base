@@ -7,66 +7,62 @@
 VHWD_ENTER
 
 
-class bst_base
-{
-public:
-	typedef char color_type;
-	enum
-	{
-		COLOR_RED,		// red is default
-		COLOR_BLACK,
-	};
-};
 
-template<typename K,typename V>
-class bst_node : public bst_base
+template<typename K,typename V,typename E>
+class bst_node
 {
 public:
-	typedef bst_node node_type;
+
+	typedef bst_node<K,V,E> node_type;
+
 	typedef K key_type;
 	typedef V mapped_type;
+	typedef E extra_type;
 	typedef typename kv_trait<K,V>::value_type value_type;
 
 	node_type* parent;
 	node_type* child1;
 	node_type* child2;
 	value_type value;
-	color_type color;
+	extra_type extra;
 
 	bst_node()
 	{
 		parent=child1=child2=NULL;
-		color=COLOR_RED;
 	}
 
-	template<typename X>
-	bst_node(const X& p):value(kv_trait<K,V>::pair(p))
+
+	bst_node(const value_type& v):value(v)
 	{
 		parent=child1=child2=NULL;
-		color=COLOR_RED;
 	}
 
-	bst_node(const bst_node& n):value(n.value),color(n.color)
+	bst_node(const bst_node& n):value(n.value),extra(n.extra)
 	{
 		parent=child1=child2=NULL;
 	}
 
 #ifdef VHWD_C11
-	bst_node(value_type&& v):value(v)
+
+	bst_node(value_type&& v):value(std::move(v))
 	{
 		parent=child1=child2=NULL;
-		color=COLOR_RED;
+	}
+
+	bst_node(bst_node&& n):value(n.value),extra(n.extra)
+	{
+		parent=child1=child2=NULL;
 	}
 #endif
 
 };
 
-template<typename K,typename V,typename C>
-class bst_trait_base : public bst_base
+template<typename K,typename V,typename C,typename E>
+class bst_trait_base
 {
 public:
 
-	typedef bst_node<K,V> node_type;
+	typedef bst_node<K,V,E> node_type;
 
 	typedef K key_type;
 	typedef V mapped_type;
@@ -74,36 +70,6 @@ public:
 	typedef const key_type& const_key_reference;
 
 	typedef C key_compare;
-
-	static bool is_red(node_type* node)
-	{
-		return node&&node->color==node_type::COLOR_RED;
-	}
-
-	static bool is_black(node_type* node)
-	{
-		return !node||node->color==COLOR_BLACK;
-	}
-
-	static void mark_red(node_type* node)
-	{
-		node->color=COLOR_RED;
-	}
-
-	static void mark_black(node_type* node)
-	{
-		if(node) node->color=COLOR_BLACK;
-	}
-
-	static void mark(node_type* node,node_type* pref)
-	{
-		node->color=pref->color;
-	}
-
-	static void mark_inv(node_type* node)
-	{
-		node->color=node->color==COLOR_RED?COLOR_BLACK:COLOR_RED;
-	}
 
 	static size_t nd_count(node_type* p)
 	{
@@ -176,11 +142,11 @@ public:
 
 };
 
-template<typename K,typename V,typename C>
-class bst_trait : public bst_trait_base<K,V,C>
+template<typename K,typename V,typename C,typename E>
+class bst_trait : public bst_trait_base<K,V,C,E>
 {
 public:
-	typedef bst_trait_base<K,V,C> basetype;
+	typedef bst_trait_base<K,V,C,E> basetype;
 	typedef typename basetype::key_type key_type;
 	typedef typename basetype::value_type value_type;
 	typedef typename basetype::node_type node_type;
@@ -201,11 +167,11 @@ public:
 
 };
 
-template<typename K,typename C>
-class bst_trait<K,void,C> : public bst_trait_base<K,void,C>
+template<typename K,typename C,typename E>
+class bst_trait<K,void,C,E> : public bst_trait_base<K,void,C,E>
 {
 public:
-	typedef bst_trait_base<K,void,C> basetype;
+	typedef bst_trait_base<K,void,C,E> basetype;
 	typedef typename basetype::key_type key_type;
 	typedef typename basetype::value_type value_type;
 	typedef typename basetype::node_type node_type;

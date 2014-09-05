@@ -107,8 +107,9 @@ MpAllocNode* MpAllocGlobal::dealloc_batch_nolock(MpAllocSlot& sl,MpAllocNode* fp
 		if(sp->sp_flag.get_fly())
 		{
 			page_free(reinterpret_cast<void*>(sp->sp_base),sp->sp_size);
-			MpAllocConfig::lock_type lock1(span_spin);
+			span_spin.lock();
 			spanalloc.dealloc(sp);
+			span_spin.unlock();
 		}
 		else
 		{
@@ -122,12 +123,14 @@ MpAllocNode* MpAllocGlobal::dealloc_batch_nolock(MpAllocSlot& sl,MpAllocNode* fp
 
 MpAllocNode* MpAllocGlobal::alloc_small_batch(MpAllocSlot& sl,size_t& sz)
 {
-	MpAllocConfig::lock_type lock1(sl.sl_spin);
+	sl.sl_spin.lock();
+
 	if(!sl.sp_head)
 	{
 		sl.sp_head=create_span_nolock(sl);
 		if(!sl.sp_head)
 		{
+			sl.sl_spin.unlock();
 			return NULL;
 		}
 	}
@@ -144,6 +147,8 @@ MpAllocNode* MpAllocGlobal::alloc_small_batch(MpAllocSlot& sl,size_t& sz)
 		sl.sp_head->sl_prev=NULL;
 	}
 
+
+	sl.sl_spin.unlock();
 	return nd;
 }
 
@@ -191,7 +196,7 @@ void MpAllocGlobal::dealloc_real(void* p,MpAllocBucket& bk)
 	if(sp->sl_slot)
 	{
 		MpAllocSlot& sl(*sp->sl_slot);
-		MpAllocConfig::lock_type lock1(sl.sl_spin);
+		sl.sl_spin.lock();
 
 		MpAllocNode* fn=(MpAllocNode*)p;
 		fn->nd_next=sp->nd_free;
@@ -210,6 +215,7 @@ void MpAllocGlobal::dealloc_real(void* p,MpAllocBucket& bk)
 
 		if(--sp->nd_nnum!=0||sp->sl_next==NULL)
 		{
+			sl.sl_spin.unlock();
 			return;
 		}
 
@@ -223,14 +229,17 @@ void MpAllocGlobal::dealloc_real(void* p,MpAllocBucket& bk)
 			sp->sl_next->sl_prev=sp->sl_prev;
 			sp->sl_prev->sl_next=sp->sl_next;
 		}
+
+		sl.sl_spin.unlock();
 	}
 
 	bk.set(NULL);
 	if(sp->sp_flag.get_fly())
 	{
 		page_free(reinterpret_cast<void*>(sp->sp_base),sp->sp_size);
-		MpAllocConfig::lock_type lock1(span_spin);
+		span_spin.lock();
 		spanalloc.dealloc(sp);
+		span_spin.unlock();
 	}
 	else
 	{
@@ -243,12 +252,15 @@ void MpAllocGlobal::dealloc_real(void* p,MpAllocBucket& bk)
 void* MpAllocGlobal::alloc_small(size_t n,MpAllocSlot& sl)
 {
 	wassert(n<=sl.nd_size);
-	MpAllocConfig::lock_type lock1(sl.sl_spin);
+
+	sl.sl_spin.lock();
+
 	if(!sl.sp_head)
 	{
 		sl.sp_head=create_span_nolock(sl);
 		if(!sl.sp_head)
 		{
+			sl.sl_spin.unlock();
 			return NULL;
 		}
 	}
@@ -266,6 +278,7 @@ void* MpAllocGlobal::alloc_small(size_t n,MpAllocSlot& sl)
 		}
 	}
 
+	sl.sl_spin.unlock();
 	return nd;
 }
 
@@ -289,8 +302,9 @@ void* MpAllocGlobal::alloc_large(size_t n)
 	{
 		MpAllocSpan* sp;
 		{
-			MpAllocConfig::lock_type lock1(span_spin);
+			span_spin.lock();
 			sp=spanalloc.alloc();
+			span_spin.unlock();
 		}
 
 		if(!sp)
@@ -324,14 +338,18 @@ MpAllocSpan* MpAllocGlobal::create_span_nolock(MpAllocSlot& sl)
 	MpAllocSpan* sp;
 	if(sl.sp_flag.get_fly())
 	{
-		MpAllocConfig::lock_type lock1(span_spin);
+		span_spin.lock();
+
 		sp=spanalloc.alloc();
 		if(!sp)
 		{
 			page_free(p1,sz);
+			span_spin.unlock();
 			return NULL;
 		}
 		sp->sp_flag.set_fly(true);
+
+		span_spin.unlock();
 	}
 	else
 	{
@@ -405,8 +423,9 @@ void MpAllocGlobal::gc()
 			if(kk->sp_flag.get_fly())
 			{
 				page_free(reinterpret_cast<void*>(kk->sp_base),kk->sp_size);
-				MpAllocConfig::lock_type lock1(span_spin);
+				span_spin.lock();
 				spanalloc.dealloc(kk);
+				span_spin.unlock();
 			}
 			else
 			{

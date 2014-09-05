@@ -104,12 +104,11 @@ public:
 	~ObjectData();
 
 	// Increase reference counter,
-	// Call on_created if origin reference count is 0.
-	void IncRef();
+	inline void IncRef(){m_refcount++;}
 
 	// Decrease reference counter,
-	// Call on_destroy and delete this if new reference is 0.
-	void DecRef();
+	inline void DecRef(){wassert(m_refcount.get()>0);if(--m_refcount==0){delete this;}}
+
 
 	// Get reference count.
 	int GetRef() const;
@@ -148,8 +147,8 @@ public:
 
 protected:
 
-	virtual void on_destroy() {}
-	virtual void on_created() {}
+	//virtual void on_destroy() {}
+	//virtual void on_created() {}
 
 	AtomicInt32 m_refcount;
 };

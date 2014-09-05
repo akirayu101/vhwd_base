@@ -37,7 +37,7 @@ int CallableCode::__fun_call(Executor& ks)
 		case XOP_NOOP:
 			break;
 		case XOP2_ADD:
-			ks.call2<XOP2_ADD>();
+			ks.call2<XOP2_ADD>();			
 			break;
 		case XOP2_SUB:
 			ks.call2<XOP2_SUB>();
@@ -101,7 +101,6 @@ int CallableCode::__fun_call(Executor& ks)
 		case XOP2_CAT:
 			ks.call2<XOP2_CAT>();
 			break;
-
 		case XOP1_NOT:
 			ks.call1<XOP1_NOT>();
 			break;

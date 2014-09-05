@@ -29,32 +29,32 @@ class AtomicImpl<T,4>
 public:
 	typedef T type;
 	typedef volatile long * pint;
-	static type fetch_add(volatile type* p,type v)
+	static inline type fetch_add(volatile type* p,type v)
 	{
 		return InterlockedExchangeAdd((pint)p,v);
 	}
 
-	static type fetch_sub(volatile type* p,type v)
+	static inline type fetch_sub(volatile type* p,type v)
 	{
 		return InterlockedExchangeAdd((pint)p,-v);
 	}
 
-	static type fetch_and(volatile type* p,type v)
+	static inline type fetch_and(volatile type* p,type v)
 	{
 		return _InterlockedAnd((pint)p,v);
 	}
 
-	static type fetch_or(volatile type* p,type v)
+	static inline type fetch_or(volatile type* p,type v)
 	{
 		return _InterlockedOr((pint)p,v);
 	}
 
-	static type fetch_xor(volatile type* p,type v)
+	static inline type fetch_xor(volatile type* p,type v)
 	{
 		return _InterlockedXor((pint)p,v);
 	}
 
-	static type exchange(volatile type* p,type v)
+	static inline type exchange(volatile type* p,type v)
 	{
 		return InterlockedExchange((pint)p,v);
 	}
@@ -64,7 +64,7 @@ public:
 		return InterlockedExchange((pint)p,v);
 	}
 
-	static bool compare_exchange(volatile type* p,type& c,type v)
+	static inline bool compare_exchange(volatile type* p,type& c,type v)
 	{
 		type t=InterlockedCompareExchange((pint)p,v,c);
 		if(t!=c)
@@ -78,7 +78,7 @@ public:
 		}
 	}
 
-	static type load(volatile const type* p)
+	static inline type load(volatile const type* p)
 	{
 		return *p;
 	}
@@ -94,42 +94,42 @@ public:
 	typedef T type;
 	typedef volatile int64_t* pint;
 
-	static type fetch_add(volatile type* p,type v)
+	static inline type fetch_add(volatile type* p,type v)
 	{
 		return InterlockedExchangeAdd64((pint)p,v);
 	}
 
-	static type fetch_sub(volatile type* p,type v)
+	static inline type fetch_sub(volatile type* p,type v)
 	{
 		return InterlockedExchangeAdd64((pint)p,-v);
 	}
 
-	static type fetch_and(volatile type* p,type v)
+	static inline type fetch_and(volatile type* p,type v)
 	{
 		return InterlockedAnd64((pint)p,v);
 	}
 
-	static type fetch_or(volatile type* p,type v)
+	static inline type fetch_or(volatile type* p,type v)
 	{
 		return InterlockedOr64((pint)p,v);
 	}
 
-	static type fetch_xor(volatile type* p,type v)
+	static inline type fetch_xor(volatile type* p,type v)
 	{
 		return InterlockedXor64((pint)p,v);
 	}
 
-	static type exchange(volatile type* p,type v)
+	static inline type exchange(volatile type* p,type v)
 	{
 		return InterlockedExchange64((pint)p,v);
 	}
 
-	static type store(volatile type* p,type v)
+	static inline type store(volatile type* p,type v)
 	{
 		return InterlockedExchange64((pint)p,v);
 	}
 
-	static bool compare_exchange(volatile type* p,type& c,type v)
+	static inline bool compare_exchange(volatile type* p,type& c,type v)
 	{
 		type t=InterlockedCompareExchange64((pint)p,v,c);
 		if(t!=c)
@@ -143,7 +143,7 @@ public:
 		}
 	}
 
-	static type load(volatile const type* p)
+	static inline type load(volatile const type* p)
 	{
 		return InterlockedOr64((pint)p,0);
 	}

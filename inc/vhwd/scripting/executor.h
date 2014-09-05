@@ -2,7 +2,7 @@
 #define __H_VHWD_SCRIPTING_EXECUTOR__
 
 #include "vhwd/scripting/variant.h"
-
+//#include "vhwd/scripting/variant_op1.h"
 #include "vhwd/scripting/instruction.h"
 
 VHWD_ENTER
@@ -56,8 +56,8 @@ public:
 
 	inline void sadj(int n){stack.nsp+=n;}
 
-	Variant& get(int n){return stack[stack.nsp+n];}
-	Variant& top();
+	inline Variant& get(int n){return stack[stack.nsp+n];}
+	inline Variant& top(){return stack[stack.nsp];}
 
 	template<int N>
 	void call1();
@@ -151,6 +151,21 @@ inline void Executor::call1()
 {
 	kvar_helper<N>::g1(*this);
 }
+
+
+inline void Executor::get_local(int n)
+{
+	push(stack[n]);
+}
+
+inline void Executor::set_local(int n)
+{
+	popq(stack[n]);
+}
+
+
+
+
 
 
 VHWD_LEAVE

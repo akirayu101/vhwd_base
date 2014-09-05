@@ -234,7 +234,7 @@ public:
 
 	static const index_type invalid_pos=index_type(-1);
 
-	index_type chunk_find(const chunk_type& chunk,const key_type& k) const
+	inline index_type chunk_find(const chunk_type& chunk,const key_type& k) const
 	{
 		for(chunk_node* p=chunk.phead; p!=NULL; p=p->pnext)
 		{
@@ -243,7 +243,7 @@ public:
 		return invalid_pos;
 	}
 
-	static void chunk_insert(chunk_type& chunk,index_type k)
+	static inline void chunk_insert(chunk_type& chunk,index_type k)
 	{
 		chunk_node* p=chunk_type::create();
 		p->index=k;
@@ -251,7 +251,7 @@ public:
 		chunk.phead=p;
 	}
 
-	static void chunk_replace(chunk_type& chunk,index_type id1,index_type id2)
+	static inline void chunk_replace(chunk_type& chunk,index_type id1,index_type id2)
 	{
 		for(chunk_node* n=chunk.phead; n; n=n->pnext)
 		{
@@ -317,7 +317,7 @@ public:
 		}
 	}
 
-	index_type find(const key_type& k) const
+	inline index_type find(const key_type& k) const
 	{
 		if(m_nBucketMask==0)
 		{
@@ -331,7 +331,7 @@ public:
 	}
 
 
-	index_type insert(const value_type& v)
+	inline index_type insert(const value_type& v)
 	{
 		const key_type& k(P::key(v));
 		size_t hk=P::hashcode_key(k);
@@ -345,13 +345,19 @@ public:
 		chunk_type& chunk(buckets[cp]);
 		index_type id=chunk_find(chunk,k);
 
-		if(id!=invalid_pos)
+		if(id==invalid_pos)
 		{
-			return id;
+			id=(index_type)values.size();
+			chunk_push(chunk,id,v);
 		}
 
-		id=(index_type)values.size();
-		chunk_insert(chunk,id);
+		return id;
+	}
+
+
+	void chunk_push(chunk_type& chunk,index_type id,const value_type& v)
+	{
+		chunk_node* p=chunk_type::create();
 
 		try
 		{
@@ -360,15 +366,17 @@ public:
 		}
 		catch(...)
 		{
-			chunk_erase(chunk,id);
+			chunk_type::destroy(p);
 			throw;
 		}
 
-		return id;
+		p->index=id;
+		p->pnext=chunk.phead;
+		chunk.phead=p;
+
 	}
 
-
-	index_type find2(const key_type& k)
+	inline index_type find2(const key_type& k)
 	{
 
 		if(m_nBucketMask==0)
@@ -381,28 +389,15 @@ public:
 		chunk_type& chunk(buckets[cp]);
 		index_type id=chunk_find(chunk,k);
 
-		if(id!=invalid_pos)
+		if(id==invalid_pos)
 		{
-			return id;
+			id=(index_type)values.size();
+			chunk_push(chunk,id,P::pair(k));
 		}
-
-		id=(index_type)values.size();
-		chunk_insert(chunk,id);
-		try
-		{
-			values.push_back(P::pair(k));
-			check_loadfactor();
-		}
-		catch(...)
-		{
-			chunk_erase(chunk,id);
-			throw;
-		}
-
 		return id;
 	}
 
-	size_t erase(const key_type& k)
+	inline size_t erase(const key_type& k)
 	{
 		if(m_nBucketMask==0)
 		{
@@ -413,6 +408,7 @@ public:
 		size_t cp1=hk1&m_nBucketMask;
 		chunk_type& chunk1(buckets[cp1]);
 		index_type id1=chunk_find_delete(chunk1,k);
+
 		if(id1==P::invalid_pos)
 		{
 			return 0;
@@ -432,7 +428,7 @@ public:
 		return 1;
 	}
 
-	value_type& get_by_id(index_type k)
+	inline value_type& get_by_id(index_type k)
 	{
 		return (value_type&)values[k];
 	}

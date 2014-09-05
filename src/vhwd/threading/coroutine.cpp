@@ -111,7 +111,8 @@ const unsigned char asm_swap_context_code[]=
 0x5D,
 
 // ret
-0xC3,
+0xC3
+
 };
 #endif
 
@@ -352,6 +353,7 @@ bool Coroutine::yield(Coroutine* pcortctx_,ObjectData* extra_)
 	{
 		return false;
 	}
+
 
 	callee.m_pExtraParam.reset(extra_);
 

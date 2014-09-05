@@ -11,7 +11,7 @@
 
 #include "tl.h"
 
-// enable c++11
+// enable c++11 do not enable, not implement
 //#define VHWD_C11
 
 // use MemPoolDebug to detect memory leaks.

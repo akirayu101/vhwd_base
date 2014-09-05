@@ -683,5 +683,11 @@
     <ClInclude Include="..\..\inc\vhwd\net\q2packet.h">
       <Filter>inc\vhwd\net</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\rbt_tree_policy.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\avl_tree_policy.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

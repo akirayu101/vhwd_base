@@ -2,7 +2,7 @@
 #define __H_VHWD_SCRIPTING_VARIANT_OP__
 
 #include "vhwd/scripting/variant.h"
-#include "vhwd/scripting/executor.h"
+//#include "vhwd/scripting/executor.h"
 
 VHWD_ENTER
 

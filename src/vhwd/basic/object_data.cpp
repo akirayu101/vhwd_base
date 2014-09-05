@@ -4,24 +4,6 @@
 
 VHWD_ENTER
 
-void ObjectData::IncRef()
-{
-	if(m_refcount++==0)
-	{
-		on_created();
-	}
-}
-
-void ObjectData::DecRef()
-{
-	wassert(m_refcount.get()>0);
-
-	if(--m_refcount==0)
-	{
-		on_destroy();
-		delete this;
-	}
-}
 
 int ObjectData::GetRef() const
 {

@@ -48,12 +48,12 @@ public:
 		impl.rehash(0);
 	}
 
-	index_type find(const key_type& v) const
+	inline index_type find(const key_type& v) const
 	{
 		return impl.find(v);
 	}
 
-	index_type find2(const key_type& v)
+	inline index_type find2(const key_type& v)
 	{
 		return impl.find2(v);
 	}

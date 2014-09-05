@@ -75,7 +75,7 @@ public:
 			return -1;
 		}
 
-		TimeSpan ts(PLCast<int64_t>::g(ks.get(-1))-PLCast<int64_t>::g(ks.get(0)));
+		TimeSpan ts(PLCast<int64_t>::g(ks.get(0))-PLCast<int64_t>::g(ks.get(-1)));
 		ks.stack[nbp+1].reset<double>(ts/TimeSpan::Seconds(1));
 		return 1;
 	}

@@ -42,6 +42,12 @@ public:
 		return k;
 	}
 
+#ifdef VHWD_C11
+	static value_type&& pair(value_type&& k)
+	{
+		return std::move(k);
+	}
+#endif
 };
 
 
@@ -70,6 +76,12 @@ public:
 		return k;
 	}
 
+#ifdef VHWD_C11
+	static value_type&& pair(value_type&& k)
+	{
+		return std::move(k);
+	}
+#endif
 };
 
 
