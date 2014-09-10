@@ -91,9 +91,6 @@ public:
 	}
 };
 
-#pragma push_macro("new")
-#undef new
-
 class lf_queue_header
 {
 public:
@@ -231,6 +228,150 @@ private:
 	T* pBuffer;
 };
 
+
+// single read single write queue
+template<typename T>
+class SRSW_Queue
+{
+
+	typedef void (*buf_free_function)(void*);
+
+	class SRSW_queue_impl
+	{
+	public:
+		buf_free_function dfun;
+		AtomicIntT<intptr_t> nref;
+		size_t size;
+		volatile size_t rd_pos;
+		volatile size_t wr_pos;
+		T data[1];
+
+		bool push(const T& t)
+		{
+			size_t wr2=(wr_pos+1)%size;
+			if(wr2==rd_pos)
+			{
+				return false;
+			}
+			data[wr_pos]=t;
+			wr_pos=wr2;
+			return true;
+		}
+
+		bool popq(T& t)
+		{
+			if(rd_pos==wr_pos)
+			{
+				return false;
+			}
+			t=data[rd_pos];
+			rd_pos=(rd_pos+1)%size;
+			return true;
+		}
+	};
+
+
+public:
+
+	SRSW_Queue()
+	{
+		m_ptr=NULL;
+	}
+
+	SRSW_Queue(const SRSW_Queue& q)
+	{
+		m_ptr=NULL;
+		reset(q.m_ptr);
+	}
+
+	SRSW_Queue& operator=(const SRSW_Queue& q)
+	{
+		reset(q.m_ptr);
+		return *this;
+	}
+
+	~SRSW_Queue()
+	{
+		clear();
+	}
+
+	void clear()
+	{
+		reset(NULL);
+	}
+
+	void reset(SRSW_queue_impl* p)
+	{
+		if(p)
+		{
+			++p->nref;
+		}
+
+		if(m_ptr && --m_ptr->nref==0)
+		{
+			if(m_ptr->dfun)
+			{
+				m_ptr->dfun(m_ptr);
+			}
+		}
+
+		m_ptr=p;
+	}
+
+	bool reset(void* b,size_t d,buf_free_function f=NULL)
+	{
+		if(d<sizeof(SRSW_queue_impl))
+		{
+			return false;
+		}
+		size_t n=1+(d-sizeof(SRSW_queue_impl))/sizeof(T);
+		SRSW_queue_impl* p=(SRSW_queue_impl*)b;
+
+		p->dfun=f;
+		p->nref=0;
+		p->size=n;
+		p->wr_pos=0;
+		p->rd_pos=0;
+
+		reset(p);
+
+		return true;
+	}
+
+	void resize(size_t n)
+	{
+		if(n>0)
+		{
+			size_t sz=sizeof(SRSW_queue_impl)+sizeof(T)*(n-1);
+			if((sz-sizeof(SRSW_queue_impl))/sizeof(T)!=n-1) Exception::XBadAlloc();
+			void* p=mp_alloc(sz);
+			if(!p) Exception::XBadAlloc();
+			reset(p,sz,mp_free);
+		}
+		else
+		{
+			reset(NULL);
+		}
+	}
+
+	bool push(const T& t)
+	{
+		wassert(m_ptr!=NULL);
+		return m_ptr->push(t);
+	}
+
+	bool popq(T& t)
+	{
+		wassert(m_ptr!=NULL);
+		return m_ptr->popq(t);
+	}
+
+	SRSW_queue_impl* impl(){return m_ptr;}
+
+protected:
+
+	SRSW_queue_impl* m_ptr;
+};
 
 
 template<typename T,typename P>
@@ -646,7 +787,7 @@ bool LockFreeQueue<T,P>::init(lf_queue_header* addr_,T* buff_,bool forceinit_)
 
 }
 
-#pragma pop_macro("new")
+
 
 VHWD_LEAVE
 

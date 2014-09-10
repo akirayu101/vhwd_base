@@ -43,7 +43,7 @@ public:
 	}
 
 #ifdef VHWD_C11
-	static value_type&& pair(value_type&& k)
+	static value_type pair(value_type&& k)
 	{
 		return std::move(k);
 	}

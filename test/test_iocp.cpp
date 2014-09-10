@@ -198,7 +198,7 @@ TEST_DEFINE(TEST_IOCP_TCP)
 		if(f1)
 		{
 
-			if(nCount%1000==0)
+			if(nCount%1000==0 && nCount>0)
 			{
 				Console::WriteLine(String::Format("%d connections",nCount));
 			}

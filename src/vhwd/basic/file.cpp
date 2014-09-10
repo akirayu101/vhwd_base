@@ -32,9 +32,9 @@ bool File::Open(const String& filename_,int flag_)
 	HANDLE hFile=(HANDLE)CreateFileA(
 					 fn.c_str(),
 					 FileAccess::makeflag(flag_,GENERIC_READ,GENERIC_WRITE),
-					 FileAccess::makeflag(flag_,FILE_SHARE_READ,FILE_SHARE_WRITE),
+					 FILE_SHARE_READ,
 					 NULL,
-					 flag_&FileAccess::FLAG_CR?OPEN_ALWAYS:OPEN_EXISTING,
+					 FileAccess::FLAG_CR?OPEN_ALWAYS:OPEN_EXISTING,
 					 NULL,
 					 NULL
 				 );

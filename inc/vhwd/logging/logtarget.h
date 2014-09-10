@@ -12,6 +12,7 @@
 #include "vhwd/basic/pointer.h"
 #include "vhwd/basic/object.h"
 #include "vhwd/basic/bitflags.h"
+#include "vhwd/basic/file.h"
 #include "vhwd/collection/arr_1t.h"
 
 VHWD_ENTER
@@ -64,6 +65,7 @@ protected:
 };
 
 // LogFile, write messages to file.
+// if not append mode, file will be truncated
 class VHWD_DLLIMPEXP LogFile : public LogTarget
 {
 public:
@@ -73,13 +75,8 @@ public:
 
 	virtual void Handle(const LogRecord&);
 
-	bool IsOk()
-	{
-		return fp!=NULL;
-	}
-
 protected:
-	FILE* fp;
+	File fp;
 	AtomicSpin spin;
 };
 

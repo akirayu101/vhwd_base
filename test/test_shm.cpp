@@ -13,18 +13,18 @@ TEST_DEFINE(TEST_Shm)
 
 	// create a file and write some text
 	TEST_ASSERT(sm1.OpenFile("shm_sample.txt",1024,FileAccess::FLAG_RW|FileAccess::FLAG_CR));
-	if(sm1.addr())
+	if(sm1.data())
 	{
-		strcpy(sm1.addr(),filetext.c_str());
+		strcpy(sm1.data(),filetext.c_str());
 	}
 	sm1.Close();
-	TEST_ASSERT(sm1.addr()==NULL);
+	TEST_ASSERT(sm1.data()==NULL);
 
 	// open the file and read the text
 	TEST_ASSERT(sm2.OpenFile("shm_sample.txt",0,FileAccess::FLAG_RD));
-	if(sm1.addr() && sm2.addr())
+	if(sm1.data() && sm2.data())
 	{
-		TEST_ASSERT(strcmp(sm2.addr(),filetext.c_str())==0);
+		TEST_ASSERT(strcmp(sm2.data(),filetext.c_str())==0);
 	}
 	sm2.Close();
 
@@ -33,8 +33,8 @@ TEST_DEFINE(TEST_Shm)
 
 	TEST_ASSERT_MSG(sm1.Open("local_shm",1024,FileAccess::FLAG_RD|FileAccess::FLAG_WR|FileAccess::FLAG_CR),"ShmOpen");
 	TEST_ASSERT_MSG(sm2.Open("local_shm",1024,FileAccess::FLAG_RD|FileAccess::FLAG_WR),"ShmOpen");
-	char* p1=sm1.addr();
-	char* p2=sm2.addr();
+	char* p1=sm1.data();
+	char* p2=sm2.data();
 
 	if(p1 && p2)
 	{
@@ -55,7 +55,7 @@ TEST_DEFINE(TEST_Shm)
 	// open SharedMem without a name;
 	TEST_ASSERT_MSG(sm2.Alloc(4096*8),"ShmOpen");
 
-	p1=sm2.addr();
+	p1=sm2.data();
 	TEST_ASSERT_MSG(p1!=NULL,"FileAccess::Alloc failed");
 	if(p1)
 	{

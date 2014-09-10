@@ -134,7 +134,7 @@ TEST_DEFINE(TEST_arr_1t)
 
 }
 
-
+template<template<typename,typename,typename> class P>
 void test_bst_set()
 {
 	std::vector<int> aInts;
@@ -144,7 +144,9 @@ void test_bst_set()
 	}
 	std::random_shuffle(aInts.begin(),aInts.end());
 
-	bst_set<int> s;
+	typedef bst_set<int,std::less<int>,def_allocator,P> bst_set_type;
+	bst_set_type s;
+
 	s.insert(aInts.begin(),aInts.end());
 
 
@@ -164,7 +166,7 @@ void test_bst_set()
 
 }
 
-
+template<template<typename,typename,typename> class P>
 void test_bst_multiset()
 {
 	std::vector<int> aInts;
@@ -179,7 +181,9 @@ void test_bst_multiset()
 	std::random_shuffle(aInts.begin(),aInts.end());
 
 
-	bst_multiset<int> s;
+	typedef bst_multiset<int,std::less<int>,def_allocator,P> bst_set_type;
+	bst_set_type s;
+
 	s.insert(aInts.begin(),aInts.end());
 
 	TEST_ASSERT(s.size()==2048);
@@ -193,8 +197,8 @@ void test_bst_multiset()
 	s.insert(1);
 	TEST_ASSERT(s.count(1)==3);
 
-	std::pair<bst_multiset<int>::iterator,bst_multiset<int>::iterator> eqr(s.equal_range(1));
-	for(bst_multiset<int>::iterator it=eqr.first; it!=eqr.second; ++it)
+	std::pair<bst_set_type::iterator,bst_set_type::iterator> eqr(s.equal_range(1));
+	for(bst_set_type::iterator it=eqr.first; it!=eqr.second; ++it)
 	{
 		TEST_ASSERT((*it)==1);
 	}
@@ -207,8 +211,10 @@ void test_bst_multiset()
 
 TEST_DEFINE(TEST_Collection)
 {
-	test_bst_set();
-	test_bst_multiset();
+	test_bst_set<rbt_trait>();
+	test_bst_set<avl_trait>();
+	test_bst_multiset<rbt_trait>();
+	test_bst_multiset<avl_trait>();
 
 	indexer_set<String> sh;
 
@@ -259,3 +265,81 @@ TEST_DEFINE(TEST_Collection)
 	TEST_ASSERT(arr.size()==0);
 
 };
+
+
+
+class Thread_SRSW_Queue : public ThreadMulti
+{
+public:
+
+	SRSW_Queue<int> q;
+
+	Thread_SRSW_Queue()
+	{
+		q.resize(1024*32);
+	}
+
+	void svc_reader()
+	{
+		int v;
+		for(int i=0;i<1024*1024;i++)
+		{
+			while(!q.popq(v))
+			{
+				if(test_destroy())
+				{
+					TEST_ASSERT_MSG(false,"svc_reader exit");
+					return;
+				}
+				AtomicSpin::noop();
+			}
+			if(v!=i)
+			{
+				TEST_ASSERT_MSG(false,"svc_reader failed");
+				reqexit();
+				return;
+			}
+		}
+
+		TEST_ASSERT_MSG(true,"svc_reader done");
+	}
+
+	void svc_writer()
+	{
+		for(int i=0;i<1024*1024;i++)
+		{
+			while(!q.push(i))
+			{
+				if(test_destroy())
+				{
+					TEST_ASSERT_MSG(false,"svc_writer exit");
+					return;
+				}
+				AtomicSpin::noop();
+			}
+		}
+		TEST_ASSERT_MSG(true,"svc_writer done");
+	}
+
+	void svc()
+	{
+		int r=rank();
+		if(r==0)
+		{
+			svc_writer();
+		}
+		else if(r==1)
+		{
+			svc_reader();
+		}
+	}
+
+};
+
+
+TEST_DEFINE(TEST_SRSW_Queue)
+{
+	Thread_SRSW_Queue q;
+	q.activate(2);
+	q.wait();
+}

@@ -11,11 +11,6 @@
 VHWD_ENTER
 
 
-#pragma push_macro("new")
-#undef new
-
-
-
 template<typename P,typename A>
 class bst_tree : public containerK<typename P::key_compare,typename A::template rebind<typename P::node_type>::other >
 {
@@ -1149,8 +1144,6 @@ typename bst_tree<P,A>::node_type* bst_tree<P,A>::bst_copy_recursive(node_type* 
 
 	return p;
 }
-
-#pragma pop_macro("new")
 
 
 VHWD_LEAVE

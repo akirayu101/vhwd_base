@@ -13,7 +13,7 @@
 
 VHWD_ENTER
 
-template<typename T,typename A>
+template<typename T,typename A=def_allocator>
 class arr_xt : public containerB< arr_container<T,typename A::template rebind<T>::other,tl::is_pod<T>::value> >
 {
 protected:

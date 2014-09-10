@@ -6,11 +6,6 @@
 
 VHWD_ENTER
 
-enum
-{
-	RBT_IMPL,
-	AVL_IMPL,
-};
 
 template<typename P,typename A>
 class bst_container : public containerB<bst_tree<P,A> >

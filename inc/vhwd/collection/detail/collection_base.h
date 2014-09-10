@@ -22,13 +22,13 @@ class sz_helper
 {
 public:
 
-	// adjunst alignment
+	// adjust alignment
 	static inline size_t adj(size_t sz,size_t al)
 	{
 		return (sz+al-1)&~(al-1);
 	}
 
-	// adjunst alignment
+	// adjust alignment
 	static inline void* adj(void* sz,size_t al)
 	{
 		return (void*)(((ptrdiff_t)sz+al-1)&~(al-1));
@@ -69,8 +69,8 @@ public:
 
 
 
-template<typename T,typename A=def_allocator >
-class arr_1t;
+//template<typename T,typename A=def_allocator >
+//class arr_1t;
 
 
 class arr_xt_dims
@@ -106,8 +106,8 @@ private:
 };
 
 
-template<typename T,typename A=def_allocator >
-class arr_xt;
+//template<typename T,typename A=def_allocator >
+//class arr_xt;
 
 class container_base
 {
@@ -663,7 +663,7 @@ public:
 	template<typename It,typename Ot>
 	static Ot uninitialized_copy_n(It first_,size_t count_,Ot dest_)
 	{
-		//std::uninitialized_copy_n(first_,count_,dest_);		//C++11
+		//return std::uninitialized_copy_n(first_,count_,dest_);		//C++11
 		return std::uninitialized_copy(first_,first_+count_,dest_);
 	}
 
@@ -677,7 +677,7 @@ public:
 	template<typename It,typename Ot>
 	static Ot copy_n(It first_,size_t count_,Ot dest_)
 	{
-		//std::copy_n(first_,count_,dest_);
+		//return std::copy_n(first_,count_,dest_);
 		return std::copy(first_,first_+count_,dest_);
 	}
 

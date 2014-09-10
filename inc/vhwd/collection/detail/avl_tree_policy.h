@@ -16,7 +16,6 @@ public:
 
 	typedef bst_node<K,V,avl_factor_type> node_type;
 
-
 	template<typename T>
 	static void adjust_insert(T& t,node_type* n);
 
@@ -35,25 +34,25 @@ public:
 
 	typedef T basetype;
 
-	typedef typename T::bst_policy P;
+	typedef typename T::bst_policy avl_policy;
 	typedef typename T::node_type node_type;
 
 	bool bst_validate()
 	{
-		return rbt_depth()>=0;
+		return avl_depth()>=0;
 	}
 
-	intptr_t rbt_depth()
+	intptr_t avl_depth()
 	{
-		return rbt_depth_real(this->m_pRoot);
+		return avl_depth_real(this->m_pRoot);
 	}
 
 
-	intptr_t rbt_depth_real(node_type* p)
+	intptr_t avl_depth_real(node_type* p)
 	{
 		if(p==NULL) return 0;
-		intptr_t p1=rbt_depth_real(p->child1);
-		intptr_t p2=rbt_depth_real(p->child2);
+		intptr_t p1=avl_depth_real(p->child1);
+		intptr_t p2=avl_depth_real(p->child2);
 
 		if(p1<0||p2<0||p1-p2>+1||p1-p2<-1)
 		{
@@ -63,7 +62,7 @@ public:
 		return std::max(p1,p2)+1;
 	}
 
-
+	// node n depth decreased by 1, reblance n's parent
 	void blance_parent(node_type* n)
 	{
 		node_type* p=n->parent;
@@ -78,6 +77,7 @@ public:
 		}
 	}
 
+	// case avl_factor is +2
 	template<bool d>
 	void handle_unblance_gt(node_type* p)
 	{
@@ -89,8 +89,8 @@ public:
 		{
 			rotate_right(p);
 			avl_factor_type fx=n->extra;
-			p->extra=1-fx;
 			n->extra=fx-1;
+			p->extra=-n->extra;
 
 			if(d && f1==1)
 			{
@@ -122,6 +122,7 @@ public:
 		}
 	}
 
+	// case avl_factor is -2
 	template<bool d>
 	void handle_unblance_lt(node_type* p)
 	{
@@ -133,8 +134,8 @@ public:
 		{
 			rotate_left(p);
 			avl_factor_type fx=n->extra;
-			p->extra=-1-fx;
 			n->extra=fx+1;
+			p->extra=-n->extra;
 
 			if(d && f1==-1)
 			{
@@ -144,10 +145,11 @@ public:
 		else
 		{
 			node_type* x=n->child1;
+			int fx=x->extra;
+
 			rotate_right(n);
 			rotate_left(p);
 
-			int fx=x->extra;
 			if(fx<=0)
 			{
 				n->extra=0;
@@ -189,9 +191,7 @@ public:
 					handle_unblance_gt<false>(p);
 					return;
 				}
-
 				wassert(f1==+1);
-
 			}
 			else
 			{
@@ -205,12 +205,10 @@ public:
 					handle_unblance_lt<false>(p);
 					return;
 				}
-
 				wassert(f1==-1);
 			}
 
-			n=p;
-			p=p->parent;
+			n=p;p=p->parent;
 			if(!p)
 			{
 				return;
@@ -218,37 +216,33 @@ public:
 		}
 	}
 
+	// depth of n's child1 descreased, handle it
 	void blance_child1(node_type *n)
 	{
-		--n->extra;
-		avl_factor_type f1=n->extra;
 
+		avl_factor_type f1=--n->extra;
 		if(f1==-1)
 		{
 			return;
 		}
-
 		if(f1==-2)
 		{
 			handle_unblance_lt<true>(n);
 			return;
 		}
-
 		wassert(f1==0);
 		blance_parent(n);
 	}
 
-
+	// depth of n's child2 descreased, handle it
 	void blance_child2(node_type *n)
 	{
-		++n->extra;
-		avl_factor_type f1=n->extra;
+		avl_factor_type f1=++n->extra;
 
 		if(f1==+1)
 		{
 			return;
 		}
-
 		if(f1==+2)
 		{
 			handle_unblance_gt<true>(n);

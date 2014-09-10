@@ -16,7 +16,7 @@ VHWD_ENTER
 #pragma push_macro("new")
 #undef new
 
-template<typename T,typename A>
+template<typename T,typename A=def_allocator>
 class arr_1t : public containerB< arr_container<T,typename A::template rebind<T>::other,tl::is_pod<T>::value> >
 {
 protected:

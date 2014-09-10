@@ -72,51 +72,42 @@ String LogTarget::Format(const LogRecord& o) const
 
 LogFile::LogFile(const String& filename,bool app)
 {
-	fp=fopen(filename.c_str(),app?"a":"w");
+	int flag=FileAccess::FLAG_WR|FileAccess::FLAG_CR;
+	if(app) flag|=FileAccess::FLAG_APPEND;
+	fp.Open(filename,flag);
+	if(!app)
+	{
+		fp.Truncate(0);
+	}
 }
 
 LogFile::~LogFile()
 {
-	if(fp!=NULL)
-	{
-		fclose(fp);
-	}
+
 }
 
 void LogFile::Handle(const LogRecord& o)
 {
-	if(fp==NULL) return;
+	if(!fp.Good()) return;
+
 	LockGuard<AtomicSpin> lock1(spin);
 
 	String s;
-	for(;;)
+	try
 	{
-		try
-		{
-			s=Format(o);
-			break;
-		}
-		catch(...)
-		{
-
-		}
-
-		try
-		{
-			s="String::PrintfV error";
-			break;
-		}
-		catch(...)
-		{
-
-		}
-
-		break;
+		s=Format(o);
+	}
+	catch(...)
+	{
+		System::LogError("Unknown exception in LogFile::Handle");
+		return;
 	}
 
-	::fwrite(s.c_str(),1,s.size(),fp);
-	::fwrite("\r\n",1,2,fp),
-	::fflush(fp);
+	fp.Write(s.c_str(),s.size());
+	fp.Write("\r\n",2);
+	fp.Flush();
+
+
 }
 
 void LogPtr::Handle(const LogRecord& o)

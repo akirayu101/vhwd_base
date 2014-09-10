@@ -400,7 +400,7 @@ bool IShmMemory::Create(const String& name,size_t sz)
 {
 	if(mem.Open(name,sizeof(IShmHeader)))
 	{
-		pHeader=(IShmHeader*)mem.addr();
+		pHeader=(IShmHeader*)mem.data();
 		sz=pHeader->size;
 		mem.Close();
 	}
@@ -411,14 +411,14 @@ bool IShmMemory::Create(const String& name,size_t sz)
 		return false;
 	}
 
-	pHeader=(IShmHeader*)mem.addr();
+	pHeader=(IShmHeader*)mem.data();
 	pHeader->size=sz;
 	return true;
 }
 
 char* IShmMemory::allocate(size_t s,size_t al)
 {
-	if(!mem.addr())
+	if(!mem.data())
 	{
 		return NULL;
 	}
@@ -430,7 +430,7 @@ char* IShmMemory::allocate(size_t s,size_t al)
 		return NULL;
 	}
 
-	char* p= mem.addr()+kk;
+	char* p= mem.data()+kk;
 	m_nShift=kk+s;
 	return p;
 }

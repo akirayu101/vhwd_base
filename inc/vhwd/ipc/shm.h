@@ -51,15 +51,22 @@ public:
 	}
 
 	// get the starting address of the shared memory.
-	char* addr()
+	//char* addr()
+	//{
+	//	return impl.m_pAddr;
+	//}
+	//const char* addr() const
+	//{
+	//	return impl.m_pAddr;
+	//}
+	char* data()
 	{
 		return impl.m_pAddr;
 	}
-	const char* addr() const
+	const char* data() const
 	{
 		return impl.m_pAddr;
 	}
-
 	// Create/Open shared memory with given name and given size.
 	bool Create(const String& name_,size_t size_,int flag_=FileAccess::FLAG_RW);
 	bool Open(const String& name_,size_t size_,int flag_=FileAccess::FLAG_RW);

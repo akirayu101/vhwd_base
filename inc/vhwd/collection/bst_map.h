@@ -6,13 +6,19 @@
 
 VHWD_ENTER
 
-template<typename K,typename V,typename C=std::less<K>,typename A=def_allocator,int P=RBT_IMPL>
+template<
+	typename K,
+	typename V,
+	typename C=std::less<K>,
+	typename A=def_allocator,
+	template<typename,typename,typename> class P=rbt_trait // P can be rbt_trait or avl_trait
+>
 class bst_map :
-	public bst_container<typename tl::meta_if<P==RBT_IMPL,rbt_trait<K,V,C>,avl_trait<K,V,C> >::type,A>
+	public bst_container<P<K,V,C>,A>
 {
 protected:
 
-	typedef bst_container<typename tl::meta_if<P==RBT_IMPL,rbt_trait<K,V,C>,avl_trait<K,V,C> >::type,A> basetype;
+	typedef bst_container<P<K,V,C>,A> basetype;
 	typedef typename basetype::impl_type impl_type;
 	using basetype::impl;
 
@@ -60,13 +66,18 @@ public:
 };
 
 
-template<typename K,typename V,typename C=std::less<K>,typename A=def_allocator,int P=RBT_IMPL >
+template<
+	typename K,
+	typename V,
+	typename C=std::less<K>,typename A=def_allocator,
+	template<typename,typename,typename> class P=rbt_trait // P can be rbt_trait or avl_trait
+>
 class bst_multimap 
-	: public bst_multi_container<typename tl::meta_if<P==RBT_IMPL,rbt_trait<K,V,C>,avl_trait<K,V,C> >::type,A>
+	: public bst_multi_container<P<K,V,C>,A>
 {
 protected:
 
-	typedef bst_multi_container<typename tl::meta_if<P==RBT_IMPL,rbt_trait<K,V,C>,avl_trait<K,V,C> >::type,A> basetype;
+	typedef bst_multi_container<P<K,V,C>,A> basetype;
 	typedef typename basetype::impl_type impl_type;
 	using basetype::impl;
 
