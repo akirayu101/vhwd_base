@@ -55,11 +55,9 @@ TimePoint& TimePoint::operator+=(const TimeSpan& span)
 	return *this;
 }
 
-static AtomicSpin& get_time_mutex()
-{
-	static AtomicSpin m;
-	return m;
-}
+
+AtomicSpin g_time_mutex;
+
 
 TimeDetail::TimeDetail(const TimePoint& tp_,int t)
 {
@@ -120,7 +118,7 @@ String TimeDetail::Format(const String& f) const
 	return buffer;
 }
 
-static bool read_number(const char*& sp,int& val)
+static inline bool read_number(const char*& sp,int& val)
 {
 	const char* p1=sp;
 	val=0;
@@ -203,7 +201,19 @@ bool TimeDetail::Parse(const TimePoint& tp_,int t)
 	tp=tp_;
 	time_t tt=tp.val/1000000;
 
-	LockGuard<AtomicSpin> lck(get_time_mutex());
+#ifdef VHWD_WINDOWS
+	if(t==UTC)
+	{
+		_gmtime64_s(&tk,&tt);
+	}
+	else
+	{
+		_localtime64_s(&tk,&tt);
+	}	
+
+#else
+	g_time_mutex.lock();
+
 	struct tm* pk;
 	if(t==UTC)
 	{
@@ -214,6 +224,10 @@ bool TimeDetail::Parse(const TimePoint& tp_,int t)
 		pk=localtime(&tt);
 	}
 	memcpy(&tk,pk,sizeof(struct tm));
+
+	g_time_mutex.unlock();
+#endif
+
 	return true;
 }
 

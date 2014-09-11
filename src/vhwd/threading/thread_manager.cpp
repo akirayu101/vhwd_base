@@ -63,12 +63,21 @@ ThreadImpl& Thread::this_data()
 
 		if(!p)
 		{
-			System::LogTrace("unknown thread");
-			static ThreadImpl d;
-			static Thread t;
-			d.thrd_rank=0;
-			d.thrd_ptr=&t;
-			return d;
+
+			static ThreadImpl* pDummyThread=NULL;
+			if(pDummyThread==NULL)
+			{
+				System::LogTrace("unknown thread calling this_data");
+
+				static ThreadImpl d;
+				static Thread t;
+				d.thrd_rank=0;
+				d.thrd_ptr=&t;
+
+				pDummyThread=&d;
+			}
+
+			return *pDummyThread;
 		}
 	}
 	return *p;

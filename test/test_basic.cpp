@@ -64,10 +64,18 @@ TEST_DEFINE(TEST_String)
 	s8<<i32;
 	TEST_ASSERT(s8=="12345678");
 
+	s8="";
+	s8<<-i32;
+	TEST_ASSERT(s8=="-12345678");
+
 	int64_t i64=123456890123456890;
 	s8="";
 	s8<<i64;
 	TEST_ASSERT(s8=="123456890123456890");
+	s8="";
+	s8<<-i64;
+	TEST_ASSERT(s8=="-123456890123456890");
+
 
 	uint32_t u32=12345678;
 	s8="";
@@ -201,7 +209,10 @@ TEST_DEFINE(TEST_BitFlags)
 TEST_DEFINE(TEST_Clock)
 {
 	time_t n=time(NULL);
-	TimePoint p1=Clock::now();
+
+	TimePoint p1;
+	p1.SetTime(n);
+
 	TimePoint p2=p1+TimeSpan::Seconds(120);
 	TimeSpan s1=p2-p1;
 	TEST_ASSERT(p1+s1==p2);

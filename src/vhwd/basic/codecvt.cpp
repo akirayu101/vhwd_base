@@ -48,7 +48,8 @@ bool IConv_unicode_to_gbk(StringBuffer<unsigned char>& aa_,const WC* pw_,size_t 
 
 		if(sizeof(WC)>2&&(pw_[0]&0xFFFF0000)!=0)
 		{
-			System::LogWarning("unkown unicode character %x",(uint32_t)pw_[0]);
+			System::LogWarning("IConv_unicode_to_gbk: unkown unicode character %x",(uint32_t)pw_[0]);
+
 			pa_[0]='?';
 			pa_[1]='?';
 			pa_+=2;
@@ -235,10 +236,11 @@ bool IConv_unicode_to_utf8(StringBuffer<unsigned char>& aa_,const WC* pw_,size_t
 		}
 		else
 		{
-			this_logger().LogError("Unknown unicode: %u",(uint32_t)code);
+			System::LogWarning("IConv_unicode_to_utf8: unkown unicode character %x",(uint32_t)code);
 			return false;
 		}
 	}
+
 	dst.resize(pa_-dst.data());
 	dst.swap(aa_);
 	return true;

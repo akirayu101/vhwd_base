@@ -24,7 +24,7 @@ public:
 
 	TimePoint():val(0) {}
 
-	explicit TimePoint(int64_t v):val(v) {}
+	explicit TimePoint(int64_t v):val(v){}
 
 	// cast to time_t
 	time_t GetTime() const

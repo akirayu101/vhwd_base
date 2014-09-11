@@ -108,9 +108,8 @@ public:
 
 protected:
 
-	//using basetype::m_ptr;
-	//using basetype::m_end;
-
+	template<typename G>
+	void _do_format_integer(G v);
 };
 
 template<typename T> class hash_t<StringBuffer<T> >

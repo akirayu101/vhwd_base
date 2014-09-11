@@ -178,12 +178,16 @@ public:
 	inline bool try_lock()
 	{
 		uintptr_t _id=thread_id();
-		while(val.exchange(1)!=0)
+		if(val.exchange(1)!=0)
 		{
 			if(_id==tid)
 			{
 				++num;
 				return true;
+			}
+			else
+			{
+				return false;
 			}
 		}
 
@@ -233,7 +237,7 @@ public:
 		{
 			return false;
 		}
-		if(m_nWeakCount.load()==0)
+		if(m_nWeakCount.get()==0)
 		{
 			delete this;
 		}
@@ -247,7 +251,7 @@ public:
 
 	void DecWeakCount()
 	{
-		if(--m_nWeakCount==0 && m_nUseCount.load()==0)
+		if(--m_nWeakCount==0 && m_nUseCount.get()==0)
 		{
 			delete this;
 		}

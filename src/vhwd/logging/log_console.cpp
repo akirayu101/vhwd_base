@@ -29,8 +29,6 @@ VHWD_ENTER
 //\033[01;37m - white
 //\033[0m
 
-
-
 LogConsole::LogConsole()
 {
 	aColors.resize(LOGLEVEL_MAX+1);

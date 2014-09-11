@@ -5,18 +5,54 @@
 
 VHWD_ENTER
 
+template<typename T>
+template<typename G>
+inline void StringBuffer<T>::_do_format_integer(G v)
+{
+	T buf[32];
 
+	T* p1=buf+31;
+	T* p2=p1;
+
+	*p2=0;
+
+
+	if(v==0)
+	{
+		*--p1='0';
+	}
+	else if(v<(T)0)
+	{
+		v=(~v)+1;
+		while(v>0)
+		{
+			*--p1='0'+(v%10);
+			v=v/10;
+		}
+		*--p1='-';
+	}
+	else
+	{
+		while(v>0)
+		{
+			*--p1='0'+(v%10);
+			v=v/10;
+		}
+	}
+
+	basetype::append(p1,p2-p1);
+}
 
 template<typename T>
 StringBuffer<T>::StringBuffer(const T* p1)
 {
-	assign(p1,std::char_traits<T>::length(p1));
+	basetype::assign(p1,std::char_traits<T>::length(p1));
 }
 
 template<typename T>
 StringBuffer<T>& StringBuffer<T>::operator=(const T* p1)
 {
-	assign(p1,std::char_traits<T>::length(p1));
+	basetype::assign(p1,std::char_traits<T>::length(p1));
 	return *this;
 }
 
@@ -456,31 +492,31 @@ const T* StringBuffer<T>::c_str() const
 template<typename T>
 StringBuffer<T>& StringBuffer<T>::operator<<(char v)
 {
-	(*this)+=String::Format("%c",v);
+	basetype::append(&v,1);
 	return (*this);
 }
 template<typename T>
 StringBuffer<T>& StringBuffer<T>::operator<<(int32_t v)
 {
-	(*this)+=String::Format("%d",v);
+	_do_format_integer(v);
 	return (*this);
 }
 template<typename T>
 StringBuffer<T>& StringBuffer<T>::operator<<(int64_t v)
 {
-	(*this)+=String::Format("%lld",v);
+	_do_format_integer(v);
 	return (*this);
 }
 template<typename T>
 StringBuffer<T>& StringBuffer<T>::operator<<(uint32_t v)
 {
-	(*this)+=String::Format("%u",v);
+	_do_format_integer(v);
 	return (*this);
 }
 template<typename T>
 StringBuffer<T>& StringBuffer<T>::operator<<(uint64_t v)
 {
-	(*this)+=String::Format("%llu",v);
+	_do_format_integer(v);
 	return (*this);
 }
 template<typename T>
@@ -506,14 +542,14 @@ StringBuffer<T>& StringBuffer<T>::operator<<(const String& v)
 template<typename T>
 StringBuffer<T>& StringBuffer<T>::operator<<(const T* p)
 {
-	append(p,std::char_traits<T>::length(p));
+	basetype::append(p,std::char_traits<T>::length(p));
 	return (*this);
 }
 
 template<typename T>
 StringBuffer<T>& StringBuffer<T>::operator<<(const StringBuffer& v)
 {
-	(*this)+=v;
+	basetype::append(v.data(),v.size());
 	return (*this);
 }
 
@@ -526,9 +562,5 @@ template class StringBuffer<int>;
 template class StringBuffer<unsigned int>;
 
 template class StringBuffer<wchar_t>;
-
-
-
-
 
 VHWD_LEAVE

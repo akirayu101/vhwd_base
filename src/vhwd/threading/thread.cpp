@@ -67,23 +67,26 @@ bool Thread::test_destroy()
 		return ThreadImpl::m_bReqExit;
 	}
 
-	LockGuard<Mutex> lock1(m_thrd_mutex);
+	m_thrd_mutex.lock();
 
 	for(;;)
 	{
 		if((m_nState&STATE_CANCEL)!=0||ThreadImpl::m_bReqExit)
 		{
+			m_thrd_mutex.unlock();
 			return true;
 		}
 
 		if(m_nState&STATE_PAUSED)
 		{
-			m_cond_state_changed.wait_for(lock1,1000);
+			m_cond_state_changed.wait_for(m_thrd_mutex,100);
 			continue;
 		}
 
 		break;
 	}
+
+	m_thrd_mutex.unlock();
 
 	return ThreadImpl::m_bReqExit;
 }

@@ -227,8 +227,6 @@ CoroutineMain& Coroutine::main_coroutine()
 	return Thread::this_data().cort_main;
 }
 
-
-
 Coroutine::~Coroutine()
 {
 	delete m_pContext;

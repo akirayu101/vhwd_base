@@ -60,41 +60,50 @@ void ConsoleDoSetColor(int color)
 
 void Console::SetColor(int color)
 {
-	LockGuard<AtomicSpin> lock(g_tSpinConsole);
+	g_tSpinConsole.lock();
 	ConsoleDoSetColor(color);
+	g_tSpinConsole.unlock();
 }
 
 
 
 void Console::Write(const String& s)
 {
-	LockGuard<AtomicSpin> lock(g_tSpinConsole);
+	g_tSpinConsole.lock();
 	std::cout<<s.c_str();
+	g_tSpinConsole.unlock();
 }
 
 void Console::WriteLine(const String& s)
 {
-	LockGuard<AtomicSpin> lock(g_tSpinConsole);
+	g_tSpinConsole.lock();
 	std::cout<<s.c_str()<<std::endl;
+	g_tSpinConsole.unlock();
 }
 
 
 void Console::Write(const String& s,int color)
 {
-	LockGuard<AtomicSpin> lock(g_tSpinConsole);
+	g_tSpinConsole.lock();
+
 	int oldcr=g_cConsoleColor;
 	ConsoleDoSetColor(color);
 	std::cout<<s.c_str();
 	ConsoleDoSetColor(oldcr);
+
+	g_tSpinConsole.unlock();
 }
 
 void Console::WriteLine(const String& s,int color)
 {
-	LockGuard<AtomicSpin> lock(g_tSpinConsole);
+	g_tSpinConsole.lock();
+
 	int oldcr=g_cConsoleColor;
 	ConsoleDoSetColor(color);
 	std::cout<<s.c_str()<<std::endl;
 	ConsoleDoSetColor(oldcr);
+
+	g_tSpinConsole.unlock();
 }
 
 String Console::ReadLine()

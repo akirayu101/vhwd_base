@@ -157,6 +157,16 @@ private:
 	const String& PrintfImpl(const char* s,...);
 
 	char* m_ptr;
+
+	void _do_append(const char* p1,uintptr_t n);
+	void _do_append(const wchar_t* p1,uintptr_t n);
+	void _do_assign(const char* p1,uintptr_t n);
+	void _do_assign(const wchar_t* p1,uintptr_t n);
+	int _do_prinfv(const char* s,va_list vl);
+
+	template<typename T>
+	void _do_format_integer(T v);
+
 };
 
 

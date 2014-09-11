@@ -35,12 +35,12 @@ class LockGuard : public NonCopyable
 {
 public:
 
-	LockGuard(T& mtx_):mtx(mtx_)
+	inline LockGuard(T& mtx_):mtx(mtx_)
 	{
 		P::lock(mtx);
 	}
 
-	~LockGuard()
+	inline ~LockGuard()
 	{
 		P::unlock(mtx);
 	}

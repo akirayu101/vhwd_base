@@ -133,30 +133,16 @@ void Logger::DoLogImplV(int lv,const char* msg,va_list vl)
 
 	LogRecord rcd(impl->m_nSrc,impl->m_nId,lv);
 
-	for(;;)
+
+	try
 	{
-		try
-		{
-			rcd.m_sMessage.PrintfV(msg,vl);
-			break;
-		}
-		catch(...)
-		{
-
-		}
-
-		try
-		{
-			rcd.m_sMessage="String::PrintfV error";
-			break;
-		}
-		catch(...)
-		{
-
-		}
-
-		break;
+		rcd.m_sMessage.PrintfV(msg,vl);
 	}
+	catch(...)
+	{
+		System::LogTrace("String::PrintfV error");
+	}
+
 
 	Handle(rcd);
 }

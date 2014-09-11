@@ -56,6 +56,7 @@ public:
 
 		if (hMapFile == NULL)
 		{
+			System::CheckError("CreateFileMapping/OpenFileMapping");
 			return false;
 		}
 
@@ -70,6 +71,7 @@ public:
 		if(!pView)
 		{
 			::CloseHandle(hMapFile);
+			System::CheckError("MapViewOfFile");
 			return false;
 		}
 
@@ -103,6 +105,7 @@ public:
 
 		if (hFile == INVALID_HANDLE_VALUE)
 		{
+			System::CheckError("CreateFile");
 			return false;
 		}
 
@@ -119,6 +122,7 @@ public:
 		tmp.d[0]=::GetFileSize(hFile,&tmp.d[1]);
 		if(tmp.dval<=0)
 		{
+			System::CheckError("GetFileSize");
 			return false;
 		}
 		size_=tmp.dval;
@@ -134,6 +138,7 @@ public:
 
 		if(hMapFile==NULL)
 		{
+			System::CheckError("CreateFileMapping");
 			return false;
 		}
 
@@ -148,6 +153,7 @@ public:
 		if(!pView)
 		{
 			::CloseHandle(hMapFile);
+			System::CheckError("MapViewOfFile");
 			return false;
 		}
 
@@ -168,7 +174,7 @@ public:
 		impl.m_pHandle.close();
 		if(UnmapViewOfFile(impl.m_pAddr)==0)
 		{
-			System::CheckError("shm_close");
+			System::CheckError("UnmapViewOfFile");
 		}
 
 		impl.m_pAddr=NULL;
@@ -225,6 +231,7 @@ public:
 			fd=shm_open(name_.c_str(),oflag,0777);
 			if(fd<0)
 			{
+				System::CheckError("shm_open");
 				return false;
 			}
 			hfd.reset(fd);
@@ -254,6 +261,7 @@ public:
 		void* _mem=mmap(0,size_,FileAccess::makeflag(flag_,PROT_READ,PROT_WRITE),map_type,fd,0);
 		if(_mem==MAP_FAILED)
 		{
+			System::CheckError("mmap");
 			return false;
 		}
 
@@ -278,6 +286,7 @@ public:
 			fd=::open(name_.c_str(),shm_fileflag(flag_)|O_CREAT,0777);
 			if(fd<0)
 			{
+				System::CheckError("open");
 				return false;
 			}
 		}
@@ -298,6 +307,7 @@ public:
 		void* _mem=mmap(0,size_,FileAccess::makeflag(flag_,PROT_READ,PROT_WRITE),MAP_SHARED,fd,0);
 		if(_mem==MAP_FAILED)
 		{
+			System::CheckError("mmap");
 			return false;
 		}
 
@@ -345,9 +355,9 @@ bool SharedMem::Alloc(size_t size_,int flag_)
 bool SharedMem::Open(const String& name_,size_t size_,int flag_)
 {
 	ShareMem_detail::shm_close(impl);
+
 	if(!ShareMem_detail::shm_create(impl,name_,size_,flag_))
 	{
-		//System::CheckError("shm_create");
 		return false;
 	}
 	else
@@ -359,9 +369,9 @@ bool SharedMem::Open(const String& name_,size_t size_,int flag_)
 bool SharedMem::Create(const String& name_,size_t size_,int flag_)
 {
 	ShareMem_detail::shm_close(impl);
+
 	if(!ShareMem_detail::shm_create(impl,name_,size_,flag_|FileAccess::FLAG_CR))
 	{
-		System::CheckError("shm_create");
 		return false;
 	}
 	else
@@ -373,9 +383,9 @@ bool SharedMem::Create(const String& name_,size_t size_,int flag_)
 bool SharedMem::OpenFile(const String& name_,size_t size_,int flag_)
 {
 	ShareMem_detail::shm_close(impl);
+
 	if(!ShareMem_detail::shm_openfile(impl,name_,size_,flag_))
 	{
-		System::CheckError("shm_openfile");
 		return false;
 	}
 	else

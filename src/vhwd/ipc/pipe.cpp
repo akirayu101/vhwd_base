@@ -19,7 +19,9 @@
 
 
 VHWD_ENTER
+
 #ifdef VHWD_WINDOWS
+
 class pipe_detail
 {
 public:

@@ -50,7 +50,7 @@ public:
 #ifndef NDEBUG
 	STRING_FORMAT_FUNCTIONS(static void LogDeubg,STRING_FORMAT_LEVEL,LOGLEVEL_DEBUG)
 #else
-	static void LogDebug(...) {}
+	static inline void LogDebug(...) {}
 #endif
 
 	STRING_FORMAT_FUNCTIONS(static void LogInfo,STRING_FORMAT_LEVEL,LOGLEVEL_INFO)
