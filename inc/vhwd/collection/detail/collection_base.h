@@ -12,7 +12,9 @@
 #include "vhwd/config.h"
 #include "vhwd/basic/hashing.h"
 #include "vhwd/basic/system.h"
-#include "vhwd/memory.h"
+#include "vhwd/memory/allocator.h"
+#include "vhwd/memory/mempool.h"
+
 #include <memory>
 
 VHWD_ENTER

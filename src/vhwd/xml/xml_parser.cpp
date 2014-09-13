@@ -2,12 +2,15 @@
 #include "vhwd/basic/system.h"
 #include "vhwd/basic/exception.h"
 #include "vhwd/basic/clock.h"
+#include "vhwd/basic/codecvt.h"
 #include "vhwd/basic/console.h"
 #include "vhwd/logging/logger.h"
 
 #include <fstream>
 
 VHWD_ENTER
+
+extern uint16_t g_uni_table[1024*64];
 
 template<unsigned N>
 class lkt_name
@@ -26,7 +29,7 @@ public:
 
 XmlParser::XmlParser(XmlDocument& xmldoc_):xmldoc(xmldoc_)
 {
-
+	flags.add(FLAG_KEEP_COMMENT|FLAG_KEEP_PI);
 }
 
 bool XmlParser::parse_document()
@@ -88,6 +91,7 @@ class lkt_number10b
 public:
 	static const unsigned char value=(N>='0'&&N<='9')?(N-'0'):0xFF;
 };
+
 
 inline void  XmlParser::string_assign(String& s0,mychar_ptr p1,mychar_ptr p2)
 {
@@ -197,6 +201,7 @@ inline void  XmlParser::string_assign(String& s0,mychar_ptr p1,mychar_ptr p2)
 				}
 				p1+=1;
 
+#ifdef VHWD_XML_UTF8
 				if (code < 0x80)
 				{
 					dest[0]=code;
@@ -235,6 +240,33 @@ inline void  XmlParser::string_assign(String& s0,mychar_ptr p1,mychar_ptr p2)
 					kerror("invalid unicode number");
 					return;
 				}
+#else
+				if(code<0x81)
+				{
+					*dest++=code;
+				}
+				else if((code&0xFFFF0000)!=0)
+				{
+					System::LogWarning("IConv_unicode_to_gbk: unkown unicode character %x",(uint32_t)code);
+
+					dest[0]='?';
+					dest[1]='?';
+					dest+=2;
+				}
+
+				uint16_t val=g_uni_table[code];
+				if(val!=0)
+				{
+					dest[0]=(((unsigned char*)&val)[0]);
+					dest[1]=(((unsigned char*)&val)[1]);
+					dest+=2;
+				}
+				else
+				{
+					*dest++=code&0x7F;
+				}
+#endif
+
 			}
 			break;
 			default:
@@ -342,11 +374,13 @@ inline void XmlParser::parse_value()
 
 inline void XmlParser::parse_comment_node()
 {
-	if(pcur[2]!='-')
+	if(pcur[3]!='-')
 	{
 		kexpected("<!--");
 	}
-	pcur+=3;
+	pcur+=4;
+
+	mychar_ptr p1=pcur;
 
 	skip<lkt_not_gt>(pcur);
 	if(pcur[0]!='>')
@@ -358,6 +392,16 @@ inline void XmlParser::parse_comment_node()
 	{
 		pcur-=2;
 		kexpected("-->");
+	}
+
+	mychar_ptr p2=pcur-2;
+
+	if(flags.get(FLAG_KEEP_COMMENT))
+	{
+		XmlNode* pnode=CreateNode(XmlNode::XMLNODE_COMMENT);
+		pnode->m_sValue.assign(p1,p2);
+
+		add_node(pnode);
 	}
 
 	pcur+=1;
@@ -438,43 +482,29 @@ inline void XmlParser::parse_cdata()
 inline void XmlParser::parse_instruction_node()
 {
 	pcur+=2;
-	//mychar_ptr tagname1=pcur;
+	mychar_ptr p1=pcur;
 	skip<lkt_name>(pcur);
-	//mychar_ptr tagname2=pcur;
+	mychar_ptr p2=pcur;
 
-	for(;;)
-	{
 
-		skip<lkt_whitespace>(pcur);
-		if(!lookup_table<lkt_name>::test(pcur[0]))
-		{
-			break;
-		}
+	XmlNode* pnode=CreateNode(XmlNode::XMLNODE_PI);
+	pnode->m_sName.assign(p1,p2);
 
-		//mychar_ptr attrname1=pcur;
-		skip<lkt_name>(pcur);
-		//mychar_ptr attrname2=pcur;
-
-		skip<lkt_whitespace>(pcur);
-		if(pcur[0]!='=')
-		{
-			kexpected("=");
-		}
-
-		pcur+=1;
-		skip<lkt_whitespace>(pcur);
-
-		//mychar_ptr attrvalue1=pcur;
-		parse_value();
-		//mychar_ptr attrvalue2=pcur;
-
-	}
+	put_node(pnode);
+	parse_attributes();
 
 	if(pcur[0]!='?'||pcur[1]!='>')
 	{
 		kexpected("?>");
 	}
 	pcur+=2;
+
+	pop_node();
+
+	if(!flags.get(FLAG_KEEP_PI))
+	{
+		nodes.back()->RemoveChild(pnode);
+	}
 
 }
 
@@ -553,7 +583,6 @@ inline void XmlParser::parse_subnodes()
 			if(nodes.back()->m_sValue.empty())
 			{
 				this->string_assign(nodes.back()->m_sValue,tagvalue1,tagvalue2);
-				//nodes.back()->m_sValue.assign(tagvalue1,tagvalue2);
 			}
 
 			XmlNode* pnode=CreateNode(XmlNode::XMLNODE_DATA);
@@ -598,7 +627,7 @@ inline void XmlParser::parse_attributes()
 	}
 }
 
-inline XmlNode* XmlParser::parse_element_node()
+inline void XmlParser::parse_element_node()
 {
 	pcur+=1;
 
@@ -609,7 +638,7 @@ inline XmlNode* XmlParser::parse_element_node()
 	XmlNode* pnode=CreateNode();
 	pnode->m_sName.assign(tagname1,tagname2);
 
-	NodeLocker lock1(nodes,pnode);
+	put_node(pnode);
 
 	parse_attributes();
 
@@ -621,7 +650,7 @@ inline XmlNode* XmlParser::parse_element_node()
 			kexpected(">");
 		}
 		pcur+=2;
-		return NULL;
+		break;
 	case '>':
 		pcur+=1;
 		parse_subnodes();
@@ -630,11 +659,11 @@ inline XmlNode* XmlParser::parse_element_node()
 		kexpected(">");
 	}
 
-	return NULL;
+	pop_node();
 }
 
 
-bool XmlParser::load(const char* pstr_,size_t size_)
+bool XmlParser::LoadStr(const char* pstr_,size_t size_)
 {
 	if(pstr_[size_]=='\0'||(size_>0&&pstr_[size_-1]!='\0'))
 	{
@@ -643,44 +672,59 @@ bool XmlParser::load(const char* pstr_,size_t size_)
 	}
 	else
 	{
-		buffer.resize(size_+1);
-		memcpy(buffer.data(),pstr_,size_);
-		buffer[size_]='\0';
-		pbeg=(mychar_ptr)buffer.data();
+		buffer.assign(pstr_,size_);
+		pbeg=buffer.c_str();
 		size=buffer.size();
 	}
 
 	return parse_document();
 }
 
-bool XmlParser::load(const String& f)
+bool XmlParser::LoadXml(const String& f,int t)
 {
-	if(!buffer.load(f,FILE_BINARY))
+	if(!buffer.load(f,t))
 	{
 		return false;
 	}
 
 	size=buffer.size();
-	buffer.push_back(0);
-	pbeg=(mychar_ptr)buffer.data();
+	pbeg=buffer.c_str();
 
 	return parse_document();
 }
 
-bool XmlParser::save(const String& s)
+bool XmlParser::SaveXml(const String& s)
 {
 	std::ofstream ofs(s.c_str());
 	if(!ofs.good()) return false;
 
+	savebuf.clear();
+	savebuf<<"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+
+#ifdef VHWD_WINDOWS
+	StringBuffer<char> tmpb;
+	if(IConv::ansi_to_utf8(tmpb,savebuf.data(),savebuf.size()))
+	{
+		tmpb.swap(savebuf);
+	}
+	else
+	{
+		System::LogTrace("IConv::ansi_to_utf8 failed in XmlParser::SaveXml");
+	}
+#endif
+
 	for(XmlNode* pnode=xmldoc.GetFirstChild(); pnode; pnode=pnode->GetNext())
 	{
-		savenode(ofs,pnode,0);
+		savenode(pnode,0);
 	}
+
+	ofs.write(savebuf.data(),savebuf.size());
+	ofs.close();
 
 	return true;
 }
 
-void XmlParser::savestring(std::ostream& ofs,const String& v)
+void XmlParser::savestring(const String& v)
 {
 
 	const char* p1=v.c_str();
@@ -690,70 +734,100 @@ void XmlParser::savestring(std::ostream& ofs,const String& v)
 		const char* p2=::strstr(p1,"\"");
 		if(p2==NULL)
 		{
-			ofs<<p1;
+			savebuf<<p1;
 			return;
 		}
-		ofs.write(p1,p2-p1);
-		ofs.write(px,6);
+		savebuf.append(p1,p2-p1);
+		savebuf.append(px,6);
 		p1=p2+1;
 	}
 }
 
-void XmlParser::savenode(std::ostream& ofs,XmlNode* pnode,int lv)
+void XmlParser::savenode(XmlNode* pnode,int lv)
 {
 
 	if(pnode->GetType()==XmlNode::XMLNODE_DATA)
 	{
-		ofs<<pnode->GetValue();
+		savebuf<<pnode->GetValue();
 		return;
 	}
 
 	if(pnode->GetType()==XmlNode::XMLNODE_CDATA)
 	{
-		ofs<<"<![CDATA[[";
-		ofs<<pnode->GetValue();
-		ofs<<"]]>";
+		savebuf<<"\n<![CDATA[[";
+		savebuf<<pnode->GetValue();
+		savebuf<<"]]>\n";
 		return;
 	}
 
-	tabindent(ofs,lv);
-	ofs<< "<" << pnode->GetName();
+	tabindent(lv);
+
+	if(pnode->GetType()==XmlNode::XMLNODE_COMMENT)
+	{
+		savebuf<<"<!--";
+		savebuf<<pnode->GetValue();
+		savebuf<<"-->\n";
+		return;
+	}
+
+	if(pnode->GetType()==XmlNode::XMLNODE_PI)
+	{
+
+		if(pnode->GetName()=="xml")
+		{
+			return;
+		}
+
+		savebuf<<"<?"<<pnode->GetName();
+		for(XmlAttribute* pattr=pnode->GetFirstAttribute(); pattr; pattr=pattr->GetNext())
+		{
+			savebuf<<" "<<pattr->GetName()<<"=\"";
+			savestring(pattr->GetValue());
+			savebuf<<"\"";
+		}
+
+		savebuf<<"?>\n";
+		return;
+	}
+
+
+	savebuf<< "<" << pnode->GetName();
 
 	for(XmlAttribute* pattr=pnode->GetFirstAttribute(); pattr; pattr=pattr->GetNext())
 	{
-		ofs<<" "<<pattr->GetName()<<"=\"";
-		savestring(ofs,pattr->GetValue());
-		ofs<<"\"";
+		savebuf<<" "<<pattr->GetName()<<"=\"";
+		savestring(pattr->GetValue());
+		savebuf<<"\"";
 	}
 
 	XmlNode* fnode=pnode->GetFirstChild();
 
 	if(fnode==NULL)
 	{
-		ofs<<" />"<<std::endl;
+		savebuf<<" />\n";
 		return;
 	}
 
-	ofs<<">";
+	savebuf<<">";
 
 	if(fnode->GetNext()==NULL && fnode->GetType()==XmlNode::XMLNODE_DATA)
 	{
-		savenode(ofs,fnode);
+		savenode(fnode);
 	}
 	else
 	{
 		if(fnode->GetType()==XmlNode::XMLNODE_ELEMENT)
 		{
-			ofs<<std::endl;
+			savebuf<<"\n";
 		}
 		for(XmlNode* tnode=fnode; tnode; tnode=tnode->GetNext())
 		{
-			savenode(ofs,tnode,lv+1);
+			savenode(tnode,lv+1);
 		}
 
-		tabindent(ofs,lv);
+		tabindent(lv);
 	}
-	ofs<< "</" << pnode->GetName()<<">"<<std::endl;
+	savebuf<< "</" << pnode->GetName()<<">"<<"\n";
 
 }
 

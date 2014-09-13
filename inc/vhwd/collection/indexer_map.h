@@ -35,7 +35,7 @@ public:
 	indexer_map(const indexer_map& o):basetype(o) {}
 
 #ifdef VHWD_C11
-	indexer_map(indexer_map&& o):basetype(o) {}
+	indexer_map(indexer_map&& o){this->swap(o);}
 #endif
 
 	inline mapped_type& operator[](const key_type& k)

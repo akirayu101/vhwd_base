@@ -1,9 +1,9 @@
 # depslib dependency file v1.0
-1409647309 source:/mnt/GitHub/vhwd_base/test/test_iocp.cpp
+1410091238 source:/mnt/GitHub/vhwd_base/test/test_iocp.cpp
 	"vhwd.h"
 	"vhwd/net/iocp1.h"
 
-1409313327 /mnt/GitHub/vhwd_base/inc/vhwd/testing/test.h
+1410145691 /mnt/GitHub/vhwd_base/inc/vhwd/testing/test.h
 	"vhwd/logging/logger.h"
 	"vhwd/collection/arr_1t.h"
 
@@ -15,18 +15,18 @@
 	"vhwd/basic/clock.h"
 	"vhwd/basic/string.h"
 
-1408512976 /mnt/GitHub/vhwd_base/inc/vhwd/basic/clock.h
+1410405279 /mnt/GitHub/vhwd_base/inc/vhwd/basic/clock.h
 	"vhwd/config.h"
 	"vhwd/basic/string.h"
 
-1409881975 /mnt/GitHub/vhwd_base/inc/vhwd/config.h
+1410579601 /mnt/GitHub/vhwd_base/inc/vhwd/config.h
 	"tl.h"
 	<sys/types.h>
 	<stdint.h>
 
-1409048796 /mnt/GitHub/vhwd_base/inc/tl.h
+1410584909 /mnt/GitHub/vhwd_base/inc/tl.h
 
-1409840559 /mnt/GitHub/vhwd_base/inc/vhwd/basic/string.h
+1410436948 /mnt/GitHub/vhwd_base/inc/vhwd/basic/string.h
 	"vhwd/config.h"
 	"vhwd/basic/hashing.h"
 	"vhwd/basic/language.h"
@@ -41,11 +41,11 @@
 1409321274 /mnt/GitHub/vhwd_base/inc/vhwd/basic/string_detail.h
 	<string>
 
-1409715815 /mnt/GitHub/vhwd_base/inc/vhwd/basic/object.h
+1410490837 /mnt/GitHub/vhwd_base/inc/vhwd/basic/object.h
 	"vhwd/basic/atomic.h"
 	"vhwd/basic/string.h"
 
-1409708403 /mnt/GitHub/vhwd_base/inc/vhwd/basic/atomic.h
+1410419424 /mnt/GitHub/vhwd_base/inc/vhwd/basic/atomic.h
 	"vhwd/config.h"
 
 1406438755 /mnt/GitHub/vhwd_base/inc/vhwd/collection/array.h
@@ -210,7 +210,7 @@
 	"vhwd/basic/file.h"
 	"vhwd/basic/lockguard.h"
 
-1409294808 /mnt/GitHub/vhwd_base/inc/vhwd/basic/codecvt.h
+1410438092 /mnt/GitHub/vhwd_base/inc/vhwd/basic/codecvt.h
 	"vhwd/config.h"
 	"vhwd/basic/string.h"
 	"vhwd/basic/stringbuffer.h"
@@ -218,7 +218,7 @@
 	<iconv.h>
 	<errno.h>
 
-1409551169 /mnt/GitHub/vhwd_base/inc/vhwd/basic/stringbuffer.h
+1410402651 /mnt/GitHub/vhwd_base/inc/vhwd/basic/stringbuffer.h
 	"vhwd/config.h"
 	"vhwd/basic/hashing.h"
 	"vhwd/basic/string_detail.h"
@@ -229,7 +229,7 @@
 	"vhwd/memory/allocator.h"
 	"vhwd/memory/mempool.h"
 
-1408520693 /mnt/GitHub/vhwd_base/inc/vhwd/basic/system.h
+1410412185 /mnt/GitHub/vhwd_base/inc/vhwd/basic/system.h
 	"vhwd/config.h"
 	"vhwd/basic/string_detail.h"
 
@@ -273,12 +273,14 @@
 	"vhwd/serialization/serializer_socket.h"
 	"vhwd/serialization/serializer_buffer.h"
 
-1409313327 /mnt/GitHub/vhwd_base/inc/vhwd/serialization/serializer.h
+1410140575 /mnt/GitHub/vhwd_base/inc/vhwd/serialization/serializer.h
 	"vhwd/basic/object_ex.h"
 	"vhwd/basic/bitflags.h"
 	"vhwd/basic/exception.h"
 	"vhwd/collection/indexer_set.h"
+	"vhwd/collection/indexer_map.h"
 	"vhwd/collection/arr_1t.h"
+	"vhwd/collection/arr_xt.h"
 	"vhwd/collection/bst_set.h"
 	"vhwd/collection/bst_map.h"
 	<complex>
@@ -286,7 +288,7 @@
 	<map>
 	<set>
 
-1408498302 /mnt/GitHub/vhwd_base/inc/vhwd/collection/indexer_set.h
+1410436228 /mnt/GitHub/vhwd_base/inc/vhwd/collection/indexer_set.h
 	"vhwd/collection/detail/indexer_container.h"
 
 1404469245 /mnt/GitHub/vhwd_base/inc/vhwd/collection/indexer_detail.h
@@ -307,7 +309,7 @@
 	"vhwd/net/socket.h"
 	"vhwd/collection/linear_buffer.h"
 
-1406117529 source:/mnt/GitHub/vhwd_base/test/test_shm.cpp
+1410091138 source:/mnt/GitHub/vhwd_base/test/test_shm.cpp
 	"vhwd/testing/test.h"
 	"vhwd/ipc.h"
 	<iostream>
@@ -316,7 +318,7 @@
 	"vhwd/ipc/shm.h"
 	"vhwd/ipc/pipe.h"
 
-1406117528 /mnt/GitHub/vhwd_base/inc/vhwd/ipc/shm.h
+1409974979 /mnt/GitHub/vhwd_base/inc/vhwd/ipc/shm.h
 	"vhwd/config.h"
 	"vhwd/basic/platform.h"
 	"vhwd/basic/string.h"
@@ -331,7 +333,7 @@
 	"vhwd/collection/lockfree_queue.h"
 	"vhwd/threading/thread.h"
 
-1408936085 /mnt/GitHub/vhwd_base/inc/vhwd/collection/lockfree_queue.h
+1410144874 /mnt/GitHub/vhwd_base/inc/vhwd/collection/lockfree_queue.h
 	"vhwd/collection/detail/collection_base.h"
 	"vhwd/basic/atomic.h"
 	"vhwd/basic/bitflags.h"
@@ -344,8 +346,9 @@
 	"vhwd/basic/platform.h"
 	"vhwd/basic/string.h"
 
-1409306633 source:/mnt/GitHub/vhwd_base/test/appmain.cpp
+1409721982 source:/mnt/GitHub/vhwd_base/test/appmain.cpp
 	"vhwd.h"
+	<iostream>
 
 1409648899 /mnt/GitHub/vhwd_base/inc/vhwd.h
 	"vhwd/config.h"
@@ -365,21 +368,22 @@
 	"vhwd/logging/logtarget.h"
 	"vhwd/logging/logger.h"
 
-1409313327 /mnt/GitHub/vhwd_base/inc/vhwd/logging/logtarget.h
+1410339575 /mnt/GitHub/vhwd_base/inc/vhwd/logging/logtarget.h
 	"vhwd/basic/pointer.h"
 	"vhwd/basic/object.h"
 	"vhwd/basic/bitflags.h"
+	"vhwd/basic/file.h"
 	"vhwd/collection/arr_1t.h"
 
-1409320251 source:/mnt/GitHub/vhwd_base/test/test_basic.cpp
+1410405336 source:/mnt/GitHub/vhwd_base/test/test_basic.cpp
 	"vhwd/testing/test.h"
 	"vhwd/basic.h"
 	<time.h>
 
-1409639502 source:/mnt/GitHub/vhwd_base/test/test_collection.cpp
+1410585683 source:/mnt/GitHub/vhwd_base/test/test_collection.cpp
 	"vhwd.h"
 
-1409722930 /mnt/GitHub/vhwd_base/inc/vhwd/collection/indexer_map.h
+1410436228 /mnt/GitHub/vhwd_base/inc/vhwd/collection/indexer_map.h
 	"vhwd/collection/detail/indexer_container.h"
 
 1397369390 source:/mnt/GitHub/vhwd_base/bin/aaa.cpp
@@ -406,7 +410,7 @@
 	"vhwd/memory.h"
 	"vhwd/threading.h"
 
-1409557510 source:/mnt/GitHub/vhwd_base/test/test_thread.cpp
+1409714462 source:/mnt/GitHub/vhwd_base/test/test_thread.cpp
 	"vhwd/testing/test.h"
 	"vhwd/threading.h"
 	"vhwd/basic.h"
@@ -475,7 +479,7 @@
 	"vhwd/basic/string.h"
 	"vhwd/basic/platform.h"
 
-1409105296 /mnt/GitHub/vhwd_base/inc/vhwd/basic/lockguard.h
+1410344797 /mnt/GitHub/vhwd_base/inc/vhwd/basic/lockguard.h
 	"vhwd/config.h"
 
 1408451835 /mnt/GitHub/vhwd_base/inc/vhwd/threading/coroutine.h
@@ -490,7 +494,7 @@
 1406536396 /mnt/GitHub/vhwd_base/inc/vhwd/xml/xml_attribute.h
 	"vhwd/xml/xml_base.h"
 
-1406117528 /mnt/GitHub/vhwd_base/inc/vhwd/xml/xml_base.h
+1410436984 /mnt/GitHub/vhwd_base/inc/vhwd/xml/xml_base.h
 	"vhwd/basic/object.h"
 	"vhwd/basic/pointer.h"
 	"vhwd/memory/mempool.h"
@@ -502,7 +506,8 @@
 1409644299 /mnt/GitHub/vhwd_base/inc/vhwd/collection/intrusive_list.h
 	"vhwd/config.h"
 
-1409313327 /mnt/GitHub/vhwd_base/inc/vhwd/xml/xml_document.h
+1410438980 /mnt/GitHub/vhwd_base/inc/vhwd/xml/xml_document.h
+	"vhwd/basic/stringbuffer.h"
 	"vhwd/xml/xml_node.h"
 	"vhwd/collection/arr_1t.h"
 
@@ -512,7 +517,7 @@
 	"vhwd/basic/pointer.h"
 	"vhwd/basic/bitflags.h"
 
-1409722930 /mnt/GitHub/vhwd_base/inc/vhwd/collection/detail/indexer_container.h
+1410436228 /mnt/GitHub/vhwd_base/inc/vhwd/collection/detail/indexer_container.h
 	"vhwd/collection/detail/indexer_base.h"
 	"vhwd/memory.h"
 
@@ -521,17 +526,17 @@
 	"vhwd/collection/arr_1t.h"
 	"math.h"
 
-1409839916 /mnt/GitHub/vhwd_base/inc/vhwd/collection/detail/kv_trait.h
+1410139700 /mnt/GitHub/vhwd_base/inc/vhwd/collection/detail/kv_trait.h
 	"vhwd/config.h"
 	<utility>
 
-1409880157 /mnt/GitHub/vhwd_base/inc/vhwd/collection/bst_set.h
+1410140446 /mnt/GitHub/vhwd_base/inc/vhwd/collection/bst_set.h
 	"vhwd/collection/detail/bst_container.h"
 
-1409881766 /mnt/GitHub/vhwd_base/inc/vhwd/collection/detail/bst_container.h
+1410140227 /mnt/GitHub/vhwd_base/inc/vhwd/collection/detail/bst_container.h
 	"vhwd/collection/detail/bst_tree.h"
 
-1409881231 /mnt/GitHub/vhwd_base/inc/vhwd/collection/detail/bst_tree.h
+1410139190 /mnt/GitHub/vhwd_base/inc/vhwd/collection/detail/bst_tree.h
 	"vhwd/collection/detail/bst_tree_node.h"
 	"vhwd/collection/detail/bst_tree_iterator.h"
 	"vhwd/collection/detail/rbt_tree_policy.h"
@@ -543,10 +548,10 @@
 1408930670 /mnt/GitHub/vhwd_base/inc/vhwd/collection/detail/bst_tree_iterator.h
 	"vhwd/collection/detail/bst_tree_node.h"
 
-1409880328 /mnt/GitHub/vhwd_base/inc/vhwd/collection/bst_map.h
+1410140434 /mnt/GitHub/vhwd_base/inc/vhwd/collection/bst_map.h
 	"vhwd/collection/detail/bst_container.h"
 
-1409881795 /mnt/GitHub/vhwd_base/inc/vhwd/collection/detail/collection_base.h
+1410140526 /mnt/GitHub/vhwd_base/inc/vhwd/collection/detail/collection_base.h
 	"vhwd/config.h"
 	"vhwd/basic/hashing.h"
 	"vhwd/basic/system.h"
@@ -614,28 +619,41 @@
 1408517920 source:/mnt/GitHub/vhwd_base/test/test_scripting.cpp
 	"vhwd.h"
 
-1409726293 /mnt/GitHub/vhwd_base/inc/vhwd/basic/hashing.h
+1410513080 /mnt/GitHub/vhwd_base/inc/vhwd/basic/hashing.h
 	"vhwd/config.h"
 
-1409623891 /mnt/GitHub/vhwd_base/inc/vhwd/collection/arr_1t.h
+1410140526 /mnt/GitHub/vhwd_base/inc/vhwd/collection/arr_1t.h
 	"vhwd/collection/detail/collection_base.h"
 	"vhwd/collection/detail/arr_container.h"
 
 1409323615 /mnt/GitHub/vhwd_base/inc/vhwd/collection/pod_1t.h
 	"vhwd/collection/detail/collection_base.h"
 
-1409555428 /mnt/GitHub/vhwd_base/inc/vhwd/collection/arr_xt.h
+1410140526 /mnt/GitHub/vhwd_base/inc/vhwd/collection/arr_xt.h
 	"vhwd/collection/arr_1t.h"
 
 1409639062 /mnt/GitHub/vhwd_base/inc/vhwd/collection/detail/arr_container.h
 	"vhwd/collection/detail/collection_base.h"
 
-1409563555 /mnt/GitHub/vhwd_base/inc/vhwd/net/q2packet.h
+1410140715 /mnt/GitHub/vhwd_base/inc/vhwd/net/q2packet.h
 	"vhwd/net/overlapped.h"
+	"vhwd/collection/arr_1t.h"
 
 1409885404 /mnt/GitHub/vhwd_base/inc/vhwd/collection/detail/rbt_tree_policy.h
 	"vhwd/collection/detail/bst_tree_node.h"
 
-1409885421 /mnt/GitHub/vhwd_base/inc/vhwd/collection/detail/avl_tree_policy.h
+1409903706 /mnt/GitHub/vhwd_base/inc/vhwd/collection/detail/avl_tree_policy.h
 	"vhwd/collection/detail/bst_tree_node.h"
+
+1410583020 source:/mnt/GitHub/vhwd_base/test/test_gc_ptr.cpp
+	"vhwd/testing/test.h"
+	"vhwd/memory/gc_ptr.h"
+	"vhwd/threading.h"
+	"vhwd/basic.h"
+
+1410583264 /mnt/GitHub/vhwd_base/inc/vhwd/memory/gc_ptr.h
+	"vhwd/config.h"
+	"vhwd/basic/atomic.h"
+	"vhwd/basic/bitflags.h"
+	"vhwd/collection/arr_1t.h"
 

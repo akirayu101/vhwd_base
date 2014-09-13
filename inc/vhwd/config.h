@@ -41,7 +41,7 @@
 #endif
 
 
-
+#define VHWD_UNUSED(X) ((void)&(X));
 
 #define MACRO2STR(x) MACRO2STR_ESC(x)
 #define MACRO2STR_ESC(x) #x
@@ -196,7 +196,7 @@ template<typename T> class ObjectNameT;
 #pragma push_macro("new")
 #undef new
 
-// class SmallObject use MemPoolPaging to allocate and deallocate memory
+// class SmallObject use MemPool to allocate and deallocate memory
 class VHWD_DLLIMPEXP SmallObject
 {
 public:

@@ -336,6 +336,9 @@
     <ClCompile Include="..\..\src\vhwd\basic\hashing.cpp">
       <Filter>src\vhwd\basic</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\vhwd\memory\gc_ptr.cpp">
+      <Filter>src\vhwd\memory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\vhwd\basic\string_impl.h">
@@ -688,6 +691,9 @@
     </ClInclude>
     <ClInclude Include="..\..\inc\vhwd\collection\detail\avl_tree_policy.h">
       <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\memory\gc_ptr.h">
+      <Filter>inc\vhwd\memory</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

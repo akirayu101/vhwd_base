@@ -21,10 +21,7 @@ public:
 
 	typedef T type;
 
-	AtomicIntT()
-	{
-		val=0;
-	}
+	AtomicIntT(){val=0;}
 
 	AtomicIntT(T v):val(v) {}
 
@@ -54,10 +51,8 @@ public:
 	T operator--();
 	T operator--(int);
 
-	T get() const
-	{
-		return val;
-	}
+	T get() const{return val;}
+	void set(T v){val=v;}
 
 	// load return value
 	T load() const;
@@ -79,8 +74,8 @@ template<typename T>
 class VHWD_DLLIMPEXP AtomicIntT<T*>
 {
 public:
-	typedef typename tl::meta_if<sizeof(T*)==4,AtomicInt32,AtomicInt64>::type impl_type;
-	typedef typename impl_type::type diff_type;
+
+	typedef intptr_t diff_type;
 
 	typedef T* type;
 
@@ -94,9 +89,14 @@ public:
 		return impl.compare_exchange(*(diff_type*)&expected,(diff_type)v);
 	}
 
-	inline type get()
+	inline type get() const
 	{
 		return (type)impl.get();
+	}
+
+	inline void set(type v)
+	{
+		impl.set((diff_type)v);
 	}
 
 	inline type load()
@@ -110,7 +110,7 @@ public:
 	}
 
 protected:
-	impl_type impl;
+	AtomicIntT<diff_type> impl;
 };
 
 // non-recursive spin

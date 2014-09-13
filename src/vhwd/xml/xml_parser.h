@@ -1,6 +1,7 @@
 #include "vhwd/xml/xml_attribute.h"
 #include "vhwd/xml/xml_node.h"
 #include "vhwd/xml/xml_document.h"
+#include "vhwd/basic/bitflags.h"
 #include "vhwd/basic/stringbuffer.h"
 
 #include <fstream>
@@ -13,7 +14,7 @@ class VHWD_DLLIMPEXP ParserBase : public Object
 public:
 
 	typedef char mychar;
-	typedef char* mychar_ptr;
+	typedef const char* mychar_ptr;
 
 	template<template<unsigned> class P> static inline void skip(mychar_ptr& p)
 	{
@@ -30,9 +31,9 @@ public:
 
 	XmlParser(XmlDocument& xmldoc_);
 
-	bool load(const char* pstr_,size_t size_);
-	bool load(const String& f);
-	bool save(const String& f);
+	bool LoadStr(const char* pstr_,size_t size_);
+	bool LoadXml(const String& f,int t);
+	bool SaveXml(const String& f);
 
 	XmlNode* CreateNode(int t=XmlNode::XMLNODE_ELEMENT)
 	{
@@ -43,6 +44,14 @@ public:
 	{
 		return new XmlAttribute();
 	}
+
+	enum
+	{
+		FLAG_KEEP_COMMENT=1<<0,
+		FLAG_KEEP_PI=1<<0,
+	};
+
+	BitFlags flags;
 
 protected:
 
@@ -70,25 +79,25 @@ protected:
 	arr_1t<XmlNode*> nodes;
 	StringBuffer<mychar> buffer;
 	StringBuffer<mychar> tempbuf; //string_assign buffer
+	StringBuffer<mychar> savebuf;
 
-	class NodeLocker
+	inline void add_node(XmlNode* pnode)
 	{
-	public:
-		NodeLocker(arr_1t<XmlNode*>& nodes_,XmlNode* pnode):nodes(nodes_)
-		{
-			pnode->m_pParent.reset(nodes.back());
-			nodes.back()->AppendChild(pnode);
-			nodes.push_back(pnode);
-		}
+		pnode->m_pParent.reset(nodes.back());
+		nodes.back()->AppendChild(pnode);
+	}
 
-		~NodeLocker()
-		{
-			nodes.pop_back();
-		}
+	inline void put_node(XmlNode* pnode)
+	{
+		pnode->m_pParent.reset(nodes.back());
+		nodes.back()->AppendChild(pnode);
+		nodes.push_back(pnode);
+	}
 
-		arr_1t<XmlNode*>& nodes;
-
-	};
+	inline void pop_node()
+	{
+		nodes.pop_back();
+	}
 
 	mychar_ptr pbeg;
 	mychar_ptr pend;
@@ -96,12 +105,15 @@ protected:
 	size_t size;
 
 
-	static void savenode(std::ostream& ofs,XmlNode* pnode,int lv=0);
-	static void tabindent(std::ostream& ofs,int lv)
+	void savenode(XmlNode* pnode,int lv=0);
+	void tabindent(int lv)
 	{
-		for(int i=0; i<lv; i++) ofs<<"\t";
+		for(int i=0; i<lv; i++)
+		{
+			savebuf<<"\t";
+		}
 	}
-	static void savestring(std::ostream& ofs,const String& v);
+	void savestring(const String& v);
 
 	void kerror(const String& msg);
 	void kexpected(const String& msg);
@@ -109,7 +121,7 @@ protected:
 	bool parse_document();
 
 	//<tag attributes> content </tag>
-	XmlNode* parse_element_node();
+	void parse_element_node();
 
 	//A document node is a specialized kind of element node.
 	//It has a type p but no attributes. Instead it has an optional URL u.

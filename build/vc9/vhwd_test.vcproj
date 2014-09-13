@@ -214,6 +214,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\test\test_gc_ptr.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\test\test_iocp.cpp"
 				>
 			</File>

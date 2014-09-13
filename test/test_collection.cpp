@@ -197,8 +197,8 @@ void test_bst_multiset()
 	s.insert(1);
 	TEST_ASSERT(s.count(1)==3);
 
-	std::pair<bst_set_type::iterator,bst_set_type::iterator> eqr(s.equal_range(1));
-	for(bst_set_type::iterator it=eqr.first; it!=eqr.second; ++it)
+	std::pair<typename bst_set_type::iterator,typename bst_set_type::iterator> eqr(s.equal_range(1));
+	for(typename bst_set_type::iterator it=eqr.first; it!=eqr.second; ++it)
 	{
 		TEST_ASSERT((*it)==1);
 	}

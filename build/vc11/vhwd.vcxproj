@@ -401,6 +401,7 @@
     <ClCompile Include="..\..\src\vhwd\collection\collection.cpp" />
     <ClCompile Include="..\..\src\vhwd\ipc\pipe.cpp" />
     <ClCompile Include="..\..\src\vhwd\ipc\shm.cpp" />
+    <ClCompile Include="..\..\src\vhwd\memory\gc_ptr.cpp" />
     <ClCompile Include="..\..\src\vhwd\memory\mempool.cpp" />
     <ClCompile Include="..\..\src\vhwd\memory\mempool_cached.cpp" />
     <ClCompile Include="..\..\src\vhwd\memory\mempool_malloc.cpp" />
@@ -491,6 +492,7 @@
     <ClInclude Include="..\..\inc\vhwd\memory\allocator.h" />
     <ClInclude Include="..\..\inc\vhwd\memory\allocator_malloc.h" />
     <ClInclude Include="..\..\inc\vhwd\memory\allocator_mempool.h" />
+    <ClInclude Include="..\..\inc\vhwd\memory\gc_ptr.h" />
     <ClInclude Include="..\..\inc\vhwd\net\iocp1.h" />
     <ClInclude Include="..\..\inc\vhwd\net\overlapped.h" />
     <ClInclude Include="..\..\inc\vhwd\net\q2packet.h" />

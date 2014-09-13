@@ -26,6 +26,9 @@ const unsigned char asm_swap_context_code[]=
 0x53,
 0x56,
 0x57,
+
+
+
 #ifdef VHWD_WINDOWS
 
 // push fs:[0],fs:[4],fs:[8];
@@ -71,6 +74,12 @@ const unsigned char asm_swap_context_code[]=
 0x56,
 0x57,
 
+// push r12,r13,r14,r15
+0x41,0x54,
+0x41,0x55,
+0x41,0x56,
+0x41,0x57,
+
 #ifdef VHWD_WINDOWS
 // push gs:[0],gs[8],gs:[16]
 0x65, 0x48, 0x8B, 0x04, 0x25, 0x00, 0x00, 0x00, 0x00,
@@ -103,6 +112,12 @@ const unsigned char asm_swap_context_code[]=
 0x58,
 0x65, 0x48, 0x89, 0x04, 0x25, 0x00, 0x00, 0x00, 0x00,
 #endif
+
+// pop r15,r14,r13,r12
+0x41,0x5F,
+0x41,0x5E,
+0x41,0x5D,
+0x41,0x5C,
 
 // pop ndi,nsi,nbx,nbp
 0x5F,
@@ -150,7 +165,7 @@ public:
 
 	AtomicInt32 m_nState;
 
-
+	// initialize coroutine stack
 	bool init()
 	{
 		if(nsp)
@@ -192,6 +207,13 @@ public:
 		push(NULL);		// nbx
 		push(this);		// nsi, arg for X64 linux
 		push(this);		// ndi, arg for X64 linux
+
+#ifdef VHWD_X64
+		push(NULL);		// r12
+		push(NULL);		// r13
+		push(NULL);		// r14
+		push(NULL);		// r15
+#endif
 
 #ifdef VHWD_WINDOWS
 		push((void*)(sizeof(void*)==4?-1:0));	// fs:[0] exception handler

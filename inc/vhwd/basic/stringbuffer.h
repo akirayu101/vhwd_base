@@ -12,7 +12,7 @@
 #include "vhwd/basic/hashing.h"
 #include "vhwd/basic/string_detail.h"
 #include "vhwd/collection/arr_1t.h"
-#include "vhwd/memory.h"
+//#include "vhwd/memory/mempool.h"
 
 VHWD_ENTER
 

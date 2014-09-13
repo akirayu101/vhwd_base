@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vhwd", "build\vc11\vhwd.vcxproj", "{0E618B92-A4A3-4EDF-BB12-BE5AA323E76B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vhwd_test", "build\vc11\vhwd_test.vcxproj", "{821A28D9-6BD5-4423-8F9B-3746065D6644}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0E618B92-A4A3-4EDF-BB12-BE5AA323E76B} = {0E618B92-A4A3-4EDF-BB12-BE5AA323E76B}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -2,7 +2,8 @@
 #define __H_VHWD_COLLECTION_INDEXER_CONTAINER__
 
 #include "vhwd/collection/detail/indexer_base.h"
-#include "vhwd/memory.h"
+#include "vhwd/memory/mempool.h"
+#include "vhwd/memory/allocator.h"
 
 VHWD_ENTER
 
@@ -25,10 +26,6 @@ public:
 
 	indexer_container() {}
 	indexer_container(const indexer_container& o):impl(o.impl) {}
-
-#ifdef VHWD_C11
-	indexer_container(indexer_container&& o):impl(o.impl) {}
-#endif
 
 	typedef typename impl_type::proxy_array::iterator iterator;
 	typedef typename impl_type::proxy_array::iterator const_iterator;

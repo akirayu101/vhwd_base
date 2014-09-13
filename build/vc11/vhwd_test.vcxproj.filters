@@ -26,6 +26,9 @@
     <ClCompile Include="..\..\test\test_thread.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\test\test_gc_ptr.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="tests">

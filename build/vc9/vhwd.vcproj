@@ -346,6 +346,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\vhwd\memory\gc_ptr.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\vhwd\memory\mempool.cpp"
 						>
 					</File>
@@ -883,6 +887,10 @@
 					>
 					<File
 						RelativePath="..\..\inc\vhwd\memory\allocator.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\inc\vhwd\memory\gc_ptr.h"
 						>
 					</File>
 					<File

@@ -35,13 +35,13 @@ const XmlDocument& XmlDocument::operator=(const XmlDocument& src)
 bool XmlDocument::LoadXml(const String& s)
 {
 	XmlParser parser(*this);
-	return parser.load(s);
+	return parser.LoadXml(s,FILE_TEXT);
 }
 
 bool XmlDocument::LoadStr(const char* pstr_,size_t size_)
 {
 	XmlParser parser(*this);
-	return parser.load(pstr_,size_);
+	return parser.LoadStr(pstr_,size_);
 }
 
 bool XmlDocument::LoadStr(const char* pstr_)
@@ -53,7 +53,7 @@ bool XmlDocument::LoadStr(const char* pstr_)
 bool XmlDocument::SaveXml(const String& s)
 {
 	XmlParser parser(*this);
-	return parser.save(s);
+	return parser.SaveXml(s);
 }
 
 VHWD_LEAVE

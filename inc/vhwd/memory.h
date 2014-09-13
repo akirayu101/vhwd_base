@@ -11,5 +11,6 @@
 
 #include "vhwd/memory/allocator.h"
 #include "vhwd/memory/mempool.h"
+#include "vhwd/memory/gc_ptr.h"
 
 #endif

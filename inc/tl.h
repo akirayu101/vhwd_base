@@ -365,6 +365,41 @@ namespace tl
 		typedef typelist<helper> type;
 	};
 
+	template<typename T>
+	class tuple_param
+	{
+	public:
+		typedef T type;
+		typedef const T& const_reference;
+		typedef T& reference;
+	};
+
+	template<typename T>
+	class tuple_param<const T>
+	{
+	public:
+		typedef T type;
+		typedef const T& const_reference;
+		typedef const T& reference;
+	};
+
+	template<typename T>
+	class tuple_param<T&>
+	{
+	public:
+		typedef T type;
+		typedef T& const_reference;
+		typedef T& reference;
+	};
+
+	template<typename T>
+	class tuple_param<const T&>
+	{
+	public:
+		typedef T type;
+		typedef const T& const_reference;
+		typedef const T& reference;
+	};
 
 
 	template<bool E,typename X0,typename BS>
@@ -391,16 +426,16 @@ namespace tl
 		tuple_empty_helper(){}
 
 		tuple_empty_helper(
-			const type0& x0,
-			const type1& x1=type1(),
-			const type2& x2=type2(),
-			const type3& x3=type3(),
-			const type4& x4=type4(),
-			const type5& x5=type5(),
-			const type6& x6=type6(),
-			const type7& x7=type7(),
-			const type8& x8=type8(),
-			const type9& x9=type9()
+			typename tuple_param<type0>::const_reference x0,
+			typename tuple_param<type1>::const_reference x1=typename tuple_param<type1>::type(),
+			typename tuple_param<type2>::const_reference x2=typename tuple_param<type2>::type(),
+			typename tuple_param<type3>::const_reference x3=typename tuple_param<type3>::type(),
+			typename tuple_param<type4>::const_reference x4=typename tuple_param<type4>::type(),
+			typename tuple_param<type5>::const_reference x5=typename tuple_param<type5>::type(),
+			typename tuple_param<type6>::const_reference x6=typename tuple_param<type6>::type(),
+			typename tuple_param<type7>::const_reference x7=typename tuple_param<type7>::type(),
+			typename tuple_param<type8>::const_reference x8=typename tuple_param<type8>::type(),
+			typename tuple_param<type9>::const_reference x9=typename tuple_param<type9>::type()
 
 			)
 			:basetype(x1,x2,x3,x4,x5,x6,x7,x8,x9)
@@ -408,7 +443,7 @@ namespace tl
 			(void)&x0;
 		}
 
-		inline operator type0&(){return *(type0*)this;}
+		inline operator typename tuple_param<type0>::reference(){return *(typename tuple_param<type0>::type*)this;}
 	};
 
 	template<typename X0,typename BS>
@@ -432,16 +467,16 @@ namespace tl
 		tuple_empty_helper(){}
 
 		tuple_empty_helper(
-			const type0& x0,
-			const type1& x1=type1(),
-			const type2& x2=type2(),
-			const type3& x3=type3(),
-			const type4& x4=type4(),
-			const type5& x5=type5(),
-			const type6& x6=type6(),
-			const type7& x7=type7(),
-			const type8& x8=type8(),
-			const type9& x9=type9()
+			typename tuple_param<type0>::const_reference x0,
+			typename tuple_param<type1>::const_reference x1=typename tuple_param<type1>::type(),
+			typename tuple_param<type2>::const_reference x2=typename tuple_param<type2>::type(),
+			typename tuple_param<type3>::const_reference x3=typename tuple_param<type3>::type(),
+			typename tuple_param<type4>::const_reference x4=typename tuple_param<type4>::type(),
+			typename tuple_param<type5>::const_reference x5=typename tuple_param<type5>::type(),
+			typename tuple_param<type6>::const_reference x6=typename tuple_param<type6>::type(),
+			typename tuple_param<type7>::const_reference x7=typename tuple_param<type7>::type(),
+			typename tuple_param<type8>::const_reference x8=typename tuple_param<type8>::type(),
+			typename tuple_param<type9>::const_reference x9=typename tuple_param<type9>::type()
 
 			)
 			:basetype(x1,x2,x3,x4,x5,x6,x7,x8,x9),val(x0)
@@ -449,7 +484,7 @@ namespace tl
 		
 		}
 
-		inline operator type0&(){return val;}
+		inline operator typename tuple_param<type0>::reference(){return val;}
 	};
 
 
@@ -481,16 +516,16 @@ namespace tl
 		tuple(){}
 
 		tuple(
-			const type0& x0,
-			const type1& x1=type1(),
-			const type2& x2=type2(),
-			const type3& x3=type3(),
-			const type4& x4=type4(),
-			const type5& x5=type5(),
-			const type6& x6=type6(),
-			const type7& x7=type7(),
-			const type8& x8=type8(),
-			const type9& x9=type9()
+			typename tuple_param<type0>::const_reference x0,
+			typename tuple_param<type1>::const_reference x1=typename tuple_param<type1>::type(),
+			typename tuple_param<type2>::const_reference x2=typename tuple_param<type2>::type(),
+			typename tuple_param<type3>::const_reference x3=typename tuple_param<type3>::type(),
+			typename tuple_param<type4>::const_reference x4=typename tuple_param<type4>::type(),
+			typename tuple_param<type5>::const_reference x5=typename tuple_param<type5>::type(),
+			typename tuple_param<type6>::const_reference x6=typename tuple_param<type6>::type(),
+			typename tuple_param<type7>::const_reference x7=typename tuple_param<type7>::type(),
+			typename tuple_param<type8>::const_reference x8=typename tuple_param<type8>::type(),
+			typename tuple_param<type9>::const_reference x9=typename tuple_param<type9>::type()
 
 			)
 			:basetype(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9)
@@ -525,7 +560,7 @@ namespace tl
 		tuple(){}
 
 		tuple(
-			const type0& x0,
+			tuple_param<type0>::const_reference x0,
 			const type1& x1=type1(),
 			const type2& x2=type2(),
 			const type3& x3=type3(),
@@ -559,7 +594,7 @@ namespace tl
 	public:
 		typedef tuple_at<typename T::tupxtype,N-1> tupxbase;
 		typedef typename tupxbase::type type;
-		static inline type& g(T& t)
+		static inline typename tuple_param<type>::reference g(T& t)
 		{
 			return tupxbase::g(t);
 		}
@@ -570,7 +605,7 @@ namespace tl
 	{
 	public:
 		typedef typename T::type0 type;
-		static inline type& g(T& t)
+		static inline typename tuple_param<type>::reference g(T& t)
 		{
 			return t;
 		}

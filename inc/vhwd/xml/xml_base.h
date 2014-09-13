@@ -26,8 +26,11 @@ class VHWD_DLLIMPEXP XmlBase : public SmallObject
 {
 public:
 
-	XmlBase() {}
-	XmlBase(const String& name_,const String& value_=""):m_sName(name_),m_sValue(value_) {}
+	XmlBase(){}
+	XmlBase(const String& name_,const String& value_="")
+		:m_sName(name_),
+		m_sValue(value_)
+	{}
 
 	const String& GetName() const
 	{

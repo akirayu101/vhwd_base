@@ -126,6 +126,15 @@ template<> class hash_t<void*> : public hash_pod<void*> {};
 
 template<typename T> class hash_t<const T> : public hash_t<T>{};
 
+template<typename T> class hash_t<T*>
+{
+public:
+	inline uint32_t operator()(T* val)
+	{
+		return (uintptr_t(val))>>4;
+	}
+};
+
 
 template<typename T>
 class hash_array

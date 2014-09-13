@@ -32,7 +32,7 @@ public:
 	indexer_set(const indexer_set& o):basetype(o) {}
 
 #ifdef VHWD_C11
-	indexer_set(indexer_set&& o):basetype(o) {}
+	indexer_set(indexer_set&& o){this->swap(o);}
 #endif
 
 };

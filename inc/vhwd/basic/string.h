@@ -67,7 +67,7 @@ public:
 	}
 	const String& operator=(String&& p)
 	{
-		swap(p);
+		this->swap(p);
 		return *this;
 	}
 #endif

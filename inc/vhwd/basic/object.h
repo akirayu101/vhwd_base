@@ -107,7 +107,14 @@ public:
 	inline void IncRef(){m_refcount++;}
 
 	// Decrease reference counter,
-	inline void DecRef(){wassert(m_refcount.get()>0);if(--m_refcount==0){delete this;}}
+	inline void DecRef()
+	{
+		wassert(m_refcount.get()>0);
+		if(--m_refcount==0)
+		{
+			delete this;
+		}
+	}
 
 
 	// Get reference count.
