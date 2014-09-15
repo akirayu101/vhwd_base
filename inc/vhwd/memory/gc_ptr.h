@@ -169,13 +169,6 @@ public:
 
 	static void mark(gc_state::queue_type& q);
 
-	//static inline void mark(gc_state::queue_type& q,gc_obj* p)
-	//{
-	//	if(!p||p->_gc_tags==gc_state::TAG_MARK) return;
-	//	p->_gc_tags=gc_state::TAG_MARK;
-	//	p->_gc_mark(q);
-	//}
-
 	static void gc_nolock(bool force_marking_);
 
 	static void gc()

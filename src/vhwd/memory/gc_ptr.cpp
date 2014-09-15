@@ -59,7 +59,6 @@ void gc_handler::gc_nolock(bool force_marking_)
 			q2.reset();
 			for(gc_state::queue_type::iterator it=q1.begin();it!=q1.end();++it)
 			{
-				//gc_handler::mark(q2,*it);
 				(*it)->_gc_mark(q2);
 			}
 			q1.swap(q2);

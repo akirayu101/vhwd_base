@@ -40,6 +40,48 @@
     <Filter Include="src\vhwd\scripting">
       <UniqueIdentifier>{cf545b6f-9e28-4a17-879b-dd73e7d7a088}</UniqueIdentifier>
     </Filter>
+    <Filter Include="inc">
+      <UniqueIdentifier>{8d5cdfa1-b67f-4cf1-a355-7827cedf6d7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\vhwd">
+      <UniqueIdentifier>{0a64764d-5e68-4c23-906f-fa6f40b3c89c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\vhwd\basic">
+      <UniqueIdentifier>{d3b2c1b9-4a1d-4162-98b3-18e2e36d51f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\vhwd\xml">
+      <UniqueIdentifier>{ee274a9f-f6df-465d-a744-5b58e265e58d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\vhwd\threading">
+      <UniqueIdentifier>{7223f64d-ca8a-4564-856b-b52395157eab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\vhwd\logging">
+      <UniqueIdentifier>{c19b7fe3-5e9d-4544-8f98-086c147253ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\vhwd\serialization">
+      <UniqueIdentifier>{ddbacf20-9c22-4e5e-a720-be7514a10338}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\vhwd\ipc">
+      <UniqueIdentifier>{9a859649-31f3-4ec2-8f23-cc3b7435bb90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\vhwd\net">
+      <UniqueIdentifier>{e9f04fc1-43e4-4d61-9455-f9c353b6ead7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\vhwd\memory">
+      <UniqueIdentifier>{117ae65b-99d5-4ea9-83e5-bafb36c7e94c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\vhwd\testing">
+      <UniqueIdentifier>{48d8a092-730a-4921-8a7d-0e65887e8050}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\vhwd\collection">
+      <UniqueIdentifier>{ddd80e4e-cb7e-43a9-9cc8-0d076a4815c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\vhwd\collection\detail">
+      <UniqueIdentifier>{a1596dfe-28ff-4547-80ba-1fc0b3fe1605}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\vhwd\scripting">
+      <UniqueIdentifier>{0d66302a-43e8-4de0-aafb-55ed5ac8bf86}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\vhwd\basic\atomic.cpp">
@@ -334,6 +376,324 @@
     </ClInclude>
     <ClInclude Include="..\..\src\vhwd\memory\mempool_link.h">
       <Filter>src\vhwd\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\tl.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic.h">
+      <Filter>inc\vhwd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection.h">
+      <Filter>inc\vhwd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\config.h">
+      <Filter>inc\vhwd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\ipc.h">
+      <Filter>inc\vhwd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\logging.h">
+      <Filter>inc\vhwd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\memory.h">
+      <Filter>inc\vhwd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\net.h">
+      <Filter>inc\vhwd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting.h">
+      <Filter>inc\vhwd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\serialization.h">
+      <Filter>inc\vhwd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\threading.h">
+      <Filter>inc\vhwd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\xml.h">
+      <Filter>inc\vhwd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\atomic.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\bitflags.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\clock.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\codecvt.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\console.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\exception.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\file.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\functor.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\functor_detail.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\hashing.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\language.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\lockguard.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\object.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\object_ex.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\platform.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\pointer.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\pointer_detail.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\string.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\stringbuffer.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\string_detail.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\basic\system.h">
+      <Filter>inc\vhwd\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\xml\xml_attribute.h">
+      <Filter>inc\vhwd\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\xml\xml_base.h">
+      <Filter>inc\vhwd\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\xml\xml_document.h">
+      <Filter>inc\vhwd\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\xml\xml_node.h">
+      <Filter>inc\vhwd\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\threading\coroutine.h">
+      <Filter>inc\vhwd\threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\threading\thread.h">
+      <Filter>inc\vhwd\threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\threading\thread_cond.h">
+      <Filter>inc\vhwd\threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\threading\thread_event.h">
+      <Filter>inc\vhwd\threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\threading\thread_manager.h">
+      <Filter>inc\vhwd\threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\threading\thread_mutex.h">
+      <Filter>inc\vhwd\threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\threading\thread_pool.h">
+      <Filter>inc\vhwd\threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\threading\thread_rwlock.h">
+      <Filter>inc\vhwd\threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\threading\thread_sem.h">
+      <Filter>inc\vhwd\threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\threading\thread_spin.h">
+      <Filter>inc\vhwd\threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\logging\logger.h">
+      <Filter>inc\vhwd\logging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\logging\logrecord.h">
+      <Filter>inc\vhwd\logging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\logging\logtarget.h">
+      <Filter>inc\vhwd\logging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\serialization\serializer.h">
+      <Filter>inc\vhwd\serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\serialization\serializer_buffer.h">
+      <Filter>inc\vhwd\serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\serialization\serializer_socket.h">
+      <Filter>inc\vhwd\serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\serialization\serializer_stream.h">
+      <Filter>inc\vhwd\serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\ipc\pipe.h">
+      <Filter>inc\vhwd\ipc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\ipc\shm.h">
+      <Filter>inc\vhwd\ipc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\net\iocp1.h">
+      <Filter>inc\vhwd\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\net\ipaddress.h">
+      <Filter>inc\vhwd\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\net\overlapped.h">
+      <Filter>inc\vhwd\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\net\q2packet.h">
+      <Filter>inc\vhwd\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\net\session.h">
+      <Filter>inc\vhwd\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\net\socket.h">
+      <Filter>inc\vhwd\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\memory\allocator.h">
+      <Filter>inc\vhwd\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\memory\allocator_malloc.h">
+      <Filter>inc\vhwd\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\memory\allocator_mempool.h">
+      <Filter>inc\vhwd\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\memory\gc_ptr.h">
+      <Filter>inc\vhwd\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\memory\mempool.h">
+      <Filter>inc\vhwd\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\testing\test.h">
+      <Filter>inc\vhwd\testing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\arr_1t.h">
+      <Filter>inc\vhwd\collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\arr_xt.h">
+      <Filter>inc\vhwd\collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\bst_map.h">
+      <Filter>inc\vhwd\collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\bst_set.h">
+      <Filter>inc\vhwd\collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\indexer_map.h">
+      <Filter>inc\vhwd\collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\indexer_set.h">
+      <Filter>inc\vhwd\collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\intrusive_list.h">
+      <Filter>inc\vhwd\collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\linear_buffer.h">
+      <Filter>inc\vhwd\collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\lockfree_queue.h">
+      <Filter>inc\vhwd\collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\ring_buffer.h">
+      <Filter>inc\vhwd\collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\arr_container.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\avl_tree_policy.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_container.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_tree.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_tree_iterator.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\bst_tree_node.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\collection_base.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\indexer_base.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\indexer_container.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\kv_trait.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\collection\detail\rbt_tree_policy.h">
+      <Filter>inc\vhwd\collection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\codegen.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\codegen_generator.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\codegen_visitor.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\executor.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\instruction.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\parser.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\parser_node.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\parser_visitor.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\scanner.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\sub_xt.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\variant.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\variant_code.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\variant_op.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\variant_op1.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\variant_op2.h">
+      <Filter>inc\vhwd\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\vhwd\scripting\variant_table.h">
+      <Filter>inc\vhwd\scripting</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

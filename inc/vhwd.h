@@ -12,6 +12,7 @@
 #include "vhwd/config.h"
 #include "vhwd/basic.h"
 #include "vhwd/logging.h"
+#include "vhwd/memory.h"
 #include "vhwd/threading.h"
 #include "vhwd/ipc.h"
 #include "vhwd/net.h"
