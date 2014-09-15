@@ -69,7 +69,31 @@ public:
 		dlinkptr_type* _gc_prev;
 	};
 
-	typedef arr_1t<gc_obj*> queue_type;
+	class queue_type
+	{
+	public:
+		typedef arr_1t<gc_obj*> impl_type;
+		typedef impl_type::iterator iterator;
+
+		inline iterator begin(){return impl.begin();}
+		inline iterator end(){return impl.end();}
+		inline void swap(queue_type& o){impl.swap(o.impl);}
+
+		inline bool empty(){return impl.empty();}
+		inline void clear(){impl.clear();}
+		inline void reset(){impl.resize(0);}
+
+		void append(gc_obj* o);
+
+		template<typename IT>
+		void append(IT t1,IT t2);
+
+	protected:
+		impl_type impl;
+	};
+
+
+
 	typedef int32_t tags_type;
 
 	static uint32_t nStepingDelta;
@@ -85,12 +109,17 @@ public:
 };
 
 
-
 class VHWD_DLLIMPEXP gc_obj
 {
 public:
 
 	friend class gc_handler;
+	friend class gc_state;
+
+	inline gc_obj()
+	{
+		_gc_tags=gc_state::TAG_INIT;
+	}
 
 	inline gc_obj(const gc_obj& o)
 	{
@@ -100,12 +129,8 @@ public:
 
 	virtual ~gc_obj(){}
 
-protected:
 
-	inline gc_obj()
-	{
-		_gc_tags=gc_state::TAG_INIT;
-	}
+protected:
 
 	// mark object that is connected to this
 	virtual void _gc_mark(gc_state::queue_type& q)
@@ -117,6 +142,18 @@ protected:
 	gc_state::tags_type _gc_tags;
 };
 
+inline void gc_state::queue_type::append(gc_obj* p)
+{
+	if(!p||p->_gc_tags==gc_state::TAG_MARK) return;
+	p->_gc_tags=gc_state::TAG_MARK;
+	impl.push_back(p);
+}
+
+template<typename IT>
+inline void gc_state::queue_type::append(IT t1,IT t2)
+{
+	while(t1!=t2) append(*t1++);
+}
 
 // do not call function in this class manually
 class VHWD_DLLIMPEXP gc_handler
@@ -132,14 +169,14 @@ public:
 
 	static void mark(gc_state::queue_type& q);
 
-	static inline void mark(gc_obj* p,gc_state::queue_type& q)
-	{
-		if(!p||p->_gc_tags==gc_state::TAG_MARK) return;
-		p->_gc_tags=gc_state::TAG_MARK;
-		p->_gc_mark(q);
-	}
+	//static inline void mark(gc_state::queue_type& q,gc_obj* p)
+	//{
+	//	if(!p||p->_gc_tags==gc_state::TAG_MARK) return;
+	//	p->_gc_tags=gc_state::TAG_MARK;
+	//	p->_gc_mark(q);
+	//}
 
-	static void gc_nolock(bool m);
+	static void gc_nolock(bool force_marking_);
 
 	static void gc()
 	{
@@ -310,8 +347,6 @@ public:
 
 };
 
-
-
 template<typename T>
 gc_ptr<T> gc_new()
 {
@@ -319,12 +354,13 @@ gc_ptr<T> gc_new()
 	T* p=(T*)gc_handler::alloc(sizeof(T));
 	if(!p)
 	{
-		// tc_alloc failed, force collect and retry
+		System::LogTrace("gc_new: alloc failed, force collect and retry");
 		garbage_force_collect();
 
 		p=(T*)gc_handler::alloc(sizeof(T));
 		if(!p)
 		{
+			System::LogTrace("gc_new failed: not enough memory");
 			Exception::XBadAlloc();
 		}
 	}
@@ -346,7 +382,14 @@ gc_ptr<T> gc_new()
 	try
 	{
 		// constuctor may throw exception
-		std::allocator<T>().construct(p);
+
+#pragma push_macro("new")
+#undef new
+
+		new(p) T();
+
+#pragma pop_macro("new")
+
 	}
 	catch(...)
 	{
@@ -354,7 +397,7 @@ gc_ptr<T> gc_new()
 		gc_state::tRecursiveMutex.unlock();
 
 		gc_handler::dealloc(p);
-		throw;;
+		throw;
 	}
 
 

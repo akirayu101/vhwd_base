@@ -12,7 +12,6 @@ public:
 
 	A(){val=-1;}
 
-
 	gc_ptr<A> next;
 	//LitePtrT<A> next;
 
@@ -22,11 +21,10 @@ protected:
 
 	void _gc_mark(gc_state::queue_type& q)
 	{
-		if(next) q.push_back(next);
+		q.append(next);
 	}
 
 };
-
 
 class ThreadGc : public ThreadMulti
 {
@@ -34,6 +32,7 @@ public:
 
 	void svc()
 	{
+		// linked list header
 		gc_ptr<A> p0;
 
 		size_t m=1024*128;
@@ -41,14 +40,9 @@ public:
 		for(size_t i=0;i<m;i++)
 		{
 
-			gc_ptr<A> p1;
-			gc_ptr<A> p2;
-			gc_ptr<A> p3;
-
-
-			p1=gc_new<A>();
-			p2=gc_new<A>();
-			p3=gc_new<A>();
+			gc_ptr<A> p1=gc_new<A>();
+			gc_ptr<A> p2=gc_new<A>();
+			gc_ptr<A> p3=gc_new<A>();
 
 			// making recursive reference
 			p1->next=p2;
@@ -86,6 +80,26 @@ TEST_DEFINE(TEST_GarbageCollect)
 	ThreadGc tgc;
 	tgc.activate(3);
 	tgc.wait();
+
+	{
+
+		// gc_ptr in container
+		arr_1t<gc_ptr<A> > arr;
+
+		for(size_t i=0;i<1024;i++)
+		{
+			arr.push_back(gc_new<A>());
+			if(i>1)
+			{
+				arr[i]->next=arr[i-1];
+			}
+		}
+		arr.back()->next=arr[0];
+
+		garbage_force_collect();
+
+		TEST_ASSERT(gc_state::nNumberOfObject==1024);
+	}
 
 	garbage_force_collect();
 

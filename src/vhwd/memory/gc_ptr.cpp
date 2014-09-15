@@ -32,17 +32,14 @@ inline void gc_handler::mark(gc_state::queue_type& q)
 }
 
 
-void gc_handler::gc_nolock(bool m)
+void gc_handler::gc_nolock(bool force_marking_)
 {
 	ElapsedTimer tt;
-
 	tt.tick();
 
 	uint32_t p1=gc_state::nNumberOfObject;
 
-	wassert(p1>=0);
-
-	if(m)
+	if(force_marking_)
 	{
 		for(gc_obj* p=gc_state::pLinkOfAllObject;p;p=p->_gc_next)
 		{
@@ -59,10 +56,11 @@ void gc_handler::gc_nolock(bool m)
 	{
 		while(!q1.empty())
 		{
-			q2.resize(0);
+			q2.reset();
 			for(gc_state::queue_type::iterator it=q1.begin();it!=q1.end();++it)
 			{
-				gc_handler::mark(*it,q2);
+				//gc_handler::mark(q2,*it);
+				(*it)->_gc_mark(q2);
 			}
 			q1.swap(q2);
 		}
@@ -75,7 +73,6 @@ void gc_handler::gc_nolock(bool m)
 
 	q1.clear();
 	q2.clear();
-
 
 	gc_obj* p=gc_state::pLinkOfAllObject;
 	gc_obj* _pLinkOfConnectedObjects=NULL;
@@ -99,9 +96,7 @@ void gc_handler::gc_nolock(bool m)
 	}
 
 	gc_state::pLinkOfAllObject=_pLinkOfConnectedObjects;
-
 	int p2=gc_state::nNumberOfObject;
-
 	tt.tack();
 
 	gc_state::nNumberOfObjectLast=gc_state::nNumberOfObject;

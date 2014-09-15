@@ -333,7 +333,6 @@ String& String::operator+=(const String& p)
 	return *this;
 }
 
-
 String& String::operator+=(const wchar_t* p)
 {
 	_do_append(p,std::char_traits<wchar_t>::length(p));
@@ -412,14 +411,11 @@ String& String::operator<<(char v)
 	return (*this);
 }
 
-
-
 String& String::operator<<(int32_t v)
 {
 	_do_format_integer(v);
 	return (*this);
 }
-
 
 String& String::operator<<(int64_t v)
 {

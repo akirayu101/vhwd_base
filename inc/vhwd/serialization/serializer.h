@@ -83,12 +83,16 @@ public:
 	{
 		return type==READER;
 	}
+
 	bool is_writer()
 	{
 		return type==WRITER;
 	}
 
-	virtual void errstr(const String&)=0;
+	virtual void errstr(const String& msg)
+	{
+		Exception::XError(msg.c_str());
+	}
 
 	virtual bool good() const
 	{
@@ -112,6 +116,25 @@ public:
 	virtual void close() {}
 
 	BitFlags flags;
+
+
+	SerializerWriter& writer()
+	{
+		if(!is_writer())
+		{
+			errstr("NOT_WRITER");
+		}
+		return *(SerializerWriter*)this;
+	}
+
+	virtual SerializerReader& reader()
+	{
+		if(!is_reader())
+		{
+			errstr("NOT_READER");
+		}
+		return *(SerializerReader*)this;
+	}
 
 protected:
 	const int32_t type;
@@ -925,25 +948,19 @@ Serializer& operator &(Serializer& ar,T& val)
 }
 
 template<typename T>
-SerializerReader& operator >>(Serializer& ar,T& val)
+SerializerReader& operator >>(Serializer& ar_,T& val)
 {
-	if(!ar.is_reader())
-	{
-		ar.errstr("INVALID_SERIALIZER_READER");
-	}
-	serial_helper_test<SerializerReader,T>::g(static_cast<SerializerReader&>(ar),val);
-	return static_cast<SerializerReader&>(ar);
+	SerializerReader& ar(ar_.reader());
+	serial_helper_test<SerializerReader,T>::g(ar,val);
+	return ar;
 }
 
 template<typename T>
-SerializerWriter& operator <<(Serializer& ar,T& val)
+SerializerWriter& operator <<(Serializer& ar_,T& val)
 {
-	if(!ar.is_writer())
-	{
-		ar.errstr("INVALID_SERIALIZER_WRITER");
-	}
-	serial_helper_test<SerializerWriter,T>::g(static_cast<SerializerWriter&>(ar),val);
-	return static_cast<SerializerWriter&>(ar);
+	SerializerWriter& ar(ar_.writer());
+	serial_helper_test<SerializerWriter,T>::g(ar,val);
+	return ar;
 }
 
 template<typename T>
