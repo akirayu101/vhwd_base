@@ -25,7 +25,7 @@ template<typename T> gc_ptr<T> gc_new();
 
 enum
 {
-	GC_TAG_INIF=0,
+	GC_TAG_INIT=0,
 	GC_TAG_FLAG=1,
 	GC_TAG_MARK=2,
 };
@@ -62,13 +62,13 @@ public:
 
 	inline gc_obj()
 	{
-		_gc_tags=GC_TAG_INIF;
+		_gc_tags=GC_TAG_INIT;
 	}
 
 	inline gc_obj(const gc_obj& o)
 	{
 		VHWD_UNUSED(o);
-		_gc_tags=GC_TAG_INIF;
+		_gc_tags=GC_TAG_INIT;
 	}
 
 	inline gc_obj& operator=(const gc_obj&){return *this;}
