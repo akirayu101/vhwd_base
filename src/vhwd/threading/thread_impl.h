@@ -6,6 +6,9 @@
 
 VHWD_ENTER
 
+extern VHWD_THREAD_TLS ThreadImpl* tc_impl_data;
+
+
 class VHWD_DLLIMPEXP MpAllocCachedNoLock;
 
 class VHWD_DLLIMPEXP ThreadImpl : public NonCopyable
@@ -21,11 +24,8 @@ public:
 	static ThreadImpl* get_thread();
 	static bool put_thread(ThreadImpl* impl);
 
-	//static ThreadImpl& data();
-
 	static bool activate(Thread& thrd,int n);
 	static bool activate(Thread& thrd,ThreadEx::InvokerGroup& g);
-
 
 	ThreadImpl();
 	~ThreadImpl();
@@ -59,8 +59,22 @@ public:
 	LitePtrT<ThreadImpl> pNext;
 	LitePtrT<ThreadImpl> pPrev;
 
+	LitePtrT<MpAllocCachedNoLock> tc_data;
+
 	static bool m_bReqExit;
 
+	static ThreadImpl& dummy_data();
+
+	static inline ThreadImpl& this_data()
+	{
+
+		ThreadImpl* p=tc_impl_data;
+		if(!p)
+		{
+			return dummy_data();
+		}
+		return *p;
+	}
 };
 
 

@@ -402,7 +402,6 @@
     <ClCompile Include="..\..\test\test_basic.cpp" />
     <ClCompile Include="..\..\test\test_collection.cpp" />
     <ClCompile Include="..\..\test\test_gc_ptr.cpp" />
-    <ClCompile Include="..\..\test\test_iocp.cpp" />
     <ClCompile Include="..\..\test\test_memory.cpp" />
     <ClCompile Include="..\..\test\test_scripting.cpp" />
     <ClCompile Include="..\..\test\test_serializer.cpp" />

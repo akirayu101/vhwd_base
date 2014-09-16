@@ -1,9 +1,10 @@
 #include "vhwd/memory/mempool.h"
-//#include "vhwd/basic/codecvt.h"
-//#include "vhwd/collection/indexer_map.h"
+
 #include <cstring>
 
 VHWD_ENTER
+
+extern const char const_empty_buffer[64];
 
 class StringPool : public NonCopyable
 {

@@ -25,6 +25,6 @@ void MemPoolDebug<T>::deallocate(void* p)
 
 template class MemPoolDebug<MemPoolMalloc>;
 template class MemPoolDebug<MemPoolPaging>;
-template class MemPoolDebug<MemPoolCached>;
+
 
 VHWD_LEAVE

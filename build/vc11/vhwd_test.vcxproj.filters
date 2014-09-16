@@ -11,9 +11,6 @@
     <ClCompile Include="..\..\test\test_collection.cpp">
       <Filter>tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\test\test_iocp.cpp">
-      <Filter>tests</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\test\test_memory.cpp">
       <Filter>tests</Filter>
     </ClCompile>

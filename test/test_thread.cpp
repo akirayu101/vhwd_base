@@ -203,34 +203,34 @@ TEST_DEFINE(TEST_Coroutine)
 	TEST_ASSERT(consumer.state()==Coroutine::STATE_STOPPED);
 }
 
-class MyTask : public ITask
-{
-public:
-
-	void svc(void* p)
-	{
-		// just sleep for a moment
-		Thread::sleep_for(12);
-	}
-};
-
-TEST_DEFINE(TEST_ThreadPool)
-{
-	ThreadPool tpool;
-	tpool.activate();
-
-	DataPtrT<MyTask> task(new MyTask);
-	for(int i=0; i<1000; i++)
-	{
-		tpool.putq(task.get(),NULL);
-		Thread::sleep_for(5);
-	}
-
-	Thread::sleep_for(1000);
-	tpool.reqexit();
-	tpool.wait();
-
-}
+//class MyTask : public ITask
+//{
+//public:
+//
+//	void svc(void* p)
+//	{
+//		// just sleep for a moment
+//		Thread::sleep_for(12);
+//	}
+//};
+//
+//TEST_DEFINE(TEST_ThreadPool)
+//{
+//	ThreadPool tpool;
+//	tpool.activate();
+//
+//	DataPtrT<MyTask> task(new MyTask);
+//	for(int i=0; i<1000; i++)
+//	{
+//		tpool.putq(task.get(),NULL);
+//		Thread::sleep_for(5);
+//	}
+//
+//	Thread::sleep_for(1000);
+//	tpool.reqexit();
+//	tpool.wait();
+//
+//}
 
 
 class ThreadSync : public ThreadMulti

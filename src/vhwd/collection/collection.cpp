@@ -187,7 +187,7 @@ RingBuffer::~RingBuffer()
 void RingBuffer::reset(int s)
 {
 	int k=sz_helper::n2p(s);
-	char* p=(char*)tc_alloc(k);
+	char* p=(char*)mp_alloc(k);
 	if(!p)
 	{
 		Exception::XBadAlloc();
@@ -206,7 +206,7 @@ void RingBuffer::clear()
 {
 	if(pBuffer)
 	{
-		tc_free(pBuffer);
+		mp_free(pBuffer);
 		pBuffer=NULL;
 	}
 }

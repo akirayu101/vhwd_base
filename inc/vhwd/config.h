@@ -52,6 +52,12 @@
 #define VWHD_ATTRIBUTE(X) __attribute__((X))
 #endif
 
+#ifdef _MSC_VER
+#define VHWD_THREAD_TLS __declspec(thread)
+#else
+#define VHWD_THREAD_TLS __thread
+#endif
+
 #ifdef VHWD_DLL
 #ifdef _MSC_VER
 #define VHWD_EXPORT __declspec(dllexport)
@@ -221,6 +227,8 @@ public:
 class VHWD_DLLIMPEXP String;
 class VHWD_DLLIMPEXP TimeSpan;
 class VHWD_DLLIMPEXP TimePoint;
+
+VHWD_DLLIMPEXP extern const char const_empty_buffer[64];
 
 void VHWD_DLLIMPEXP OnAssertFailure(const char* what,const char* file,long line);
 const String& VHWD_DLLIMPEXP Translate(const String& msg);

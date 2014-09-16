@@ -189,7 +189,6 @@ void* MpAllocGlobal::realloc_real(void* p,size_t n,MpAllocBucket& bk)
 }
 
 
-
 void MpAllocGlobal::dealloc_real(void* p,MpAllocBucket& bk)
 {
 	MpAllocSpan* sp=bk.get();
@@ -466,30 +465,8 @@ void mp_init()
 	}
 }
 
-VHWD_DLLIMPEXP void* mp_alloc(size_t n)
-{
-	if(!g_myalloc_impl)
-	{
-		mp_init();
-	}
-	void* m=g_myalloc_impl->alloc(n);
-	if(!m)
-	{
-		errno=ENOMEM;
-	}
-	return m;
-}
 
-VHWD_DLLIMPEXP void mp_free(void* p)
-{
-	if(!g_myalloc_impl)
-	{
-		mp_init();
-	}
-	g_myalloc_impl->dealloc(p);
-}
-
-VHWD_DLLIMPEXP void* mp_realloc(void* p,size_t n)
+void* mp_realloc(void* p,size_t n)
 {
 	if(!g_myalloc_impl)
 	{
@@ -503,16 +480,43 @@ VHWD_DLLIMPEXP void* mp_realloc(void* p,size_t n)
 	return m;
 }
 
-void mp_init();
+
+void* mp_alloc(size_t n)
+{
+	MpAllocCachedNoLock* tc_data=tc_get();
+
+	if(!tc_data)
+	{
+		return mp_alloc_real(n);
+	}
+	else
+	{
+		void* p=tc_data->alloc(n);
+		if(p) return p;
+		errno=ENOMEM;
+		return NULL;
+	}
+}
+
+void mp_free(void* p)
+{
+	MpAllocCachedNoLock* tc_data=tc_get();
+
+	if(tc_data)
+	{
+		tc_data->dealloc(p);
+	}
+	else
+	{
+		mp_free_real(p);
+	}
+}
+
+
 
 void* MemPoolPaging::allocate(size_t n)
 {
-	if(!g_myalloc_impl)
-	{
-		mp_init();
-	}
-
-	void* p=g_myalloc_impl->alloc(n);
+	void* p=mp_alloc(n);
 	if(!p)
 	{
 		Exception::XBadAlloc();
@@ -522,13 +526,7 @@ void* MemPoolPaging::allocate(size_t n)
 
 void MemPoolPaging::deallocate(void* p)
 {
-	if(!g_myalloc_impl)
-	{
-		::free(p);
-		return;
-	}
-
-	g_myalloc_impl->dealloc(p);
+	mp_free(p);
 }
 
 

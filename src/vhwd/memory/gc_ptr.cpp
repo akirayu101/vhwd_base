@@ -5,8 +5,6 @@
 
 VHWD_ENTER
 
-gc_state::dlinkptr_type gc_state::tPtrLink;
-
 uint32_t gc_state::nNumberOfObject=0;
 uint32_t gc_state::nNumberOfObjectLast=0;
 
@@ -18,61 +16,68 @@ gc_state::addrinfo_type gc_state::tCurrentObject;
 
 BitFlags gc_state::flags;
 
-inline void gc_handler::mark(gc_state::queue_type& q)
+gc_state* gc_state::_gp_instance=NULL;
+
+
+gc_state::gc_state()
 {
-	for(gc_state::dlinkptr_type* p=gc_state::tPtrLink._gc_next;p;p=p->_gc_next)
-	{
-		gc_obj* o=p->m_ptr;
-		if(o)
-		{
-			o->_gc_tags=gc_state::TAG_MARK;
-			o->_gc_mark(q);
-		}
-	}
+	tPtrLink_head._gc_next=&tPtrLink_tail;
+	tPtrLink_head._gc_prev=NULL;
+	tPtrLink_tail._gc_next=NULL;
+	tPtrLink_tail._gc_prev=&tPtrLink_head;
+}
+
+void gc_state::_ensure_created()
+{
+	static gc_state gInstance;
+	_gp_instance=&gInstance;
 }
 
 
-void gc_handler::gc_nolock(bool force_marking_)
+void gc_state::gc_nolock(bool force_marking_)
 {
 	ElapsedTimer tt;
 	tt.tick();
 
-	uint32_t p1=gc_state::nNumberOfObject;
+	uint32_t p1=nNumberOfObject;
 
 	if(force_marking_)
 	{
-		for(gc_obj* p=gc_state::pLinkOfAllObject;p;p=p->_gc_next)
+		for(gc_obj* p=pLinkOfAllObject;p;p=p->_gc_next)
 		{
-			p->_gc_tags=gc_state::TAG_FLAG;
+			p->_gc_tags=GC_TAG_FLAG;
+		}
+	}
+	
+	pending_q1.reset();
+	for(gc_dlinkptr_type* p=tPtrLink_head._gc_next;p!=&tPtrLink_tail;p=p->_gc_next)
+	{
+		gc_obj* o=p->m_ptr;
+		if(o)
+		{
+			o->_gc_tags=GC_TAG_MARK;
+			o->_gc_mark(pending_q1);
 		}
 	}
 
-	gc_state::queue_type q1;
-	gc_state::queue_type q2;
-
-	gc_handler::mark(q1);
-
 	try
 	{
-		while(!q1.empty())
+		while(!pending_q1.empty())
 		{
-			q2.reset();
-			for(gc_state::queue_type::iterator it=q1.begin();it!=q1.end();++it)
+			pending_q2.reset();
+			for(gc_mark_queue::iterator it=pending_q1.begin();it!=pending_q1.end();++it)
 			{
-				(*it)->_gc_mark(q2);
+				(*it)->_gc_mark(pending_q2);
 			}
-			q1.swap(q2);
+			pending_q1.swap(pending_q2);
 		}
 	}
 	catch(...)
 	{
-		System::LogError("error in gc_handler::gc_nolock");
+		System::LogError("error in gc_state::gc_nolock");
 		return;
 	}
-
-	q1.clear();
-	q2.clear();
-
+	
 	gc_obj* p=gc_state::pLinkOfAllObject;
 	gc_obj* _pLinkOfConnectedObjects=NULL;
 
@@ -83,15 +88,15 @@ void gc_handler::gc_nolock(bool force_marking_)
 		gc_obj* x=p;
 		p=p->_gc_next;;
 
-		if(x->_gc_tags==gc_state::TAG_MARK)
+		if(x->_gc_tags==GC_TAG_MARK)
 		{
-			x->_gc_tags=gc_state::TAG_FLAG;
+			x->_gc_tags=GC_TAG_FLAG;
 			x->_gc_next=_pLinkOfConnectedObjects;
 			_pLinkOfConnectedObjects=x;
 			continue;
 		}
 
-		gc_handler::destroy(x);
+		gc_state::destroy(x);
 	}
 
 	gc_state::pLinkOfAllObject=_pLinkOfConnectedObjects;
@@ -107,11 +112,9 @@ void gc_handler::gc_nolock(bool force_marking_)
 
 }
 
-void garbage_force_collect()
+void gc_force_collect()
 {
-	gc_state::tRecursiveMutex.lock();
-	gc_handler::gc_nolock(true);
-	gc_state::tRecursiveMutex.unlock();
+	gc_state::current().gc(true);
 }
 
 VHWD_LEAVE

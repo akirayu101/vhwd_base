@@ -3,10 +3,13 @@
 #include "vhwd/threading/thread_pool.h"
 VHWD_ENTER
 
-extern ThreadImpl_detail::key_t threaddata_buffer_key;
 
-void tc_cleanup();
+VHWD_THREAD_TLS ThreadImpl* tc_impl_data;
+
+
 void tc_init();
+void tc_gc();
+void tc_cleanup();
 
 bool ThreadImpl::m_bReqExit=false;
 
@@ -188,7 +191,7 @@ bool ThreadImpl::put_thread(ThreadImpl* impl)
 
 
 ThreadImpl::ThreadImpl()
-{	
+{
 	thrd_rank=-1;
 	thrd_ptr=NULL;
 	thrd_affinity=0;
@@ -218,10 +221,6 @@ void ThreadImpl::set_thread(Thread* p,ThreadEx::factor_type v,int i)
 }
 
 
-void tc_init();
-void tc_gc();
-void tc_cleanup();
-
 bool ThreadImpl::svc_enter()
 {
 	ThreadManager& tmgr(ThreadManager::current());
@@ -238,7 +237,8 @@ bool ThreadImpl::svc_enter()
 		}
 	}
 
-	ThreadImpl_detail::key_set(threaddata_buffer_key,this);
+	tc_impl_data=this;
+
 	tc_init();
 	return true;
 }
@@ -248,7 +248,7 @@ void ThreadImpl::svc_leave()
 	ThreadManager& tmgr(ThreadManager::current());
 
 	tc_cleanup();
-	ThreadImpl_detail::key_set(threaddata_buffer_key,NULL);
+	tc_impl_data=NULL;
 
 	delete this;
 
@@ -334,5 +334,65 @@ void ThreadImpl::svc()
 
 }
 
+
+ThreadImpl* _p_MainThreadImplData=NULL;
+ThreadImpl* _p_DummyThreadImplData=NULL;
+
+class ThreadImplMain : public ThreadImpl
+{
+public:
+
+	class ThreadMain : public Thread
+	{
+	public:
+		ThreadMain(){}
+		bool test_destroy(){return ThreadImpl::m_bReqExit;}
+		void reqexit(){ThreadImpl::m_bReqExit=1;}
+		void wait(){ThreadManager::current().wait();}
+		bool activate(){return false;}
+		bool alive(){return true;}
+
+	};
+
+	ThreadMain thrd;
+
+	ThreadImplMain()
+	{
+		thrd_rank=0;
+		thrd_ptr=&thrd;
+	}
+
+
+} _g_MainThreadImpl;
+
+
+Thread& Thread::main_thread()
+{
+	return _g_MainThreadImpl.thrd;
+}
+
+ThreadImpl& ThreadImpl::dummy_data()
+{
+	if(_p_MainThreadImplData==NULL)
+	{
+		tc_impl_data=&_g_MainThreadImpl;
+		_p_MainThreadImplData=&_g_MainThreadImpl;
+		return _g_MainThreadImpl;
+	}
+
+	if(_p_DummyThreadImplData==NULL)
+	{
+		System::LogTrace("unknown thread calling this_data");
+
+		static ThreadImpl d;
+		static Thread t;
+		d.thrd_rank=0;
+		d.thrd_ptr=&t;
+
+		_p_DummyThreadImplData=&d;
+	}
+
+	return *_p_DummyThreadImplData;
+}
 
 VHWD_LEAVE

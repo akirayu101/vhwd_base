@@ -137,7 +137,7 @@ bool MyOverLappedRb::init_recv()
 
 MyOverLappedEx::MyOverLappedEx()
 {
-	buffer=(char*)MemPoolCached::current().allocate(IPacket::MAX_PACKET_SIZE);
+	buffer=(char*)MemPoolPaging::current().allocate(IPacket::MAX_PACKET_SIZE);
 
 	dbuf[0].buf=buffer;
 	dbuf[0].len=0;
@@ -147,7 +147,7 @@ MyOverLappedEx::MyOverLappedEx()
 
 MyOverLappedEx::~MyOverLappedEx()
 {
-	MemPoolCached::current().deallocate(buffer);
+	MemPoolPaging::current().deallocate(buffer);
 }
 
 

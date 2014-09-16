@@ -97,21 +97,19 @@ bool Thread::test_destroy()
 
 Thread& Thread::this_thread()
 {
-	return *this_data().thrd_ptr;
+	return *ThreadImpl::this_data().thrd_ptr;
 }
 
 
 Logger& this_logger()
 {
-	return Thread::this_data().thrd_logger;
+	return ThreadImpl::this_data().thrd_logger;
 }
-
-
 
 
 int Thread::rank()
 {
-	return this_data().thrd_rank;
+	return ThreadImpl::this_data().thrd_rank;
 }
 
 uintptr_t Thread::id()
@@ -122,12 +120,12 @@ uintptr_t Thread::id()
 
 void Thread::set_priority(int n)
 {
-	this_data().set_priority(n);
+	ThreadImpl::this_data().set_priority(n);
 }
 
 void Thread::set_affinity(int n)
 {
-	this_data().set_affinity(n);
+	ThreadImpl::this_data().set_affinity(n);
 }
 
 void Thread::svc()

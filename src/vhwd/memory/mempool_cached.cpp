@@ -1,5 +1,5 @@
 #include "mempool_impl.h"
-#include "../threading/thread_impl.h"
+
 
 VHWD_ENTER
 
@@ -98,58 +98,18 @@ void MpAllocCachedNoLock::dealloc(void* p)
 }
 
 
-#ifdef _MSC_VER
-
-__declspec(thread) MpAllocCachedNoLock* tc_data;
-
-inline MpAllocCachedNoLock* tc_get()
-{
-	return tc_data;
-}
-
-inline void tc_set(MpAllocCachedNoLock* h)
-{
-	tc_data=h;
-}
-
-#else
-
-ThreadImpl_detail::key_t key_tcdata;
-
-inline MpAllocCachedNoLock* tc_get()
-{
-	return (MpAllocCachedNoLock*)ThreadImpl_detail::key_get(key_tcdata);
-}
-
-inline void tc_set(MpAllocCachedNoLock* h)
-{
-	if(key_tcdata==0)
-	{
-		ThreadImpl_detail::key_create(key_tcdata);
-	}
-	ThreadImpl_detail::key_set(key_tcdata,h);
-}
-
-#endif
-
-
-
 void tc_init()
 {
-
 	MpAllocCachedNoLock* tc_data=tc_get();
-
-	wassert(!tc_data);
-
 	if(tc_data)
 	{
+		System::LogTrace("ThreadCachedData already inited");
 		return;
 	}
 
-	tc_data=(MpAllocCachedNoLock*)mp_alloc(sizeof(MpAllocCachedNoLock));
+	tc_data=(MpAllocCachedNoLock*)mp_alloc_real(sizeof(MpAllocCachedNoLock));
 	if(tc_data)
 	{
-		//System::LogTrace("%d tc_init called",(int)Thread::id());
 		tc_data->init();
 		tc_set(tc_data);
 	}
@@ -161,7 +121,6 @@ void tc_gc()
 	MpAllocCachedNoLock* tc_data=tc_get();
 	if(tc_data)
 	{
-		//System::LogTrace("%d tc_gc called",(int)Thread::id());
 		tc_data->gc();
 	}
 }
@@ -171,63 +130,11 @@ void tc_cleanup()
 	MpAllocCachedNoLock* tc_data=tc_get();
 	if(tc_data)
 	{
-		//System::LogTrace("%d tc_cleanup called",Thread::id());
 		tc_data->cleanup();
-		mp_free(tc_data);
 		tc_set(NULL);
+		mp_free_real(tc_data);
 	}
 
-}
-
-void* tc_alloc(size_t n)
-{
-	MpAllocCachedNoLock* tc_data=tc_get();
-
-	if(!tc_data)
-	{
-		return mp_alloc(n);
-	}
-	else
-	{
-		void* p=tc_data->alloc(n);
-		if(p) return p;
-		errno=ENOMEM;
-		return NULL;
-	}
-}
-
-void tc_free(void* p)
-{
-	MpAllocCachedNoLock* tc_data=tc_get();
-
-	if(tc_data)
-	{
-		tc_data->dealloc(p);
-	}
-	else
-	{
-		mp_free(p);
-	}
-}
-
-void* tc_realloc(void* p,size_t n)
-{
-	return mp_realloc(p,n);
-}
-
-void* MemPoolCached::allocate(size_t n)
-{
-	void* p=tc_alloc(n);
-	if(!p)
-	{
-		Exception::XBadAlloc();
-	}
-	return p;
-}
-
-void MemPoolCached::deallocate(void* p)
-{
-	tc_free(p);
 }
 
 VHWD_LEAVE

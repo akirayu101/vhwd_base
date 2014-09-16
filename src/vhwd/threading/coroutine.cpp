@@ -241,12 +241,12 @@ CoroutineMain::CoroutineMain():Coroutine(0)
 
 Coroutine& Coroutine::this_coroutine()
 {
-	return *Thread::this_data().cort_main.m_pThisRoutine;
+	return *ThreadImpl::this_data().cort_main.m_pThisRoutine;
 }
 
 CoroutineMain& Coroutine::main_coroutine()
 {
-	return Thread::this_data().cort_main;
+	return ThreadImpl::this_data().cort_main;
 }
 
 Coroutine::~Coroutine()

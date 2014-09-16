@@ -41,7 +41,7 @@ public:
 
 	static Thread& main_thread();
 	static Thread& this_thread();
-	static ThreadImpl& this_data();
+	//static ThreadImpl& this_data();
 
 	// Return current thread rank, from 0 to count()-1
 	static int rank();

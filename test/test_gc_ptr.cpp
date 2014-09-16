@@ -11,15 +11,13 @@ class A : public gc_obj
 public:
 
 	A(){val=-1;}
-
 	gc_ptr<A> next;
 	//LitePtrT<A> next;
-
 	int val;
 
 protected:
 
-	void _gc_mark(gc_state::queue_type& q)
+	void _gc_mark(gc_mark_queue& q)
 	{
 		q.append(next);
 	}
@@ -32,14 +30,15 @@ public:
 
 	void svc()
 	{
+
+		this_logger().LogMessage("thread rank %d enter",rank());
+
 		// linked list header
 		gc_ptr<A> p0;
-
 		size_t m=1024*128;
 
 		for(size_t i=0;i<m;i++)
 		{
-
 			gc_ptr<A> p1=gc_new<A>();
 			gc_ptr<A> p2=gc_new<A>();
 			gc_ptr<A> p3=gc_new<A>();
@@ -68,14 +67,16 @@ public:
 
 		TEST_ASSERT(n==m);
 
+		this_logger().LogMessage("thread rank %d leave",rank());
+
 	}
 };
 
 TEST_DEFINE(TEST_GarbageCollect)
 {
 
-	gc_state::nStepingDelta=1024*128;
-	gc_state::flags.add(gc_state::FLAG_SHOW_GC_INFO);
+	gc_state::current().steping_delta(1024*128);
+	gc_state::current().flags.add(gc_state::FLAG_SHOW_GC_INFO);
 
 	ThreadGc tgc;
 	tgc.activate(3);
@@ -96,14 +97,14 @@ TEST_DEFINE(TEST_GarbageCollect)
 		}
 		arr.back()->next=arr[0];
 
-		garbage_force_collect();
+		gc_force_collect();
 
-		TEST_ASSERT(gc_state::nNumberOfObject==1024);
+		TEST_ASSERT(gc_state::current().object_count()==1024);
 	}
 
-	garbage_force_collect();
+	gc_force_collect();
 
-	TEST_ASSERT(gc_state::nNumberOfObject==0);
+	TEST_ASSERT(gc_state::current().object_count()==0);
 
 }
 

@@ -3,6 +3,7 @@
 #include "vhwd/basic/lockguard.h"
 #include "vhwd/basic/atomic.h"
 #include "vhwd/basic/system.h"
+#include "../threading/thread_impl.h"
 
 #include <errno.h>
 
@@ -202,9 +203,60 @@ public:
 		buckets[bp].set(NULL);
 	}
 
-	MpAllocBucket* find_bucket(void* p);
+	inline MpAllocBucket* find_bucket(void* p)
+	{
+		uintptr_t kp=reinterpret_cast<uintptr_t>(p);
+		uintptr_t bp=kp>>MpAllocConfig::sp_bits;
 
-	MpAllocSpan* find_span(void* p)
+		MpAllocSpan* sp=buckets[bp].get();
+		if(sp)
+		{
+			if(kp>=sp->sp_base)
+			{
+				wassert(kp-sp->sp_base<sp->sp_size);
+				return &buckets[bp];
+			}
+		}
+
+		if(bp==0) return NULL;	
+
+		// fall back 1 bucket
+		sp=buckets[--bp].get();
+		if(sp)
+		{
+			if(kp-sp->sp_base<sp->sp_size)
+			{
+				return &buckets[bp];
+			}
+			else
+			{
+				return NULL;
+			}
+		}
+
+		// fall back more buckets, depends on
+		for(size_t i=0;i<MpAllocConfig::bk_more;i++)
+		{
+			if(bp==0) return NULL;
+	
+			sp=buckets[--bp].get();
+			if(sp)
+			{
+				if(kp-sp->sp_base<sp->sp_size)
+				{
+					return &buckets[bp];
+				}
+				else
+				{
+					return NULL;
+				}
+			}
+		}
+
+		return NULL;
+	}
+
+	inline MpAllocSpan* find_span(void* p)
 	{
 		MpAllocBucket* bk=find_bucket(p);
 		return bk?bk->get():NULL;
@@ -231,7 +283,22 @@ public:
 
 	MpAllocConfig::spin_type bk_spin;;
 
-	MpAllocBucket& bucket(MpAllocSpan* sp);
+	inline MpAllocBucket& bucket(MpAllocSpan* sp)
+	{
+		uintptr_t bp0=sp->sp_base>>MpAllocConfig::sp_bits;
+		uintptr_t bp1=bp0>>bits1;
+		uintptr_t bp2=bp0&mask1;
+		if(buckets2[bp1]==NULL)
+		{
+			MpAllocConfig::lock_type lock1(bk_spin);
+			if(buckets2[bp1]==NULL)
+			{
+				buckets2[bp1]=(BucketLevel2*)page_alloc(sizeof(BucketLevel2));
+			}
+		}
+		return (*buckets2[bp1])[bp2];
+	}
+
 	void insert_span_nolock(MpAllocSpan* sp);
 	void remove_span_nolock(MpAllocSpan* sp);
 
@@ -299,7 +366,7 @@ public:
 	void dealloc_real(void* p,MpAllocBucket& bk);
 	void* realloc_real(void* p,size_t n,MpAllocBucket& bk);
 
-	void* alloc(size_t n)
+	inline void* alloc(size_t n)
 	{
 		MpAllocSlot* psl=get_slot(n);
 		if(!psl)
@@ -312,7 +379,7 @@ public:
 		}
 	}
 
-	void* realloc(void* p,size_t n)
+	inline void* realloc(void* p,size_t n)
 	{
 		if(p==NULL)
 		{
@@ -333,7 +400,7 @@ public:
 		return ::realloc(p,n);
 	}
 
-	void dealloc(void* p)
+	inline void dealloc(void* p)
 	{
 		MpAllocBucket* pbk=pgmap.find_bucket(p);
 		if(pbk)
@@ -369,6 +436,42 @@ public:
 	void dealloc(void* p);
 
 };
+
+void mp_init();
+
+inline MpAllocCachedNoLock* tc_get()
+{
+	return ThreadImpl::this_data().tc_data;
+}
+
+inline void tc_set(MpAllocCachedNoLock* h)
+{
+	ThreadImpl::this_data().tc_data=h;
+}
+
+inline void* mp_alloc_real(size_t n)
+{
+	if(!g_myalloc_impl)
+	{
+		mp_init();
+	}
+	void* m=g_myalloc_impl->alloc(n);
+	if(!m)
+	{
+		errno=ENOMEM;
+	}
+	return m;
+}
+
+inline void mp_free_real(void* p)
+{
+	if(!g_myalloc_impl)
+	{
+		mp_init();
+	}
+	g_myalloc_impl->dealloc(p);
+}
+
 
 VHWD_LEAVE
 
